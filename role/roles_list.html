@@ -1,0 +1,47 @@
+<h2 class="sr-only">Halaman daftar role eNotulen menampilkan 5 role sistem: Bag. Umum, Bag. Humas, Pimpinan, Viewer, dan Super Admin.</h2>
+<div style="display:flex;min-height:560px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;font-size:14px;">
+  <div style="width:220px;background:var(--surface-1);border-right:0.5px solid var(--border);padding:1rem 0;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 1rem 1rem;border-bottom:0.5px solid var(--border);margin-bottom:12px;"><div style="width:28px;height:28px;border-radius:8px;background:var(--fill-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-speakerphone" style="font-size:16px;color:var(--on-accent);" aria-hidden="true"></i></div><span style="font-weight:500;font-size:15px;">eNotulen</span></div>
+    <div style="padding:0 0.75rem;">
+      <p style="font-size:11px;color:var(--text-muted);padding:4px 0.75rem;margin:16px 0 4px;">CONFIGURATION</p>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-users-group" style="font-size:16px;" aria-hidden="true"></i>Users</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);background:var(--bg-accent);color:var(--text-accent);font-weight:500;"><i class="ti ti-shield" style="font-size:16px;" aria-hidden="true"></i>Roles</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-key" style="font-size:16px;" aria-hidden="true"></i>Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-menu-2" style="font-size:16px;" aria-hidden="true"></i>Menus</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-user-check" style="font-size:16px;" aria-hidden="true"></i>Role Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-lock-access" style="font-size:16px;" aria-hidden="true"></i>User Permissions</div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;padding:1.5rem 2rem;background:var(--surface-0);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+      <div><h1 style="font-size:20px;font-weight:500;margin:0 0 4px;">Roles</h1><p style="font-size:13px;color:var(--text-secondary);margin:0;">Daftar semua role sistem</p></div>
+      <button style="background:var(--fill-primary);color:var(--on-primary);border:none;padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;"><i class="ti ti-plus" style="font-size:14px;" aria-hidden="true"></i>Add Role</button>
+    </div>
+    <div style="position:relative;margin-bottom:1rem;"><i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-muted);" aria-hidden="true"></i><input placeholder="Cari role..." style="width:100%;padding-left:36px;"/></div>
+    <div style="border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:var(--surface-1);"><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;width:36px;">No</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Nama Role</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Deskripsi</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Jumlah User</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Aksi</th></tr></thead>
+        <tbody id="roles-tbody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Showing 1 to 5 of 5 results</p>
+  </div>
+</div>
+<script>
+const roles = [
+  {n:'Bag. Umum',d:'Mengelola rapat, absensi, notulen dan laporan',u:4},
+  {n:'Bag. Humas',d:'Operator rekaman rapat dan absensi',u:3},
+  {n:'Pimpinan',d:'Monitoring, review notulen dan laporan',u:2},
+  {n:'Viewer',d:'Hanya dapat melihat notulen',u:2},
+  {n:'Super Admin',d:'Akses penuh ke semua fitur dan konfigurasi',u:1}
+];
+document.getElementById('roles-tbody').innerHTML = roles.map((r,i)=>`<tr style="border-top:0.5px solid var(--border);">
+  <td style="padding:10px 12px;color:var(--text-secondary);">${i+1}</td>
+  <td style="padding:10px 12px;font-weight:500;">${r.n}</td>
+  <td style="padding:10px 12px;color:var(--text-secondary);">${r.d}</td>
+  <td style="padding:10px 12px;">${r.u}</td>
+  <td style="padding:10px 12px;"><div style="display:flex;gap:10px;"><i class="ti ti-user-plus" style="font-size:15px;color:var(--text-secondary);cursor:pointer;" aria-hidden="true"></i><i class="ti ti-edit" style="font-size:15px;color:var(--text-accent);cursor:pointer;" aria-hidden="true"></i><i class="ti ti-trash" style="font-size:15px;color:var(--text-danger);cursor:pointer;" aria-hidden="true"></i></div></td>
+</tr>`).join('');
+</script>

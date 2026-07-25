@@ -1,0 +1,58 @@
+<h2 class="sr-only">Halaman User Permissions eNotulen menampilkan pemilihan user individual dan checkbox permission tambahan di luar role bawaannya.</h2>
+<div style="display:flex;min-height:600px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;font-size:14px;">
+  <div style="width:220px;background:var(--surface-1);border-right:0.5px solid var(--border);padding:1rem 0;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 1rem 1rem;border-bottom:0.5px solid var(--border);margin-bottom:12px;"><div style="width:28px;height:28px;border-radius:8px;background:var(--fill-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-speakerphone" style="font-size:16px;color:var(--on-accent);" aria-hidden="true"></i></div><span style="font-weight:500;font-size:15px;">eNotulen</span></div>
+    <div style="padding:0 0.75rem;">
+      <p style="font-size:11px;color:var(--text-muted);padding:4px 0.75rem;margin:16px 0 4px;">CONFIGURATION</p>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-users-group" style="font-size:16px;" aria-hidden="true"></i>Users</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-shield" style="font-size:16px;" aria-hidden="true"></i>Roles</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-key" style="font-size:16px;" aria-hidden="true"></i>Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-menu-2" style="font-size:16px;" aria-hidden="true"></i>Menus</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-user-check" style="font-size:16px;" aria-hidden="true"></i>Role Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);background:var(--bg-accent);color:var(--text-accent);font-weight:500;"><i class="ti ti-lock-access" style="font-size:16px;" aria-hidden="true"></i>User Permissions</div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;padding:1.5rem 2rem;background:var(--surface-0);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+      <div><h1 style="font-size:20px;font-weight:500;margin:0 0 4px;">User Permissions</h1><p style="font-size:13px;color:var(--text-secondary);margin:0;">Atur permission langsung ke user, di luar role-nya</p></div>
+      <button style="background:var(--fill-primary);color:var(--on-primary);border:none;padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;">Simpan Perubahan</button>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:13px;font-weight:500;display:block;margin-bottom:6px;">Pilih User</label>
+      <div style="position:relative;width:320px;"><i class="ti ti-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-muted);" aria-hidden="true"></i><input placeholder="Cari nama user..." value="Siti Rahayu" style="width:100%;padding-left:36px;"/></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--surface-1);border-radius:var(--radius);padding:10px 14px;margin-bottom:1.25rem;">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-warning);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:12px;color:var(--text-warning);flex-shrink:0;">SR</div>
+      <div style="flex:1;">
+        <p style="margin:0;font-size:13px;font-weight:500;">Siti Rahayu</p>
+        <p style="margin:0;font-size:12px;color:var(--text-secondary);">siti.rahayu@enotulen.id</p>
+      </div>
+      <span style="background:var(--bg-warning);color:var(--text-warning);padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500;">Role: Bag. Humas</span>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:8px;background:var(--bg-accent);border-radius:var(--radius);padding:10px 14px;margin-bottom:1.25rem;">
+      <i class="ti ti-info-circle" style="font-size:16px;color:var(--text-accent);flex-shrink:0;margin-top:1px;" aria-hidden="true"></i>
+      <p style="margin:0;font-size:12px;color:var(--text-accent);">Permission di bawah ini adalah tambahan di luar permission bawaan role Bag. Humas. Mencentang tidak mengubah role user.</p>
+    </div>
+    <div style="border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:500;font-size:14px;">Laporan</span>
+        <i class="ti ti-chevron-down" style="font-size:15px;color:var(--text-muted);" aria-hidden="true"></i>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" checked style="margin-top:2px;"/><div><p style="margin:0;font-size:13px;">report.read</p><p style="margin:0;font-size:12px;color:var(--text-muted);">Dapat melihat laporan (tambahan, di luar role)</p></div></label>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"><input type="checkbox" style="margin-top:2px;"/><div><p style="margin:0;font-size:13px;">report.export</p><p style="margin:0;font-size:12px;color:var(--text-muted);">Dapat export laporan ke PDF/Excel</p></div></label>
+      </div>
+    </div>
+    <div style="border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:500;font-size:14px;">Rapat</span>
+        <i class="ti ti-chevron-down" style="font-size:15px;color:var(--text-muted);" aria-hidden="true"></i>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:not-allowed;opacity:0.55;"><input type="checkbox" checked disabled style="margin-top:2px;"/><div><p style="margin:0;font-size:13px;">meeting.read</p><p style="margin:0;font-size:12px;color:var(--text-muted);">Sudah didapat dari role Bag. Humas</p></div></label>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<h2 class="sr-only">Halaman daftar menu navigasi eNotulen menampilkan tabel dengan kolom nama menu, route, icon, urutan, dan status aktif.</h2>
+<div style="display:flex;min-height:560px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;font-size:14px;">
+  <div style="width:220px;background:var(--surface-1);border-right:0.5px solid var(--border);padding:1rem 0;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 1rem 1rem;border-bottom:0.5px solid var(--border);margin-bottom:12px;"><div style="width:28px;height:28px;border-radius:8px;background:var(--fill-accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="ti ti-speakerphone" style="font-size:16px;color:var(--on-accent);" aria-hidden="true"></i></div><span style="font-weight:500;font-size:15px;">eNotulen</span></div>
+    <div style="padding:0 0.75rem;">
+      <p style="font-size:11px;color:var(--text-muted);padding:4px 0.75rem;margin:16px 0 4px;">CONFIGURATION</p>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-users-group" style="font-size:16px;" aria-hidden="true"></i>Users</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-shield" style="font-size:16px;" aria-hidden="true"></i>Roles</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-key" style="font-size:16px;" aria-hidden="true"></i>Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);background:var(--bg-accent);color:var(--text-accent);font-weight:500;"><i class="ti ti-menu-2" style="font-size:16px;" aria-hidden="true"></i>Menus</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-user-check" style="font-size:16px;" aria-hidden="true"></i>Role Permissions</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0.75rem;border-radius:var(--radius);color:var(--text-secondary);"><i class="ti ti-lock-access" style="font-size:16px;" aria-hidden="true"></i>User Permissions</div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1;padding:1.5rem 2rem;background:var(--surface-0);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+      <div><h1 style="font-size:20px;font-weight:500;margin:0 0 4px;">Menus</h1><p style="font-size:13px;color:var(--text-secondary);margin:0;">Daftar menu navigasi sistem</p></div>
+      <button style="background:var(--fill-primary);color:var(--on-primary);border:none;padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;"><i class="ti ti-plus" style="font-size:14px;" aria-hidden="true"></i>Add Menu</button>
+    </div>
+    <div style="border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:var(--surface-1);"><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;width:36px;">No</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Nama Menu</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Route/URL</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Icon</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Urutan</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Status</th><th style="text-align:left;padding:10px 12px;color:var(--text-secondary);font-weight:500;">Aksi</th></tr></thead>
+        <tbody id="menus-tbody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:10px;">Showing 1 to 6 of 15 results</p>
+  </div>
+</div>
+<script>
+const menus = [
+  {n:'Dashboard',r:'dashboard',ic:'ti-layout-dashboard',u:1},
+  {n:'Jadwal Rapat',r:'meetings.index',ic:'ti-calendar-event',u:2},
+  {n:'Koreksi Transkrip',r:'transcripts.index',ic:'ti-file-pencil',u:3},
+  {n:'Absensi',r:'attendance.index',ic:'ti-users',u:4},
+  {n:'Notulen',r:'minutes.index',ic:'ti-file-text',u:5},
+  {n:'Laporan',r:'reports.index',ic:'ti-chart-bar',u:6}
+];
+document.getElementById('menus-tbody').innerHTML = menus.map((m,i)=>`<tr style="border-top:0.5px solid var(--border);">
+  <td style="padding:10px 12px;color:var(--text-secondary);">${i+1}</td>
+  <td style="padding:10px 12px;font-weight:500;">${m.n}</td>
+  <td style="padding:10px 12px;color:var(--text-secondary);font-family:var(--font-mono);font-size:12px;">${m.r}</td>
+  <td style="padding:10px 12px;"><i class="ti ${m.ic}" style="font-size:16px;color:var(--text-secondary);" aria-hidden="true"></i></td>
+  <td style="padding:10px 12px;">${m.u}</td>
+  <td style="padding:10px 12px;"><span style="background:var(--bg-success);color:var(--text-success);padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500;">Aktif</span></td>
+  <td style="padding:10px 12px;"><div style="display:flex;gap:10px;"><i class="ti ti-edit" style="font-size:15px;color:var(--text-accent);cursor:pointer;" aria-hidden="true"></i><i class="ti ti-trash" style="font-size:15px;color:var(--text-danger);cursor:pointer;" aria-hidden="true"></i></div></td>
+</tr>`).join('');
+</script>

@@ -1,0 +1,68 @@
+services:
+  pgsql:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: enotulen
+      POSTGRES_USER: enotulen
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-enotulen123!}
+    volumes:
+      - "enotulen-pgsql:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U enotulen"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - "enotulen-redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-enotulenadmin}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-enotulenadmin123}
+    volumes:
+      - "enotulen-minio:/data"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Init container to create buckets
+  minio-init:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+      mc mb myminio/enotulen-recordings --ignore-existing;
+      mc mb myminio/enotulen-documents --ignore-existing;
+      mc anonymous set public myminio/enotulen-recordings;
+      mc anonymous set public myminio/enotulen-documents;
+      "
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-enotulenadmin}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-enotulenadmin123}
+
+volumes:
+  enotulen-pgsql:
+  enotulen-redis:
+  enotulen-minio:
