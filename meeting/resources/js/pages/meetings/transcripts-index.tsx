@@ -122,7 +122,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                             </td>
                                             <td className="px-6 py-4 text-slate-600">{meeting.date || '4 Jun 2026'}</td>
                                             <td className="px-6 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-6 py-4 text-slate-600">{meeting.location || 'Rapat A - Lt. 3'}</td>
+                                            <td className="px-6 py-4 text-slate-600 max-w-[200px]"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
                                             <td className="px-6 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
                                             <td className="px-6 py-4 text-center">
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs border ${getStatusColor(meeting.status || 'Terjadwal')}`}>

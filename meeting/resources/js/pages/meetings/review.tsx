@@ -161,19 +161,19 @@ export default function MeetingReview({ meeting }: any) {
                                         {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)} WIB` : "-"}
                                     </p>
                                 </div>
-                                <div>
+                                <div className="min-w-0">
                                     <p className="text-xs text-slate-500 mb-1">Ruangan / Lokasi</p>
-                                    <p className="text-sm font-medium flex items-center text-slate-700">
-                                        <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                        {meeting.location || "-"}
-                                    </p>
+                                    <div className="text-sm font-medium flex items-center text-slate-700">
+                                        <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
+                                        <span className="truncate" title={meeting.location || "-"}>{meeting.location || "-"}</span>
+                                    </div>
                                 </div>
-                                <div>
+                                <div className="min-w-0">
                                     <p className="text-xs text-slate-500 mb-1">Peserta Terdaftar</p>
-                                    <p className="text-sm font-medium flex items-center text-slate-700">
-                                        <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                        {participants.length} Orang
-                                    </p>
+                                    <div className="text-sm font-medium flex items-center text-slate-700">
+                                        <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
+                                        <span className="truncate">{participants.length} Orang</span>
+                                    </div>
                                 </div>
                             </div>
                             <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 mt-2">

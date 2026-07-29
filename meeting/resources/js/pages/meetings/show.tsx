@@ -53,9 +53,12 @@ export default function MeetingShow({ meeting }: any) {
                                 <span className="text-muted-foreground">Waktu</span>
                                 <span className="font-medium flex items-center"><Clock className="h-4 w-4 mr-2" /> {meeting.start_time ? meeting.start_time.substring(0,5) : ''} - {meeting.end_time ? meeting.end_time.substring(0,5) : ''}</span>
                             </div>
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b">
-                                <span className="text-muted-foreground">Lokasi</span>
-                                <span className="font-medium flex items-center"><MapPin className="h-4 w-4 mr-2" /> {meeting.location}</span>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b gap-4">
+                                <span className="text-muted-foreground shrink-0">Lokasi</span>
+                                <span className="font-medium flex items-center min-w-0 justify-end sm:text-right">
+                                    <MapPin className="h-4 w-4 mr-2 shrink-0" /> 
+                                    <span className="truncate" title={meeting.location}>{meeting.location}</span>
+                                </span>
                             </div>
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b">
                                 <span className="text-muted-foreground">Tipe Rapat</span>

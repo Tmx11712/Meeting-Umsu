@@ -174,7 +174,9 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                             </td>
                                             <td className="px-6 py-5 text-slate-600 dark:text-slate-300 font-medium">{meeting.date}</td>
                                             <td className="px-6 py-5 text-slate-600 dark:text-slate-300 font-medium bg-slate-50/50 dark:bg-slate-800/20">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-6 py-5 text-slate-600 dark:text-slate-300">{meeting.location}</td>
+                                            <td className="px-6 py-5 text-slate-600 dark:text-slate-300 max-w-[200px]">
+                                                <span className="block truncate" title={meeting.location}>{meeting.location}</span>
+                                            </td>
                                             <td className="px-6 py-5 text-center text-slate-600 dark:text-slate-300 font-medium">
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants?.length ?? 0}</span>
                                             </td>

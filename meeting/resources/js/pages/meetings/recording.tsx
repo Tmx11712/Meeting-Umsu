@@ -275,19 +275,19 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                                     {meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)} WIB
                                 </p>
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Ruangan</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <MapPin className="w-4 h-4 mr-2 text-indigo-400" />
-                                    {meeting.location}
-                                </p>
+                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <MapPin className="w-4 h-4 mr-2 text-indigo-400 shrink-0" />
+                                    <span className="truncate" title={meeting.location}>{meeting.location}</span>
+                                </div>
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Peserta</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Users className="w-4 h-4 mr-2 text-indigo-400" />
-                                    {meeting.participants?.length || 0} Peserta
-                                </p>
+                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <Users className="w-4 h-4 mr-2 text-indigo-400 shrink-0" />
+                                    <span className="truncate">{meeting.participants?.length || 0} Peserta</span>
+                                </div>
                             </div>
                         </div>
                     </CardContent>
