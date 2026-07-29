@@ -64,6 +64,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $bagUmum = Role::firstOrCreate(['name' => 'Bag. Umum', 'guard_name' => 'web']);
         $bagUmum->syncPermissions([
             'meeting.read', 'meeting.create', 'meeting.update', 'meeting.delete',
+            'transcript.read', 'transcript.create', 'transcript.update', 'transcript.delete',
             'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete',
             'minute.read', 'minute.create', 'minute.update', 'minute.delete',
             'report.read'
@@ -72,6 +73,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $bagHumas = Role::firstOrCreate(['name' => 'Bag. Humas', 'guard_name' => 'web']);
         $bagHumas->syncPermissions([
             'recording.read', 'recording.create', 'recording.update', 'recording.delete',
+            'transcript.read',
             'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete'
         ]);
 

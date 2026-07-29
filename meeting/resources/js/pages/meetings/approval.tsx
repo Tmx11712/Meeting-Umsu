@@ -4,10 +4,15 @@ import { Button } from '@/components/ui/button';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Calendar, Clock, MapPin, Users, Eye, CheckCircle2, RotateCcw, Download, FileText, FileIcon, FileSpreadsheet, Info, Check } from 'lucide-react';
 import { useState } from 'react';
+import { usePermissions } from '@/hooks/usePermissions';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 export default function MeetingApproval({ meeting }: any) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
+    const { canEdit } = usePermissions();
+    const canManageApproval = canEdit('report');
     const [approving, setApproving] = useState(false);
     const [rejecting, setRejecting] = useState(false);
     const [notes, setNotes] = useState('');
@@ -76,9 +81,11 @@ export default function MeetingApproval({ meeting }: any) {
                     <Button variant="outline" asChild>
                         <Link href="/meetings">Kembali ke Jadwal Rapat</Link>
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleApprove} disabled={approving || rejecting}>
-                        <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
-                    </Button>
+                    {canManageApproval && (
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleApprove} disabled={approving || rejecting}>
+                            <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -86,6 +93,16 @@ export default function MeetingApproval({ meeting }: any) {
             <div className="bg-white px-2 py-1 rounded-xl">
                 <MeetingStepper meeting={meeting} activeStage={7} />
             </div>
+
+            {!canManageApproval && (
+                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                        Anda tidak memiliki izin untuk menyetujui notulen ini. Anda hanya dapat melihat data.
+                    </AlertDescription>
+                </Alert>
+            )}
 
             {/* Top Row: 3 columns */}
             <div className="grid md:grid-cols-[1fr_1.5fr_1fr] gap-6">
@@ -349,27 +366,30 @@ export default function MeetingApproval({ meeting }: any) {
                                     placeholder="Tulis catatan atau arahan tambahan..."
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
+                                    disabled={!canManageApproval}
                                 ></textarea>
                                 <p className="text-[10px] text-slate-400 text-right mt-1">0 / 500 karakter</p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 pt-2">
-                                <Button 
-                                    variant="outline" 
-                                    className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 h-10"
-                                    onClick={handleReject}
-                                    disabled={approving || rejecting}
-                                >
-                                    <RotateCcw className="w-4 h-4 mr-2" /> Tolak & Kembalikan
-                                </Button>
-                                <Button 
-                                    className="bg-green-600 hover:bg-green-700 text-white h-10"
-                                    onClick={handleApprove}
-                                    disabled={approving || rejecting}
-                                >
-                                    <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
-                                </Button>
-                            </div>
+                            {canManageApproval && (
+                                <div className="grid grid-cols-2 gap-3 pt-2">
+                                    <Button 
+                                        variant="outline" 
+                                        className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 h-10"
+                                        onClick={handleReject}
+                                        disabled={approving || rejecting}
+                                    >
+                                        <RotateCcw className="w-4 h-4 mr-2" /> Tolak & Kembalikan
+                                    </Button>
+                                    <Button 
+                                        className="bg-green-600 hover:bg-green-700 text-white h-10"
+                                        onClick={handleApprove}
+                                        disabled={approving || rejecting}
+                                    >
+                                        <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
+                                    </Button>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

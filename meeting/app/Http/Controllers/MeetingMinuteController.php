@@ -12,9 +12,25 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class MeetingMinuteController extends Controller
 {
+    public function index(Request $request)
+    {
+        // Stage 5 = Review / Notulen
+        $query = Meeting::where('current_stage', 5);
+        
+        if ($request->search) {
+            $query->where('title', 'ilike', '%' . $request->search . '%');
+        }
+        
+        $meetings = $query->orderBy('date', 'desc')->paginate(10);
+        
+        return Inertia::render('meetings/minutes-index', [
+            'meetings' => $meetings,
+            'filters' => $request->only(['search'])
+        ]);
+    }
     public function show(Meeting $meeting)
     {
-        $meeting->load('participants.user', 'minutes.actionItems', 'documents');
+        $meeting->load('participants.user', 'minutes.actionItems', 'documents', 'attendances');
         
         return Inertia::render('meetings/review', [
             'meeting' => $meeting
@@ -23,7 +39,7 @@ class MeetingMinuteController extends Controller
 
     public function generateAiSummary(Request $request, Meeting $meeting, OpenAiTranscriptionService $aiService)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
         // 1. Ambil transkrip yang dikoreksi (atau asli jika belum dikoreksi)
         $transcripts = $meeting->transcripts()->with('corrections')->orderBy('sequence_order')->get();
@@ -75,7 +91,7 @@ class MeetingMinuteController extends Controller
 
     public function sendToPimpinan(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengirim ke pimpinan.');
 
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {

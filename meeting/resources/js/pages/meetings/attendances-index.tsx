@@ -7,7 +7,8 @@ import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
-    const [syncing, setSyncing] = useState<boolean>(false);
+    const { auth } = usePage().props as any;
+    const [syncing, setSyncing] = useState(false);
     const { guardAction } = usePermissions();
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
@@ -28,52 +29,18 @@ export default function MeetingIndex({ meetings, filters }: any) {
         });
     };
 
-    const applyFilter = (key: string, value: string) => {
-        router.get('/meetings', { ...filters, [key]: value }, { preserveState: true, replace: true });
-    };
-
-    const monthOptions = Array.from({ length: 12 }, (_, i) => {
-        const d = new Date();
-        d.setDate(1);
-        d.setMonth(d.getMonth() - i);
-        const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-        const label = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
-        return { value, label };
-    });
-
     return (
         <div className="flex h-full flex-1 flex-col gap-6 p-8 max-w-[1400px] mx-auto w-full bg-[#f8fafc]">
-            <Head title="Jadwal Rapat" />
+            <Head title="Kelola Absensi" />
             
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Jadwal Rapat</h1>
-                    <p className="text-slate-500 text-sm">Daftar dan kelola jadwal rapat</p>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Kelola Absensi</h1>
+                    <p className="text-slate-500 text-sm">Daftar rapat yang memerlukan pengelolaan absensi</p>
                 </div>
                 <div className="flex gap-3">
-                    <Button 
-                        variant="outline" 
-                        className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
-                        onClick={handleSync}
-                        disabled={syncing}
-                    >
-                        <RefreshCw className={`mr-2 h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
-                        {syncing ? 'Menarik Data...' : 'Tarik Rapat (Irvan Cloud)'}
-                    </Button>
-                    <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-                        <Link 
-                            href="/meetings/create"
-                            onClick={(e) => {
-                                if (!guardAction('meeting')) {
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Buat Rapat
-                        </Link>
-                    </Button>
+                    {/* Header buttons removed since this is a specific pipeline stage view */}
                 </div>
             </div>
 
@@ -88,11 +55,6 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 placeholder="Cari judul rapat..." 
                                 className="pl-9 w-[300px] bg-white border-slate-200 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg h-10"
                                 defaultValue={filters?.search || ''}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        applyFilter('search', (e.target as HTMLInputElement).value);
-                                    }
-                                }}
                             />
                         </div>
                         
@@ -100,8 +62,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                             <div className="relative">
                                 <select 
                                     className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-[160px] cursor-pointer hover:bg-slate-50 transition-colors"
-                                    value={filters?.status || 'all'}
-                                    onChange={(e) => applyFilter('status', e.target.value)}
+                                    defaultValue={filters?.status || 'all'}
                                 >
                                     <option value="all">Semua Status</option>
                                     <option value="terjadwal">Terjadwal</option>
@@ -120,22 +81,16 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 </div>
                                 <select 
                                     className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-[160px] cursor-pointer hover:bg-slate-50 transition-colors"
-                                    value={filters?.month || ''}
-                                    onChange={(e) => applyFilter('month', e.target.value)}
+                                    defaultValue="juni"
                                 >
-                                    <option value="">Semua Bulan</option>
-                                    {monthOptions.map((opt) => (
-                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                    ))}
+                                    <option value="juni">Juni 2026</option>
+                                    <option value="mei">Mei 2026</option>
+                                    <option value="april">April 2026</option>
                                 </select>
                             </div>
 
-                            <Button 
-                                variant="outline" 
-                                className="h-10 px-4 text-slate-700 border-slate-200 hover:bg-slate-50 font-medium"
-                                onClick={() => router.get('/meetings', {}, { preserveState: false })}
-                            >
-                                <Filter className="w-4 h-4 mr-2 text-slate-500" /> Reset
+                            <Button variant="outline" className="h-10 px-4 text-slate-700 border-slate-200 hover:bg-slate-50 font-medium">
+                                <Filter className="w-4 h-4 mr-2 text-slate-500" /> Filter
                             </Button>
                         </div>
                     </div>
@@ -159,50 +114,27 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 {meetings?.data && meetings.data.length > 0 ? (
                                     meetings.data.map((meeting: any, index: number) => (
                                         <tr key={meeting.id} className="hover:bg-slate-50/80 transition-colors group">
-                                            <td className="px-6 py-4 text-slate-500">
-                                                {((meetings.current_page - 1) * meetings.per_page) + index + 1}
-                                            </td>
+                                            <td className="px-6 py-4 text-slate-500">{index + 1}</td>
                                             <td className="px-6 py-4">
-                                                <Link href={`/meetings/${meeting.id}`} className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                <Link href={`/meetings/${meeting.id}/attendance`} className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
                                                     {meeting.title}
                                                 </Link>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-600">{meeting.date}</td>
+                                            <td className="px-6 py-4 text-slate-600">{meeting.date || '4 Jun 2026'}</td>
                                             <td className="px-6 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-6 py-4 text-slate-600">{meeting.location}</td>
-                                            <td className="px-6 py-4 text-center text-slate-600">{meeting.participants?.length ?? 0}</td>
+                                            <td className="px-6 py-4 text-slate-600">{meeting.location || 'Rapat A - Lt. 3'}</td>
+                                            <td className="px-6 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
                                             <td className="px-6 py-4 text-center">
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs border ${getStatusColor(meeting.status || 'terjadwal')}`}>
+                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs border ${getStatusColor(meeting.status || 'Terjadwal')}`}>
                                                     {(meeting.status || 'Terjadwal').charAt(0).toUpperCase() + (meeting.status || 'terjadwal').slice(1)}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="flex items-center justify-center gap-3">
-                                                    <Link 
-                                                        href={`/meetings/${meeting.id}`} 
-                                                        className="text-blue-500 hover:text-blue-700 transition-colors"
-                                                        onClick={(e) => {
-                                                            if (!guardAction('meeting')) {
-                                                                e.preventDefault();
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Edit3 className="w-4 h-4" />
+                                                <Button asChild variant="outline" size="sm" className="h-8">
+                                                    <Link href={`/meetings/${meeting.id}/attendance`}>
+                                                        Kelola Absensi
                                                     </Link>
-                                                    <button 
-                                                        className="text-red-500 hover:text-red-700 transition-colors"
-                                                        onClick={() => {
-                                                            if (!guardAction('meeting')) return;
-                                                            if (confirm('Yakin ingin menghapus rapat "' + meeting.title + '"?')) {
-                                                                router.delete(`/meetings/${meeting.id}`, {
-                                                                    preserveScroll: true,
-                                                                });
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                </div>
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))
@@ -220,30 +152,24 @@ export default function MeetingIndex({ meetings, filters }: any) {
                     {/* Pagination Footer */}
                     <div className="p-5 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
                         <div>
-                            Menampilkan {meetings?.from ?? 0} – {meetings?.to ?? 0} dari {meetings?.total ?? 0} data
+                            Menampilkan 1 - {meetings?.data?.length || 0} dari {meetings?.total || 0} data
                         </div>
                         <div className="flex items-center gap-2">
-                            {meetings?.links?.map((link: any, i: number) => {
-                                const label = link.label
-                                    .replace('&laquo; Previous', '←')
-                                    .replace('Next &raquo;', '→');
-                                return (
-                                    <Button
-                                        key={i}
-                                        variant={link.active ? 'default' : 'outline'}
-                                        size="icon"
-                                        className={`w-8 h-8 rounded-md text-xs ${
-                                            link.active
-                                                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                                : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                                        } ${!link.url ? 'opacity-40 cursor-not-allowed' : ''}`}
-                                        disabled={!link.url}
-                                        onClick={() => link.url && router.get(link.url, filters, { preserveState: true })}
-                                    >
-                                        {label}
-                                    </Button>
-                                );
-                            })}
+                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 text-slate-400 hover:text-slate-600" disabled>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
+                            </Button>
+                            <Button variant="default" size="icon" className="w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white">
+                                1
+                            </Button>
+                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 text-slate-600 hover:bg-slate-50">
+                                2
+                            </Button>
+                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 text-slate-600 hover:bg-slate-50">
+                                3
+                            </Button>
+                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 text-slate-600 hover:bg-slate-50">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                            </Button>
                         </div>
                     </div>
                 </CardContent>

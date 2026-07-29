@@ -3,8 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { MeetingTabs } from '@/components/meeting-tabs';
 import { useState } from 'react';
+import { usePermissions } from '@/hooks/usePermissions';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 export default function MeetingCorrection({ meeting }: any) {
+    const { canEdit } = usePermissions();
+    const canCorrect = canEdit('transcript');
     const transcripts = meeting.transcripts || [];
     
     // Sort transcripts just in case
@@ -34,6 +39,16 @@ export default function MeetingCorrection({ meeting }: any) {
 
             <MeetingTabs meeting={meeting} activeTab="correction" />
 
+            {!canCorrect && (
+                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                        Anda tidak memiliki izin untuk mengoreksi notulen ini. Anda hanya dapat melihat data.
+                    </AlertDescription>
+                </Alert>
+            )}
+
             <Card>
                 <CardHeader>
                     <CardTitle>Editor Transkrip</CardTitle>
@@ -53,14 +68,15 @@ export default function MeetingCorrection({ meeting }: any) {
                                     key={t.id} 
                                     transcript={t} 
                                     initialText={text} 
-                                    onSave={(newText) => handleCorrection(t.id, text, newText)} 
+                                    canCorrect={canCorrect}
+                                    onSave={(newText: string) => handleCorrection(t.id, text, newText)} 
                                 />
                             );
                         })
                     )}
                 </CardContent>
                 <CardFooter className="flex justify-end pt-6 border-t">
-                    <Button onClick={handleFinish} disabled={transcripts.length === 0}>
+                    <Button onClick={handleFinish} disabled={transcripts.length === 0 || !canCorrect}>
                         Selesai & Lanjut ke Absensi
                     </Button>
                 </CardFooter>
@@ -69,7 +85,7 @@ export default function MeetingCorrection({ meeting }: any) {
     );
 }
 
-function TranscriptItem({ transcript, initialText, onSave }: any) {
+function TranscriptItem({ transcript, initialText, onSave, canCorrect }: any) {
     const [isEditing, setIsEditing] = useState(false);
     const [text, setText] = useState(initialText);
 
@@ -99,19 +115,20 @@ function TranscriptItem({ transcript, initialText, onSave }: any) {
                         </div>
                     </div>
                 ) : (
-                    <div className="relative">
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
-                        <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            Koreksi
-                        </Button>
-                    </div>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
                 )}
             </div>
+            {!isEditing && canCorrect && (
+                <div className="flex-shrink-0 pt-1">
+                    <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        onClick={() => setIsEditing(true)}
+                    >
+                        Koreksi
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

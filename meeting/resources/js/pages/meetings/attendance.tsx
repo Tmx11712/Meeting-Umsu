@@ -5,8 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Calendar, Clock, MapPin, Users, Eye, QrCode, Fingerprint, Search, Trash2, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 export default function MeetingAttendance({ meeting }: any) {
+    const { canEdit } = usePermissions();
+    const canManageAttendance = canEdit('attendance');
     const participants = meeting.participants || [];
     const attendances = meeting.attendances || [];
     const isIrvanCloud = meeting.source === 'irvan_cloud';
@@ -84,9 +89,11 @@ export default function MeetingAttendance({ meeting }: any) {
                     <Button variant="outline" asChild>
                         <Link href="/meetings">Kembali ke Jadwal Rapat</Link>
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleFinish}>
-                        <CheckCircle2 className="w-4 h-4 mr-2" /> Simpan Absensi
-                    </Button>
+                    {canManageAttendance && (
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleFinish}>
+                            <CheckCircle2 className="w-4 h-4 mr-2" /> Simpan Absensi
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -94,6 +101,16 @@ export default function MeetingAttendance({ meeting }: any) {
             <div className="bg-white px-2 py-1 rounded-xl">
                 <MeetingStepper meeting={meeting} activeStage={5} />
             </div>
+
+            {!canManageAttendance && (
+                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                        Anda tidak memiliki izin untuk mengelola absensi rapat ini. Anda hanya dapat melihat data.
+                    </AlertDescription>
+                </Alert>
+            )}
 
             {/* Top Cards Row */}
             <div className="grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-6">
@@ -240,7 +257,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                         <div className="p-2 bg-white rounded border border-slate-200 mb-2">
                                             <img src={qrCodeHtml} alt="QR Code Absensi" className="w-32 h-32" />
                                         </div>
-                                        <Button variant="ghost" size="sm" onClick={generateQrCode} disabled={loadingQr} className="text-xs">
+                                        <Button variant="ghost" size="sm" onClick={generateQrCode} disabled={loadingQr || !canManageAttendance} className="text-xs">
                                             {loadingQr ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null} Perbarui
                                         </Button>
                                     </div>
@@ -249,7 +266,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                         variant="outline" 
                                         className="w-max text-blue-600 border-blue-200 hover:bg-blue-50 text-xs h-8 mt-2"
                                         onClick={generateQrCode}
-                                        disabled={loadingQr}
+                                        disabled={loadingQr || !canManageAttendance}
                                     >
                                         {loadingQr ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : null}
                                         Tampilkan QR Code
@@ -267,7 +284,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                         <p className="text-xs text-slate-500 mt-1 leading-relaxed">Absensi dilakukan secara manual oleh operator.</p>
                                     </div>
                                 </div>
-                                <Button variant="outline" className="w-max text-blue-600 border-blue-200 hover:bg-blue-50 text-xs h-8">
+                                <Button variant="outline" className="w-max text-blue-600 border-blue-200 hover:bg-blue-50 text-xs h-8" disabled={!canManageAttendance}>
                                     Input Manual
                                 </Button>
                             </div>
@@ -320,7 +337,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                    {tableData.map((row, i) => (
+                                    {tableData.map((row: any, i: number) => (
                                         <tr key={row.id} className="hover:bg-slate-50/50">
                                             <td className="py-3 px-4 text-slate-600">{i+1}</td>
                                             <td className="py-3 px-4 font-semibold text-slate-900">{row.name}</td>
@@ -345,7 +362,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                                             size="sm"
                                                             className="h-8 text-green-600 border-green-200 hover:bg-green-50"
                                                             onClick={() => handleManualAttendance(row.user_id, 'hadir')}
-                                                            disabled={row.status === 'Hadir'}
+                                                            disabled={row.status === 'Hadir' || !canManageAttendance}
                                                         >
                                                             Hadir
                                                         </Button>
@@ -354,7 +371,7 @@ export default function MeetingAttendance({ meeting }: any) {
                                                             size="sm"
                                                             className="h-8 text-red-500 border-red-200 hover:bg-red-50"
                                                             onClick={() => handleManualAttendance(row.user_id, 'tidak_hadir')}
-                                                            disabled={row.status === 'Belum' || row.status === 'Tidak Hadir'}
+                                                            disabled={row.status === 'Belum' || row.status === 'Tidak Hadir' || !canManageAttendance}
                                                         >
                                                             Alpha
                                                         </Button>
@@ -423,9 +440,15 @@ export default function MeetingAttendance({ meeting }: any) {
                             <CardTitle className="text-sm font-semibold text-slate-900">Catatan (opsional)</CardTitle>
                         </CardHeader>
                         <CardContent className="flex-1 flex flex-col">
+                            {!canManageAttendance && (
+                                <div className="mb-2 p-2 bg-amber-50 text-amber-700 text-xs rounded border border-amber-200">
+                                    Mode read-only: Anda tidak memiliki akses untuk mengubah catatan.
+                                </div>
+                            )}
                             <textarea 
                                 className="w-full flex-1 min-h-[120px] p-3 text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 resize-none"
                                 placeholder="Tulis catatan absensi jika diperlukan..."
+                                disabled={!canManageAttendance}
                             ></textarea>
                             <p className="text-[10px] text-slate-400 text-right mt-2">0 / 500 karakter</p>
                         </CardContent>

@@ -12,13 +12,9 @@ export default function AppSidebarLayout({
         <AppShell variant="sidebar">
             <AppSidebar />
             <AppContent variant="sidebar" className="overflow-x-hidden flex flex-col">
-                <div className="w-full max-w-7xl mx-auto flex flex-col flex-1">
-                    {breadcrumbs.length > 0 && (
-                        <div className="px-6 pt-6 pb-1">
-                            <AppSidebarHeader breadcrumbs={breadcrumbs} />
-                        </div>
-                    )}
-                    <div className={`flex-1 ${breadcrumbs.length > 0 ? '-mt-2' : 'pt-6'}`}>
+                <div className="w-full max-w-[1400px] mx-auto flex flex-col flex-1 px-6">
+                    <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                    <div className="flex-1 pb-6">
                         {children}
                     </div>
                 </div>

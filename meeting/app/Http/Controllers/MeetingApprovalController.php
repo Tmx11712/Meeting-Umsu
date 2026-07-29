@@ -20,7 +20,11 @@ class MeetingApprovalController extends Controller
 
     public function store(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Pimpinan', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(
+            auth()->user()->hasAnyRole(['Pimpinan', 'Super Admin', 'Administrator']),
+            403,
+            'Akses Terbatas: Hanya Pimpinan yang dapat memberikan keputusan.'
+        );
 
         $request->validate([
             'decision' => 'required|in:approved,rejected',

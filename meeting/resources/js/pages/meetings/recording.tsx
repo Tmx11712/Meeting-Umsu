@@ -5,12 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle, Calendar, Clock, MapPin, Users, Info } from 'lucide-react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { useState, useRef, useEffect } from 'react';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 export default function MeetingRecording({ meeting, openAiConfigured }: any) {
     const { auth } = usePage().props as any;
-    const roles = auth?.roles || [];
-    const dept = auth?.user?.department?.toLowerCase() || '';
-    const isHumas = dept.includes('humas') || roles.includes('Bag. Humas') || roles.includes('Humas');
+    const { canEdit } = usePermissions();
+    const canRecord = canEdit('recording');
     const [isRecording, setIsRecording] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [liveText, setLiveText] = useState<string[]>([]);
@@ -229,6 +231,16 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                 <MeetingStepper meeting={meeting} activeStage={3} />
             </div>
 
+            {!canRecord && (
+                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                        Anda tidak memiliki izin untuk mengelola rekaman rapat ini. Anda hanya dapat melihat status rekaman.
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {/* Top Cards Row */}
             <div className="grid md:grid-cols-3 gap-6">
                 {/* Informasi Rapat */}
@@ -355,7 +367,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                             <div className="w-12 h-12 bg-white border border-slate-100 rounded-full shadow-sm flex items-center justify-center mb-4 text-blue-600">
                                 <UploadCloud className="w-6 h-6" />
                             </div>
-                            {isHumas ? (
+                            {canRecord ? (
                                 <>
                                     <p className="text-sm font-medium text-slate-700 mb-4">Drag & drop file rekaman di sini<br/><span className="text-slate-400 font-normal">atau</span></p>
                                     
@@ -416,7 +428,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                             ))}
                         </div>
 
-                        {isHumas ? (
+                        {canRecord ? (
                             <div className="flex w-full gap-3">
                                 <Button 
                                     variant="outline" 
@@ -505,7 +517,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             </div>
 
             {/* Bottom Actions */}
-            {isHumas && (
+            {canRecord && (
                 <div className="mt-4 flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <div className="flex items-center gap-3 text-yellow-800">
                         <div className="p-1.5 bg-yellow-100 rounded-full">

@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Calendar, Clock, MapPin, Search, ChevronRight, ChevronLeft, Save, Users } from 'lucide-react';
+import { Calendar, Clock, MapPin, Search, ChevronRight, ChevronLeft, Save, Users, AlertCircle } from 'lucide-react';
 import { useState, useMemo } from 'react';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function MeetingCreate({ users, meeting }: any) {
     const isEdit = !!meeting;
@@ -18,8 +20,10 @@ export default function MeetingCreate({ users, meeting }: any) {
         location: meeting?.location || '',
         type: meeting?.type || 'internal',
         notes: meeting?.notes || '',
-        participants: meeting?.participants ? meeting.participants.map((p: any) => p.user_id) : [],
     });
+
+    const { canEdit } = usePermissions();
+    const canManageMeeting = canEdit('meeting');
 
     const [searchLeft, setSearchLeft] = useState('');
     const [selectedLeft, setSelectedLeft] = useState<number[]>([]);
@@ -57,6 +61,8 @@ export default function MeetingCreate({ users, meeting }: any) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!canManageMeeting) return;
+        
         if (isEdit) {
             put(`/meetings/${meeting.id}`);
         } else {
@@ -101,6 +107,15 @@ export default function MeetingCreate({ users, meeting }: any) {
             <form onSubmit={submit}>
                 <Card className="rounded-xl border-slate-200 shadow-sm bg-white overflow-visible">
                     <CardContent className="p-8 space-y-8">
+                        {!canManageMeeting && (
+                            <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-800">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>Mode Hanya Baca (Read-Only)</AlertTitle>
+                                <AlertDescription>
+                                    Anda tidak memiliki izin untuk menyimpan atau mengubah data rapat ini. Form ini ditampilkan hanya untuk melihat detail.
+                                </AlertDescription>
+                            </Alert>
+                        )}
                         
                         {/* Informasi Rapat */}
                         <div>
@@ -112,10 +127,11 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <Label className="text-slate-700 font-medium">Judul Rapat <span className="text-red-500">*</span></Label>
                                     <Input 
                                         placeholder="Masukkan judul rapat" 
-                                        className="h-10 border-slate-200"
+                                        className="h-10 border-slate-200 disabled:bg-slate-50 disabled:text-slate-500"
                                         value={data.title}
                                         onChange={e => setData('title', e.target.value)}
                                         required
+                                        disabled={!canManageMeeting}
                                     />
                                     {errors.title && <p className="text-xs text-red-500">{errors.title}</p>}
                                 </div>
@@ -123,9 +139,10 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <Label className="text-slate-700 font-medium">Deskripsi (opsional)</Label>
                                     <Textarea 
                                         placeholder="Masukkan deskripsi rapat" 
-                                        className="h-[84px] resize-none border-slate-200"
+                                        className="h-[84px] resize-none border-slate-200 disabled:bg-slate-50 disabled:text-slate-500"
                                         value={data.description}
                                         onChange={e => setData('description', e.target.value)}
+                                        disabled={!canManageMeeting}
                                     />
                                 </div>
                             </div>
@@ -136,10 +153,11 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <div className="relative">
                                         <Input 
                                             type="date" 
-                                            className="h-10 border-slate-200 pr-10"
+                                            className="h-10 border-slate-200 pr-10 disabled:bg-slate-50 disabled:text-slate-500"
                                             value={data.date}
                                             onChange={e => setData('date', e.target.value)}
                                             required
+                                            disabled={!canManageMeeting}
                                         />
                                         <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                                     </div>
@@ -149,10 +167,11 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <div className="relative">
                                         <Input 
                                             type="time" 
-                                            className="h-10 border-slate-200 pr-10"
+                                            className="h-10 border-slate-200 pr-10 disabled:bg-slate-50 disabled:text-slate-500"
                                             value={data.start_time}
                                             onChange={e => setData('start_time', e.target.value)}
                                             required
+                                            disabled={!canManageMeeting}
                                         />
                                         <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                                     </div>
@@ -162,10 +181,11 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <div className="relative">
                                         <Input 
                                             type="time" 
-                                            className="h-10 border-slate-200 pr-10"
+                                            className="h-10 border-slate-200 pr-10 disabled:bg-slate-50 disabled:text-slate-500"
                                             value={data.end_time}
                                             onChange={e => setData('end_time', e.target.value)}
                                             required
+                                            disabled={!canManageMeeting}
                                         />
                                         <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                                     </div>
@@ -185,18 +205,20 @@ export default function MeetingCreate({ users, meeting }: any) {
                                     <Label className="text-slate-700 font-medium">Ruangan / Lokasi <span className="text-red-500">*</span></Label>
                                     <Input 
                                         placeholder="Masukkan ruangan atau lokasi rapat" 
-                                        className="h-10 border-slate-200"
+                                        className="h-10 border-slate-200 disabled:bg-slate-50 disabled:text-slate-500"
                                         value={data.location}
                                         onChange={e => setData('location', e.target.value)}
                                         required
+                                        disabled={!canManageMeeting}
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-slate-700 font-medium">Tipe Rapat</Label>
                                     <select 
-                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-1 focus:ring-blue-500 text-slate-700"
+                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:ring-1 focus:ring-blue-500 text-slate-700 disabled:bg-slate-50 disabled:text-slate-500"
                                         value={data.type}
                                         onChange={e => setData('type', e.target.value)}
+                                        disabled={!canManageMeeting}
                                     >
                                         <option value="internal">Internal</option>
                                         <option value="eksternal">Eksternal</option>
@@ -220,9 +242,10 @@ export default function MeetingCreate({ users, meeting }: any) {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                             <Input 
                                                 placeholder="Cari nama atau departemen..." 
-                                                className="h-9 pl-9 text-sm"
+                                                className="h-9 pl-9 text-sm disabled:bg-slate-50 disabled:text-slate-500"
                                                 value={searchLeft}
                                                 onChange={e => setSearchLeft(e.target.value)}
+                                                disabled={!canManageMeeting}
                                             />
                                         </div>
                                     </div>
@@ -232,9 +255,10 @@ export default function MeetingCreate({ users, meeting }: any) {
                                                 <div className="flex items-center gap-3">
                                                     <input 
                                                         type="checkbox" 
-                                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
                                                         checked={selectedLeft.includes(u.id)}
                                                         onChange={() => toggleLeft(u.id)}
+                                                        disabled={!canManageMeeting}
                                                     />
                                                     <span className="text-sm font-medium text-slate-700">{u.name}</span>
                                                 </div>
@@ -257,7 +281,7 @@ export default function MeetingCreate({ users, meeting }: any) {
                                         size="icon" 
                                         className="h-9 w-9 text-slate-600"
                                         onClick={moveToRight}
-                                        disabled={selectedLeft.length === 0}
+                                        disabled={selectedLeft.length === 0 || !canManageMeeting}
                                     >
                                         <ChevronRight className="w-5 h-5" />
                                     </Button>
@@ -267,7 +291,7 @@ export default function MeetingCreate({ users, meeting }: any) {
                                         size="icon" 
                                         className="h-9 w-9 text-slate-600"
                                         onClick={moveToLeft}
-                                        disabled={selectedRight.length === 0}
+                                        disabled={selectedRight.length === 0 || !canManageMeeting}
                                     >
                                         <ChevronLeft className="w-5 h-5" />
                                     </Button>
@@ -285,9 +309,10 @@ export default function MeetingCreate({ users, meeting }: any) {
                                                     <div className="flex items-center gap-3">
                                                         <input 
                                                             type="checkbox" 
-                                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
                                                             checked={selectedRight.includes(u.id)}
                                                             onChange={() => toggleRight(u.id)}
+                                                            disabled={!canManageMeeting}
                                                         />
                                                         <span className="text-sm font-medium text-slate-700">{u.name}</span>
                                                     </div>
@@ -313,20 +338,23 @@ export default function MeetingCreate({ users, meeting }: any) {
                             <Label className="text-slate-700 font-medium mb-2 block text-base">Catatan Tambahan (opsional)</Label>
                             <Textarea 
                                 placeholder="Masukkan catatan tambahan jika diperlukan" 
-                                className="min-h-[100px] border-slate-200 resize-y"
+                                className="min-h-[100px] border-slate-200 resize-y disabled:bg-slate-50 disabled:text-slate-500"
                                 value={data.notes}
                                 onChange={e => setData('notes', e.target.value)}
+                                disabled={!canManageMeeting}
                             />
                         </div>
 
                         {/* Actions */}
                         <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
                             <Button type="button" variant="outline" className="border-slate-200" asChild>
-                                <Link href="/meetings">Batal</Link>
+                                <Link href="/meetings">Kembali</Link>
                             </Button>
-                            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white" disabled={processing}>
-                                <Save className="w-4 h-4 mr-2" /> {isEdit ? "Simpan Perubahan" : "Simpan Rapat"}
-                            </Button>
+                            {canManageMeeting && (
+                                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white" disabled={processing}>
+                                    <Save className="w-4 h-4 mr-2" /> {isEdit ? "Simpan Perubahan" : "Simpan Rapat"}
+                                </Button>
+                            )}
                         </div>
                         
                     </CardContent>

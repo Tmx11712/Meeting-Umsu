@@ -9,6 +9,22 @@ use Inertia\Inertia;
 
 class TranscriptCorrectionController extends Controller
 {
+    public function index(Request $request)
+    {
+        // Stage 3 = Koreksi
+        $query = Meeting::where('current_stage', 3);
+        
+        if ($request->search) {
+            $query->where('title', 'ilike', '%' . $request->search . '%');
+        }
+        
+        $meetings = $query->orderBy('date', 'desc')->paginate(10);
+        
+        return Inertia::render('meetings/transcripts-index', [
+            'meetings' => $meetings,
+            'filters' => $request->only(['search'])
+        ]);
+    }
     public function show(Meeting $meeting)
     {
         $meeting->load('recordings', 'transcripts.corrections', 'participants.user');
@@ -20,7 +36,7 @@ class TranscriptCorrectionController extends Controller
 
     public function store(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('transcript.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengoreksi transkrip.');
 
         $request->validate([
             'transcript_id' => 'required|exists:meeting_transcripts,id',
@@ -42,7 +58,7 @@ class TranscriptCorrectionController extends Controller
 
     public function finish(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('transcript.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.');
 
         $meeting->update(['current_stage' => 4]); // Move to Absensi
         return redirect()->route('meetings.attendance', $meeting->id);

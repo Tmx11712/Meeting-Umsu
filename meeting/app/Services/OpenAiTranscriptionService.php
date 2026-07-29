@@ -10,8 +10,10 @@ class OpenAiTranscriptionService
 {
     /**
      * Transcribe an audio chunk using OpenAI Whisper API.
+     * Returns an array of segments with timestamps, or a single segment fallback.
+     * Each segment: ['start' => float, 'end' => float, 'text' => string]
      */
-    public function transcribeChunk(string $filePath): string
+    public function transcribeChunk(string $filePath): array
     {
         $apiKey = config('services.openai.key') ?? env('OPENAI_API_KEY');
         if (empty($apiKey)) {
@@ -24,6 +26,8 @@ class OpenAiTranscriptionService
             ->post('https://api.openai.com/v1/audio/transcriptions', [
                 'model' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),
                 'language' => 'id',
+                'response_format' => 'verbose_json',
+                'timestamp_granularities' => ['segment'],
             ]);
 
         if ($response->failed()) {
@@ -31,7 +35,29 @@ class OpenAiTranscriptionService
             throw new \Exception('Gagal melakukan transkripsi: ' . $response->json('error.message', 'Unknown error'));
         }
 
-        return $response->json('text', '');
+        $data = $response->json();
+        $segments = $data['segments'] ?? [];
+        $duration = $data['duration'] ?? 0;
+
+        // If segments are available, return them with timestamps
+        if (!empty($segments)) {
+            return [
+                'duration' => $duration,
+                'segments' => array_map(fn($s) => [
+                    'start' => $s['start'] ?? 0,
+                    'end' => $s['end'] ?? 0,
+                    'text' => trim($s['text'] ?? ''),
+                ], $segments),
+            ];
+        }
+
+        // Fallback: return whole text as single segment
+        return [
+            'duration' => $duration,
+            'segments' => [
+                ['start' => 0, 'end' => $duration, 'text' => $data['text'] ?? ''],
+            ],
+        ];
     }
 
     /**

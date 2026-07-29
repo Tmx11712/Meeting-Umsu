@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CalendarDays, CheckCircle, ClipboardCheck, PieChart, TrendingUp, Plus, Mic, FileText, Users, PenTool, Check } from 'lucide-react';
 import { dashboard } from '@/routes';
+import { usePermissions } from '@/hooks/use-permissions';
 
 type Props = {
     stats: {
@@ -23,12 +24,7 @@ type Props = {
 };
 
 export default function Dashboard({ stats, pipelines }: Props) {
-    const { auth } = usePage<any>().props;
-    const roles = auth.user?.roles?.map((r: any) => r.name) || [];
-    const isSuperAdmin = roles.includes('Super Admin') || roles.includes('Administrator');
-    const isHumas = roles.includes('Bag. Humas') || isSuperAdmin;
-    const isUmum = roles.includes('Bag. Umum') || isSuperAdmin;
-    const isPimpinan = roles.includes('Pimpinan') || isSuperAdmin;
+    const { guardAction, hasRole } = usePermissions();
 
     // Helper to format date
     const formatDate = (dateStr: string) => {
@@ -39,25 +35,30 @@ export default function Dashboard({ stats, pipelines }: Props) {
 
     return (
         <>
-            <Head title={`Dashboard Pipeline`} />
+            <Head title={`Dashboard Rapat`} />
             
             <div className="flex h-full flex-1 flex-col gap-6 p-8 w-full max-w-[1600px] mx-auto overflow-hidden">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Meeting Pipeline</h1>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard Rapat</h1>
                         <p className="text-slate-500 text-sm mt-1">
                             Pantau status dan tindak lanjuti seluruh rapat.
                         </p>
                     </div>
-                    {isUmum && (
-                        <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
-                            <Link href="/meetings">
-                                <CalendarDays className="mr-2 h-4 w-4" />
-                                Jadwal Rapat
-                            </Link>
-                        </Button>
-                    )}
+                    <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+                        <Link 
+                            href="/meetings"
+                            onClick={(e) => {
+                                if (!guardAction('meeting')) {
+                                    e.preventDefault();
+                                }
+                            }}
+                        >
+                            <CalendarDays className="mr-2 h-4 w-4" />
+                            Jadwal Rapat
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Stats Row */}
@@ -138,13 +139,18 @@ export default function Dashboard({ stats, pipelines }: Props) {
                                         <h4 className="font-semibold text-slate-900 leading-tight">{m.title}</h4>
                                         <p className="text-xs text-slate-500">{formatDate(m.date)} • {m.start_time}</p>
                                         <div className="mt-2 pt-3 border-t border-slate-100">
-                                            {isHumas ? (
-                                                <Button asChild size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
-                                                    <Link href={`/meetings/${m.id}/recording`}>Mulai Rekam</Link>
-                                                </Button>
-                                            ) : (
-                                                <Button disabled size="sm" variant="outline" className="w-full text-xs">Akses Humas</Button>
-                                            )}
+                                            <Button asChild size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                                                <Link 
+                                                    href={`/meetings/${m.id}/recording`}
+                                                    onClick={(e) => {
+                                                        if (!guardAction('transcript', 'Akses Terbatas: Hanya Bagian Humas yang dapat melakukan perekaman.')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Mulai Rekam
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -168,18 +174,30 @@ export default function Dashboard({ stats, pipelines }: Props) {
                                         <h4 className="font-semibold text-slate-900 leading-tight">{m.title}</h4>
                                         <p className="text-xs text-slate-500">{formatDate(m.date)} • {m.start_time}</p>
                                         <div className="mt-2 pt-3 border-t border-slate-100 flex gap-2">
-                                            {isUmum ? (
-                                                <>
-                                                    <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-orange-200 hover:bg-orange-50">
-                                                        <Link href={`/meetings/${m.id}/correction`}>Koreksi</Link>
-                                                    </Button>
-                                                    <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-orange-200 hover:bg-orange-50">
-                                                        <Link href={`/meetings/${m.id}/attendance`}>Absensi</Link>
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <Button disabled size="sm" variant="outline" className="w-full text-xs">Akses Bag. Umum</Button>
-                                            )}
+                                            <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-orange-200 hover:bg-orange-50">
+                                                <Link 
+                                                    href={`/meetings/${m.id}/correction`}
+                                                    onClick={(e) => {
+                                                        if (!guardAction('minutes', 'Akses Terbatas: Hanya Bagian Umum yang dapat melakukan koreksi.')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Koreksi
+                                                </Link>
+                                            </Button>
+                                            <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-orange-200 hover:bg-orange-50">
+                                                <Link 
+                                                    href={`/meetings/${m.id}/attendance`}
+                                                    onClick={(e) => {
+                                                        if (!guardAction('attendance', 'Akses Terbatas: Hanya Bagian Umum yang dapat mengisi absensi.')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Absensi
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -203,13 +221,18 @@ export default function Dashboard({ stats, pipelines }: Props) {
                                         <h4 className="font-semibold text-slate-900 leading-tight">{m.title}</h4>
                                         <p className="text-xs text-slate-500">{formatDate(m.date)}</p>
                                         <div className="mt-2 pt-3 border-t border-slate-100">
-                                            {isUmum ? (
-                                                <Button asChild size="sm" className="w-full bg-purple-600 hover:bg-purple-700">
-                                                    <Link href={`/meetings/${m.id}/review`}>Review (AI)</Link>
-                                                </Button>
-                                            ) : (
-                                                <Button disabled size="sm" variant="outline" className="w-full text-xs">Akses Bag. Umum</Button>
-                                            )}
+                                            <Button asChild size="sm" className="w-full bg-purple-600 hover:bg-purple-700">
+                                                <Link 
+                                                    href={`/meetings/${m.id}/review`}
+                                                    onClick={(e) => {
+                                                        if (!guardAction('minutes', 'Akses Terbatas: Hanya Bagian Umum yang dapat melakukan review.')) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Review (AI)
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -233,13 +256,19 @@ export default function Dashboard({ stats, pipelines }: Props) {
                                         <h4 className="font-semibold text-slate-900 leading-tight">{m.title}</h4>
                                         <p className="text-xs text-slate-500">{formatDate(m.date)}</p>
                                         <div className="mt-2 pt-3 border-t border-slate-100">
-                                            {isPimpinan ? (
-                                                <Button asChild size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700">
-                                                    <Link href={`/meetings/${m.id}/approval`}>Tinjau & Setujui</Link>
-                                                </Button>
-                                            ) : (
-                                                <Button disabled size="sm" variant="outline" className="w-full text-xs">Menunggu Pimpinan</Button>
-                                            )}
+                                            <Button asChild size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700">
+                                                <Link 
+                                                    href={`/meetings/${m.id}/approval`}
+                                                    onClick={(e) => {
+                                                        if (!hasRole('Super Admin', 'Administrator', 'Pimpinan')) {
+                                                            guardAction('report', 'Akses Terbatas: Hanya Pimpinan yang dapat menyetujui dokumen ini.');
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Tinjau & Setujui
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -282,7 +311,7 @@ export default function Dashboard({ stats, pipelines }: Props) {
 Dashboard.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
-            title: 'Dashboard Pipeline',
+            title: 'Dashboard Rapat',
             href: dashboard().url,
         },
     ],

@@ -48,27 +48,34 @@ class TranscribeAudioJob implements ShouldQueue
             $tempPath = sys_get_temp_dir() . '/' . basename($recording->file_path);
             file_put_contents($tempPath, $fileContent);
 
-            $text = $transcriptionService->transcribeChunk($tempPath);
+            $result = $transcriptionService->transcribeChunk($tempPath);
 
             // Clean up temp file
             @unlink($tempPath);
 
-            // Save to transcript
-            MeetingTranscript::create([
-                'meeting_id' => $recording->meeting_id,
-                'recording_id' => $recording->id,
-                'timestamp_seconds' => 0,
-                'text' => $text,
-                'is_live' => false,
-                'sequence_order' => 1,
-            ]);
+            // Save each segment as a separate transcript with real timestamps
+            $segments = $result['segments'] ?? [];
+            foreach ($segments as $index => $segment) {
+                MeetingTranscript::create([
+                    'meeting_id' => $recording->meeting_id,
+                    'recording_id' => $recording->id,
+                    'timestamp_seconds' => (int) round($segment['start']),
+                    'text' => $segment['text'],
+                    'is_live' => false,
+                    'sequence_order' => $index + 1,
+                ]);
+            }
 
-            $recording->update(['status' => 'completed']);
+            // Update recording with duration info
+            $recording->update([
+                'status' => 'completed',
+                'duration_seconds' => (int) round($result['duration'] ?? 0),
+            ]);
             
-            // Update meeting stage to Koreksi
+            // Update meeting stage to Koreksi (stage 3) — it stays here until manual advance
             $meeting = \App\Models\Meeting::find($recording->meeting_id);
-            if ($meeting && $meeting->current_stage < 4) {
-                $meeting->update(['current_stage' => 4]);
+            if ($meeting && $meeting->current_stage < 3) {
+                $meeting->update(['current_stage' => 3]);
             }
             
             // Broadcast via WebSocket can be added here if Reverb is used.

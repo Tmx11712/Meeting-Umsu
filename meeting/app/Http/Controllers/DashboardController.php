@@ -12,11 +12,8 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request): Response|\Illuminate\Http\RedirectResponse
+    public function __invoke(Request $request): Response
     {
-        if ($request->user() && ($request->user()->hasRole('Super Admin') || $request->user()->hasRole('Administrator'))) {
-            return redirect()->route('configuration.index');
-        }
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
         $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();

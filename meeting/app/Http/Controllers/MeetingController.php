@@ -32,8 +32,6 @@ class MeetingController extends Controller
 
     public function create()
     {
-        abort_unless(auth()->user()->hasRole(['Super Admin', 'Administrator']), 403, 'Akses Terbatas: Hanya Administrator yang dapat membuat rapat manual.');
-
         $users = User::where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
         
         return Inertia::render('meetings/create', [
@@ -64,7 +62,7 @@ class MeetingController extends Controller
 
     public function store(Request $request)
     {
-        abort_unless(auth()->user()->hasRole(['Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('meeting.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola rapat.');
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -129,6 +127,8 @@ class MeetingController extends Controller
 
     public function update(Request $request, Meeting $meeting)
     {
+        abort_unless(auth()->user()->can('meeting.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola rapat.');
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -161,6 +161,8 @@ class MeetingController extends Controller
 
     public function destroy(Meeting $meeting)
     {
+        abort_unless(auth()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
+
         $meeting->delete();
         return redirect()->back()->with('success', 'Rapat berhasil dihapus.');
     }

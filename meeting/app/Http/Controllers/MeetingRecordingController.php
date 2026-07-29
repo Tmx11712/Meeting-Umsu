@@ -24,7 +24,7 @@ class MeetingRecordingController extends Controller
 
     public function store(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Humas', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Hanya Bagian Humas yang dapat mengakses fitur ini.');
+        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah rekaman.');
 
         $request->validate([
             'file' => 'required|file|mimes:mp3,wav,m4a|max:204800', // 200MB max
@@ -56,7 +56,7 @@ class MeetingRecordingController extends Controller
 
     public function uploadChunk(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Humas', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah rekaman.');
 
         $request->validate([
             'file' => 'required|file|mimes:mp3,wav,m4a,webm,ogg',
@@ -89,20 +89,41 @@ class MeetingRecordingController extends Controller
         // Transcribe chunk immediately (in real implementation, queue it for speed)
         try {
             $transcriptionService = new \App\Services\OpenAiTranscriptionService();
-            $text = $transcriptionService->transcribeChunk(Storage::path($tempPath));
+            $result = $transcriptionService->transcribeChunk(Storage::path($tempPath));
             
-            MeetingTranscript::create([
-                'meeting_id' => $meeting->id,
-                'recording_id' => $recordingId,
-                'timestamp_seconds' => $request->sequence_order * 10, // heuristic
-                'text' => $text,
-                'is_live' => true,
-                'sequence_order' => $request->sequence_order,
-            ]);
+            // Calculate time offset based on existing transcripts for this recording
+            $lastTranscript = MeetingTranscript::where('recording_id', $recordingId)
+                ->orderBy('timestamp_seconds', 'desc')
+                ->first();
+            $timeOffset = $lastTranscript ? $lastTranscript->timestamp_seconds : 0;
+            // Use the sequence_order * chunk_duration as a better offset estimate
+            $chunkOffset = ($request->sequence_order - 1) * 10; // each chunk is ~10 seconds
+            $baseOffset = max($timeOffset, $chunkOffset);
+
+            $segments = $result['segments'] ?? [];
+            $lastText = '';
+            
+            foreach ($segments as $index => $segment) {
+                $timestampSeconds = (int) round($baseOffset + ($segment['start'] ?? 0));
+                MeetingTranscript::create([
+                    'meeting_id' => $meeting->id,
+                    'recording_id' => $recordingId,
+                    'timestamp_seconds' => $timestampSeconds,
+                    'text' => $segment['text'],
+                    'is_live' => true,
+                    'sequence_order' => ($request->sequence_order * 100) + $index,
+                ]);
+                $lastText .= $segment['text'] . ' ';
+            }
             
             Storage::delete($tempPath);
             
-            return response()->json(['success' => true, 'text' => $text, 'recording_id' => $recordingId]);
+            return response()->json([
+                'success' => true, 
+                'text' => trim($lastText), 
+                'recording_id' => $recordingId,
+                'duration' => $result['duration'] ?? 0,
+            ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
@@ -110,13 +131,14 @@ class MeetingRecordingController extends Controller
 
     public function finishRecording(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->hasRole(['Bag. Humas', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(auth()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
         $meeting->update([
-            'current_stage' => 4,
-            'status' => 'berlangsung' // Maintain as berlangsung or review depending on business logic, here we keep 'berlangsung' until review stage
+            'current_stage' => 3,
+            'status' => 'berlangsung',
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Rekaman selesai, beralih ke tahap koreksi.');
+        return redirect()->route('meetings.correction', $meeting->id)
+            ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
     }
 }

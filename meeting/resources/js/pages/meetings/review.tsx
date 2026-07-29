@@ -5,10 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, Check, FilePdf, FileSpreadsheet, FileIcon } from 'lucide-react';
 import { useState } from 'react';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from 'lucide-react';
 
 export default function MeetingReview({ meeting }: any) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
+    const { canEdit } = usePermissions();
+    const canManageReview = canEdit('minutes');
     const [sending, setSending] = useState(false);
 
     const sendToPimpinan = () => {
@@ -70,7 +75,7 @@ export default function MeetingReview({ meeting }: any) {
                                 }
                             });
                         }}
-                        disabled={sending}
+                        disabled={sending || !canManageReview}
                     >
                         {sending ? 'Sedang Memproses...' : '✨ Generate Notulen dengan AI'}
                     </Button>
@@ -99,9 +104,11 @@ export default function MeetingReview({ meeting }: any) {
                     <Button variant="outline" asChild>
                         <Link href="/meetings">Kembali ke Jadwal Rapat</Link>
                     </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={sendToPimpinan} disabled={sending}>
-                        <Send className="w-4 h-4 mr-2" /> Kirim ke Pimpinan
-                    </Button>
+                    {canManageReview && (
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={sendToPimpinan} disabled={sending}>
+                            <Send className="w-4 h-4 mr-2" /> Kirim ke Pimpinan
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -109,6 +116,16 @@ export default function MeetingReview({ meeting }: any) {
             <div className="bg-white px-2 py-1 rounded-xl">
                 <MeetingStepper meeting={meeting} activeStage={6} />
             </div>
+
+            {!canManageReview && (
+                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-red-700">
+                        Anda tidak memiliki izin untuk mengelola review notulen ini. Anda hanya dapat melihat data.
+                    </AlertDescription>
+                </Alert>
+            )}
 
             <div className="grid md:grid-cols-[1fr_2fr_1fr] gap-6">
                 
@@ -227,9 +244,11 @@ export default function MeetingReview({ meeting }: any) {
                         <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
                             <CardTitle className="text-lg font-bold text-slate-900">Notulen Rapat</CardTitle>
                             <div className="flex gap-2">
-                                <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600">
-                                    <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
-                                </Button>
+                                {canManageReview && (
+                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600">
+                                        <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
+                                    </Button>
+                                )}
                                 <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600" onClick={downloadPdf}>
                                     <Download className="w-3 h-3 mr-2" /> Unduh <ChevronDown className="w-3 h-3 ml-1" />
                                 </Button>
@@ -380,6 +399,7 @@ export default function MeetingReview({ meeting }: any) {
                                 <textarea 
                                     className="w-full min-h-[80px] p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 resize-none"
                                     placeholder="Notulen sudah lengkap dan siap dikirim ke pimpinan untuk persetujuan."
+                                    disabled={!canManageReview}
                                 ></textarea>
                                 <p className="text-[10px] text-slate-400 text-right mt-1">68 / 500 karakter</p>
                             </div>
@@ -387,13 +407,15 @@ export default function MeetingReview({ meeting }: any) {
                     </Card>
 
                     {/* Langkah Selanjutnya Alert */}
-                    <div className="bg-[#fffbeb] border border-[#fef3c7] rounded-xl p-4 flex items-start gap-3">
-                        <Lightbulb className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
-                        <div>
-                            <h4 className="text-sm font-bold text-yellow-800">Langkah Selanjutnya</h4>
-                            <p className="text-xs text-yellow-700 mt-1 leading-relaxed">Klik tombol "Kirim ke Pimpinan" untuk mengirim notulen ini ke pimpinan untuk persetujuan.</p>
+                    {canManageReview && (
+                        <div className="bg-[#fffbeb] border border-[#fef3c7] rounded-xl p-4 flex items-start gap-3">
+                            <Lightbulb className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+                            <div>
+                                <h4 className="text-sm font-bold text-yellow-800">Langkah Selanjutnya</h4>
+                                <p className="text-xs text-yellow-700 mt-1 leading-relaxed">Klik tombol "Kirim ke Pimpinan" untuk mengirim notulen ini ke pimpinan untuk persetujuan.</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

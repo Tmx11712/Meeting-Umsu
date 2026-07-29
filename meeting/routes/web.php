@@ -43,11 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('meetings/{meeting}/transcription/progress', [TranscriptionController::class, 'progress'])->name('meetings.transcription.progress');
     
     // Correction
+    Route::get('transcripts', [TranscriptCorrectionController::class, 'index'])->name('transcripts.index');
     Route::get('meetings/{meeting}/correction', [TranscriptCorrectionController::class, 'show'])->name('meetings.correction');
     Route::post('meetings/{meeting}/correction', [TranscriptCorrectionController::class, 'store'])->name('meetings.correction.store');
     Route::post('meetings/{meeting}/correction/finish', [TranscriptCorrectionController::class, 'finish'])->name('meetings.correction.finish');
     
     // Attendance
+    Route::get('attendances', [AttendanceController::class, 'index'])->name('attendances.index');
     Route::get('meetings/{meeting}/attendance', [AttendanceController::class, 'show'])->name('meetings.attendance');
     Route::get('meetings/{meeting}/attendance/qr', [AttendanceController::class, 'generateQrCode'])->name('meetings.attendance.qr');
     Route::post('meetings/{meeting}/attendance/manual', [AttendanceController::class, 'storeManual'])->name('meetings.attendance.manual');
@@ -55,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('meetings/{meeting}/scan', [AttendanceController::class, 'scan'])->name('meetings.attendance.scan');
 
     // Review & Minute
+    Route::get('minutes', [MeetingMinuteController::class, 'index'])->name('minutes.index');
     Route::get('meetings/{meeting}/review', [MeetingMinuteController::class, 'show'])->name('meetings.review');
     Route::post('meetings/{meeting}/review/ai', [MeetingMinuteController::class, 'generateAiSummary'])->name('meetings.review.ai');
     Route::post('meetings/{meeting}/review/send', [MeetingMinuteController::class, 'sendToPimpinan'])->name('meetings.review.send');
