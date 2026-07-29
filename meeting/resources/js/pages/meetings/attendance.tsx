@@ -187,23 +187,27 @@ export default function MeetingAttendance({ meeting }: any) {
                                     {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)}` : '09:00 - 11:00'} WIB
                                 </p>
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Ruangan / Lokasi</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                    {meeting.location || 'Rapat A - Lantai 3'}
-                                </p>
+                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
+                                    <span className="truncate" title={meeting.location || 'Rapat A - Lantai 3'}>
+                                        {meeting.location || 'Rapat A - Lantai 3'}
+                                    </span>
+                                </div>
                             </div>
-                            <div>
+                            <div className="min-w-0">
                                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Total Peserta</p>
                                 <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                                    <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
                                     {total} Orang
                                 </p>
                             </div>
                         </div>
-                        <Button variant="outline" className="w-full text-indigo-600 border-indigo-200/60 hover:bg-indigo-50/50 bg-white/50 backdrop-blur-sm rounded-xl mt-auto transition-all">
-                            <Eye className="w-4 h-4 mr-2" /> Lihat Detail Rapat
+                        <Button variant="outline" asChild className="w-full text-indigo-600 border-indigo-200/60 hover:bg-indigo-50/50 bg-white/50 backdrop-blur-sm rounded-xl mt-auto transition-all">
+                            <Link href={`/meetings/${meeting.id}`}>
+                                <Eye className="w-4 h-4 mr-2" /> Lihat Detail Rapat
+                            </Link>
                         </Button>
                     </CardContent>
                 </Card>
