@@ -14,15 +14,15 @@ class UserPermissionController extends Controller
     public function index(Request $request): Response
     {
         $usersQuery = User::with('roles')->orderBy('name');
-        
+
         if ($search = $request->input('search')) {
             $usersQuery->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
-        $users = $usersQuery->take(10)->get()->map(fn(User $user) => [
+
+        $users = $usersQuery->take(10)->get()->map(fn (User $user) => [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
@@ -39,7 +39,7 @@ class UserPermissionController extends Controller
             $selectedUser = User::with(['permissions', 'roles.permissions'])->find($selectedUserId);
             if ($selectedUser) {
                 $userDirectPermissions = $selectedUser->permissions->pluck('name')->toArray();
-                
+
                 // Get all permissions from roles
                 $rolePerms = collect();
                 foreach ($selectedUser->roles as $role) {
@@ -52,15 +52,15 @@ class UserPermissionController extends Controller
         $permissionsGrouped = Permission::orderBy('group')
             ->orderBy('name')
             ->get()
-            ->groupBy(fn($p) => $p->group ?? 'Lainnya')
+            ->groupBy(fn ($p) => $p->group ?? 'Lainnya')
             ->map(function ($permissions, $group) {
                 return [
                     'group' => $group,
-                    'permissions' => $permissions->map(fn($p) => [
+                    'permissions' => $permissions->map(fn ($p) => [
                         'id' => $p->id,
                         'name' => $p->name,
                         'description' => $p->description,
-                    ])->values()->toArray()
+                    ])->values()->toArray(),
                 ];
             })
             ->values()

@@ -22,8 +22,8 @@ class DashboardController extends Controller
         // 1. Rapat bulan ini
         $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $now->endOfMonth()])->count();
         $meetingsLastMonth = Meeting::whereBetween('date', [$startOfLastMonth, $endOfLastMonth])->count();
-        $meetingsDelta = $meetingsLastMonth > 0 
-            ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100) 
+        $meetingsDelta = $meetingsLastMonth > 0
+            ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100)
             : 100;
 
         // 2. Notulen selesai
@@ -33,8 +33,8 @@ class DashboardController extends Controller
         $minutesCompletedLastMonth = MeetingMinute::where('status', 'disetujui')
             ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
             ->count();
-        $minutesDelta = $minutesCompletedLastMonth > 0 
-            ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100) 
+        $minutesDelta = $minutesCompletedLastMonth > 0
+            ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100)
             : 100;
 
         // 3. Action item terbuka
@@ -70,7 +70,7 @@ class DashboardController extends Controller
                 'review' => $pipeline_review,
                 'approval' => $pipeline_approval,
                 'finished' => $pipeline_finished,
-            ]
+            ],
         ]);
     }
 }

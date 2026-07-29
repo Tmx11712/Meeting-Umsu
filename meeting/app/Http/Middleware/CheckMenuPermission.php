@@ -17,7 +17,7 @@ class CheckMenuPermission
 
         // Wait, spatie permission uses "can" or "role". If we map menus to permissions, we can just check if user has permission.
         // For simplicity, let's assume we use Spatie's permission directly using spatie middleware or manual check
-        if ($menuCode && !$request->user()->can($menuCode)) {
+        if ($menuCode && ! $request->user()->can($menuCode)) {
             abort(403, 'Akses ditolak.');
         }
 

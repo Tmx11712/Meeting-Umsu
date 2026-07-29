@@ -14,7 +14,7 @@ class RolePermissionController extends Controller
     public function index(Request $request): Response
     {
         $roles = Role::orderBy('name')->get(['id', 'name']);
-        
+
         $selectedRoleId = $request->input('role_id');
         $selectedRole = null;
         $rolePermissions = [];
@@ -35,15 +35,15 @@ class RolePermissionController extends Controller
         $permissionsGrouped = Permission::orderBy('group')
             ->orderBy('name')
             ->get()
-            ->groupBy(fn($p) => $p->group ?? 'Lainnya')
+            ->groupBy(fn ($p) => $p->group ?? 'Lainnya')
             ->map(function ($permissions, $group) {
                 return [
                     'group' => $group,
-                    'permissions' => $permissions->map(fn($p) => [
+                    'permissions' => $permissions->map(fn ($p) => [
                         'id' => $p->id,
                         'name' => $p->name,
                         'description' => $p->description,
-                    ])->values()->toArray()
+                    ])->values()->toArray(),
                 ];
             })
             ->values()
@@ -60,9 +60,9 @@ class RolePermissionController extends Controller
     public function update(Request $request, Role $role)
     {
         // Don't allow changing Super Admin permissions through this UI
-        // if they are meant to have all permissions implicitly, 
+        // if they are meant to have all permissions implicitly,
         // but we'll allow it based on the current requirements unless specified otherwise.
-        
+
         $validated = $request->validate([
             'permissions' => 'array',
             'permissions.*' => 'string|exists:permissions,name',

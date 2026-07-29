@@ -1,9 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useForm } from '@inertiajs/react';
 import { Search, Plus, Filter, Eye, PenLine, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -12,12 +13,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import type { PermissionData } from '@/types/configuration';
-import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
 
 type Props = {
     permissions: {

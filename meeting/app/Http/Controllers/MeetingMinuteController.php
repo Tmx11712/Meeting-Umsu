@@ -6,9 +6,9 @@ use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Services\OpenAiTranscriptionService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class MeetingMinuteController extends Controller
 {
@@ -16,24 +16,25 @@ class MeetingMinuteController extends Controller
     {
         // Stage 5 = Review / Notulen
         $query = Meeting::where('current_stage', 5);
-        
+
         if ($request->search) {
-            $query->where('title', 'ilike', '%' . $request->search . '%');
+            $query->where('title', 'ilike', '%'.$request->search.'%');
         }
-        
+
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
-        
+
         return Inertia::render('meetings/minutes-index', [
             'meetings' => $meetings,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
+
     public function show(Meeting $meeting)
     {
         $meeting->load('participants.user', 'minutes.actionItems', 'documents', 'attendances');
-        
+
         return Inertia::render('meetings/review', [
-            'meeting' => $meeting
+            'meeting' => $meeting,
         ]);
     }
 
@@ -46,7 +47,7 @@ class MeetingMinuteController extends Controller
         $transcriptText = '';
         foreach ($transcripts as $t) {
             $text = $t->corrections->count() > 0 ? $t->corrections->last()->corrected_text : $t->text;
-            $transcriptText .= $text . " ";
+            $transcriptText .= $text.' ';
         }
 
         if (empty(trim($transcriptText))) {
@@ -70,7 +71,7 @@ class MeetingMinuteController extends Controller
             );
 
             // 4. Create Action Items from AI output
-            if (!empty($summaryJson['tindak_lanjut'])) {
+            if (! empty($summaryJson['tindak_lanjut'])) {
                 $minute->actionItems()->delete(); // reset old action items
                 foreach ($summaryJson['tindak_lanjut'] as $actionItem) {
                     MeetingActionItem::create([
@@ -98,20 +99,21 @@ class MeetingMinuteController extends Controller
             $minute->update([
                 'status' => 'menunggu_persetujuan',
                 'reviewed_by' => $request->user()->id,
-                'reviewed_at' => now()
+                'reviewed_at' => now(),
             ]);
             $meeting->update(['current_stage' => 6]); // Move to Pimpinan
         }
-        
+
         return redirect()->route('dashboard')->with('success', 'Notulen dikirim ke pimpinan.');
     }
 
     public function downloadPdf(Meeting $meeting)
     {
         $meeting->load('minutes.actionItems', 'participants.user');
-        
+
         // Very basic PDF view render, we would need a resources/views/pdf/notulen.blade.php
         $pdf = Pdf::loadView('pdf.notulen', compact('meeting'));
+
         return $pdf->download('Notulen_'.$meeting->title.'.pdf');
     }
 }

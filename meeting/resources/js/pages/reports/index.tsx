@@ -1,7 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Head } from '@inertiajs/react';
 import { Download, Search, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function ReportIndex({ meetings, filters }: any) {
     return (
@@ -69,6 +69,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                         <tbody>
                             {meetings.map((meeting: any) => {
                                 const minute = meeting.minutes?.length > 0 ? meeting.minutes[0] : null;
+
                                 return (
                                     <tr key={meeting.id} className="border-b last:border-0 hover:bg-muted/20">
                                         <td className="p-4 font-medium">{meeting.title}</td>

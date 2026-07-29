@@ -5,10 +5,10 @@ namespace App\Models;
 use App\Enums\TeamRole;
 use Database\Factories\TeamInvitationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -29,10 +29,10 @@ use Illuminate\Support\Str;
 #[Fillable(['team_id', 'email', 'role', 'invited_by', 'expires_at', 'accepted_at'])]
 class TeamInvitation extends Model
 {
-    use HasUuids;
-    
     /** @use HasFactory<TeamInvitationFactory> */
     use HasFactory;
+
+    use HasUuids;
 
     /**
      * Bootstrap the model and its traits.

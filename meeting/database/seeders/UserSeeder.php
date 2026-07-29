@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Teams\CreateTeam;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Actions\Teams\CreateTeam;
-use App\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -19,7 +18,7 @@ class UserSeeder extends Seeder
                 'username' => 'budiwibowo',
                 'department' => 'Pimpinan',
                 'initials' => 'BW',
-                'role' => 'Pimpinan'
+                'role' => 'Pimpinan',
             ],
             [
                 'name' => 'Siti Rahayu',
@@ -27,7 +26,7 @@ class UserSeeder extends Seeder
                 'username' => 'sitirahayu',
                 'department' => 'Keuangan',
                 'initials' => 'SR',
-                'role' => 'Viewer'
+                'role' => 'Viewer',
             ],
             [
                 'name' => 'Andi Pratama',
@@ -35,7 +34,7 @@ class UserSeeder extends Seeder
                 'username' => 'andipratama',
                 'department' => 'Marketing',
                 'initials' => 'AP',
-                'role' => 'Viewer'
+                'role' => 'Viewer',
             ],
             [
                 'name' => 'Rina Kartika',
@@ -43,7 +42,7 @@ class UserSeeder extends Seeder
                 'username' => 'rinakartika',
                 'department' => 'Product',
                 'initials' => 'RK',
-                'role' => 'Viewer'
+                'role' => 'Viewer',
             ],
             [
                 'name' => 'Dimas Aditama',
@@ -51,7 +50,7 @@ class UserSeeder extends Seeder
                 'username' => 'dimasaditama',
                 'department' => 'Operasional',
                 'initials' => 'DA',
-                'role' => 'Viewer'
+                'role' => 'Viewer',
             ],
             [
                 'name' => 'Admin Utama',
@@ -59,7 +58,7 @@ class UserSeeder extends Seeder
                 'username' => 'adminutama',
                 'department' => 'Super Admin',
                 'initials' => 'AU',
-                'role' => 'Super Admin'
+                'role' => 'Super Admin',
             ],
             [
                 'name' => 'Bag. Umum',
@@ -67,7 +66,7 @@ class UserSeeder extends Seeder
                 'username' => 'bagumum',
                 'department' => 'Bag. Umum',
                 'initials' => 'BU',
-                'role' => 'Bag. Umum'
+                'role' => 'Bag. Umum',
             ],
             [
                 'name' => 'Bag. Humas',
@@ -75,7 +74,7 @@ class UserSeeder extends Seeder
                 'username' => 'baghumas',
                 'department' => 'Bag. Humas',
                 'initials' => 'BH',
-                'role' => 'Bag. Humas'
+                'role' => 'Bag. Humas',
             ],
             [
                 'name' => 'Andini Putri',
@@ -83,7 +82,7 @@ class UserSeeder extends Seeder
                 'username' => 'andiniputri',
                 'department' => 'IT Admin',
                 'initials' => 'AP',
-                'role' => 'Administrator'
+                'role' => 'Administrator',
             ],
         ];
 
@@ -92,18 +91,18 @@ class UserSeeder extends Seeder
         foreach ($users as $userData) {
             $roleName = $userData['role'];
             unset($userData['role']);
-            
+
             $userData['password'] = Hash::make('password123');
             $userData['status'] = 'aktif';
             $userData['email_verified_at'] = now();
 
             $user = User::firstOrCreate(['email' => $userData['email']], $userData);
 
-            if (!$user->currentTeam) {
-                $createTeam->handle($user, $user->name . "'s Team", isPersonal: true);
+            if (! $user->currentTeam) {
+                $createTeam->handle($user, $user->name."'s Team", isPersonal: true);
             }
 
-            if (!$user->hasRole($roleName)) {
+            if (! $user->hasRole($roleName)) {
                 $user->assignRole($roleName);
             }
         }

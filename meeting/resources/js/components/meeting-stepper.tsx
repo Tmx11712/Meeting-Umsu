@@ -15,7 +15,9 @@ export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeS
     const currentStage = meeting.current_stage || 1;
 
     const getRoutePath = (routeName: string | null, id: number) => {
-        if (!routeName) return '#';
+        if (!routeName) {
+return '#';
+}
         
         switch (routeName) {
             case 'meetings.show': return `/meetings/${id}`;
@@ -37,34 +39,34 @@ export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeS
                     const isAccessible = true; 
 
                     return (
-                        <div key={step.id} className="flex items-center relative flex-1">
+                        <div key={step.id} className={`flex items-center ${index < steps.length - 1 ? 'flex-1' : ''}`}>
                             <Link
                                 href={isAccessible ? getRoutePath(step.route, meeting.id) : '#'}
-                                className={`flex items-center gap-3 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                className={`flex items-center gap-3 shrink-0 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                             >
                                 <div className={`
-                                    flex items-center justify-center w-10 h-10 rounded-full border-2 font-semibold text-sm transition-colors
+                                    flex items-center justify-center w-10 h-10 shrink-0 rounded-full border-2 font-semibold text-sm transition-colors
                                     ${isActive ? 'border-blue-600 bg-blue-600 text-white' : 
                                       isCompleted ? 'border-green-500 bg-transparent text-green-500' : 
-                                      'border-slate-200 bg-transparent text-slate-400'}
+                                      'border-slate-200 dark:border-slate-700 bg-transparent text-slate-400'}
                                 `}>
                                     {isCompleted ? <Check className="w-5 h-5" /> : step.id}
                                 </div>
                                 <div>
-                                    <h4 className={`text-sm font-semibold ${isActive || isCompleted ? 'text-slate-900' : 'text-slate-400'}`}>
+                                    <h4 className={`text-sm font-semibold ${isActive || isCompleted ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                                         {step.name}
                                     </h4>
                                     {step.desc && (
-                                        <p className="text-xs text-slate-500">{step.desc}</p>
+                                        <p className="text-xs text-slate-500 whitespace-nowrap">{step.desc}</p>
                                     )}
                                 </div>
                             </Link>
 
                             {/* Connector Line */}
                             {index < steps.length - 1 && (
-                                <div className={`absolute top-1/2 left-[calc(100%-2rem)] w-full h-[1px] -translate-y-1/2 
-                                    ${isCompleted ? 'bg-green-500' : 'bg-slate-200'}
-                                `} style={{ width: 'calc(100% - 2.5rem)', left: 'auto', right: '-10px', zIndex: -1 }}></div>
+                                <div className={`h-[2px] flex-1 mx-4 min-w-[20px] rounded-full
+                                    ${isCompleted ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}
+                                `}></div>
                             )}
                         </div>
                     );

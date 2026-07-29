@@ -1,8 +1,10 @@
 import { Head, router } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useForm } from '@inertiajs/react';
 import { Search, Plus, Filter, Eye, PenLine, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import * as Icons from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -11,12 +13,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import type { MenuData } from '@/types/configuration';
-import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
-import * as Icons from 'lucide-react';
 
 type Props = {
     menuData: {
@@ -98,9 +98,13 @@ export default function MenusIndex({ menuData }: Props) {
     };
 
     const renderIcon = (iconName: string | null) => {
-        if (!iconName) return null;
+        if (!iconName) {
+return null;
+}
+
         // @ts-ignore
         const IconComponent = Icons[iconName];
+
         return IconComponent ? <IconComponent className="size-4" /> : null;
     };
 

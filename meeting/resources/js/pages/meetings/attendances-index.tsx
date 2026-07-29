@@ -1,9 +1,9 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Plus, Search, Filter, Calendar, Edit3, Trash2, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
@@ -21,7 +21,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
     };
 
     const handleSync = () => {
-        if (!guardAction('meeting')) return;
+        if (!guardAction('meeting')) {
+return;
+}
+
         setSyncing(true);
         router.post('/meetings/sync', {}, {
             onFinish: () => setSyncing(false),

@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class AbsensiApiService
 {
     protected $baseUrl;
+
     protected $apiKey;
+
     protected $secretKey;
 
     public function __construct()
@@ -22,7 +23,7 @@ class AbsensiApiService
      * Get schedules from the external Absensi API for a given date.
      * Currently returns Mock Data until real endpoint is provided.
      *
-     * @param string $date (Y-m-d)
+     * @param  string  $date  (Y-m-d)
      * @return array
      */
     public function getSchedules($date)
@@ -61,7 +62,7 @@ class AbsensiApiService
                     'type' => 'Rapat Teknis',
                     'description' => 'Pembahasan arsitektur sistem baru.',
                 ],
-            ]
+            ],
         ];
     }
 }

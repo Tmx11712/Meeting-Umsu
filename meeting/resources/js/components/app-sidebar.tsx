@@ -12,10 +12,12 @@ import {
     LayoutList,
     UserCog,
     FileKey,
-    LogOut,
-    type LucideIcon,
+    LogOut
+    
 } from 'lucide-react';
+import type {LucideIcon} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
     Sidebar,
     SidebarContent,
@@ -28,11 +30,10 @@ import {
     SidebarGroupLabel,
     SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useInitials } from '@/hooks/use-initials';
 import { useCurrentUrl } from '@/hooks/use-current-url';
-import { dashboard } from '@/routes';
+import { useInitials } from '@/hooks/use-initials';
 import { usePermissions } from '@/hooks/use-permissions';
+import { dashboard } from '@/routes';
 
 /** Main menu items matching the mockup design */
 interface MenuItem {
@@ -61,11 +62,16 @@ const CONFIG_MENU_ITEMS: MenuItem[] = [
 
 /** Get role abbreviation for avatar badge (e.g., "Bag. Umum" → "BU") */
 function getRoleAbbreviation(role: string): string {
-    if (!role) return '??';
+    if (!role) {
+return '??';
+}
+
     const parts = role.replace(/\./g, '').split(/\s+/);
+
     if (parts.length >= 2) {
         return (parts[0][0] + parts[1][0]).toUpperCase();
     }
+
     return role.substring(0, 2).toUpperCase();
 }
 
@@ -107,6 +113,7 @@ export function AppSidebar() {
                 m.name?.toLowerCase() === item.title.toLowerCase() ||
                 m.route?.includes(item.href.replace('/', ''))
         );
+
         return {
             ...item,
             href: (dbMatch?.url && dbMatch?.url !== '#') ? dbMatch.url : item.href,
@@ -142,6 +149,7 @@ export function AppSidebar() {
                     <SidebarMenu className="gap-1.5">
                         {resolvedMainMenu.map((item) => {
                             const active = isCurrentUrl(item.href);
+
                             return (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
@@ -176,6 +184,7 @@ export function AppSidebar() {
                             <SidebarMenu className="gap-1.5">
                                 {CONFIG_MENU_ITEMS.map((item) => {
                                     const active = page.url.startsWith(item.href);
+
                                     return (
                                         <SidebarMenuItem key={item.title}>
                                             <SidebarMenuButton

@@ -1,9 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle } from 'lucide-react';
 import { MeetingTabs } from '@/components/meeting-tabs';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function MeetingShow({ meeting }: any) {
     const { auth } = usePage<any>().props;
@@ -12,7 +12,6 @@ export default function MeetingShow({ meeting }: any) {
     const isUmum = roles.includes('Bag. Umum');
     const isHumas = roles.includes('Bag. Humas');
     const isPimpinan = roles.includes('Pimpinan');
-    const isViewer = roles.includes('Viewer');
 
     return (
         <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6 max-w-6xl mx-auto w-full">

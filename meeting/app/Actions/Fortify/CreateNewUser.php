@@ -37,7 +37,9 @@ class CreateNewUser implements CreatesNewUsers
             $initials = '';
             foreach ($words as $word) {
                 $initials .= strtoupper(substr($word, 0, 1));
-                if (strlen($initials) >= 2) break;
+                if (strlen($initials) >= 2) {
+                    break;
+                }
             }
 
             $user = User::create([

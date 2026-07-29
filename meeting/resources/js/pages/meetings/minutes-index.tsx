@@ -1,15 +1,11 @@
-import { Head, Link, usePage, router } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Head, Link } from '@inertiajs/react';
+import { Search, Filter, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Filter, Calendar, Edit3, Trash2, RefreshCw } from 'lucide-react';
-import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
-    const { auth } = usePage().props as any;
-    const [syncing, setSyncing] = useState(false);
-    const { guardAction } = usePermissions();
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-green-50 text-green-600 border-green-100 font-medium';
@@ -18,15 +14,6 @@ export default function MeetingIndex({ meetings, filters }: any) {
             case 'review': return 'bg-orange-50 text-orange-600 border-orange-100 font-medium';
             default: return 'bg-slate-50 text-slate-600 border-slate-100 font-medium';
         }
-    };
-
-    const handleSync = () => {
-        if (!guardAction('meeting')) return;
-        setSyncing(true);
-        router.post('/meetings/sync', {}, {
-            onFinish: () => setSyncing(false),
-            preserveScroll: true
-        });
     };
 
     return (

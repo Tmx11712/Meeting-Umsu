@@ -1,12 +1,12 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MeetingStepper } from '@/components/meeting-stepper';
-import { Calendar, Clock, MapPin, Users, Eye, CheckCircle2, RotateCcw, Download, FileText, FileIcon, FileSpreadsheet, Info, Check } from 'lucide-react';
-import { useState } from 'react';
-import { usePermissions } from '@/hooks/usePermissions';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Calendar, Clock, MapPin, Users, Eye, CheckCircle2, RotateCcw, Download, FileText, Info, Check } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { MeetingStepper } from '@/components/meeting-stepper';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function MeetingApproval({ meeting }: any) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
@@ -95,10 +95,10 @@ export default function MeetingApproval({ meeting }: any) {
             </div>
 
             {!canManageApproval && (
-                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-red-700">
+                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
+                    <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
                         Anda tidak memiliki izin untuk menyetujui notulen ini. Anda hanya dapat melihat data.
                     </AlertDescription>
                 </Alert>

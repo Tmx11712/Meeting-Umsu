@@ -30,8 +30,8 @@ Berikut adalah langkah-langkah untuk menjalankan aplikasi ini secara lokal (loca
 
 1. **Clone repositori**
    ```bash
-   git clone https://github.com/Tmx11712/meeting.git
-   cd meeting
+   git clone https://github.com/Tmx11712/Meeting-Umsu.git
+   cd Meeting-Umsu
    ```
 
 2. **Install dependensi PHP (Backend)**

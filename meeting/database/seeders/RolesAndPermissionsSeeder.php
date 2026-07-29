@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
         // Reset cached roles and permissions
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // 1. Create Permissions
         $modules = [
@@ -27,27 +28,27 @@ class RolesAndPermissionsSeeder extends Seeder
             'permission' => 'Permission',
             'menu' => 'Menu',
             'role_permission' => 'Role Permission',
-            'user_permission' => 'User Permission'
+            'user_permission' => 'User Permission',
         ];
 
         $actions = ['read', 'create', 'update', 'delete'];
 
         $allPermissions = [];
         $businessPermissions = [];
-        
+
         foreach ($modules as $module => $moduleName) {
             foreach ($actions as $action) {
                 $permissionName = "{$module}.{$action}";
                 $permission = Permission::firstOrCreate([
                     'name' => $permissionName,
                     'group' => $moduleName,
-                    'guard_name' => 'web'
+                    'guard_name' => 'web',
                 ]);
 
                 $allPermissions[] = $permission;
 
                 // Business modules + user for Administrator
-                if (!in_array($module, ['role', 'permission', 'menu', 'role_permission', 'user_permission'])) {
+                if (! in_array($module, ['role', 'permission', 'menu', 'role_permission', 'user_permission'])) {
                     $businessPermissions[] = $permission;
                 }
             }
@@ -67,24 +68,24 @@ class RolesAndPermissionsSeeder extends Seeder
             'transcript.read', 'transcript.create', 'transcript.update', 'transcript.delete',
             'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete',
             'minute.read', 'minute.create', 'minute.update', 'minute.delete',
-            'report.read'
+            'report.read',
         ]);
 
         $bagHumas = Role::firstOrCreate(['name' => 'Bag. Humas', 'guard_name' => 'web']);
         $bagHumas->syncPermissions([
             'recording.read', 'recording.create', 'recording.update', 'recording.delete',
             'transcript.read',
-            'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete'
+            'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete',
         ]);
 
         $pimpinan = Role::firstOrCreate(['name' => 'Pimpinan', 'guard_name' => 'web']);
         $pimpinan->syncPermissions([
-            'minute.read', 'minute.update' // review + approve
+            'minute.read', 'minute.update', // review + approve
         ]);
 
         $viewer = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);
         $viewer->syncPermissions([
-            'minute.read'
+            'minute.read',
         ]);
     }
 }

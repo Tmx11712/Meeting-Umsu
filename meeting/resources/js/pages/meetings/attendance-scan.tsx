@@ -1,7 +1,7 @@
 ﻿import { Head, Link } from '@inertiajs/react';
 import { CheckCircle2, Calendar, MapPin, Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function AttendanceScan({ meeting, message }: { meeting: any; message: string }) {
     return (

@@ -30,15 +30,14 @@ export function MeetingTabs({ meeting, activeTab }: { meeting: any, activeTab: s
             <nav className="flex space-x-1" aria-label="Tabs">
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.id;
-                    const isAccessible = currentStage >= tab.stage;
-                    
+
                     return (
                         <Link
                             key={tab.id}
-                            href={isAccessible ? getRoutePath(tab.route, meeting.id) : '#'}
+                            href={getRoutePath(tab.route, meeting.id)}
                             className={`
                                 ${isActive ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'}
-                                ${!isAccessible ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                                cursor-pointer
                                 flex items-center whitespace-nowrap border-b-2 py-4 px-4 text-sm font-medium transition-colors
                             `}
                         >

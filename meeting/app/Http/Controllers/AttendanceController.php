@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -15,24 +14,25 @@ class AttendanceController extends Controller
     {
         // Stage 4 = Absensi
         $query = Meeting::where('current_stage', 4);
-        
+
         if ($request->search) {
-            $query->where('title', 'ilike', '%' . $request->search . '%');
+            $query->where('title', 'ilike', '%'.$request->search.'%');
         }
-        
+
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
-        
+
         return Inertia::render('meetings/attendances-index', [
             'meetings' => $meetings,
-            'filters' => $request->only(['search'])
+            'filters' => $request->only(['search']),
         ]);
     }
+
     public function show(Meeting $meeting)
     {
         $meeting->load('participants.user', 'attendances.user');
-        
+
         return Inertia::render('meetings/attendance', [
-            'meeting' => $meeting
+            'meeting' => $meeting,
         ]);
     }
 
@@ -42,7 +42,7 @@ class AttendanceController extends Controller
 
         $url = route('meetings.attendance.scan', ['meeting' => $meeting->id]);
         $qrCode = QrCode::size(300)->generate($url);
-        
+
         return response()->json(['qr_code' => base64_encode($qrCode)]);
     }
 
@@ -53,20 +53,20 @@ class AttendanceController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'status' => 'required|in:hadir,terlambat,tidak_hadir',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
         ]);
 
         MeetingAttendance::updateOrCreate(
             [
                 'meeting_id' => $meeting->id,
-                'user_id' => $request->user_id
+                'user_id' => $request->user_id,
             ],
             [
                 'status' => $request->status,
                 'check_in_time' => now(),
                 'method' => 'manual',
                 'recorded_by' => $request->user()->id,
-                'notes' => $request->notes
+                'notes' => $request->notes,
             ]
         );
 
@@ -78,6 +78,7 @@ class AttendanceController extends Controller
         abort_unless(auth()->user()->can('attendance.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan tahapan absensi.');
 
         $meeting->update(['current_stage' => 5]); // Move to Review
+
         return redirect()->route('meetings.review', $meeting->id);
     }
 
@@ -105,7 +106,7 @@ class AttendanceController extends Controller
 
         return Inertia::render('meetings/attendance-scan', [
             'meeting' => $meeting->load('participants.user'),
-            'message' => 'Absensi berhasil dicatat. Selamat datang, ' . $user->name . '!',
+            'message' => 'Absensi berhasil dicatat. Selamat datang, '.$user->name.'!',
         ]);
     }
 }

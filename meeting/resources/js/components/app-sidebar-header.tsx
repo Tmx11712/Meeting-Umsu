@@ -1,18 +1,18 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Sun, Moon } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
-import { useCallback, useEffect, useState } from 'react';
 
 function useAppearance() {
     const [isDark, setIsDark] = useState(false);
@@ -45,9 +45,16 @@ export function AppSidebarHeader({
 
     /** Get role abbreviation */
     function getRoleAbbr(role: string): string {
-        if (!role) return '??';
+        if (!role) {
+return '??';
+}
+
         const parts = role.replace(/\./g, '').split(/\s+/);
-        if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+
+        if (parts.length >= 2) {
+return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
         return role.substring(0, 2).toUpperCase();
     }
 

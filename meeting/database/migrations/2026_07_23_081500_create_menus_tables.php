@@ -26,11 +26,11 @@ return new class extends Migration
         Schema::create('role_has_menus', function (Blueprint $table) {
             $table->uuid('role_id');
             $table->uuid('menu_id');
-            
+
             // Wait, we need to know the roles table name, usually 'roles'
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
-            
+
             $table->primary(['role_id', 'menu_id']);
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Configuration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,19 +48,19 @@ class MenuController extends Controller
         // Auto-generate basic permissions for the new menu
         $baseName = strtolower(str_replace(' ', '_', $menu->name));
         $actions = [
-            'create' => 'Dapat membuat', 
-            'read' => 'Dapat melihat daftar', 
-            'update' => 'Dapat mengubah', 
-            'delete' => 'Dapat menghapus'
+            'create' => 'Dapat membuat',
+            'read' => 'Dapat melihat daftar',
+            'update' => 'Dapat mengubah',
+            'delete' => 'Dapat menghapus',
         ];
-        
+
         foreach ($actions as $action => $actionLabel) {
-            \App\Models\Permission::firstOrCreate([
+            Permission::firstOrCreate([
                 'name' => "{$baseName}.{$action}",
                 'guard_name' => 'web',
             ], [
                 'group' => $menu->name,
-                'description' => "{$actionLabel} {$menu->name}"
+                'description' => "{$actionLabel} {$menu->name}",
             ]);
         }
 
@@ -104,7 +105,7 @@ class MenuController extends Controller
      */
     public function toggleStatus(Menu $menu)
     {
-        $menu->update(['status' => !$menu->status]);
+        $menu->update(['status' => ! $menu->status]);
 
         return back()->with('flash', [
             'type' => 'success',

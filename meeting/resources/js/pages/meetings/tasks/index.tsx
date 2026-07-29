@@ -1,9 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Clock, ArrowRight, Mic, PenTool, Users, FileText, CheckCircle, Lock } from 'lucide-react';
 import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Map icon string to actual Lucide component
 const IconMap: Record<string, React.ElementType> = {
@@ -32,6 +32,7 @@ export default function TaskDashboard({ meetings, task }: any) {
     // Determine access
     let hasAccess = false;
     const action = task.actionRoute;
+
     if (userRole === 'Super Admin' || userRole === 'Administrator' || roles.includes('Super Admin') || roles.includes('Administrator')) {
         hasAccess = true;
     } else if (action === 'meetings.recording' || action === 'meetings.correction') {

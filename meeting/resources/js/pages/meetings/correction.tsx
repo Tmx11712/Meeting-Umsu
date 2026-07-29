@@ -1,22 +1,25 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MeetingTabs } from '@/components/meeting-tabs';
-import { useState } from 'react';
-import { usePermissions } from '@/hooks/usePermissions';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Head, router } from '@inertiajs/react';
 import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { MeetingTabs } from '@/components/meeting-tabs';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export default function MeetingCorrection({ meeting }: any) {
-    const { canEdit } = usePermissions();
+    const { canEdit, hasRole } = usePermissions();
     const canCorrect = canEdit('transcript');
+    const isPimpinan = hasRole('Pimpinan');
     const transcripts = meeting.transcripts || [];
     
     // Sort transcripts just in case
     transcripts.sort((a: any, b: any) => a.sequence_order - b.sequence_order);
 
     const handleCorrection = (transcriptId: string, originalText: string, correctedText: string) => {
-        if (originalText === correctedText) return;
+        if (originalText === correctedText) {
+return;
+}
         
         router.post(`/meetings/${meeting.id}/correction`, {
             transcript_id: transcriptId,
@@ -40,10 +43,10 @@ export default function MeetingCorrection({ meeting }: any) {
             <MeetingTabs meeting={meeting} activeTab="correction" />
 
             {!canCorrect && (
-                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-red-700">
+                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
+                    <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
                         Anda tidak memiliki izin untuk mengoreksi notulen ini. Anda hanya dapat melihat data.
                     </AlertDescription>
                 </Alert>
@@ -76,7 +79,7 @@ export default function MeetingCorrection({ meeting }: any) {
                     )}
                 </CardContent>
                 <CardFooter className="flex justify-end pt-6 border-t">
-                    <Button onClick={handleFinish} disabled={transcripts.length === 0 || !canCorrect}>
+                    <Button onClick={handleFinish} disabled={transcripts.length === 0 || (!canCorrect && !isPimpinan)}>
                         Selesai & Lanjut ke Absensi
                     </Button>
                 </CardFooter>
@@ -110,7 +113,9 @@ function TranscriptItem({ transcript, initialText, onSave, canCorrect }: any) {
                             autoFocus
                         />
                         <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm" onClick={() => { setText(initialText); setIsEditing(false); }}>Batal</Button>
+                            <Button variant="outline" size="sm" onClick={() => {
+ setText(initialText); setIsEditing(false); 
+}}>Batal</Button>
                             <Button size="sm" onClick={handleSave}>Simpan</Button>
                         </div>
                     </div>

@@ -18,7 +18,7 @@ class UserManagementController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -51,6 +51,7 @@ class UserManagementController extends Controller
     public function create()
     {
         $roles = Role::orderBy('name')->get(['id', 'name']);
+
         return Inertia::render('configuration/users/create', [
             'roles' => $roles,
         ]);
@@ -86,7 +87,7 @@ class UserManagementController extends Controller
     public function edit(User $user)
     {
         $roles = Role::orderBy('name')->get(['id', 'name']);
-        
+
         return Inertia::render('configuration/users/edit', [
             'user' => [
                 'id' => $user->id,

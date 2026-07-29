@@ -2,7 +2,6 @@
 
 namespace App\Http\Responses;
 
-use App\Http\Responses\Concerns\RedirectsToCurrentTeam;
 use Illuminate\Http\JsonResponse;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Fortify;

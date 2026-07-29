@@ -4,8 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Meeting;
 use App\Models\User;
-use App\Services\IrvanCloudSyncService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -15,17 +13,23 @@ class EndToEndMeetingFlowTest extends TestCase
     public function test_entire_meeting_flow()
     {
         // Find users
-        $humasUser = User::whereHas('roles', function($q) { $q->where('name', 'Bag. Humas'); })->first();
-        $umumUser = User::whereHas('roles', function($q) { $q->where('name', 'Bag. Umum'); })->first();
-        $pimpinanUser = User::whereHas('roles', function($q) { $q->where('name', 'Pimpinan'); })->first();
+        $humasUser = User::whereHas('roles', function ($q) {
+            $q->where('name', 'Bag. Humas');
+        })->first();
+        $umumUser = User::whereHas('roles', function ($q) {
+            $q->where('name', 'Bag. Umum');
+        })->first();
+        $pimpinanUser = User::whereHas('roles', function ($q) {
+            $q->where('name', 'Pimpinan');
+        })->first();
 
-        $this->assertNotNull($humasUser, "Missing Humas user");
-        $this->assertNotNull($umumUser, "Missing Umum user");
-        $this->assertNotNull($pimpinanUser, "Missing Pimpinan user");
+        $this->assertNotNull($humasUser, 'Missing Humas user');
+        $this->assertNotNull($umumUser, 'Missing Umum user');
+        $this->assertNotNull($pimpinanUser, 'Missing Pimpinan user');
 
         // Create a dummy meeting
         $meeting = Meeting::create([
-            'title' => 'Test Rapat E2E ' . time(),
+            'title' => 'Test Rapat E2E '.time(),
             'description' => 'Rapat debug otomatis',
             'date' => date('Y-m-d'),
             'start_time' => '09:00:00',
@@ -37,7 +41,7 @@ class EndToEndMeetingFlowTest extends TestCase
             'external_id' => Str::uuid()->toString(),
             'current_stage' => 1,
         ]);
-        
+
         $meeting->participants()->createMany([
             ['user_id' => $humasUser->id],
             ['user_id' => $umumUser->id],
@@ -50,7 +54,7 @@ class EndToEndMeetingFlowTest extends TestCase
         $dummyFile = UploadedFile::fake()->create('dummy.mp3', 100, 'audio/mpeg');
         $response = $this->actingAs($humasUser)->post("/meetings/{$meeting->id}/recording", [
             'source' => 'upload',
-            'file' => $dummyFile
+            'file' => $dummyFile,
         ]);
         $response->assertStatus(200);
 
@@ -63,26 +67,26 @@ class EndToEndMeetingFlowTest extends TestCase
             'text' => 'Ini teks asli',
             'timestamp_seconds' => 10,
             'sequence_order' => 1,
-            'recording_id' => $recording->id ?? null
+            'recording_id' => $recording->id ?? null,
         ]);
 
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/correction", [
             'transcript_id' => $transcript->id,
             'original_text' => 'Ini teks asli',
-            'corrected_text' => 'Ini teks yg sudah dikoreksi'
+            'corrected_text' => 'Ini teks yg sudah dikoreksi',
         ]);
         $response->assertRedirect(); // should be 302 back
 
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/correction/finish");
         $response->assertRedirect(); // should be 302 to attendance
-        
+
         $meeting->refresh();
         $this->assertEquals(4, $meeting->current_stage);
 
         // 3. Umum sets Attendance
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/attendance/manual", [
             'user_id' => $humasUser->id,
-            'status' => 'hadir'
+            'status' => 'hadir',
         ]);
         $response->assertRedirect();
 
@@ -95,7 +99,7 @@ class EndToEndMeetingFlowTest extends TestCase
         // 4. Umum Reviews Minute
         $meeting->minutes()->create([
             'content' => ['summary' => 'Dummy Summary'],
-            'status' => 'draft'
+            'status' => 'draft',
         ]);
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/review/send");
         $response->assertRedirect();
@@ -107,13 +111,13 @@ class EndToEndMeetingFlowTest extends TestCase
         $response = $this->actingAs($pimpinanUser)->post("/meetings/{$meeting->id}/approval", [
             'status' => 'disetujui',
             'feedback' => 'Bagus sekali',
-            'signature_data' => 'dummy_base64_sig'
+            'signature_data' => 'dummy_base64_sig',
         ]);
         $response->assertRedirect();
 
         $meeting->refresh();
         $this->assertEquals(7, $meeting->current_stage);
-        
+
         // Pass
         $this->assertTrue(true);
     }

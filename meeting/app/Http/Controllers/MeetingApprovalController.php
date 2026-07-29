@@ -12,9 +12,9 @@ class MeetingApprovalController extends Controller
     public function show(Meeting $meeting)
     {
         $meeting->load('minutes.actionItems', 'participants.user', 'documents');
-        
+
         return Inertia::render('meetings/approval', [
-            'meeting' => $meeting
+            'meeting' => $meeting,
         ]);
     }
 
@@ -28,7 +28,7 @@ class MeetingApprovalController extends Controller
 
         $request->validate([
             'decision' => 'required|in:approved,rejected',
-            'notes' => 'nullable|string|max:500'
+            'notes' => 'nullable|string|max:500',
         ]);
 
         $minute = $meeting->minutes()->latest()->firstOrFail();
@@ -39,14 +39,14 @@ class MeetingApprovalController extends Controller
             'approved_by' => $request->user()->id,
             'decision' => $request->decision,
             'notes' => $request->notes,
-            'decided_at' => now()
+            'decided_at' => now(),
         ]);
 
         $minute->update(['status' => $request->decision === 'approved' ? 'disetujui' : 'ditolak']);
         if ($request->decision === 'approved') {
             $meeting->update([
                 'status' => 'selesai',
-                'current_stage' => 7
+                'current_stage' => 7,
             ]);
         }
 

@@ -1,10 +1,10 @@
 import { Link } from '@inertiajs/react';
+import { Sun, Moon } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
+import { Button } from '@/components/ui/button';
+import { useAppearance } from '@/hooks/use-appearance';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
-import { useAppearance } from '@/hooks/use-appearance';
-import { Sun, Moon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default function AuthSimpleLayout({
     children,

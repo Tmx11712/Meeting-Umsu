@@ -76,17 +76,22 @@ class Meeting extends Model
     public function getAttendanceRateAttribute()
     {
         $total = $this->attendances()->count();
-        if ($total === 0) return 0;
-        
+        if ($total === 0) {
+            return 0;
+        }
+
         $present = $this->attendances()->whereIn('status', ['hadir', 'terlambat'])->count();
+
         return round(($present / $total) * 100);
     }
 
     public function getDurationFormattedAttribute()
     {
         $seconds = $this->duration;
-        if (!$seconds) return '00:00:00';
-        
+        if (! $seconds) {
+            return '00:00:00';
+        }
+
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds / 60) % 60);
         $seconds = $seconds % 60;

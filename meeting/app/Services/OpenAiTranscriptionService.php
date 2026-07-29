@@ -31,8 +31,8 @@ class OpenAiTranscriptionService
             ]);
 
         if ($response->failed()) {
-            Log::error('OpenAI Whisper Error: ' . $response->body());
-            throw new \Exception('Gagal melakukan transkripsi: ' . $response->json('error.message', 'Unknown error'));
+            Log::error('OpenAI Whisper Error: '.$response->body());
+            throw new \Exception('Gagal melakukan transkripsi: '.$response->json('error.message', 'Unknown error'));
         }
 
         $data = $response->json();
@@ -40,10 +40,10 @@ class OpenAiTranscriptionService
         $duration = $data['duration'] ?? 0;
 
         // If segments are available, return them with timestamps
-        if (!empty($segments)) {
+        if (! empty($segments)) {
             return [
                 'duration' => $duration,
-                'segments' => array_map(fn($s) => [
+                'segments' => array_map(fn ($s) => [
                     'start' => $s['start'] ?? 0,
                     'end' => $s['end'] ?? 0,
                     'text' => trim($s['text'] ?? ''),
@@ -70,7 +70,7 @@ class OpenAiTranscriptionService
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
 
-        $systemPrompt = <<<PROMPT
+        $systemPrompt = <<<'PROMPT'
 Anda adalah asisten notulis rapat yang ahli. Tugas Anda adalah merangkum transkrip rapat menjadi notulen berstruktur JSON.
 Aturan ketat:
 1. Heading/Topik ditentukan secara dinamis dari isi transkrip, bukan dipaksakan pada struktur baku.
@@ -112,17 +112,18 @@ PROMPT;
                 'response_format' => ['type' => 'json_object'],
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],
-                    ['role' => 'user', 'content' => "Berikut adalah transkrip rapat yang harus dirangkum:\n\n" . $correctedTranscript]
+                    ['role' => 'user', 'content' => "Berikut adalah transkrip rapat yang harus dirangkum:\n\n".$correctedTranscript],
                 ],
                 'temperature' => 0.5,
             ]);
 
         if ($response->failed()) {
-            Log::error('OpenAI GPT Error: ' . $response->body());
-            throw new \Exception('Gagal membuat ringkasan AI: ' . $response->json('error.message', 'Unknown error'));
+            Log::error('OpenAI GPT Error: '.$response->body());
+            throw new \Exception('Gagal membuat ringkasan AI: '.$response->json('error.message', 'Unknown error'));
         }
 
         $result = $response->json('choices.0.message.content');
+
         return json_decode($result, true) ?? [];
     }
 }

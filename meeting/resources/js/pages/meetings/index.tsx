@@ -1,14 +1,13 @@
-import { Head, Link, usePage, router } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Head, Link, router } from '@inertiajs/react';
+import { Search, Filter, Calendar, Edit3, Trash2 } from 'lucide-react';
+import { useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Filter, Calendar, Edit3, Trash2, RefreshCw } from 'lucide-react';
-import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
-    const [syncing, setSyncing] = useState<boolean>(false);
-    const { guardAction } = usePermissions();
+    const { canEdit, guardAction } = usePermissions();
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
@@ -19,14 +18,24 @@ export default function MeetingIndex({ meetings, filters }: any) {
         }
     };
 
-    const handleSync = () => {
-        if (!guardAction('meeting')) return;
-        setSyncing(true);
+    const handleSync = useCallback(() => {
+        if (!guardAction('meeting', '')) {
+            return;
+        }
+
         router.post('/meetings/sync', {}, {
-            onFinish: () => setSyncing(false),
-            preserveScroll: true
+            preserveState: true,
+            preserveScroll: true,
+            only: ['meetings', 'flash']
         });
-    };
+    }, [guardAction]);
+
+    useEffect(() => {
+        // Automatically sync on load if user has permission
+        if (canEdit('meeting')) {
+            handleSync();
+        }
+    }, [canEdit, handleSync]);
 
     const applyFilter = (key: string, value: string) => {
         router.get('/meetings', { ...filters, [key]: value }, { preserveState: true, replace: true });
@@ -38,6 +47,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
         d.setMonth(d.getMonth() - i);
         const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
         const label = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
         return { value, label };
     });
 
@@ -52,30 +62,6 @@ export default function MeetingIndex({ meetings, filters }: any) {
                         Jadwal Rapat
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar dan kelola jadwal rapat instansi</p>
-                </div>
-                <div className="flex gap-3">
-                    <Button 
-                        variant="outline" 
-                        className="bg-white/60 border-slate-200 text-slate-700 hover:bg-white dark:bg-slate-800/60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 shadow-sm rounded-xl px-5 transition-all duration-300"
-                        onClick={handleSync}
-                        disabled={syncing}
-                    >
-                        <RefreshCw className={`mr-2 h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
-                        {syncing ? 'Menarik Data...' : 'Tarik Rapat (Irvan Cloud)'}
-                    </Button>
-                    <Button asChild className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-xl px-5">
-                        <Link 
-                            href="/meetings/create"
-                            onClick={(e) => {
-                                if (!guardAction('meeting')) {
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <Plus className="mr-2 h-5 w-5" />
-                            <span className="font-semibold">Buat Rapat</span>
-                        </Link>
-                    </Button>
                 </div>
             </div>
 
@@ -201,7 +187,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                     <button 
                                                         className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
                                                         onClick={() => {
-                                                            if (!guardAction('meeting')) return;
+                                                            if (!guardAction('meeting')) {
+return;
+}
+
                                                             if (confirm('Yakin ingin menghapus rapat "' + meeting.title + '"?')) {
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
@@ -240,6 +229,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 const label = link.label
                                     .replace('&laquo; Previous', '←')
                                     .replace('Next &raquo;', '→');
+
                                 return (
                                     <Button
                                         key={i}

@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import { Card } from '@/components/ui/card';
 import { ShieldCheck, Users, Key, LayoutGrid, CheckSquare, ShieldBan, ChevronRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 
 type Props = {

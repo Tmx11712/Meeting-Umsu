@@ -1,16 +1,16 @@
 import { Head, router } from '@inertiajs/react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Save, ChevronDown, ChevronRight, ShieldCheck } from 'lucide-react';
-import AppLayout from '@/layouts/app-layout';
-import type { RoleData, PermissionGroup } from '@/types/configuration';
 import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import AppLayout from '@/layouts/app-layout';
+import type { RoleData, PermissionGroup } from '@/types/configuration';
 
 type Props = {
     roles: Pick<RoleData, 'id' | 'name'>[];
@@ -37,11 +37,13 @@ export default function RolePermissionsIndex({ roles, selectedRoleId, permission
 
     const togglePermission = (permissionName: string) => {
         const newSet = new Set(selectedPermissions);
+
         if (newSet.has(permissionName)) {
             newSet.delete(permissionName);
         } else {
             newSet.add(permissionName);
         }
+
         setSelectedPermissions(newSet);
     };
 
@@ -52,11 +54,13 @@ export default function RolePermissionsIndex({ roles, selectedRoleId, permission
         const newState = forceState !== undefined ? forceState : !allSelected;
         
         const newSet = new Set(selectedPermissions);
+
         if (!newState) {
             modulePermissions.forEach(p => newSet.delete(p));
         } else {
             modulePermissions.forEach(p => newSet.add(p));
         }
+
         setSelectedPermissions(newSet);
     };
 
@@ -65,7 +69,9 @@ export default function RolePermissionsIndex({ roles, selectedRoleId, permission
     };
 
     const savePermissions = () => {
-        if (!selectedRoleId) return;
+        if (!selectedRoleId) {
+return;
+}
         
         setIsSaving(true);
         router.put(
@@ -86,11 +92,13 @@ export default function RolePermissionsIndex({ roles, selectedRoleId, permission
 
     const toggleAllGlobal = (checked: boolean) => {
         const newSet = new Set<string>();
+
         if (checked) {
             permissionsGrouped.forEach(g => {
                 g.permissions.forEach(p => newSet.add(p.name));
             });
         }
+
         setSelectedPermissions(newSet);
     };
 

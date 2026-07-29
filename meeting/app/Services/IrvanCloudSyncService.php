@@ -3,18 +3,20 @@
 namespace App\Services;
 
 use App\Models\Meeting;
-use App\Models\User;
-use App\Models\MeetingParticipant;
 use App\Models\MeetingAttendance;
+use App\Models\MeetingParticipant;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class IrvanCloudSyncService
 {
     protected $apiUrl;
+
     protected $apiKey;
+
     protected $secretKey;
 
     public function __construct()
@@ -30,10 +32,10 @@ class IrvanCloudSyncService
      */
     public function syncMeetings($startDate = null, $endDate = null)
     {
-        if (!$startDate) {
+        if (! $startDate) {
             $startDate = now()->startOfMonth()->format('Y-m-d');
         }
-        if (!$endDate) {
+        if (! $endDate) {
             $endDate = now()->endOfMonth()->format('Y-m-d');
         }
 
@@ -49,9 +51,10 @@ class IrvanCloudSyncService
                 'sort' => 'DESC',
             ]);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('Failed to sync from Irvan Cloud (Events)', ['status' => $response->status(), 'body' => $response->body()]);
-                return ['success' => false, 'message' => 'Gagal terhubung ke API Irvan Cloud. Status: ' . $response->status()];
+
+                return ['success' => false, 'message' => 'Gagal terhubung ke API Irvan Cloud. Status: '.$response->status()];
             }
 
             $data = $response->json();
@@ -61,21 +64,21 @@ class IrvanCloudSyncService
 
             // Get a default super admin ID for created_by fallback
             $defaultAdminId = auth()->id();
-            if (!$defaultAdminId) {
-                $admin = User::whereHas('roles', fn($q) => $q->where('name', 'Super Admin'))->first();
+            if (! $defaultAdminId) {
+                $admin = User::whereHas('roles', fn ($q) => $q->where('name', 'Super Admin'))->first();
                 $defaultAdminId = $admin ? $admin->id : null;
             }
 
             foreach ($events as $event) {
                 // We only care about meetings
-                if (!isset($event['is_meeting']) || !$event['is_meeting']) {
+                if (! isset($event['is_meeting']) || ! $event['is_meeting']) {
                     continue;
                 }
 
                 // Check if meeting already exists by UUID (external_id)
                 $meeting = Meeting::where('external_id', $event['uuid'])->first();
 
-                if (!$meeting) {
+                if (! $meeting) {
                     $meeting = Meeting::create([
                         'title' => $event['name'],
                         'description' => $event['description'] ?? '',
@@ -88,7 +91,7 @@ class IrvanCloudSyncService
                         'source' => 'irvan_cloud',
                         'external_id' => $event['uuid'],
                         'created_by' => $defaultAdminId,
-                        'current_stage' => 1,
+                        'current_stage' => 2, // Skip Stage 1 (Buat Rapat) and start at Stage 2 (Humas Rekam)
                     ]);
                     $syncedCount++;
                 } else {
@@ -103,32 +106,34 @@ class IrvanCloudSyncService
                         'type' => $event['type'] ?? $meeting->type,
                     ]);
                 }
-                
+
                 // Now sync details for this specific event to get participants
-                $this->syncEventDetails($event['uuid'], $meeting);
+                $this->syncEventDetails($event['id'], $meeting);
             }
 
             return ['success' => true, 'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud."];
 
         } catch (\Exception $e) {
-            Log::error('Exception during Irvan Cloud sync: ' . $e->getMessage());
-            return ['success' => false, 'message' => 'Terjadi kesalahan sistem saat sinkronisasi: ' . $e->getMessage()];
+            Log::error('Exception during Irvan Cloud sync: '.$e->getMessage());
+
+            return ['success' => false, 'message' => 'Terjadi kesalahan sistem saat sinkronisasi: '.$e->getMessage()];
         }
     }
 
     /**
      * Sync details (participants) for a specific event
      */
-    public function syncEventDetails($uuid, Meeting $meeting)
+    public function syncEventDetails($eventId, Meeting $meeting)
     {
         try {
             $response = Http::withHeaders([
                 'X-API-KEY' => $this->apiKey,
                 'X-SECRET-KEY' => $this->secretKey,
-            ])->get("{$this->apiUrl}/api/event/{$uuid}"); 
+            ])->get("{$this->apiUrl}/api/event/{$eventId}");
 
-            if (!$response->successful()) {
-                Log::warning("Failed to fetch details for event UUID {$uuid}", ['status' => $response->status()]);
+            if (! $response->successful()) {
+                Log::warning("Failed to fetch details for event ID {$eventId}", ['status' => $response->status()]);
+
                 return false;
             }
 
@@ -136,11 +141,13 @@ class IrvanCloudSyncService
             $participants = $data['data']['participants'] ?? [];
 
             foreach ($participants as $p) {
-                if (empty($p['email'])) continue;
+                if (empty($p['email'])) {
+                    continue;
+                }
 
                 // 1. Check or Create User based on email
                 $user = User::where('email', $p['email'])->first();
-                if (!$user) {
+                if (! $user) {
                     $fullname = $p['fullname'] ?? explode('@', $p['email'])[0];
                     $user = User::create([
                         'name' => $fullname,
@@ -162,10 +169,10 @@ class IrvanCloudSyncService
                 ]);
 
                 // 3. Update Attendance if scanned (scanned_at is present)
-                if (!empty($p['scanned_at'])) {
+                if (! empty($p['scanned_at'])) {
                     // Try to parse the scanned_at time. API returns ISO8601 (e.g., 2026-05-25T09:53:32.000Z)
                     $checkInTime = Carbon::parse($p['scanned_at'])->setTimezone(config('app.timezone'));
-                    
+
                     MeetingAttendance::updateOrCreate(
                         [
                             'meeting_id' => $meeting->id,
@@ -179,8 +186,8 @@ class IrvanCloudSyncService
                         ]
                     );
                 } else {
-                     // Ensure an attendance record exists with status tidak_hadir if they are a participant but haven't scanned yet
-                     MeetingAttendance::firstOrCreate(
+                    // Ensure an attendance record exists with status tidak_hadir if they are a participant but haven't scanned yet
+                    MeetingAttendance::firstOrCreate(
                         [
                             'meeting_id' => $meeting->id,
                             'user_id' => $user->id,
@@ -196,7 +203,8 @@ class IrvanCloudSyncService
             return true;
 
         } catch (\Exception $e) {
-            Log::error("Failed to sync details for UUID {$uuid}: " . $e->getMessage());
+            Log::error("Failed to sync details for event ID {$eventId}: ".$e->getMessage());
+
             return false;
         }
     }

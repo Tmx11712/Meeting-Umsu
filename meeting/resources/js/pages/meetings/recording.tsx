@@ -1,61 +1,74 @@
-import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle, Calendar, Clock, MapPin, Users, Info } from 'lucide-react';
-import { MeetingStepper } from '@/components/meeting-stepper';
-import { useState, useRef, useEffect } from 'react';
-import { usePermissions } from '@/hooks/use-permissions';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle, Calendar, Clock, MapPin, Users } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { MeetingStepper } from '@/components/meeting-stepper';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePermissions } from '@/hooks/use-permissions';
 
-export default function MeetingRecording({ meeting, openAiConfigured }: any) {
+export default function MeetingRecording({ meeting }: any) {
     const { auth } = usePage().props as any;
     const { canEdit } = usePermissions();
     const canRecord = canEdit('recording');
     const [isRecording, setIsRecording] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [liveText, setLiveText] = useState<string[]>([]);
     const [recordingDuration, setRecordingDuration] = useState(0);
+    const [isCheckingApi, setIsCheckingApi] = useState(false);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     // Live Recording Refs
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
-    const chunkIntervalRef = useRef<NodeJS.Timeout | null>(null);
-    const sequenceRef = useRef(1);
-    const recordingIdRef = useRef<number | null>(null);
+    const chunksRef = useRef<Blob[]>([]);
     const isRecordingRef = useRef(false); 
 
     const formatDuration = (seconds: number) => {
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = seconds % 60;
+
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const checkApiConnection = () => {
+        setIsCheckingApi(true);
+        router.reload({
+            only: ['openAiConfigured'],
+            onFinish: () => setIsCheckingApi(false)
+        });
     };
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
+
         if (isRecording) {
             interval = setInterval(() => {
                 setRecordingDuration(prev => prev + 1);
             }, 1000);
         }
+
         return () => clearInterval(interval);
     }, [isRecording]);
 
     useEffect(() => {
         // Cleanup on unmount
         return () => {
-            if (chunkIntervalRef.current) clearTimeout(chunkIntervalRef.current);
-            if (streamRef.current) streamRef.current.getTracks().forEach(track => track.stop());
+            if (streamRef.current) {
+streamRef.current.getTracks().forEach(track => track.stop());
+}
         };
     }, []);
 
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0];
-        if (!file) return;
+
+        if (!file) {
+return;
+}
 
         setUploading(true);
         const formData = new FormData();
@@ -71,6 +84,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                 }
             });
             const data = await response.json();
+
             if (response.ok) {
                 alert('Audio berhasil diupload dan sedang ditranskripsi.');
                 window.location.reload();
@@ -85,19 +99,20 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
         }
     };
 
-    const sendChunk = async (blob: Blob) => {
-        if (blob.size === 0) return;
-        
-        const formData = new FormData();
-        // Fallback file name
-        formData.append('file', blob, `chunk-${sequenceRef.current}.webm`);
-        formData.append('sequence_order', sequenceRef.current.toString());
-        if (recordingIdRef.current) {
-            formData.append('recording_id', recordingIdRef.current.toString());
+    const uploadRecordedAudio = async (blob: Blob) => {
+        if (blob.size === 0) {
+            alert('Rekaman kosong, tidak ada audio yang terekam.');
+
+            return;
         }
 
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', blob, `rekaman-${Date.now()}.webm`);
+        formData.append('source', 'system_record');
+
         try {
-            const response = await fetch(`/meetings/${meeting.id}/recording/chunk`, {
+            const response = await fetch(`/meetings/${meeting.id}/recording`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -105,52 +120,18 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                 }
             });
             const data = await response.json();
-            if (data.success) {
-                if (!recordingIdRef.current && data.recording_id) {
-                    recordingIdRef.current = data.recording_id;
-                }
-                if (data.text) {
-                    setLiveText(prev => [...prev, data.text]);
-                }
+
+            if (response.ok) {
+                alert('Rekaman berhasil disimpan dan sedang ditranskripsi oleh AI.');
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Gagal menyimpan rekaman.'));
             }
         } catch (error) {
-            console.error('Failed to send chunk', error);
-        }
-        
-        sequenceRef.current += 1;
-    };
-
-    const recordNextChunk = () => {
-        if (!streamRef.current || !isRecordingRef.current) return;
-
-        try {
-            const mediaRecorder = new MediaRecorder(streamRef.current);
-            mediaRecorderRef.current = mediaRecorder;
-
-            const chunks: Blob[] = [];
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data.size > 0) chunks.push(e.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'audio/webm' });
-                sendChunk(blob);
-            };
-
-            mediaRecorder.start();
-
-            // Stop and restart every 10 seconds to generate a chunk for live transcription
-            chunkIntervalRef.current = setTimeout(() => {
-                if (mediaRecorder.state === 'recording') {
-                    mediaRecorder.stop();
-                    if (isRecordingRef.current) {
-                        recordNextChunk();
-                    }
-                }
-            }, 10000);
-        } catch (err) {
-            console.error('MediaRecorder error', err);
-            stopRecordingSession();
+            console.error('Failed to upload recording', error);
+            alert('Terjadi kesalahan saat menyimpan rekaman.');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -161,11 +142,26 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             isRecordingRef.current = true;
             setIsRecording(true);
             setRecordingDuration(0);
-            sequenceRef.current = 1;
-            recordingIdRef.current = null;
-            setLiveText([]);
+            chunksRef.current = [];
 
-            recordNextChunk();
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    chunksRef.current.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                // Combine all chunks into a single audio file
+                const fullBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
+                // Upload the complete file to server for AI transcription
+                uploadRecordedAudio(fullBlob);
+            };
+
+            // Start recording, collect data every 1 second for reliability
+            mediaRecorder.start(1000);
         } catch (err) {
             console.error(err);
             alert('Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin dan mengakses via localhost/HTTPS.');
@@ -175,24 +171,15 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
     const stopRecordingSession = () => {
         isRecordingRef.current = false;
         setIsRecording(false);
-        
-        if (chunkIntervalRef.current) {
-            clearTimeout(chunkIntervalRef.current);
-        }
 
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-            mediaRecorderRef.current.stop();
+            mediaRecorderRef.current.stop(); // This triggers onstop → uploadRecordedAudio
         }
 
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
             streamRef.current = null;
         }
-        
-        // Let the last chunk finish uploading then refresh
-        setTimeout(() => {
-            window.location.reload();
-        }, 3000);
     };
 
     const toggleRecording = () => {
@@ -234,10 +221,10 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             </div>
 
             {!canRecord && (
-                <Alert variant="destructive" className="bg-rose-50/80 text-rose-900 border-rose-200 rounded-2xl backdrop-blur-sm">
-                    <AlertCircle className="h-5 w-5 text-rose-600" />
-                    <AlertTitle className="text-rose-800 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-rose-700 ml-2 mt-1 font-medium">
+                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
+                    <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
                         Anda tidak memiliki izin untuk mengelola rekaman rapat ini. Anda hanya dapat melihat status rekaman.
                     </AlertDescription>
                 </Alert>
@@ -344,9 +331,14 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                                     Terhubung (OpenAI)
                                 </p>
                             </div>
-                            <div className="p-3 bg-sky-50 dark:bg-sky-900/30 rounded-2xl">
-                                <RefreshCw className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-                            </div>
+                            <button 
+                                onClick={checkApiConnection}
+                                disabled={isCheckingApi}
+                                className="p-3 bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 rounded-2xl transition-colors disabled:opacity-50 cursor-pointer"
+                                title="Cek Status API"
+                            >
+                                <RefreshCw className={`w-5 h-5 text-sky-600 dark:text-sky-400 ${isCheckingApi ? 'animate-spin' : ''}`} />
+                            </button>
                         </div>
                         <div className="border-t border-slate-100 dark:border-slate-800/50 pt-5">
                             <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Model Transkripsi</p>
@@ -435,7 +427,8 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                             {Array.from({ length: 32 }).map((_, i) => {
                                 // Create a dynamic curve look
                                 const heightBase = Math.sin(i / 5) * 40 + 50; 
-                                const randH = isRecording ? heightBase + (Math.random() * 40 - 20) : 10;
+                                const randH = isRecording ? heightBase + (Math.sin(recordingDuration * 5 + i * 2.3) * 20) : 10;
+
                                 return (
                                     <div 
                                         key={i} 
@@ -484,70 +477,115 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                     </CardContent>
                 </Card>
 
-                {/* Progress Transkripsi & Live Transcript */}
+                {/* Daftar Rekaman & Transkrip */}
                 <div className="flex flex-col gap-6">
                     {uploading && (
                         <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-                            <CardHeader className="pb-3 pt-5 bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-100/50 dark:border-blue-800/30">
-                                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                                    Proses Transkripsi AI
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-5 pt-4">
-                                <div className="flex items-center gap-4 mb-3">
+                            <CardContent className="pb-5 pt-5">
+                                <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex justify-between text-xs font-bold mb-2">
-                                            <span className="text-slate-700 dark:text-slate-300">Mengolah Audio...</span>
-                                            <span className="text-blue-600 dark:text-blue-400">Processing</span>
+                                            <span className="text-slate-700 dark:text-slate-300">Menyimpan Audio...</span>
+                                            <span className="text-blue-600 dark:text-blue-400">Uploading</span>
                                         </div>
                                         <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                             <div className="h-full bg-blue-500 w-full rounded-full animate-pulse"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-[11px] font-medium text-slate-500 text-center">AI sedang mentranskripsi percakapan ke dalam teks.</p>
                             </CardContent>
                         </Card>
                     )}
 
+                    {/* Daftar File Rekaman */}
                     <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex-1 flex flex-col min-h-[250px] overflow-hidden">
                         <CardHeader className="pb-3 pt-5 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 flex flex-row items-center justify-between">
                             <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                Live AI Transcript
+                                Daftar Rekaman
                             </CardTitle>
                             <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold text-[10px] px-2 h-5 flex items-center rounded-full">
-                                <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isRecording ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} /> 
-                                {isRecording ? 'Stream Aktif' : 'Menunggu'}
+                                {meeting.recordings?.length || 0} File
                             </Badge>
                         </CardHeader>
                         <CardContent className="p-0 flex-1 overflow-y-auto bg-slate-50/30 dark:bg-slate-900/20">
-                            <div className="p-5 space-y-4 text-sm font-mono">
-                                {meeting.transcripts && meeting.transcripts.length > 0 ? meeting.transcripts.map((t: any) => (
-                                    <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
-                                        <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
-                                        <span className="leading-relaxed">{t.text}</span>
+                            <div className="p-5 space-y-4">
+                                {meeting.recordings && meeting.recordings.length > 0 ? meeting.recordings.map((rec: any, idx: number) => (
+                                    <div key={rec.id} className="flex items-center justify-between gap-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
+                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0 font-bold text-sm">
+                                                {idx + 1}
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                                    Rekaman #{idx + 1}
+                                                </p>
+                                                <p className="text-xs font-medium text-slate-500">
+                                                    {rec.source === 'upload' ? 'Upload Manual' : 'Rekaman Sistem'} 
+                                                    {rec.file_size ? ` • ${(rec.file_size / 1024 / 1024).toFixed(1)} MB` : ''}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2 shrink-0">
+                                            {rec.status === 'transcribed' ? (
+                                                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold rounded-full px-3">
+                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Selesai
+                                                </Badge>
+                                            ) : rec.status === 'transcribing' ? (
+                                                <Badge className="bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 font-bold rounded-full px-3">
+                                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Memproses
+                                                </Badge>
+                                            ) : canRecord ? (
+                                                <Button
+                                                    size="sm"
+                                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs px-4 h-9"
+                                                    onClick={() => {
+                                                        router.post(`/meetings/${meeting.id}/recording/transcribe`, {
+                                                            recording_id: rec.id
+                                                        });
+                                                    }}
+                                                >
+                                                    <Mic className="w-3 h-3 mr-1.5" /> Generate Transkrip AI
+                                                </Button>
+                                            ) : (
+                                                <Badge variant="outline" className="text-slate-500 font-bold rounded-full px-3">
+                                                    Menunggu
+                                                </Badge>
+                                            )}
+                                        </div>
                                     </div>
-                                )) : null}
-                                
-                                {liveText.map((text, idx) => (
-                                    <div key={idx} className="flex gap-4 text-indigo-900 dark:text-indigo-200 animate-in fade-in slide-in-from-bottom-2">
-                                        <span className="text-indigo-400 shrink-0 w-14 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-1 rounded flex items-center justify-center text-xs">LIVE</span>
-                                        <span className="leading-relaxed">{text}</span>
-                                    </div>
-                                ))}
-
-                                {(!meeting.transcripts || meeting.transcripts.length === 0) && liveText.length === 0 && (
+                                )) : (
                                     <div className="flex flex-col items-center justify-center py-10 text-slate-400 opacity-60">
                                         <Mic className="w-10 h-10 mb-3 text-slate-300" />
-                                        <p className="font-sans font-medium text-sm text-center px-4">Ruang transkrip kosong.<br/>Mulai merekam untuk melihat hasil AI secara real-time.</p>
+                                        <p className="font-sans font-medium text-sm text-center px-4">Belum ada rekaman.<br/>Upload file atau rekam langsung untuk memulai.</p>
                                     </div>
                                 )}
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Hasil Transkrip */}
+                    {meeting.transcripts && meeting.transcripts.length > 0 && (
+                        <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
+                            <CardHeader className="pb-3 pt-5 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30">
+                                <CardTitle className="text-sm font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4" /> Hasil Transkrip AI
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 max-h-[300px] overflow-y-auto">
+                                <div className="p-5 space-y-3 text-sm font-mono">
+                                    {meeting.transcripts.map((t: any) => (
+                                        <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
+                                            <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
+                                            <span className="leading-relaxed">{t.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
             </div>

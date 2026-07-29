@@ -2,10 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use App\Models\Menu;
-use Illuminate\Support\Facades\DB;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -38,19 +37,20 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        
+
         $menus = [];
         if ($user) {
             if ($user->hasRole('Super Admin') || $user->hasRole('Administrator')) {
                 $menus = Menu::where('status', true)->orderBy('order')->get();
             } else {
-                $menus = Menu::whereHas('roles', function($q) use ($user) {
+                $menus = Menu::whereHas('roles', function ($q) use ($user) {
                     $q->whereIn('role_id', $user->roles->pluck('id'));
                 })->where('status', true)->orderBy('order')->get();
             }
-            
+
             $menus = $menus->map(function ($menu) {
                 $menu->url = $menu->route && \Route::has($menu->route) ? route($menu->route) : '#';
+
                 return $menu;
             });
         }

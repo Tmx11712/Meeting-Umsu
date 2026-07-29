@@ -1,9 +1,9 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { CalendarDays, CheckCircle, ClipboardCheck, PieChart, TrendingUp, Plus, Mic, FileText, Users, PenTool, Check, ArrowRight } from 'lucide-react';
-import { dashboard } from '@/routes';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
+import { dashboard } from '@/routes';
 
 type Props = {
     stats: {
@@ -28,8 +28,12 @@ export default function Dashboard({ stats, pipelines }: Props) {
 
     // Helper to format date
     const formatDate = (dateStr: string) => {
-        if (!dateStr) return '';
+        if (!dateStr) {
+return '';
+}
+
         const d = new Date(dateStr);
+
         return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     };
 

@@ -1,18 +1,18 @@
 import { Head, router } from '@inertiajs/react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Search, Save, UserX, ShieldBan, Info, ChevronDown, ChevronRight, UserCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import AppLayout from '@/layouts/app-layout';
-import type { PermissionGroup } from '@/types/configuration';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Input } from '@/components/ui/input';
+import AppLayout from '@/layouts/app-layout';
+import type { PermissionGroup } from '@/types/configuration';
 
 type Props = {
     users: {
@@ -73,14 +73,18 @@ export default function UserPermissionsIndex({
 
     const togglePermission = (permissionName: string) => {
         // Can only toggle if it's not inherited from a role
-        if (userRolePermissions.includes(permissionName)) return;
+        if (userRolePermissions.includes(permissionName)) {
+return;
+}
 
         const newSet = new Set(directPermissions);
+
         if (newSet.has(permissionName)) {
             newSet.delete(permissionName);
         } else {
             newSet.add(permissionName);
         }
+
         setDirectPermissions(newSet);
     };
 
@@ -95,11 +99,13 @@ export default function UserPermissionsIndex({
         const newState = forceState !== undefined ? forceState : !allSelected;
         
         const newSet = new Set(directPermissions);
+
         if (!newState) {
             togglablePermissions.forEach(p => newSet.delete(p));
         } else {
             togglablePermissions.forEach(p => newSet.add(p));
         }
+
         setDirectPermissions(newSet);
     };
 
@@ -108,7 +114,9 @@ export default function UserPermissionsIndex({
     };
 
     const savePermissions = () => {
-        if (!selectedUserId) return;
+        if (!selectedUserId) {
+return;
+}
         
         setIsSaving(true);
         router.put(

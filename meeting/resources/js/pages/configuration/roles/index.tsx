@@ -1,12 +1,12 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Search, Plus, Filter, Eye, PenLine, Trash2, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import type { RoleData } from '@/types/configuration';
-import { useState } from 'react';
 
 type Props = {
     roles: {

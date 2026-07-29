@@ -1,13 +1,13 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MeetingStepper } from '@/components/meeting-stepper';
 import { Calendar, Clock, MapPin, Users, Eye, QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { useState } from 'react';
-import { usePermissions } from '@/hooks/use-permissions';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { MeetingStepper } from '@/components/meeting-stepper';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingAttendance({ meeting }: any) {
     const { canEdit } = usePermissions();
@@ -39,9 +39,11 @@ export default function MeetingAttendance({ meeting }: any) {
 
     const generateQrCode = async () => {
         setLoadingQr(true);
+
         try {
             const res = await fetch(`/meetings/${meeting.id}/attendance/qr`);
             const data = await res.json();
+
             if (data.qr_code) {
                 setQrCodeHtml(`data:image/svg+xml;base64,${data.qr_code}`);
             }
@@ -81,13 +83,14 @@ export default function MeetingAttendance({ meeting }: any) {
     });
 
     // Extract unique departments for filter
-    const departments = ['Semua Departemen', ...Array.from(new Set(tableData.map((d: any) => d.dept)))].filter(d => d !== '-');
+    const departments = ['Semua Departemen', ...Array.from(new Set<string>(tableData.map((d: any) => d.dept)))].filter(d => d !== '-');
 
     // Filter table data
     const filteredData = tableData.filter((row: any) => {
         const matchSearch = row.name?.toLowerCase().includes(searchQuery.toLowerCase()) || row.dept?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchStatus = statusFilter === 'Semua Status' || row.status === statusFilter;
         const matchDept = deptFilter === 'Semua Departemen' || row.dept === deptFilter;
+
         return matchSearch && matchStatus && matchDept;
     });
 
@@ -134,10 +137,10 @@ export default function MeetingAttendance({ meeting }: any) {
             </div>
 
             {!canManageAttendance && (
-                <Alert variant="destructive" className="bg-red-50/80 text-red-900 border-red-200/60 backdrop-blur-sm rounded-xl">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-red-700">
+                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
+                    <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
                         Anda tidak memiliki izin untuk mengelola absensi rapat ini. Anda hanya dapat melihat data.
                     </AlertDescription>
                 </Alert>
