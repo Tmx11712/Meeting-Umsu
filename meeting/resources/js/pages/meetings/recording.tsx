@@ -204,22 +204,24 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
     };
 
     return (
-        <div className="flex flex-col gap-6 p-8 max-w-[1400px] mx-auto w-full">
+        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Operator Rekam" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Operator Rekam</h1>
-                    <div className="text-sm text-slate-500 flex items-center gap-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        Operator Rekam
+                    </h1>
+                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-slate-900">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-slate-900">Operator Rekam</span>
+                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Operator Rekam</span>
                     </div>
                 </div>
-                <Button variant="outline" asChild>
+                <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm">
                     <Link href="/meetings">
                         Kembali ke Jadwal
                     </Link>
@@ -227,15 +229,15 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             </div>
 
             {/* Stepper */}
-            <div className="bg-white px-2">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={3} />
             </div>
 
             {!canRecord && (
-                <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200">
-                    <AlertCircle className="h-4 w-4 text-red-600" />
-                    <AlertTitle className="text-red-800 font-semibold">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-red-700">
+                <Alert variant="destructive" className="bg-rose-50/80 text-rose-900 border-rose-200 rounded-2xl backdrop-blur-sm">
+                    <AlertCircle className="h-5 w-5 text-rose-600" />
+                    <AlertTitle className="text-rose-800 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
+                    <AlertDescription className="text-rose-700 ml-2 mt-1 font-medium">
                         Anda tidak memiliki izin untuk mengelola rekaman rapat ini. Anda hanya dapat melihat status rekaman.
                     </AlertDescription>
                 </Alert>
@@ -244,46 +246,46 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             {/* Top Cards Row */}
             <div className="grid md:grid-cols-3 gap-6">
                 {/* Informasi Rapat */}
-                <Card className="rounded-xl border-slate-200 shadow-sm">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="text-base font-semibold flex items-center text-slate-900">
-                            <div className="p-1.5 bg-blue-50 text-blue-600 rounded-md mr-2">
+                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                    <CardHeader className="pb-4 bg-indigo-50/50 dark:bg-indigo-900/20 border-b border-indigo-100/50 dark:border-indigo-800/30">
+                        <CardTitle className="text-base font-bold flex items-center text-indigo-900 dark:text-indigo-100">
+                            <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-xl mr-3 shadow-sm">
                                 <Calendar className="w-4 h-4" />
                             </div>
                             Informasi Rapat
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-5 pt-5">
                         <div>
-                            <p className="text-xs text-slate-500 mb-1">Judul Rapat</p>
-                            <p className="font-semibold text-slate-900 text-base">{meeting.title}</p>
+                            <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Judul Rapat</p>
+                            <p className="font-bold text-slate-900 dark:text-white text-lg leading-tight">{meeting.title}</p>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-5">
                             <div>
-                                <p className="text-xs text-slate-500 mb-1">Tanggal</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Tanggal</p>
+                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <Calendar className="w-4 h-4 mr-2 text-indigo-400" />
                                     {meeting.date}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 mb-1">Waktu</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <Clock className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Waktu</p>
+                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <Clock className="w-4 h-4 mr-2 text-indigo-400" />
                                     {meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)} WIB
                                 </p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 mb-1">Ruangan / Lokasi</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Ruangan</p>
+                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <MapPin className="w-4 h-4 mr-2 text-indigo-400" />
                                     {meeting.location}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-xs text-slate-500 mb-1">Peserta Terdaftar</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Peserta</p>
+                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
+                                    <Users className="w-4 h-4 mr-2 text-indigo-400" />
                                     {meeting.participants?.length || 0} Peserta
                                 </p>
                             </div>
@@ -292,64 +294,70 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                 </Card>
 
                 {/* Status Meeting */}
-                <Card className="rounded-xl border-slate-200 shadow-sm">
-                    <CardHeader className="pb-4 flex flex-row items-center justify-between">
-                        <CardTitle className="text-base font-semibold text-slate-900">Status Meeting</CardTitle>
-                        <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 uppercase font-bold text-xs tracking-wider px-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1.5 animate-pulse" /> LIVE
+                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                    <CardHeader className="pb-4 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30 flex flex-row items-center justify-between">
+                        <CardTitle className="text-base font-bold text-emerald-900 dark:text-emerald-100">Status Rekaman</CardTitle>
+                        <Badge variant="outline" className={`border-emerald-200 uppercase font-bold text-xs tracking-wider px-3 py-1 rounded-full ${isRecording ? 'bg-emerald-100 text-emerald-700 animate-pulse' : 'bg-slate-100 text-slate-600'}`}>
+                            {isRecording && <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />} 
+                            {isRecording ? 'LIVE' : 'STANDBY'}
                         </Badge>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="bg-green-50/50 border border-green-100 rounded-lg p-3 flex items-center justify-center text-green-700 font-medium">
-                            <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                            Rapat Sedang Berlangsung
-                        </div>
+                    <CardContent className="space-y-6 pt-5">
+                        {isRecording ? (
+                            <div className="bg-emerald-100/50 border border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-800 rounded-2xl p-4 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold shadow-sm">
+                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-3 animate-ping" />
+                                Perekaman Sedang Berlangsung
+                            </div>
+                        ) : (
+                            <div className="bg-slate-100/50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-center text-slate-600 dark:text-slate-400 font-bold shadow-sm">
+                                Sistem Siap Merekam
+                            </div>
+                        )}
                         <div>
-                            <p className="text-xs text-slate-500 mb-1">Durasi Rapat</p>
-                            <p className="text-3xl font-bold text-slate-900 font-mono tracking-tight">{formatDuration(recordingDuration)}</p>
+                            <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Durasi Rapat</p>
+                            <p className="text-4xl font-black text-slate-900 dark:text-white font-mono tracking-tighter">{formatDuration(recordingDuration)}</p>
                         </div>
-                        <div>
-                            <p className="text-xs text-slate-500 mb-2">Operator Rekam</p>
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold flex items-center justify-center text-xs uppercase">
-                                    {auth?.user?.name?.substring(0, 2) || 'OP'}
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-900">{auth?.user?.name || 'Operator'}</p>
-                                    <Badge variant="secondary" className="text-[10px] h-4 bg-blue-50 text-blue-600 hover:bg-blue-50">{auth?.user?.department || 'Operator'}</Badge>
-                                </div>
+                        <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
+                            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold flex items-center justify-center text-sm uppercase shadow-sm">
+                                {auth?.user?.name?.substring(0, 2) || 'OP'}
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-slate-900 dark:text-white">{auth?.user?.name || 'Operator'}</p>
+                                <p className="text-xs font-medium text-slate-500">{auth?.user?.department || 'Operator'}</p>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* Koneksi API */}
-                <Card className="rounded-xl border-slate-200 shadow-sm">
-                    <CardHeader className="pb-4 flex flex-row items-center justify-between">
-                        <CardTitle className="text-base font-semibold text-slate-900">Koneksi OpenAI API</CardTitle>
-                        <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 font-medium">Terkoneksi</Badge>
+                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                    <CardHeader className="pb-4 bg-sky-50/50 dark:bg-sky-900/20 border-b border-sky-100/50 dark:border-sky-800/30 flex flex-row items-center justify-between">
+                        <CardTitle className="text-base font-bold text-sky-900 dark:text-sky-100">Koneksi Sistem AI</CardTitle>
+                        <Badge variant="outline" className="bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-800 font-bold rounded-full px-3">Online</Badge>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <p className="text-xs text-slate-500 mb-1">Status Koneksi</p>
-                            <p className="text-sm font-medium text-green-600 flex items-center">
-                                <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                                Terhubung
-                            </p>
+                    <CardContent className="space-y-5 pt-5">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Status API</p>
+                                <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
+                                    <CheckCircle2 className="w-5 h-5 mr-2" />
+                                    Terhubung (OpenAI)
+                                </p>
+                            </div>
+                            <div className="p-3 bg-sky-50 dark:bg-sky-900/30 rounded-2xl">
+                                <RefreshCw className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                            </div>
                         </div>
-                        <div className="border-t border-slate-100 pt-4">
-                            <p className="text-xs text-slate-500 mb-1">Model Transkripsi</p>
-                            <p className="font-semibold text-slate-900 flex items-center">
-                                gpt-4o-mini
-                                <Badge variant="secondary" className="ml-2 text-[10px] h-4 bg-green-50 text-green-600 hover:bg-green-50 border-0">Aktif</Badge>
-                            </p>
+                        <div className="border-t border-slate-100 dark:border-slate-800/50 pt-5">
+                            <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Model Transkripsi</p>
+                            <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 mr-3 rounded-lg">gpt-4o-mini</Badge>
+                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Siap memproses audio</span>
+                            </div>
                         </div>
-                        <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                            Sistem telah terhubung ke OpenAI untuk melakukan transkripsi otomatis dan pembuatan notulen berbasis AI.
-                        </div>
-                        <Button variant="outline" className="w-full text-slate-600">
-                            <RefreshCw className="w-4 h-4 mr-2" /> Uji Koneksi
-                        </Button>
+                        <p className="text-xs font-medium text-slate-500 leading-relaxed px-1">
+                            Sistem terhubung ke server AI untuk melakukan transkripsi otomatis dan pemrosesan natural language.
+                        </p>
                     </CardContent>
                 </Card>
             </div>
@@ -358,18 +366,18 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
             <div className="grid md:grid-cols-[1fr_1fr_1.2fr] gap-6 flex-1 min-h-[400px]">
                 
                 {/* Upload Rekaman */}
-                <Card className="rounded-xl border-slate-200 shadow-sm flex flex-col h-full">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-semibold text-slate-900">Upload Rekaman</CardTitle>
+                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden">
+                    <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50">
+                        <CardTitle className="text-base font-bold text-slate-900 dark:text-white">Upload Manual</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-col flex-1 pb-6 justify-between gap-4">
-                        <div className="border-2 border-dashed border-blue-200 rounded-xl bg-slate-50/50 flex-1 flex flex-col items-center justify-center p-6 text-center">
-                            <div className="w-12 h-12 bg-white border border-slate-100 rounded-full shadow-sm flex items-center justify-center mb-4 text-blue-600">
-                                <UploadCloud className="w-6 h-6" />
+                    <CardContent className="flex flex-col flex-1 pb-6 pt-6 justify-between gap-4">
+                        <div className="border-2 border-dashed border-indigo-200 dark:border-indigo-800/50 rounded-[2rem] bg-indigo-50/30 dark:bg-indigo-900/10 hover:bg-indigo-50/60 dark:hover:bg-indigo-900/20 transition-colors flex-1 flex flex-col items-center justify-center p-6 text-center cursor-pointer group" onClick={() => canRecord && fileInputRef.current?.click()}>
+                            <div className="w-16 h-16 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full shadow-sm flex items-center justify-center mb-5 text-indigo-500 group-hover:scale-110 group-hover:text-indigo-600 transition-all duration-300">
+                                <UploadCloud className="w-8 h-8" />
                             </div>
                             {canRecord ? (
                                 <>
-                                    <p className="text-sm font-medium text-slate-700 mb-4">Drag & drop file rekaman di sini<br/><span className="text-slate-400 font-normal">atau</span></p>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">Klik untuk Upload File<br/><span className="text-slate-400 font-medium text-xs mt-1 block">Drag & drop didukung</span></p>
                                     
                                     <input 
                                         type="file" 
@@ -379,80 +387,98 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                                         onChange={handleFileUpload}
                                     />
                                     <Button 
-                                        onClick={() => fileInputRef.current?.click()} 
                                         disabled={uploading}
-                                        className="bg-blue-600 hover:bg-blue-700"
+                                        className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            fileInputRef.current?.click();
+                                        }}
                                     >
                                         {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                        {uploading ? 'Mengupload...' : 'Pilih File'}
+                                        {uploading ? 'Mengupload...' : 'Pilih File Rekaman'}
                                     </Button>
                                     
-                                    <p className="text-[11px] text-slate-400 mt-6">
-                                        Format yang didukung: .mp3, .wav, .m4a<br/>
-                                        Maksimal ukuran file: 200 MB
+                                    <p className="text-[11px] font-medium text-slate-400 mt-6 bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg">
+                                        Format: .mp3, .wav, .m4a (Max 200MB)
                                     </p>
                                 </>
                             ) : (
                                 <div className="text-center py-4">
-                                    <p className="text-sm font-medium text-slate-700 mb-2">Akses Terbatas</p>
+                                    <p className="text-sm font-bold text-slate-700 mb-2">Akses Terbatas</p>
                                     <p className="text-xs text-slate-500">Hanya Bagian Humas yang dapat mengunggah rekaman.</p>
                                 </div>
                             )}
-                        </div>
-                        <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-start gap-3">
-                            <Info className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                            <p className="text-xs text-blue-700 leading-relaxed">
-                                Pastikan kualitas audio jelas agar hasil transkripsi lebih akurat.
-                            </p>
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* Rekam Dari Sistem */}
-                <Card className="rounded-xl border-slate-200 shadow-sm flex flex-col h-full">
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-semibold text-slate-900 flex items-center justify-between">
-                            Rekam dari Sistem <Info className="w-3.5 h-3.5 text-slate-400" />
+                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden relative">
+                    {/* Pulsing background effect when recording */}
+                    {isRecording && (
+                        <div className="absolute inset-0 bg-indigo-500/5 animate-pulse rounded-3xl pointer-events-none"></div>
+                    )}
+                    <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 relative z-10">
+                        <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                            Perekam Sistem
+                            {isRecording && <span className="flex h-3 w-3 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span></span>}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-col flex-1 items-center justify-center p-8">
-                        <h2 className="text-5xl font-mono font-bold text-slate-900 tracking-tighter mb-2">
+                    <CardContent className="flex flex-col flex-1 items-center justify-center p-8 relative z-10">
+                        <h2 className={`text-6xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-800 dark:text-slate-200'}`}>
                             {formatDuration(recordingDuration)}
                         </h2>
-                        <p className="text-sm text-slate-500 mb-8">Waktu perekaman berjalan</p>
+                        <p className="text-sm font-medium text-slate-500 mb-10 bg-slate-100/50 dark:bg-slate-800/50 px-4 py-1 rounded-full">Durasi Perekaman Aktif</p>
                         
-                        {/* Fake Visualizer */}
-                        <div className="flex items-center justify-center h-16 w-full gap-1 mb-10 overflow-hidden">
-                            {Array.from({ length: 40 }).map((_, i) => (
-                                <div key={i} className={`w-1 rounded-full bg-blue-500 ${Math.random() > 0.5 ? 'h-full' : 'h-1/2'} ${Math.random() > 0.8 ? 'h-1/4' : ''}`} style={{ opacity: isRecording ? 1 : 0.2, animation: isRecording ? `pulse ${0.5 + Math.random()}s infinite` : 'none' }}></div>
-                            ))}
+                        {/* Fake Visualizer - Looks like a premium audio wave */}
+                        <div className="flex items-center justify-center h-20 w-full gap-1.5 mb-12 overflow-hidden px-4">
+                            {Array.from({ length: 32 }).map((_, i) => {
+                                // Create a dynamic curve look
+                                const heightBase = Math.sin(i / 5) * 40 + 50; 
+                                const randH = isRecording ? heightBase + (Math.random() * 40 - 20) : 10;
+                                return (
+                                    <div 
+                                        key={i} 
+                                        className="w-1.5 rounded-full transition-all duration-150 ease-out" 
+                                        style={{ 
+                                            height: `${Math.max(4, randH)}%`,
+                                            backgroundColor: isRecording ? `hsl(230, 80%, ${60 + (i%5)*5}%)` : 'currentColor',
+                                            opacity: isRecording ? 1 : 0.1, 
+                                        }}
+                                    ></div>
+                                );
+                            })}
                         </div>
 
                         {canRecord ? (
-                            <div className="flex w-full gap-3">
+                            <div className="flex w-full gap-4">
                                 <Button 
                                     variant="outline" 
-                                    className="flex-1 border-slate-200 hover:bg-slate-50"
+                                    className="flex-1 border-rose-200 hover:bg-rose-50 text-rose-600 rounded-2xl h-14 font-bold text-base transition-all"
                                     onClick={stopRecordingSession}
                                     disabled={!isRecording}
                                 >
-                                    <Square className="w-4 h-4 mr-2 text-red-500" fill="currentColor" /> Stop Recording
+                                    <Square className="w-5 h-5 mr-2" fill="currentColor" /> Stop
                                 </Button>
                                 <Button 
-                                    className={`flex-1 ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                                    className={`flex-1 rounded-2xl h-14 font-bold text-base shadow-md transition-all ${
+                                        isRecording 
+                                        ? 'bg-amber-500 hover:bg-amber-600 text-white' 
+                                        : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white hover:shadow-lg hover:-translate-y-1'
+                                    }`}
                                     onClick={toggleRecording}
                                 >
                                     {isRecording ? (
-                                        <><PauseCircle className="w-4 h-4 mr-2" /> Pause Recording</>
+                                        <><PauseCircle className="w-5 h-5 mr-2" /> Pause</>
                                     ) : (
-                                        <><Mic className="w-4 h-4 mr-2" /> Start Recording</>
+                                        <><Mic className="w-5 h-5 mr-2" /> Start Record</>
                                     )}
                                 </Button>
                             </div>
                         ) : (
-                            <div className="text-center py-4 bg-slate-100 rounded-lg w-full">
-                                <p className="text-sm font-medium text-slate-700 mb-1">Akses Terbatas</p>
-                                <p className="text-xs text-slate-500">Hanya Bagian Humas yang dapat merekam dari sistem.</p>
+                            <div className="text-center py-4 bg-slate-100 rounded-2xl w-full">
+                                <p className="text-sm font-bold text-slate-700 mb-1">Akses Terbatas</p>
+                                <p className="text-xs font-medium text-slate-500">Hanya Bagian Humas yang dapat merekam.</p>
                             </div>
                         )}
                     </CardContent>
@@ -461,52 +487,62 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                 {/* Progress Transkripsi & Live Transcript */}
                 <div className="flex flex-col gap-6">
                     {uploading && (
-                        <Card className="rounded-xl border-slate-200 shadow-sm">
-                            <CardHeader className="pb-2 pt-4">
-                                <CardTitle className="text-sm font-semibold text-slate-900 flex items-center justify-between">
-                                    Progress Transkripsi <Info className="w-3.5 h-3.5 text-slate-400" />
+                        <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                            <CardHeader className="pb-3 pt-5 bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-100/50 dark:border-blue-800/30">
+                                <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                                    Proses Transkripsi AI
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="pb-4">
-                                <p className="text-xs text-slate-500 mb-3">Proses upload dan transkripsi otomatis sedang berjalan...</p>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="h-2 bg-slate-100 rounded-full flex-1 overflow-hidden">
-                                        <div className="h-full bg-blue-600 w-full rounded-full animate-pulse"></div>
+                            <CardContent className="pb-5 pt-4">
+                                <div className="flex items-center gap-4 mb-3">
+                                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                        <Loader2 className="w-5 h-5 animate-spin" />
                                     </div>
-                                    <span className="text-sm font-bold text-slate-700">Proses...</span>
+                                    <div className="flex-1">
+                                        <div className="flex justify-between text-xs font-bold mb-2">
+                                            <span className="text-slate-700 dark:text-slate-300">Mengolah Audio...</span>
+                                            <span className="text-blue-600 dark:text-blue-400">Processing</span>
+                                        </div>
+                                        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                            <div className="h-full bg-blue-500 w-full rounded-full animate-pulse"></div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <p className="text-[11px] font-medium text-slate-500 text-center">AI sedang mentranskripsi percakapan ke dalam teks.</p>
                             </CardContent>
                         </Card>
                     )}
 
-                    <Card className="rounded-xl border-slate-200 shadow-sm flex-1 flex flex-col min-h-[200px]">
-                        <CardHeader className="pb-2 pt-4 flex flex-row items-center justify-between border-b border-slate-50">
-                            <CardTitle className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
-                                Live Transcript <Info className="w-3.5 h-3.5 text-slate-400" />
+                    <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex-1 flex flex-col min-h-[250px] overflow-hidden">
+                        <CardHeader className="pb-3 pt-5 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 flex flex-row items-center justify-between">
+                            <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                Live AI Transcript
                             </CardTitle>
-                            <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200 text-[10px] px-1.5 h-5 flex items-center">
-                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 mr-1 animate-pulse" /> Live
+                            <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold text-[10px] px-2 h-5 flex items-center rounded-full">
+                                <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isRecording ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300'}`} /> 
+                                {isRecording ? 'Stream Aktif' : 'Menunggu'}
                             </Badge>
                         </CardHeader>
-                        <CardContent className="p-4 flex-1 overflow-y-auto bg-slate-50/30">
-                            <div className="space-y-4 text-xs font-mono">
+                        <CardContent className="p-0 flex-1 overflow-y-auto bg-slate-50/30 dark:bg-slate-900/20">
+                            <div className="p-5 space-y-4 text-sm font-mono">
                                 {meeting.transcripts && meeting.transcripts.length > 0 ? meeting.transcripts.map((t: any) => (
-                                    <div key={t.id} className="flex gap-3 text-slate-700">
-                                        <span className="text-slate-400 shrink-0 w-12">{formatDuration(t.timestamp_seconds || 0)}</span>
-                                        <span>{t.text}</span>
+                                    <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
+                                        <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
+                                        <span className="leading-relaxed">{t.text}</span>
                                     </div>
                                 )) : null}
                                 
                                 {liveText.map((text, idx) => (
-                                    <div key={idx} className="flex gap-3 text-slate-700 animate-in fade-in">
-                                        <span className="text-slate-400 shrink-0 w-12">LIVE</span>
-                                        <span>{text}</span>
+                                    <div key={idx} className="flex gap-4 text-indigo-900 dark:text-indigo-200 animate-in fade-in slide-in-from-bottom-2">
+                                        <span className="text-indigo-400 shrink-0 w-14 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-1 rounded flex items-center justify-center text-xs">LIVE</span>
+                                        <span className="leading-relaxed">{text}</span>
                                     </div>
                                 ))}
 
                                 {(!meeting.transcripts || meeting.transcripts.length === 0) && liveText.length === 0 && (
-                                    <div className="text-slate-400 text-center py-8 italic font-sans">
-                                        Belum ada transkrip. Mulai merekam untuk melihat transkrip secara langsung.
+                                    <div className="flex flex-col items-center justify-center py-10 text-slate-400 opacity-60">
+                                        <Mic className="w-10 h-10 mb-3 text-slate-300" />
+                                        <p className="font-sans font-medium text-sm text-center px-4">Ruang transkrip kosong.<br/>Mulai merekam untuk melihat hasil AI secara real-time.</p>
                                     </div>
                                 )}
                             </div>
@@ -518,15 +554,18 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
 
             {/* Bottom Actions */}
             {canRecord && (
-                <div className="mt-4 flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3 text-yellow-800">
-                        <div className="p-1.5 bg-yellow-100 rounded-full">
-                            <Mic className="w-4 h-4" />
+                <div className="mt-4 flex flex-col sm:flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-3xl p-6 shadow-sm">
+                    <div className="flex items-center gap-4 text-emerald-800 dark:text-emerald-400 mb-4 sm:mb-0">
+                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                         </div>
-                        <p className="text-sm font-medium">Pastikan semua rekaman sudah selesai sebelum mengirimnya ke tahap koreksi.</p>
+                        <div>
+                            <p className="text-base font-bold">Langkah Perekaman Selesai?</p>
+                            <p className="text-sm font-medium opacity-80">Pastikan semua sesi telah terekam sebelum lanjut ke tahap koreksi teks.</p>
+                        </div>
                     </div>
                     <Button 
-                        className="bg-blue-600 hover:bg-blue-700 px-6"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-12 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto"
                         onClick={() => {
                             router.post(`/meetings/${meeting.id}/finish-recording`, {}, {
                                 onSuccess: () => {
@@ -535,7 +574,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: any) {
                             });
                         }}
                     >
-                        <CheckCircle2 className="w-4 h-4 mr-2" /> Selesai Rekaman & Lanjut Koreksi
+                        Tutup Perekaman & Lanjut <CheckCircle2 className="w-5 h-5 ml-2" />
                     </Button>
                 </div>
             )}
