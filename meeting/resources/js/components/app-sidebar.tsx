@@ -165,52 +165,45 @@ export function AppSidebar() {
                     </SidebarMenu>
                 </SidebarGroup>
 
-                <SidebarSeparator className="mx-4 my-2 opacity-50" />
-                
-                <SidebarGroup className="py-2">
-                    <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
-                        Konfigurasi
-                    </SidebarGroupLabel>
-                    <SidebarMenu className="gap-1.5">
-                        {CONFIG_MENU_ITEMS.map((item) => {
-                            // Hide Roles and Permissions for non-admins
-                            if (!isAdmin && (item.title === 'Roles' || item.title === 'Permissions')) {
-                                return null;
-                            }
-                            
-                            const active = page.url.startsWith(item.href);
-                            return (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        isActive={active}
-                                        tooltip={{ children: item.title }}
-                                        className={`rounded-xl transition-all duration-300 group ${
-                                            active 
-                                            ? 'bg-primary/10 text-primary font-semibold shadow-sm' 
-                                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/80'
-                                        }`}
-                                    >
-                                        <Link 
-                                            href={item.href} 
-                                            prefetch
-                                            onClick={(e) => {
-                                                if (!isAdmin) {
-                                                    e.preventDefault();
-                                                    guardAction('configuration', 'Akses Terbatas: Hanya Administrator yang dapat mengakses menu ini.');
-                                                }
-                                            }}
-                                            className="flex items-center gap-3"
-                                        >
-                                            <item.icon className={`size-5 transition-transform duration-300 ${active ? 'scale-110 text-primary' : 'group-hover:scale-110 group-hover:text-primary/80'}`} />
-                                            <span>{item.title}</span>
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            );
-                        })}
-                    </SidebarMenu>
-                </SidebarGroup>
+                {isAdmin && (
+                    <>
+                        <SidebarSeparator className="mx-4 my-2 opacity-50" />
+                        
+                        <SidebarGroup className="py-2">
+                            <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
+                                Konfigurasi
+                            </SidebarGroupLabel>
+                            <SidebarMenu className="gap-1.5">
+                                {CONFIG_MENU_ITEMS.map((item) => {
+                                    const active = page.url.startsWith(item.href);
+                                    return (
+                                        <SidebarMenuItem key={item.title}>
+                                            <SidebarMenuButton
+                                                asChild
+                                                isActive={active}
+                                                tooltip={{ children: item.title }}
+                                                className={`rounded-xl transition-all duration-300 group ${
+                                                    active 
+                                                    ? 'bg-primary/10 text-primary font-semibold shadow-sm' 
+                                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/80'
+                                                }`}
+                                            >
+                                                <Link 
+                                                    href={item.href} 
+                                                    prefetch
+                                                    className="flex items-center gap-3"
+                                                >
+                                                    <item.icon className={`size-5 transition-transform duration-300 ${active ? 'scale-110 text-primary' : 'group-hover:scale-110 group-hover:text-primary/80'}`} />
+                                                    <span>{item.title}</span>
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    );
+                                })}
+                            </SidebarMenu>
+                        </SidebarGroup>
+                    </>
+                )}
             </SidebarContent>
 
             {/* ── Footer: User Role + Account ── */}
