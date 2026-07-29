@@ -58,7 +58,12 @@ class TranscriptCorrectionController extends Controller
 
     public function finish(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('transcript.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.');
+        $user = auth()->user();
+        abort_unless(
+            $user->can('transcript.update') || $user->can('recording.update'),
+            403,
+            'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.'
+        );
 
         $meeting->update(['current_stage' => 4]); // Move to Absensi
         return redirect()->route('meetings.attendance', $meeting->id);
