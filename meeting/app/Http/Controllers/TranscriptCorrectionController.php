@@ -11,8 +11,8 @@ class TranscriptCorrectionController extends Controller
 {
     public function index(Request $request)
     {
-        // Stage 3 = Koreksi
-        $query = Meeting::where('current_stage', 3);
+        // Stage >= 3 (Sedang atau sudah lewat tahap koreksi)
+        $query = Meeting::where('current_stage', '>=', 3);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -28,7 +28,16 @@ class TranscriptCorrectionController extends Controller
 
     public function show(Meeting $meeting)
     {
-        $meeting->load('recordings', 'transcripts.corrections', 'participants.user');
+        $meeting->load([
+            'recordings' => function ($q) {
+                $q->orderBy('created_at', 'asc');
+            },
+            'recordings.transcripts' => function ($q) {
+                $q->orderBy('sequence_order', 'asc');
+            },
+            'recordings.transcripts.corrections',
+            'participants.user',
+        ]);
 
         return Inertia::render('meetings/correction', [
             'meeting' => $meeting,

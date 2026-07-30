@@ -31,7 +31,19 @@ class MeetingMinuteController extends Controller
 
     public function show(Meeting $meeting)
     {
-        $meeting->load('participants.user', 'minutes.actionItems', 'documents', 'attendances');
+        $meeting->load([
+            'participants.user', 
+            'minutes.actionItems', 
+            'documents', 
+            'attendances',
+            'recordings' => function ($q) {
+                $q->orderBy('created_at', 'asc');
+            },
+            'recordings.transcripts' => function ($q) {
+                $q->orderBy('sequence_order', 'asc');
+            },
+            'recordings.transcripts.corrections'
+        ]);
 
         return Inertia::render('meetings/review', [
             'meeting' => $meeting,
@@ -74,12 +86,15 @@ class MeetingMinuteController extends Controller
             if (! empty($summaryJson['tindak_lanjut'])) {
                 $minute->actionItems()->delete(); // reset old action items
                 foreach ($summaryJson['tindak_lanjut'] as $actionItem) {
+                    $deadlineStr = $actionItem['deadline'] ?? null;
+                    $deadlineTimestamp = $deadlineStr ? strtotime($deadlineStr) : false;
+                    
                     MeetingActionItem::create([
                         'meeting_id' => $meeting->id,
                         'minute_id' => $minute->id,
                         'description' => $actionItem['description'] ?? '-',
                         'pic' => $actionItem['pic'] ?? '-',
-                        'deadline' => isset($actionItem['deadline']) ? date('Y-m-d', strtotime($actionItem['deadline'])) : null,
+                        'deadline' => $deadlineTimestamp ? date('Y-m-d', $deadlineTimestamp) : null,
                     ]);
                 }
             }
@@ -88,6 +103,25 @@ class MeetingMinuteController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    public function update(Request $request, Meeting $meeting)
+    {
+        abort_unless(auth()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengedit notulen.');
+
+        $request->validate([
+            'content' => 'required|array',
+        ]);
+
+        $minute = $meeting->minutes()->latest()->first();
+        if ($minute) {
+            $minute->update([
+                'content' => $request->content,
+            ]);
+            return back()->with('success', 'Notulen berhasil diperbarui.');
+        }
+        
+        return back()->with('error', 'Notulen belum tersedia.');
     }
 
     public function sendToPimpinan(Request $request, Meeting $meeting)

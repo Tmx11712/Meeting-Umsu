@@ -13,6 +13,7 @@ class MeetingRecording extends Model
     protected $fillable = [
         'meeting_id',
         'file_path',
+        'label',
         'file_size',
         'duration_seconds',
         'source',

@@ -1,24 +1,59 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown } from 'lucide-react';
-import { AlertCircle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle, Info } from 'lucide-react';
 import { useState } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingReview({ meeting }: any) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
-    const { canEdit } = usePermissions();
+    const { canEdit, hasRole } = usePermissions();
     const canManageReview = canEdit('minutes');
+    const isPimpinan = hasRole('Pimpinan');
     const [sending, setSending] = useState(false);
+    
+    // Edit Modal States
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editData, setEditData] = useState<any>(null);
+
+    const openEditModal = () => {
+        if (minutes?.content) {
+            setEditData(JSON.parse(JSON.stringify(minutes.content)));
+        } else {
+            setEditData({ pembukaan: '', pembahasan: [], keputusan: [] });
+        }
+        setEditModalOpen(true);
+    };
+
+    const saveEdit = () => {
+        setSending(true);
+        router.put(`/meetings/${meeting.id}/review`, { content: editData }, {
+            onSuccess: () => {
+                setEditModalOpen(false);
+            },
+            onFinish: () => setSending(false)
+        });
+    };
 
     const sendToPimpinan = () => {
         setSending(true);
         router.post(`/meetings/${meeting.id}/review/send`, {}, {
+            onFinish: () => setSending(false)
+        });
+    };
+
+    const approveNotulen = () => {
+        setSending(true);
+        router.post(`/meetings/${meeting.id}/approval`, { decision: 'approved', notes: '' }, {
             onFinish: () => setSending(false)
         });
     };
@@ -68,29 +103,81 @@ export default function MeetingReview({ meeting }: any) {
                     <MeetingStepper meeting={meeting} activeStage={6} />
                 </div>
 
-                <div className="text-center py-20 text-slate-500 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center">
-                    <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4">
-                        <Lightbulb className="w-8 h-8" />
+                <div className="grid lg:grid-cols-3 gap-6">
+                    {/* Left side: Transcripts reference */}
+                    <div className="lg:col-span-2 space-y-4">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-indigo-500" />
+                            Referensi Transkrip ({meeting.recordings?.length || 0} File)
+                        </h3>
+                        
+                        {meeting.recordings?.length === 0 ? (
+                            <Card className="bg-slate-50 dark:bg-slate-900 border-dashed">
+                                <CardContent className="py-10 text-center text-slate-500 text-sm">
+                                    Belum ada rekaman audio untuk rapat ini.
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            <div className="space-y-4">
+                                {meeting.recordings?.map((rec: any, idx: number) => {
+                                    const transcripts = rec.transcripts || [];
+                                    const combinedText = transcripts.map((t: any) => {
+                                        const latest = t.corrections?.length > 0 ? t.corrections[t.corrections.length - 1].corrected_text : t.text;
+                                        return latest;
+                                    }).join(' ');
+
+                                    return (
+                                        <Card key={rec.id} className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
+                                            <CardHeader className="bg-slate-50/80 dark:bg-slate-900/50 py-3 px-4 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0 backdrop-blur-sm">
+                                                <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                                                    <span className="w-6 h-6 rounded-md bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                                                        {idx + 1}
+                                                    </span>
+                                                    {rec.label || `Rekaman #${idx + 1}`}
+                                                </CardTitle>
+                                                <Badge variant="outline" className="text-[10px] bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50 font-semibold tracking-wide">
+                                                    {transcripts.length} SEGMEN
+                                                </Badge>
+                                            </CardHeader>
+                                            <CardContent className="p-5 bg-white/40 dark:bg-slate-900/40 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
+                                                    {combinedText || <span className="text-slate-400 italic">Transkrip kosong atau belum diproses.</span>}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Notulen Belum Digenerate</h3>
-                    <p className="max-w-md mx-auto mb-6">
-                        Transkrip rapat sudah siap, namun notulen resmi belum dibuat oleh AI. Silakan klik tombol di bawah untuk meminta AI merangkum hasil rapat menjadi notulen.
-                    </p>
-                    <Button 
-                        className="bg-purple-600 hover:bg-purple-700 text-white" 
-                        onClick={() => {
-                            setSending(true);
-                            router.post(`/meetings/${meeting.id}/review/ai`, {}, {
-                                onFinish: () => setSending(false),
-                                onSuccess: () => {
-                                    window.location.reload();
-                                }
-                            });
-                        }}
-                        disabled={sending || !canManageReview}
-                    >
-                        {sending ? 'Sedang Memproses...' : '✨ Generate Notulen dengan AI'}
-                    </Button>
+
+                    {/* Right side: Action card */}
+                    <div className="flex flex-col">
+                        <div className="text-center p-8 text-slate-500 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center sticky top-6">
+                            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-5 shadow-inner rotate-3">
+                                <Lightbulb className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Notulen Belum Digenerate</h3>
+                            <p className="text-sm mx-auto mb-8 leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+                                AI akan membaca semua transkrip dari rekaman yang ada dan merangkumnya menjadi notulen resmi lengkap dengan keputusan dan tindak lanjut.
+                            </p>
+                            <Button 
+                                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
+                                onClick={() => {
+                                    setSending(true);
+                                    router.post(`/meetings/${meeting.id}/review/ai`, {}, {
+                                        onFinish: () => setSending(false),
+                                        onSuccess: () => {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }}
+                                disabled={sending || !canManageReview}
+                            >
+                                {sending ? 'Sedang Memproses...' : '✨ Generate Notulen dengan AI'}
+                            </Button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -120,9 +207,14 @@ export default function MeetingReview({ meeting }: any) {
                             Kembali ke Jadwal
                         </Link>
                     </Button>
-                    {canManageReview && (
+                    {canManageReview && meeting.current_stage === 5 && !isPimpinan && (
                         <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={sendToPimpinan} disabled={sending}>
                             <Send className="w-4 h-4 mr-2" /> Kirim ke Pimpinan
+                        </Button>
+                    )}
+                    {canManageReview && meeting.current_stage === 6 && isPimpinan && (
+                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={approveNotulen} disabled={sending}>
+                            <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
                         </Button>
                     )}
                 </div>
@@ -257,17 +349,39 @@ export default function MeetingReview({ meeting }: any) {
                 {/* Tengah: Notulen Rapat */}
                 <div className="flex flex-col">
                     <Card className="rounded-xl border-slate-200 shadow-sm flex-1 flex flex-col">
-                        <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between">
+                        <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between flex-wrap gap-2">
                             <CardTitle className="text-lg font-bold text-slate-900">Notulen Rapat</CardTitle>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-wrap">
                                 {canManageReview && (
-                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600">
-                                        <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
+                                    <>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="h-8 text-xs text-purple-600 border-purple-200 hover:bg-purple-50"
+                                            onClick={() => {
+                                                if (confirm('Anda yakin ingin men-generate ulang notulen? Ini akan menimpa notulen yang ada saat ini dengan versi AI terbaru dari transkrip.')) {
+                                                    setSending(true);
+                                                    router.post(`/meetings/${meeting.id}/review/ai`, {}, {
+                                                        onFinish: () => setSending(false),
+                                                        onSuccess: () => window.location.reload()
+                                                    });
+                                                }
+                                            }}
+                                            disabled={sending}
+                                        >
+                                            {sending ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
+                                            {sending ? 'Memproses...' : 'Regenerate AI'}
+                                        </Button>
+                                        <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
+                                            <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
+                                        </Button>
+                                    </>
+                                )}
+                                {meeting.current_stage >= 7 && (
+                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600" onClick={downloadPdf}>
+                                        <Download className="w-3 h-3 mr-2" /> Unduh <ChevronDown className="w-3 h-3 ml-1" />
                                     </Button>
                                 )}
-                                <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600" onClick={downloadPdf}>
-                                    <Download className="w-3 h-3 mr-2" /> Unduh <ChevronDown className="w-3 h-3 ml-1" />
-                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent className="p-6 flex-1 text-sm text-slate-800 space-y-8">
@@ -402,7 +516,9 @@ export default function MeetingReview({ meeting }: any) {
                             
                             <div>
                                 <p className="text-[11px] text-slate-500 mb-1">Tanggal Review</p>
-                                <p className="text-sm font-semibold text-slate-900">4 Juni 2026 11:35 WIB</p>
+                                <p className="text-sm font-semibold text-slate-900">
+                                    {minutes.reviewed_at ? new Date(minutes.reviewed_at).toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).replace('.', ':') + ' WIB' : 'Belum direview'}
+                                </p>
                             </div>
 
                             <div>
@@ -422,40 +538,120 @@ export default function MeetingReview({ meeting }: any) {
                         </CardContent>
                     </Card>
 
-                    {/* Langkah Selanjutnya Alert */}
-                    {canManageReview && (
-                        <div className="bg-[#fffbeb] border border-[#fef3c7] rounded-xl p-4 flex items-start gap-3">
-                            <Lightbulb className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
-                            <div>
-                                <h4 className="text-sm font-bold text-yellow-800">Langkah Selanjutnya</h4>
-                                <p className="text-xs text-yellow-700 mt-1 leading-relaxed">Klik tombol "Kirim ke Pimpinan" untuk mengirim notulen ini ke pimpinan untuk persetujuan.</p>
-                            </div>
-                        </div>
+                    {/* Langkah Selanjutnya */}
+                    {canManageReview && meeting.current_stage === 5 && !isPimpinan && (
+                        <Alert className="bg-blue-50/80 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 border-blue-200 dark:border-blue-800/50 rounded-2xl backdrop-blur-sm">
+                            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            <AlertTitle className="text-blue-800 dark:text-blue-300 font-bold text-base ml-2">Langkah Selanjutnya</AlertTitle>
+                            <AlertDescription className="text-blue-700 dark:text-blue-400/90 ml-2 mt-1 font-medium">
+                                Jika notulen sudah sesuai, klik tombol <strong>"Kirim ke Pimpinan"</strong> di kanan atas untuk meminta persetujuan Pimpinan.
+                            </AlertDescription>
+                        </Alert>
                     )}
                 </div>
             </div>
+
+            {/* Edit Notulen Modal */}
+            <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+                <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Edit Notulen Rapat</DialogTitle>
+                    </DialogHeader>
+                    {editData && (
+                        <div className="space-y-6 py-4">
+                            <div className="space-y-2">
+                                <Label className="font-bold">Pembukaan</Label>
+                                <Textarea 
+                                    value={editData.pembukaan || ''} 
+                                    onChange={e => setEditData({...editData, pembukaan: e.target.value})}
+                                    rows={3}
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Pembahasan</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, pembahasan: [...(editData.pembahasan || []), {topik: '', narasi: ''}]})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Topik
+                                    </Button>
+                                </div>
+                                {editData.pembahasan?.map((bahas: any, idx: number) => (
+                                    <Card key={idx} className="p-4 relative">
+                                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-rose-500 hover:bg-rose-50 hover:text-rose-600" onClick={() => {
+                                            const newBahas = [...editData.pembahasan];
+                                            newBahas.splice(idx, 1);
+                                            setEditData({...editData, pembahasan: newBahas});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                        <div className="space-y-3 pr-8">
+                                            <div>
+                                                <Label className="text-xs">Topik</Label>
+                                                <Input 
+                                                    value={bahas.topik || ''} 
+                                                    onChange={e => {
+                                                        const newBahas = [...editData.pembahasan];
+                                                        newBahas[idx].topik = e.target.value;
+                                                        setEditData({...editData, pembahasan: newBahas});
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs">Narasi</Label>
+                                                <Textarea 
+                                                    value={bahas.narasi || ''} 
+                                                    onChange={e => {
+                                                        const newBahas = [...editData.pembahasan];
+                                                        newBahas[idx].narasi = e.target.value;
+                                                        setEditData({...editData, pembahasan: newBahas});
+                                                    }}
+                                                    rows={3}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Keputusan</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, keputusan: [...(editData.keputusan || []), '']})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Keputusan
+                                    </Button>
+                                </div>
+                                {editData.keputusan?.map((kep: string, idx: number) => (
+                                    <div key={idx} className="flex gap-2 items-center">
+                                        <div className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></div>
+                                        <Input 
+                                            value={kep} 
+                                            onChange={e => {
+                                                const newKep = [...editData.keputusan];
+                                                newKep[idx] = e.target.value;
+                                                setEditData({...editData, keputusan: newKep});
+                                            }}
+                                        />
+                                        <Button variant="ghost" size="icon" className="text-rose-500 shrink-0" onClick={() => {
+                                            const newKep = [...editData.keputusan];
+                                            newKep.splice(idx, 1);
+                                            setEditData({...editData, keputusan: newKep});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={saveEdit} disabled={sending}>
+                            {sending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </div>
     );
-}
-
-// Tambahkan Info icon mock
-function Info(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-        </svg>
-    )
 }

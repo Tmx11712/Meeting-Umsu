@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('meetings/{meeting}/recording', [MeetingRecordingController::class, 'store'])->name('meetings.recording.store');
     Route::post('meetings/{meeting}/recording/transcribe', [MeetingRecordingController::class, 'transcribe'])->name('meetings.recording.transcribe');
     Route::post('meetings/{meeting}/finish-recording', [MeetingRecordingController::class, 'finishRecording'])->name('meetings.recording.finish');
+    Route::get('meetings/{meeting}/recording/{recording}/stream', [MeetingRecordingController::class, 'stream'])->name('meetings.recording.stream');
 
     Route::get('meetings/{meeting}/transcription/progress', [TranscriptionController::class, 'progress'])->name('meetings.transcription.progress');
 
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('minutes', [MeetingMinuteController::class, 'index'])->name('minutes.index');
     Route::get('meetings/{meeting}/review', [MeetingMinuteController::class, 'show'])->name('meetings.review');
     Route::post('meetings/{meeting}/review/ai', [MeetingMinuteController::class, 'generateAiSummary'])->name('meetings.review.ai');
+    Route::put('meetings/{meeting}/review', [MeetingMinuteController::class, 'update'])->name('meetings.review.update');
     Route::post('meetings/{meeting}/review/send', [MeetingMinuteController::class, 'sendToPimpinan'])->name('meetings.review.send');
     Route::get('meetings/{meeting}/review/pdf', [MeetingMinuteController::class, 'downloadPdf'])->name('meetings.review.pdf');
 

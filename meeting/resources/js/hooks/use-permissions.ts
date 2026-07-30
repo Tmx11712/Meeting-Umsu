@@ -11,7 +11,7 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
     recording: ['Super Admin', 'Administrator', 'Bag. Humas'],
     transcript: ['Super Admin', 'Administrator', 'Bag. Umum', 'Bag. Humas'],
     attendance: ['Super Admin', 'Administrator', 'Bag. Umum'],
-    minutes: ['Super Admin', 'Administrator', 'Bag. Umum'],
+    minutes: ['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan'],
     report: ['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan'],
     configuration: ['Super Admin', 'Administrator'],
 };

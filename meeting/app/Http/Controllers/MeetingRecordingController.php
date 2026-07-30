@@ -6,6 +6,7 @@ use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class MeetingRecordingController extends Controller
@@ -27,6 +28,7 @@ class MeetingRecordingController extends Controller
         $request->validate([
             'file' => 'required|file|mimes:mp3,wav,m4a,webm,ogg|max:204800', // 200MB max
             'source' => 'required|in:upload,system_record',
+            'label' => 'nullable|string|max:255',
         ]);
 
         $file = $request->file('file');
@@ -35,6 +37,7 @@ class MeetingRecordingController extends Controller
 
         $recording = $meeting->recordings()->create([
             'file_path' => $path,
+            'label' => $request->label,
             'file_size' => $file->getSize(),
             'source' => $request->source,
             'status' => 'uploaded',
@@ -98,5 +101,33 @@ class MeetingRecordingController extends Controller
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
+    }
+
+    /**
+     * Stream audio file to browser for inline playback
+     */
+    public function stream(Meeting $meeting, MeetingRecording $recording)
+    {
+        abort_unless($recording->meeting_id === $meeting->id, 404, 'Rekaman tidak ditemukan untuk rapat ini.');
+
+        $path = Storage::disk('local')->path($recording->file_path);
+
+        abort_unless(file_exists($path), 404, 'File audio tidak ditemukan.');
+
+        $mimeTypes = [
+            'mp3' => 'audio/mpeg',
+            'wav' => 'audio/wav',
+            'm4a' => 'audio/mp4',
+            'webm' => 'audio/webm',
+            'ogg' => 'audio/ogg',
+        ];
+
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $mimeType = $mimeTypes[$extension] ?? 'application/octet-stream';
+
+        return response()->file($path, [
+            'Content-Type' => $mimeType,
+            'Accept-Ranges' => 'bytes',
+        ]);
     }
 }

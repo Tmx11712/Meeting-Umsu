@@ -88,6 +88,17 @@ class Meeting extends Model
     public function getDurationFormattedAttribute()
     {
         $seconds = $this->duration;
+        
+        if (!$seconds && $this->start_time && $this->end_time) {
+            try {
+                $start = \Carbon\Carbon::parse($this->start_time);
+                $end = \Carbon\Carbon::parse($this->end_time);
+                $seconds = $end->diffInSeconds($start);
+            } catch (\Exception $e) {
+                // do nothing
+            }
+        }
+
         if (! $seconds) {
             return '00:00:00';
         }

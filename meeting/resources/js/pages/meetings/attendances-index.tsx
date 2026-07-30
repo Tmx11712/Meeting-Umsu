@@ -141,8 +141,8 @@ return;
                                                     </Button>
                                                 ) : (
                                                     <Button asChild variant="secondary" size="sm" className="h-8">
-                                                        <Link href={`/meetings/${meeting.id}`}>
-                                                            Lihat Detail
+                                                        <Link href={`/meetings/${meeting.id}/attendance`}>
+                                                            Lihat Absensi
                                                         </Link>
                                                     </Button>
                                                 )}

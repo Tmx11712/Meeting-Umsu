@@ -126,8 +126,8 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                     </Button>
                                                 ) : (
                                                     <Button asChild variant="secondary" size="sm" className="h-8">
-                                                        <Link href={`/meetings/${meeting.id}`}>
-                                                            Lihat Detail
+                                                        <Link href={`/meetings/${meeting.id}/correction`}>
+                                                            Lihat Transkrip
                                                         </Link>
                                                     </Button>
                                                 )}

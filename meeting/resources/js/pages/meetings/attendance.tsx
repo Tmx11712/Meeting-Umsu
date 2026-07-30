@@ -560,10 +560,16 @@ export default function MeetingAttendance({ meeting }: any) {
                         </CardContent>
                     </Card>
 
-                    {/* Simpan Absensi Action */}
-                    {canManageAttendance && (
+                    {/* Action Buttons */}
+                    {canManageAttendance && meeting.current_stage === 4 ? (
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-indigo-200 dark:shadow-indigo-900/20" onClick={handleFinish}>
-                            <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi
+                            <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi & Lanjut
+                        </Button>
+                    ) : (
+                        <Button asChild className="w-full bg-slate-800 hover:bg-slate-900 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2">
+                            <Link href={`/meetings/${meeting.id}/review`}>
+                                Lanjut ke Review Notulen
+                            </Link>
                         </Button>
                     )}
                 </div>

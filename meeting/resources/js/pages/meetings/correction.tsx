@@ -1,8 +1,9 @@
 import { Head, router, Link } from '@inertiajs/react';
-import { AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, ChevronDown, ChevronRight, FileAudio2, Loader2, Play, CheckCircle2, XCircle, Upload, Mic, Clock } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -11,10 +12,7 @@ export default function MeetingCorrection({ meeting }: any) {
     const { canEdit, hasRole } = usePermissions();
     const canCorrect = canEdit('transcript');
     const isPimpinan = hasRole('Pimpinan');
-    const transcripts = meeting.transcripts || [];
-    
-    // Sort transcripts just in case
-    transcripts.sort((a: any, b: any) => a.sequence_order - b.sequence_order);
+    const recordings = meeting.recordings || [];
 
     const handleCorrection = (transcriptId: string, originalText: string, correctedText: string) => {
         if (originalText === correctedText) {
@@ -31,6 +29,8 @@ return;
     const handleFinish = () => {
         router.post(`/meetings/${meeting.id}/correction/finish`);
     };
+
+    const totalTranscripts = recordings.reduce((sum: number, rec: any) => sum + (rec.transcripts?.length || 0), 0);
 
     return (
         <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -72,34 +72,58 @@ return;
                 </Alert>
             )}
 
+            {/* Summary Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-2xl border border-white/60 dark:border-slate-800/60 p-4 shadow-sm">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Rekaman</p>
+                    <p className="text-2xl font-black text-slate-900 dark:text-white">{recordings.length}</p>
+                </div>
+                <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm rounded-2xl border border-white/60 dark:border-slate-800/60 p-4 shadow-sm">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status</p>
+                    <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 mt-1">
+                        {recordings.every((r: any) => r.status === 'completed') ? (
+                            <><CheckCircle2 className="w-4 h-4" /> Semua Selesai</>
+                        ) : (
+                            <><Loader2 className="w-4 h-4 animate-spin" /> Sebagian Diproses</>
+                        )}
+                    </p>
+                </div>
+            </div>
+
+            {/* Recording Accordions */}
+            {recordings.length === 0 ? (
+                <Card>
+                    <CardContent className="py-16 text-center">
+                        <FileAudio2 className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                        <p className="text-muted-foreground font-medium">
+                            Belum ada rekaman untuk dikoreksi. Pastikan audio sudah direkam atau diupload.
+                        </p>
+                    </CardContent>
+                </Card>
+            ) : (
+                <div className="space-y-4">
+                    {recordings.map((recording: any, idx: number) => (
+                        <RecordingAccordion
+                            key={recording.id}
+                            recording={recording}
+                            index={idx}
+                            meetingId={meeting.id}
+                            canCorrect={canCorrect}
+                            onCorrection={handleCorrection}
+                            defaultOpen={idx === 0}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {/* Footer Action */}
             <Card>
-                <CardHeader>
-                    <CardTitle>Editor Transkrip</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
-                    {transcripts.length === 0 ? (
-                        <div className="text-center py-10 text-muted-foreground">
-                            Belum ada transkrip untuk dikoreksi. Pastikan audio sudah direkam atau diupload.
-                        </div>
-                    ) : (
-                        transcripts.map((t: any) => {
-                            const latestCorrection = t.corrections?.length > 0 ? t.corrections[t.corrections.length - 1] : null;
-                            const text = latestCorrection ? latestCorrection.corrected_text : t.text;
-                            
-                            return (
-                                <TranscriptItem 
-                                    key={t.id} 
-                                    transcript={t} 
-                                    initialText={text} 
-                                    canCorrect={canCorrect}
-                                    onSave={(newText: string) => handleCorrection(t.id, text, newText)} 
-                                />
-                            );
-                        })
-                    )}
-                </CardContent>
-                <CardFooter className="flex justify-end pt-6 border-t">
-                    <Button onClick={handleFinish} disabled={transcripts.length === 0 || (!canCorrect && !isPimpinan)}>
+                <CardFooter className="flex justify-end pt-6 pb-6">
+                    <Button 
+                        onClick={handleFinish} 
+                        disabled={totalTranscripts === 0 || (!canCorrect && !isPimpinan)}
+                        className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                    >
                         Selesai & Lanjut ke Absensi
                     </Button>
                 </CardFooter>
@@ -108,7 +132,194 @@ return;
     );
 }
 
-function TranscriptItem({ transcript, initialText, onSave, canCorrect }: any) {
+// ─── Recording Accordion Component ──────────────────────────────
+
+function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrection, defaultOpen }: any) {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const transcripts = recording.transcripts || [];
+
+    const statusConfig: Record<string, { color: string; label: string; icon: any }> = {
+        completed: { color: 'emerald', label: 'Transkrip Selesai', icon: CheckCircle2 },
+        transcribing: { color: 'amber', label: 'Sedang Diproses AI', icon: Loader2 },
+        uploaded: { color: 'sky', label: 'Belum Ditranskrip', icon: Upload },
+        failed: { color: 'rose', label: 'Gagal Transkripsi', icon: XCircle },
+        recording: { color: 'blue', label: 'Sedang Merekam', icon: Mic },
+    };
+
+    const status = statusConfig[recording.status] || statusConfig.uploaded;
+    const StatusIcon = status.icon;
+
+    const formatDuration = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (!bytes) return '';
+        return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    };
+
+    const seekTo = useCallback((seconds: number) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = seconds;
+            audioRef.current.play().catch(() => {});
+        }
+    }, []);
+
+    const recordingLabel = recording.label || `Rekaman #${index + 1}`;
+    const audioStreamUrl = `/meetings/${meetingId}/recording/${recording.id}/stream`;
+
+    return (
+        <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+            isOpen 
+                ? 'bg-white dark:bg-slate-900 border-indigo-200 dark:border-indigo-800/50 shadow-md ring-1 ring-indigo-100 dark:ring-indigo-900/50' 
+                : 'bg-white/70 dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800/50'
+        }`}>
+            {/* Accordion Header */}
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center gap-4 p-5 text-left cursor-pointer group transition-colors"
+            >
+                {/* Index Badge */}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm shadow-sm transition-colors ${
+                    isOpen 
+                        ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600'
+                }`}>
+                    {index + 1}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                        <FileAudio2 className="w-4 h-4 text-indigo-500 shrink-0" />
+                        <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{recordingLabel}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+                        <span>{recording.source === 'upload' ? 'Upload Manual' : 'Rekaman Sistem'}</span>
+                        {recording.file_size ? <span>• {formatFileSize(recording.file_size)}</span> : null}
+                        {recording.duration_seconds ? <span>• {formatDuration(recording.duration_seconds)}</span> : null}
+                        <span>• {transcripts.length} segmen</span>
+                    </div>
+                </div>
+
+                {/* Status Badge */}
+                <Badge 
+                    variant="outline" 
+                    className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider border-${status.color}-200 bg-${status.color}-50 text-${status.color}-700 dark:bg-${status.color}-900/30 dark:text-${status.color}-400 dark:border-${status.color}-800/50`}
+                    style={{
+                        backgroundColor: status.color === 'emerald' ? 'rgb(236 253 245)' :
+                                        status.color === 'amber' ? 'rgb(255 251 235)' :
+                                        status.color === 'sky' ? 'rgb(240 249 255)' :
+                                        status.color === 'rose' ? 'rgb(255 241 242)' :
+                                        'rgb(239 246 255)',
+                        color: status.color === 'emerald' ? 'rgb(21 128 61)' :
+                               status.color === 'amber' ? 'rgb(180 83 9)' :
+                               status.color === 'sky' ? 'rgb(3 105 161)' :
+                               status.color === 'rose' ? 'rgb(190 18 60)' :
+                               'rgb(29 78 216)',
+                        borderColor: status.color === 'emerald' ? 'rgb(187 247 208)' :
+                                     status.color === 'amber' ? 'rgb(253 230 138)' :
+                                     status.color === 'sky' ? 'rgb(186 230 253)' :
+                                     status.color === 'rose' ? 'rgb(254 205 211)' :
+                                     'rgb(191 219 254)',
+                    }}
+                >
+                    <StatusIcon className={`w-3 h-3 mr-1.5 ${recording.status === 'transcribing' ? 'animate-spin' : ''}`} />
+                    {status.label}
+                </Badge>
+
+                {/* Chevron */}
+                <div className={`transition-transform duration-300 text-slate-400 ${isOpen ? 'rotate-0' : '-rotate-90'}`}>
+                    <ChevronDown className="w-5 h-5" />
+                </div>
+            </button>
+
+            {/* Accordion Content */}
+            {isOpen && (
+                <div className="border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2 fade-in duration-300">
+                    {/* Audio Player */}
+                    {(recording.status === 'completed' || recording.status === 'uploaded' || recording.status === 'transcribing') && (
+                        <div className="px-5 pt-4 pb-2">
+                            <div className="bg-gradient-to-r from-slate-50 to-indigo-50/50 dark:from-slate-800/50 dark:to-indigo-900/20 rounded-xl p-4 border border-slate-100 dark:border-slate-700/50">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center">
+                                        <Play className="w-4 h-4" />
+                                    </div>
+                                    <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Putar Audio</p>
+                                </div>
+                                <audio
+                                    ref={audioRef}
+                                    src={audioStreamUrl}
+                                    controls
+                                    preload="metadata"
+                                    className="w-full h-10 rounded-lg"
+                                    style={{ filter: 'contrast(1.1)' }}
+                                />
+                                <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                                    💡 Klik timestamp pada transkrip di bawah untuk langsung melompat ke bagian audio tersebut.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Transcript List */}
+                    <div className="px-5 pb-5 pt-2">
+                        {recording.status === 'transcribing' ? (
+                            <div className="flex flex-col items-center justify-center py-10 text-amber-600 dark:text-amber-400">
+                                <Loader2 className="w-8 h-8 animate-spin mb-3" />
+                                <p className="font-bold text-sm">Sedang diproses oleh AI...</p>
+                                <p className="text-xs text-slate-500 mt-1">Proses ini membutuhkan beberapa saat tergantung durasi audio.</p>
+                            </div>
+                        ) : recording.status === 'failed' ? (
+                            <div className="flex flex-col items-center justify-center py-10 text-rose-600 dark:text-rose-400">
+                                <XCircle className="w-8 h-8 mb-3" />
+                                <p className="font-bold text-sm">Transkripsi gagal</p>
+                                <p className="text-xs text-slate-500 mt-1">Silakan coba generate ulang dari halaman Humas Rekam.</p>
+                            </div>
+                        ) : transcripts.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-10 text-slate-400">
+                                <FileAudio2 className="w-8 h-8 mb-3 text-slate-300" />
+                                <p className="font-medium text-sm">Belum ada transkrip untuk rekaman ini.</p>
+                                <p className="text-xs text-slate-400 mt-1">Generate transkrip AI terlebih dahulu dari halaman Humas Rekam.</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between mb-3">
+                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                        Hasil Transkrip ({transcripts.length} segmen)
+                                    </p>
+                                </div>
+                                {transcripts.map((t: any) => {
+                                    const latestCorrection = t.corrections?.length > 0 ? t.corrections[t.corrections.length - 1] : null;
+                                    const text = latestCorrection ? latestCorrection.corrected_text : t.text;
+                                    
+                                    return (
+                                        <TranscriptItem 
+                                            key={t.id} 
+                                            transcript={t} 
+                                            initialText={text} 
+                                            canCorrect={canCorrect}
+                                            hasCorrection={!!latestCorrection}
+                                            onSave={(newText: string) => onCorrection(t.id, text, newText)}
+                                            onSeek={() => seekTo(t.timestamp_seconds)}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── Transcript Item Component ──────────────────────────────────
+
+function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, hasCorrection }: any) {
     const [isEditing, setIsEditing] = useState(false);
     const [text, setText] = useState(initialText);
 
@@ -117,37 +328,65 @@ function TranscriptItem({ transcript, initialText, onSave, canCorrect }: any) {
         setIsEditing(false);
     };
 
+    const formatTimestamp = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
     return (
-        <div className="flex gap-4 p-4 border rounded-md group hover:bg-muted/10 transition-colors">
-            <div className="w-16 flex-shrink-0 text-sm font-medium text-muted-foreground pt-1">
-                {Math.floor(transcript.timestamp_seconds / 60)}:{(transcript.timestamp_seconds % 60).toString().padStart(2, '0')}
-            </div>
-            <div className="flex-1">
+        <div className={`flex gap-3 p-3.5 rounded-xl group transition-all duration-200 ${
+            isEditing 
+                ? 'bg-indigo-50/80 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800/50 shadow-sm' 
+                : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent'
+        }`}>
+            {/* Timestamp (clickable for seek) */}
+            <button
+                onClick={onSeek}
+                className="w-14 shrink-0 text-xs font-mono font-bold text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 pt-1 cursor-pointer transition-colors flex items-center gap-1 group/ts"
+                title="Klik untuk lompat ke bagian audio ini"
+            >
+                <Clock className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
+                {formatTimestamp(transcript.timestamp_seconds)}
+            </button>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
                 {isEditing ? (
                     <div className="space-y-2">
                         <textarea 
-                            className="w-full bg-background rounded-md border border-input p-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            className="w-full bg-white dark:bg-slate-900 rounded-lg border border-indigo-200 dark:border-indigo-800 p-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 resize-none"
                             rows={3}
                             value={text}
                             onChange={e => setText(e.target.value)}
                             autoFocus
                         />
                         <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm" onClick={() => {
+                            <Button variant="outline" size="sm" className="rounded-lg h-8 text-xs" onClick={() => {
  setText(initialText); setIsEditing(false); 
 }}>Batal</Button>
-                            <Button size="sm" onClick={handleSave}>Simpan</Button>
+                            <Button size="sm" className="rounded-lg h-8 text-xs bg-indigo-600 hover:bg-indigo-700" onClick={handleSave}>Simpan Koreksi</Button>
                         </div>
                     </div>
                 ) : (
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
+                    <div className="flex items-start gap-2">
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap text-slate-700 dark:text-slate-300 flex-1">{text}</p>
+                        {hasCorrection && (
+                            <Badge variant="outline" className="shrink-0 text-[9px] rounded-full px-2 py-0.5 bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50 font-bold">
+                                Dikoreksi
+                            </Badge>
+                        )}
+                    </div>
                 )}
             </div>
+
+            {/* Edit Button */}
             {!isEditing && canCorrect && (
-                <div className="flex-shrink-0 pt-1">
+                <div className="shrink-0 pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button 
-                        variant="secondary" 
+                        variant="ghost" 
                         size="sm" 
+                        className="rounded-lg h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-bold"
                         onClick={() => setIsEditing(true)}
                     >
                         Koreksi

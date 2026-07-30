@@ -203,8 +203,8 @@ return '';
                                                 </Button>
                                             ) : (
                                                 <Button asChild size="sm" variant="secondary" className="flex-1 text-xs rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
-                                                    <Link href={`/meetings/${m.id}`}>
-                                                        Detail
+                                                    <Link href={`/meetings/${m.id}/correction`}>
+                                                        Lihat Transkrip
                                                     </Link>
                                                 </Button>
                                             )}
