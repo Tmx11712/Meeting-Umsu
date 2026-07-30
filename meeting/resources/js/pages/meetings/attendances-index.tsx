@@ -9,7 +9,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 export default function MeetingIndex({ meetings, filters }: any) {
     const { auth } = usePage().props as any;
     const [syncing, setSyncing] = useState(false);
-    const { guardAction } = usePermissions();
+    const { guardAction, canEdit } = usePermissions();
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-green-50 text-green-600 border-green-100 font-medium';
@@ -133,11 +133,19 @@ return;
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <Button asChild variant="outline" size="sm" className="h-8">
-                                                    <Link href={`/meetings/${meeting.id}/attendance`}>
-                                                        Kelola Absensi
-                                                    </Link>
-                                                </Button>
+                                                {canEdit('attendance') ? (
+                                                    <Button asChild variant="outline" size="sm" className="h-8">
+                                                        <Link href={`/meetings/${meeting.id}/attendance`}>
+                                                            Kelola Absensi
+                                                        </Link>
+                                                    </Button>
+                                                ) : (
+                                                    <Button asChild variant="secondary" size="sm" className="h-8">
+                                                        <Link href={`/meetings/${meeting.id}`}>
+                                                            Lihat Detail
+                                                        </Link>
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
+import { confirmDelete } from '@/lib/sweetalert';
 import type { UserManagementData, RoleData } from '@/types/configuration';
 
 type Props = {
@@ -153,8 +154,8 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                                                     <button 
                                                         type="button"
                                                         className="text-slate-400 hover:text-red-600 transition"
-                                                        onClick={() => {
-                                                            if (window.confirm(`Yakin ingin menghapus user ${user.name}?`)) {
+                                                        onClick={async () => {
+                                                            if (await confirmDelete(`Yakin ingin menghapus user ${user.name}?`)) {
                                                                 router.delete(`/configuration/users/${user.id}`, {
                                                                     preserveScroll: true,
                                                                 });

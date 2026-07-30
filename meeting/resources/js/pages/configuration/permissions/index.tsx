@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
+import { confirmDelete } from '@/lib/sweetalert';
 import type { PermissionData } from '@/types/configuration';
 
 type Props = {
@@ -173,8 +174,8 @@ export default function PermissionsIndex({ permissions, groups, filters }: Props
                                                     variant="ghost" 
                                                     size="icon" 
                                                     className="size-8 text-slate-400 hover:text-red-600 transition"
-                                                    onClick={() => {
-                                                        if (window.confirm(`Yakin ingin menghapus permission ${permission.name}?`)) {
+                                                    onClick={async () => {
+                                                        if (await confirmDelete(`Yakin ingin menghapus permission ${permission.name}?`)) {
                                                             router.delete(`/configuration/permissions/${permission.id}`, {
                                                                 preserveScroll: true,
                                                             });

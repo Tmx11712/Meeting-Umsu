@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
+import { confirmDelete } from '@/lib/sweetalert';
 import type { RoleData } from '@/types/configuration';
 
 type Props = {
@@ -113,8 +114,8 @@ export default function RolesIndex({ roles, filters }: Props) {
                                                     <button 
                                                         type="button"
                                                         className="text-slate-400 hover:text-red-600 transition"
-                                                        onClick={() => {
-                                                            if (window.confirm(`Yakin ingin menghapus role ${role.name}?`)) {
+                                                        onClick={async () => {
+                                                            if (await confirmDelete(`Yakin ingin menghapus role ${role.name}?`)) {
                                                                 router.delete(`/configuration/roles/${role.id}`, {
                                                                     preserveScroll: true,
                                                                 });

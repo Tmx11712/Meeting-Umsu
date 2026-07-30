@@ -37,24 +37,36 @@ export default function MeetingApproval({ meeting }: any) {
 
     if (!minutes) {
         return (
-            <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6 max-w-[1400px] mx-auto w-full bg-[#f8fafc]">
+            <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <Head title="Pimpinan" />
-                <div className="flex items-center justify-between">
+                
+                {/* Header & Breadcrumb */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Pimpinan</h1>
-                        <div className="text-sm text-slate-500 flex items-center gap-2">
+                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                            Persetujuan Pimpinan
+                        </h1>
+                        <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                             <span>Dashboard</span>
                             <span>›</span>
-                            <Link href="/meetings" className="hover:text-slate-900">Jadwal Rapat</Link>
+                            <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
                             <span>›</span>
-                            <span className="text-slate-900">Pimpinan</span>
+                            <span className="text-indigo-900 dark:text-indigo-300 font-bold">Persetujuan Pimpinan</span>
                         </div>
                     </div>
+                    <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
+                        <Link href="/meetings">
+                            Kembali ke Jadwal
+                        </Link>
+                    </Button>
                 </div>
-                <div className="bg-white px-2 py-1 rounded-xl">
+
+                {/* Stepper */}
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                     <MeetingStepper meeting={meeting} activeStage={7} />
                 </div>
-                <div className="text-center py-20 text-slate-500">
+
+                <div className="text-center py-20 text-slate-500 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     Notulen belum digenerate atau belum dikirim oleh operator.
                 </div>
             </div>
@@ -62,27 +74,31 @@ export default function MeetingApproval({ meeting }: any) {
     }
 
     return (
-        <div className="flex flex-col gap-6 p-8 max-w-[1400px] mx-auto w-full bg-[#f8fafc]">
+        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Pimpinan" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Pimpinan</h1>
-                    <div className="text-sm text-slate-500 flex items-center gap-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        Persetujuan Pimpinan
+                    </h1>
+                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-slate-900">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-slate-900">Pimpinan</span>
+                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Persetujuan Pimpinan</span>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" asChild>
-                        <Link href="/meetings">Kembali ke Jadwal Rapat</Link>
+                <div className="flex items-center gap-3">
+                    <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
+                        <Link href="/meetings">
+                            Kembali ke Jadwal
+                        </Link>
                     </Button>
                     {canManageApproval && (
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={handleApprove} disabled={approving || rejecting}>
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={handleApprove} disabled={approving || rejecting}>
                             <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
                         </Button>
                     )}
@@ -90,7 +106,7 @@ export default function MeetingApproval({ meeting }: any) {
             </div>
 
             {/* Stepper */}
-            <div className="bg-white px-2 py-1 rounded-xl">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={7} />
             </div>
 

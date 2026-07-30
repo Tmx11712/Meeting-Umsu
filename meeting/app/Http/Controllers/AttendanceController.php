@@ -70,6 +70,8 @@ class AttendanceController extends Controller
             ]
         );
 
+        event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
+
         return back();
     }
 
@@ -78,6 +80,8 @@ class AttendanceController extends Controller
         abort_unless(auth()->user()->can('attendance.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan tahapan absensi.');
 
         $meeting->update(['current_stage' => 5]); // Move to Review
+
+        event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.review', $meeting->id);
     }
@@ -103,6 +107,8 @@ class AttendanceController extends Controller
                 'recorded_by' => $user->id,
             ]
         );
+
+        event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
 
         return Inertia::render('meetings/attendance-scan', [
             'meeting' => $meeting->load('participants.user'),

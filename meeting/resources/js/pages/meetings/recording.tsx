@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { showSuccess, showError } from '@/lib/sweetalert';
 
 export default function MeetingRecording({ meeting }: any) {
     const { auth } = usePage().props as any;
@@ -41,6 +43,8 @@ export default function MeetingRecording({ meeting }: any) {
             onFinish: () => setIsCheckingApi(false)
         });
     };
+
+    useMeetingWebSocket(meeting?.id);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -86,14 +90,14 @@ return;
             const data = await response.json();
 
             if (response.ok) {
-                alert('Audio berhasil diupload dan sedang ditranskripsi.');
+                await showSuccess('Sukses', 'Audio berhasil diupload dan sedang ditranskripsi.');
                 window.location.reload();
             } else {
-                alert('Error: ' + data.message);
+                showError('Error', data.message);
             }
         } catch (error) {
             console.error(error);
-            alert('Terjadi kesalahan saat upload.');
+            showError('Gagal', 'Terjadi kesalahan saat upload.');
         } finally {
             setUploading(false);
         }
@@ -101,7 +105,7 @@ return;
 
     const uploadRecordedAudio = async (blob: Blob) => {
         if (blob.size === 0) {
-            alert('Rekaman kosong, tidak ada audio yang terekam.');
+            showError('Perhatian', 'Rekaman kosong, tidak ada audio yang terekam.');
 
             return;
         }
@@ -122,14 +126,14 @@ return;
             const data = await response.json();
 
             if (response.ok) {
-                alert('Rekaman berhasil disimpan dan sedang ditranskripsi oleh AI.');
+                await showSuccess('Sukses', 'Rekaman berhasil disimpan dan sedang ditranskripsi oleh AI.');
                 window.location.reload();
             } else {
-                alert('Error: ' + (data.message || 'Gagal menyimpan rekaman.'));
+                showError('Error', data.message || 'Gagal menyimpan rekaman.');
             }
         } catch (error) {
             console.error('Failed to upload recording', error);
-            alert('Terjadi kesalahan saat menyimpan rekaman.');
+            showError('Gagal', 'Terjadi kesalahan saat menyimpan rekaman.');
         } finally {
             setUploading(false);
         }
@@ -164,7 +168,7 @@ return;
             mediaRecorder.start(1000);
         } catch (err) {
             console.error(err);
-            alert('Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin dan mengakses via localhost/HTTPS.');
+            showError('Akses Ditolak', 'Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin dan mengakses via localhost/HTTPS.');
         }
     };
 
@@ -447,14 +451,14 @@ return;
                             <div className="flex w-full gap-4">
                                 <Button 
                                     variant="outline" 
-                                    className="flex-1 border-rose-200 hover:bg-rose-50 text-rose-600 rounded-2xl h-14 font-bold text-base transition-all"
+                                    className="flex-1 border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl h-11 font-bold text-sm transition-all"
                                     onClick={stopRecordingSession}
                                     disabled={!isRecording}
                                 >
                                     <Square className="w-5 h-5 mr-2" fill="currentColor" /> Stop
                                 </Button>
                                 <Button 
-                                    className={`flex-1 rounded-2xl h-14 font-bold text-base shadow-md transition-all ${
+                                    className={`flex-1 rounded-xl h-11 font-bold text-sm shadow-md transition-all ${
                                         isRecording 
                                         ? 'bg-amber-500 hover:bg-amber-600 text-white' 
                                         : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white hover:shadow-lg hover:-translate-y-1'
@@ -469,9 +473,10 @@ return;
                                 </Button>
                             </div>
                         ) : (
-                            <div className="text-center py-4 bg-slate-100 rounded-2xl w-full">
-                                <p className="text-sm font-bold text-slate-700 mb-1">Akses Terbatas</p>
-                                <p className="text-xs font-medium text-slate-500">Hanya Bagian Humas yang dapat merekam.</p>
+                            <div className="text-center py-8 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full">
+                                <Mic className="w-8 h-8 text-slate-400 mx-auto mb-3" />
+                                <p className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">Rapat sedang ditangani oleh Humas</p>
+                                <p className="text-xs font-medium text-slate-500">Harap tunggu di ruangan ini sampai proses rekaman dan transkripsi selesai.</p>
                             </div>
                         )}
                     </CardContent>
@@ -515,11 +520,19 @@ return;
                                 {meeting.recordings && meeting.recordings.length > 0 ? meeting.recordings.map((rec: any, idx: number) => (
                                     <div key={rec.id} className="flex items-center justify-between gap-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center gap-3 flex-1 min-w-0">
-                                            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0 font-bold text-sm">
-                                                {idx + 1}
+                                            <div className="relative">
+                                                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0 font-bold text-sm">
+                                                    {idx + 1}
+                                                </div>
+                                                {/* Traffic Light Indicator */}
+                                                <div className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-800 ${
+                                                    rec.status === 'transcribed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' :
+                                                    rec.status === 'transcribing' ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse' :
+                                                    'bg-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.8)]'
+                                                }`}></div>
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white truncate flex items-center gap-2">
                                                     Rekaman #{idx + 1}
                                                 </p>
                                                 <p className="text-xs font-medium text-slate-500">
@@ -530,28 +543,33 @@ return;
                                         </div>
                                         <div className="flex items-center gap-2 shrink-0">
                                             {rec.status === 'transcribed' ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold rounded-full px-3">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Selesai
+                                                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
+                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Transkrip Selesai
                                                 </Badge>
                                             ) : rec.status === 'transcribing' ? (
-                                                <Badge className="bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 font-bold rounded-full px-3">
-                                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Memproses
+                                                <Badge className="bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
+                                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Sedang Diproses AI
                                                 </Badge>
                                             ) : canRecord ? (
-                                                <Button
-                                                    size="sm"
-                                                    className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs px-4 h-9"
-                                                    onClick={() => {
-                                                        router.post(`/meetings/${meeting.id}/recording/transcribe`, {
-                                                            recording_id: rec.id
-                                                        });
-                                                    }}
-                                                >
-                                                    <Mic className="w-3 h-3 mr-1.5" /> Generate Transkrip AI
-                                                </Button>
+                                                <>
+                                                    <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:border-rose-800/50 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm mr-2">
+                                                        Belum Ditranskrip
+                                                    </Badge>
+                                                    <Button
+                                                        size="sm"
+                                                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-[11px] px-3 h-8 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all"
+                                                        onClick={() => {
+                                                            router.post(`/meetings/${meeting.id}/recording/transcribe`, {
+                                                                recording_id: rec.id
+                                                            });
+                                                        }}
+                                                    >
+                                                        <Mic className="w-3.5 h-3.5 mr-1.5" /> Generate Transkrip AI
+                                                    </Button>
+                                                </>
                                             ) : (
-                                                <Badge variant="outline" className="text-slate-500 font-bold rounded-full px-3">
-                                                    Menunggu
+                                                <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:border-rose-800/50 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
+                                                    Belum Ditranskrip
                                                 </Badge>
                                             )}
                                         </div>

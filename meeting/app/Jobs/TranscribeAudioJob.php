@@ -80,10 +80,17 @@ class TranscribeAudioJob implements ShouldQueue
                 $meeting->update(['current_stage' => 3]);
             }
 
-            // Broadcast via WebSocket can be added here if Reverb is used.
+            if ($meeting) {
+                event(new \App\Events\MeetingUpdated($meeting, 'transcript_ready'));
+            }
         } catch (\Exception $e) {
             Log::error('TranscribeAudioJob Error: '.$e->getMessage());
             $recording->update(['status' => 'failed']);
+            
+            $meeting = Meeting::find($recording->meeting_id);
+            if ($meeting) {
+                event(new \App\Events\MeetingUpdated($meeting, 'transcript_failed'));
+            }
 
             throw $e; // Trigger retry
         }

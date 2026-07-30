@@ -1,7 +1,7 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { MeetingTabs } from '@/components/meeting-tabs';
+import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -33,14 +33,34 @@ return;
     };
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6 max-w-6xl mx-auto w-full">
+        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Koreksi Transkrip" />
             
-            <div className="mb-2">
-                <h1 className="text-2xl font-bold tracking-tight">{meeting.title}</h1>
+            {/* Header & Breadcrumb */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+                <div>
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        Koreksi Transkrip
+                    </h1>
+                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
+                        <span>Dashboard</span>
+                        <span>›</span>
+                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <span>›</span>
+                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Koreksi Transkrip</span>
+                    </div>
+                </div>
+                <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
+                    <Link href="/meetings">
+                        Kembali ke Jadwal
+                    </Link>
+                </Button>
             </div>
 
-            <MeetingTabs meeting={meeting} activeTab="correction" />
+            {/* Stepper */}
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+                <MeetingStepper meeting={meeting} activeStage={4} />
+            </div>
 
             {!canCorrect && (
                 <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">

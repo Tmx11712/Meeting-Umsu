@@ -99,7 +99,7 @@ export function AppSidebar() {
     const page = usePage<any>();
     const { isCurrentUrl } = useCurrentUrl();
     const getInitials = useInitials();
-    const { isAdmin, guardAction } = usePermissions();
+    const { isAdmin, guardAction, canEdit, hasRole } = usePermissions();
 
     const user = page.props.auth?.user;
     const roles: string[] = page.props.auth?.roles || [];

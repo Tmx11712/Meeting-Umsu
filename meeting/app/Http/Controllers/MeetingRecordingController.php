@@ -45,6 +45,8 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
+        event(new \App\Events\MeetingUpdated($meeting, 'recording_started'));
+
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
 
@@ -78,6 +80,8 @@ class MeetingRecordingController extends Controller
             'current_stage' => max($meeting->current_stage, 3),
         ]);
 
+        event(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
+
         return redirect()->back()->with('success', 'Transkripsi AI sedang diproses. Harap tunggu beberapa saat.');
     }
 
@@ -89,6 +93,8 @@ class MeetingRecordingController extends Controller
             'current_stage' => 3,
             'status' => 'berlangsung',
         ]);
+
+        event(new \App\Events\MeetingUpdated($meeting, 'recording_finished'));
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');

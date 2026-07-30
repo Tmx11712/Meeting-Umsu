@@ -31,7 +31,7 @@ return '#';
     };
 
     return (
-        <div className="w-full py-4 mb-6 overflow-x-auto">
+        <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <div className="flex items-center justify-between min-w-[800px]">
                 {steps.map((step, index) => {
                     const isActive = step.id === activeStage;
@@ -45,10 +45,10 @@ return '#';
                                 className={`flex items-center gap-3 shrink-0 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                             >
                                 <div className={`
-                                    flex items-center justify-center w-10 h-10 shrink-0 rounded-full border-2 font-semibold text-sm transition-colors
+                                    flex items-center justify-center w-10 h-10 shrink-0 rounded-full border-2 font-semibold text-sm transition-colors z-10 relative
                                     ${isActive ? 'border-blue-600 bg-blue-600 text-white' : 
-                                      isCompleted ? 'border-green-500 bg-transparent text-green-500' : 
-                                      'border-slate-200 dark:border-slate-700 bg-transparent text-slate-400'}
+                                      isCompleted ? 'border-green-500 bg-white dark:bg-slate-900 text-green-500' : 
+                                      'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-400'}
                                 `}>
                                     {isCompleted ? <Check className="w-5 h-5" /> : step.id}
                                 </div>

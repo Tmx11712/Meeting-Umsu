@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
+    const { canEdit } = usePermissions();
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-green-50 text-green-600 border-green-100 font-medium';
@@ -117,11 +118,19 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <Button asChild variant="outline" size="sm" className="h-8">
-                                                    <Link href={`/meetings/${meeting.id}/correction`}>
-                                                        Mulai Koreksi
-                                                    </Link>
-                                                </Button>
+                                                {canEdit('transcript') ? (
+                                                    <Button asChild variant="outline" size="sm" className="h-8">
+                                                        <Link href={`/meetings/${meeting.id}/correction`}>
+                                                            Mulai Koreksi
+                                                        </Link>
+                                                    </Button>
+                                                ) : (
+                                                    <Button asChild variant="secondary" size="sm" className="h-8">
+                                                        <Link href={`/meetings/${meeting.id}`}>
+                                                            Lihat Detail
+                                                        </Link>
+                                                    </Button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))

@@ -1,7 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, Users, Eye, QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +25,17 @@ export default function MeetingAttendance({ meeting }: any) {
     const [deptFilter, setDeptFilter] = useState('Semua Departemen');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
+
+    // Realtime polling for attendance (every 5 seconds)
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({
+                only: ['meeting'],
+            });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const handleManualAttendance = (userId: string, status: string) => {
         router.post(`/meetings/${meeting.id}/attendance/manual`, {
@@ -104,35 +115,32 @@ export default function MeetingAttendance({ meeting }: any) {
     const unrecordedParticipants = tableData.filter((r: any) => r.status === 'Belum' || r.status === 'Tidak Hadir');
 
     return (
-        <div className="flex flex-col gap-6 p-8 max-w-[1400px] mx-auto w-full bg-slate-50/50 dark:bg-slate-900/50">
-            <Head title="Absensi" />
+        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <Head title="Absensi Peserta" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-1">Absensi</h1>
-                    <div className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        Absensi Peserta
+                    </h1>
+                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-slate-900 dark:hover:text-white">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-slate-900 dark:text-white">Absensi</span>
+                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Absensi Peserta</span>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" asChild className="bg-glass shadow-soft border-white/50 backdrop-blur-md rounded-xl">
-                        <Link href="/meetings">Kembali ke Jadwal Rapat</Link>
-                    </Button>
-                    {canManageAttendance && (
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-soft rounded-xl transition-all" onClick={handleFinish}>
-                            <CheckCircle2 className="w-4 h-4 mr-2" /> Simpan Absensi
-                        </Button>
-                    )}
-                </div>
+                <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
+                    <Link href="/meetings">
+                        Kembali ke Jadwal
+                    </Link>
+                </Button>
             </div>
 
             {/* Stepper */}
-            <div className="bg-glass border border-white/40 shadow-soft backdrop-blur-md px-3 py-2 rounded-2xl">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={5} />
             </div>
 
@@ -551,6 +559,13 @@ export default function MeetingAttendance({ meeting }: any) {
                             <p className="text-[10px] text-slate-400 text-right mt-2">0 / 500 karakter</p>
                         </CardContent>
                     </Card>
+
+                    {/* Simpan Absensi Action */}
+                    {canManageAttendance && (
+                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-indigo-200 dark:shadow-indigo-900/20" onClick={handleFinish}>
+                            <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

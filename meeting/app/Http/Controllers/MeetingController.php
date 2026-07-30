@@ -113,8 +113,8 @@ class MeetingController extends Controller
     {
         abort_unless(auth()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
 
-        $meeting->delete();
+        $meeting->forceDelete();
 
-        return redirect()->back()->with('success', 'Rapat berhasil dihapus.');
+        return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen.');
     }
 }

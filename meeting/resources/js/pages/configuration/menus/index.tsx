@@ -16,6 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
+import { confirmDelete } from '@/lib/sweetalert';
 import type { MenuData } from '@/types/configuration';
 
 type Props = {
@@ -213,8 +214,8 @@ return null;
                                                     variant="ghost" 
                                                     size="icon" 
                                                     className="size-8 text-slate-400 hover:text-red-600 transition"
-                                                    onClick={() => {
-                                                        if (window.confirm(`Yakin ingin menghapus menu ${menu.name}?`)) {
+                                                    onClick={async () => {
+                                                        if (await confirmDelete(`Yakin ingin menghapus menu ${menu.name}?`)) {
                                                             router.delete(`/configuration/menus/${menu.id}`, {
                                                                 preserveScroll: true,
                                                             });

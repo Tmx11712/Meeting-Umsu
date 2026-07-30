@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
+import { confirmDelete } from '@/lib/sweetalert';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
@@ -186,12 +187,12 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                     </Link>
                                                     <button 
                                                         className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
-                                                        onClick={() => {
+                                                        onClick={async () => {
                                                             if (!guardAction('meeting')) {
 return;
 }
 
-                                                            if (confirm('Yakin ingin menghapus rapat "' + meeting.title + '"?')) {
+                                                            if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
                                                                 });
