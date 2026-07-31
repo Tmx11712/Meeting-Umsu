@@ -54,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('meetings/{meeting}/attendance/manual', [AttendanceController::class, 'storeManual'])->name('meetings.attendance.manual');
     Route::post('meetings/{meeting}/attendance/finish', [AttendanceController::class, 'finish'])->name('meetings.attendance.finish');
     Route::get('meetings/{meeting}/scan', [AttendanceController::class, 'scan'])->name('meetings.attendance.scan');
+    Route::post('meetings/{meeting}/attendance/sync', [AttendanceController::class, 'syncIrvanCloud'])->name('meetings.attendance.sync');
 
     // Review & Minute
     Route::get('minutes', [MeetingMinuteController::class, 'index'])->name('minutes.index');

@@ -31,16 +31,31 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Realtime polling for attendance (every 5 seconds)
+    // Realtime polling specifically for IrvanCloud (UMSU Employee) QR Scans
     useEffect(() => {
-        const interval = setInterval(() => {
-            router.reload({
-                only: ['meeting'],
-            });
+        if (!isIrvanCloud) return;
+
+        const interval = setInterval(async () => {
+            try {
+                // Use fetch to silently pull latest data from IrvanCloud without triggering Inertia loading bar
+                await fetch(`/meetings/${meeting.id}/attendance/sync`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': (document.head.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
+                    }
+                });
+                
+                // Then reload the page data silently
+                router.reload({ only: ['meeting'] });
+            } catch (e) {
+                console.error("Failed to sync attendance from IrvanCloud", e);
+            }
         }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [isIrvanCloud, meeting.id]);
+
+    // Removed polling in favor of true real-time WebSockets via useMeetingWebSocket
 
     const handleManualAttendance = (userId: string, status: string) => {
         router.post(`/meetings/${meeting.id}/attendance/manual`, {
@@ -171,7 +186,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
             )}
 
             {/* Top Cards Row */}
-            <div className="grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-6">
+            <div className={isIrvanCloud ? "grid md:grid-cols-[1.2fr_1.5fr] gap-6" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-6"}>
                 
                 {/* Informasi Rapat */}
                 <MeetingInfoCard 

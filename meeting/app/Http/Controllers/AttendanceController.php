@@ -7,6 +7,7 @@ use App\Models\MeetingAttendance;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\IrvanCloudSyncService;
 
 class AttendanceController extends Controller
 {
@@ -114,5 +115,16 @@ class AttendanceController extends Controller
             'meeting' => $meeting->load('participants.user'),
             'message' => 'Absensi berhasil dicatat. Selamat datang, '.$user->name.'!',
         ]);
+    }
+
+    public function syncIrvanCloud(Meeting $meeting, IrvanCloudSyncService $syncService)
+    {
+        abort_unless(auth()->user()->can('attendance.create') || auth()->user()->can('attendance.update'), 403);
+
+        if ($meeting->source === 'irvan_cloud' && $meeting->external_id) {
+            $syncService->syncEventDetails($meeting->external_id, $meeting);
+        }
+
+        return response()->json(['success' => true]);
     }
 }
