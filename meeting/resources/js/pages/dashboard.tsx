@@ -151,7 +151,7 @@ return '';
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-6 pb-6 items-start min-h-[500px]">
                     
                     {/* Column 1: Recording */}
-                    <div className="flex flex-col gap-4 bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-[2rem] border border-blue-100/50 dark:border-blue-800/30 h-full backdrop-blur-sm">
+                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
                         <div className="flex items-center justify-between px-2 mb-1">
                             <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                 <span className="p-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg">
@@ -163,12 +163,12 @@ return '';
                         </div>
                         <div className="flex flex-col gap-4 overflow-y-auto pr-1">
                             {pipelines.recording.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border-0 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1 w-full bg-blue-500"></div>
-                                    <CardContent className="p-5 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-900 dark:text-white leading-snug">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                <Card key={m.id} className="p-0 gap-0 border border-blue-100 dark:border-blue-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                    <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-cyan-400"></div>
+                                    <CardContent className="p-4 flex flex-col gap-3">
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{m.title}</h4>
+                                        <div className="flex items-center gap-2 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-md border border-blue-100/50 dark:border-blue-800/50">
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
                                             {formatDate(m.date)} • {m.start_time}
                                         </div>
                                         <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
@@ -193,7 +193,7 @@ return '';
                     </div>
 
                     {/* Column 2: Correction & Attendance */}
-                    <div className="flex flex-col gap-4 bg-orange-50/50 dark:bg-orange-900/10 p-4 rounded-[2rem] border border-orange-100/50 dark:border-orange-800/30 h-full backdrop-blur-sm">
+                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
                         <div className="flex items-center justify-between px-2 mb-1">
                             <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                 <span className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 rounded-lg">
@@ -205,12 +205,12 @@ return '';
                         </div>
                         <div className="flex flex-col gap-4 overflow-y-auto pr-1">
                             {pipelines.correction.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border-0 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1 w-full bg-orange-500"></div>
-                                    <CardContent className="p-5 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-900 dark:text-white leading-snug">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                <Card key={m.id} className="p-0 gap-0 border border-orange-100 dark:border-orange-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-orange-200 dark:hover:border-orange-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                    <div className="h-1.5 w-full bg-gradient-to-r from-orange-400 to-amber-400"></div>
+                                    <CardContent className="p-4 flex flex-col gap-3">
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{m.title}</h4>
+                                        <div className="flex items-center gap-2 text-xs font-medium text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/30 px-2.5 py-1.5 rounded-md border border-orange-100/50 dark:border-orange-800/50">
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
                                             {formatDate(m.date)} • {m.start_time}
                                         </div>
                                         <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700 flex gap-2">
@@ -242,7 +242,7 @@ return '';
                     </div>
 
                     {/* Column 3: Review */}
-                    <div className="flex flex-col gap-4 bg-purple-50/50 dark:bg-purple-900/10 p-4 rounded-[2rem] border border-purple-100/50 dark:border-purple-800/30 h-full backdrop-blur-sm">
+                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
                         <div className="flex items-center justify-between px-2 mb-1">
                             <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                 <span className="p-1.5 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg">
@@ -254,12 +254,12 @@ return '';
                         </div>
                         <div className="flex flex-col gap-4 overflow-y-auto pr-1">
                             {pipelines.review.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border-0 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1 w-full bg-purple-500"></div>
-                                    <CardContent className="p-5 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-900 dark:text-white leading-snug">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                <Card key={m.id} className="p-0 gap-0 border border-purple-100 dark:border-purple-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                    <div className="h-1.5 w-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                                    <CardContent className="p-4 flex flex-col gap-3">
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{m.title}</h4>
+                                        <div className="flex items-center gap-2 text-xs font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/30 px-2.5 py-1.5 rounded-md border border-purple-100/50 dark:border-purple-800/50">
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
                                             {formatDate(m.date)}
                                         </div>
                                         <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
@@ -284,7 +284,7 @@ return '';
                     </div>
 
                     {/* Column 4: Approval */}
-                    <div className="flex flex-col gap-4 bg-emerald-50/50 dark:bg-emerald-900/10 p-4 rounded-[2rem] border border-emerald-100/50 dark:border-emerald-800/30 h-full backdrop-blur-sm">
+                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
                         <div className="flex items-center justify-between px-2 mb-1">
                             <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                 <span className="p-1.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-lg">
@@ -296,12 +296,12 @@ return '';
                         </div>
                         <div className="flex flex-col gap-4 overflow-y-auto pr-1">
                             {pipelines.approval.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border-0 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1 w-full bg-emerald-500"></div>
-                                    <CardContent className="p-5 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-900 dark:text-white leading-snug">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                <Card key={m.id} className="p-0 gap-0 border border-emerald-100 dark:border-emerald-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-emerald-200 dark:hover:border-emerald-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                    <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+                                    <CardContent className="p-4 flex flex-col gap-3">
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{m.title}</h4>
+                                        <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1.5 rounded-md border border-emerald-100/50 dark:border-emerald-800/50">
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
                                             {formatDate(m.date)}
                                         </div>
                                         <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
@@ -326,7 +326,7 @@ return '';
                     </div>
 
                     {/* Column 5: Finished */}
-                    <div className="flex flex-col gap-4 bg-slate-100/50 dark:bg-slate-800/20 p-4 rounded-[2rem] border border-slate-200/50 dark:border-slate-700/30 h-full backdrop-blur-sm opacity-80 hover:opacity-100 transition-opacity">
+                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm opacity-80 hover:opacity-100 transition-opacity shadow-sm">
                         <div className="flex items-center justify-between px-2 mb-1">
                             <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
                                 <span className="p-1.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg">
@@ -338,16 +338,16 @@ return '';
                         </div>
                         <div className="flex flex-col gap-4 overflow-y-auto pr-1">
                             {pipelines.finished.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border-0 shadow-sm bg-white/90 dark:bg-slate-800/90 rounded-2xl overflow-hidden">
-                                    <div className="h-1 w-full bg-slate-300 dark:bg-slate-600"></div>
-                                    <CardContent className="p-5 flex flex-col gap-3">
-                                        <h4 className="font-semibold text-slate-800 dark:text-slate-200 leading-snug">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">
-                                            <CalendarDays className="w-3.5 h-3.5" />
+                                <Card key={m.id} className="p-0 gap-0 border border-slate-200/80 dark:border-slate-700/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
+                                    <div className="h-1.5 w-full bg-gradient-to-r from-slate-400 to-gray-500"></div>
+                                    <CardContent className="p-4 flex flex-col gap-3">
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{m.title}</h4>
+                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 px-2.5 py-1.5 rounded-md border border-slate-100 dark:border-slate-800/50">
+                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
                                             {formatDate(m.date)}
                                         </div>
                                         <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                                            <Button asChild size="sm" variant="outline" className="w-full text-xs hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl border-slate-200 dark:border-slate-600">
+                                            <Button asChild size="sm" variant="outline" className="w-full text-sm font-medium hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100 rounded-xl border-slate-200 dark:border-slate-600 transition-colors">
                                                 <a href={`/meetings/${m.id}/review/pdf`} target="_blank">Unduh PDF</a>
                                             </Button>
                                         </div>

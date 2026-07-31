@@ -80,7 +80,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
 
     if (!minutes) {
         return (
-            <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <Head title="Review Notulen" />
                 
                 {/* Header & Breadcrumb */}
@@ -190,7 +190,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     }
 
     return (
-        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Review Notulen" />
             
             {/* Header & Breadcrumb */}

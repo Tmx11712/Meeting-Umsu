@@ -71,7 +71,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
     });
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex h-full flex-1 flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Jadwal Rapat" />
             
             {/* Header Section */}

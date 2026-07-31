@@ -120,7 +120,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     const unrecordedParticipants = tableData.filter((r: any) => r.status === 'Belum' || r.status === 'Tidak Hadir');
 
     return (
-        <div className="flex flex-col gap-6 p-6 lg:p-8 max-w-[1400px] mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Absensi Peserta" />
             
             {/* Header & Breadcrumb */}

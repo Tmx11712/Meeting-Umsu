@@ -219,7 +219,7 @@ export function AppSidebar() {
             <SidebarFooter className="p-4 pb-6">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white dark:hover:bg-slate-800 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:border-none">
+                        <div className="flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:bg-transparent">
                             <Avatar className="h-10 w-10 shrink-0 rounded-xl shadow-sm">
                                 <AvatarFallback
                                     className={`rounded-xl text-sm font-bold ${getRoleBadgeColor(primaryRole)}`}

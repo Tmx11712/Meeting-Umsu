@@ -18,24 +18,23 @@ export default function MeetingIndex({ meetings, filters }: any) {
     };
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 p-8 max-w-[1400px] mx-auto w-full bg-[#f8fafc]">
+        <div className="flex h-full flex-1 flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Review Notulen" />
             
-            {/* Header */}
-            <div className="flex items-center justify-between">
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight mb-1">Review Notulen</h1>
-                    <p className="text-slate-500 text-sm">Daftar rapat yang menunggu proses review notulen</p>
-                </div>
-                <div className="flex gap-3">
-                    {/* Header buttons removed since this is a specific pipeline stage view */}
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-1">
+                        Review Notulen
+                    </h1>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar rapat yang menunggu proses review notulen</p>
                 </div>
             </div>
 
-            <Card className="rounded-xl border-slate-200 shadow-sm overflow-hidden bg-white">
+            <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-0">
                     {/* Top Filters Bar */}
-                    <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100">
+                    <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input 
