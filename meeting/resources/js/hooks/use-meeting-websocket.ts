@@ -22,6 +22,7 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
                     else if (stage === 4 && !currentPath.includes('/attendance')) router.visit(`/meetings/${meetingId}/attendance`); // Koreksi finished -> go to Absensi (step 5)
                     else if (stage === 5 && !currentPath.includes('/review')) router.visit(`/meetings/${meetingId}/review`); // Absensi finished -> go to Review (step 6)
                     else if (stage === 6 && !currentPath.includes('/approval')) router.visit(`/meetings/${meetingId}/approval`); // Review finished -> go to Pimpinan (step 7)
+                    else if (stage === 7) router.visit('/dashboard'); // Pimpinan approved -> go to Dashboard
                     else router.reload({ only: ['meeting', 'meetings'] });
                 } else {
                     router.reload({ only: ['meeting', 'meetings'] });

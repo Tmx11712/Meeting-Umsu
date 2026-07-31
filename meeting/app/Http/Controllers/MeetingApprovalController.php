@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingApproval;
+use App\Events\MeetingUpdated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -49,6 +50,10 @@ class MeetingApprovalController extends Controller
                 'current_stage' => 7,
             ]);
         }
+
+        // Broadcast agar semua user yang sedang melihat halaman ini redirect ke dashboard
+        $meeting->refresh();
+        broadcast(new MeetingUpdated($meeting, 'approval'))->toOthers();
 
         return redirect()->route('dashboard')->with('success', 'Keputusan notulen berhasil disimpan.');
     }
