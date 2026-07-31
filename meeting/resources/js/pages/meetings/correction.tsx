@@ -6,13 +6,17 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions } from '@/hooks/use-permissions';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { Meeting } from '@/types/meeting';
 
-export default function MeetingCorrection({ meeting }: any) {
+export default function MeetingCorrection({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const { canEdit, hasRole } = usePermissions();
     const canCorrect = canEdit('transcript');
     const isPimpinan = hasRole('Pimpinan');
     const recordings = meeting.recordings || [];
+
+    useMeetingWebSocket(meeting?.id);
 
     const handleCorrection = (transcriptId: string, originalText: string, correctedText: string) => {
         if (originalText === correctedText) {
@@ -117,17 +121,19 @@ return;
             )}
 
             {/* Footer Action */}
-            <Card>
-                <CardFooter className="flex justify-end pt-6 pb-6">
-                    <Button 
-                        onClick={handleFinish} 
-                        disabled={totalTranscripts === 0 || (!canCorrect && !isPimpinan)}
-                        className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
-                    >
-                        Selesai & Lanjut ke Absensi
-                    </Button>
-                </CardFooter>
-            </Card>
+            {canCorrect && (
+                <Card>
+                    <CardFooter className="flex justify-end pt-6 pb-6">
+                        <Button 
+                            onClick={handleFinish} 
+                            disabled={totalTranscripts === 0}
+                            className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                        >
+                            Selesai & Lanjut ke Absensi
+                        </Button>
+                    </CardFooter>
+                </Card>
+            )}
         </div>
     );
 }

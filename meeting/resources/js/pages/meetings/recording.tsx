@@ -3,6 +3,7 @@ import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle
 import { AlertCircle } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,12 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { showSuccess, showError } from '@/lib/sweetalert';
+import { Meeting } from '@/types/meeting';
 
-export default function MeetingRecording({ meeting }: any) {
+export default function MeetingRecording({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const { auth } = usePage().props as any;
     const { canEdit } = usePermissions();
     const canRecord = canEdit('recording');
     const [isRecording, setIsRecording] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [isCheckingApi, setIsCheckingApi] = useState(false);
@@ -49,14 +52,14 @@ export default function MeetingRecording({ meeting }: any) {
     useEffect(() => {
         let interval: NodeJS.Timeout;
 
-        if (isRecording) {
+        if (isRecording && !isPaused) {
             interval = setInterval(() => {
                 setRecordingDuration(prev => prev + 1);
             }, 1000);
         }
 
         return () => clearInterval(interval);
-    }, [isRecording]);
+    }, [isRecording, isPaused]);
 
     useEffect(() => {
         // Cleanup on unmount
@@ -175,8 +178,9 @@ return;
     const stopRecordingSession = () => {
         isRecordingRef.current = false;
         setIsRecording(false);
+        setIsPaused(false);
 
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
             mediaRecorderRef.current.stop(); // This triggers onstop → uploadRecordedAudio
         }
 
@@ -186,11 +190,15 @@ return;
         }
     };
 
-    const toggleRecording = () => {
-        if (isRecording) {
-            stopRecordingSession();
+    const togglePause = () => {
+        if (!mediaRecorderRef.current || !isRecording) return;
+
+        if (isPaused) {
+            mediaRecorderRef.current.resume();
+            setIsPaused(false);
         } else {
-            startRecordingSession();
+            mediaRecorderRef.current.pause();
+            setIsPaused(true);
         }
     };
 
@@ -237,67 +245,28 @@ return;
             {/* Top Cards Row */}
             <div className="grid md:grid-cols-3 gap-6">
                 {/* Informasi Rapat */}
-                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-                    <CardHeader className="pb-4 bg-indigo-50/50 dark:bg-indigo-900/20 border-b border-indigo-100/50 dark:border-indigo-800/30">
-                        <CardTitle className="text-base font-bold flex items-center text-indigo-900 dark:text-indigo-100">
-                            <div className="p-2 bg-indigo-100 dark:bg-indigo-800 text-indigo-600 dark:text-indigo-300 rounded-xl mr-3 shadow-sm">
-                                <Calendar className="w-4 h-4" />
-                            </div>
-                            Informasi Rapat
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-5 pt-5">
-                        <div>
-                            <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Judul Rapat</p>
-                            <p className="font-bold text-slate-900 dark:text-white text-lg leading-tight">{meeting.title}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-5">
-                            <div>
-                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Tanggal</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Calendar className="w-4 h-4 mr-2 text-indigo-400" />
-                                    {meeting.date}
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Waktu</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Clock className="w-4 h-4 mr-2 text-indigo-400" />
-                                    {meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)} WIB
-                                </p>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Ruangan</p>
-                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <MapPin className="w-4 h-4 mr-2 text-indigo-400 shrink-0" />
-                                    <span className="truncate" title={meeting.location}>{meeting.location}</span>
-                                </div>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Peserta</p>
-                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Users className="w-4 h-4 mr-2 text-indigo-400 shrink-0" />
-                                    <span className="truncate">{meeting.participants?.length || 0} Peserta</span>
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                <MeetingInfoCard meeting={meeting} />
 
                 {/* Status Meeting */}
                 <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                     <CardHeader className="pb-4 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30 flex flex-row items-center justify-between">
                         <CardTitle className="text-base font-bold text-emerald-900 dark:text-emerald-100">Status Rekaman</CardTitle>
-                        <Badge variant="outline" className={`border-emerald-200 uppercase font-bold text-xs tracking-wider px-3 py-1 rounded-full ${isRecording ? 'bg-emerald-100 text-emerald-700 animate-pulse' : 'bg-slate-100 text-slate-600'}`}>
-                            {isRecording && <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />} 
-                            {isRecording ? 'LIVE' : 'STANDBY'}
+                        <Badge variant="outline" className={`border-emerald-200 uppercase font-bold text-xs tracking-wider px-3 py-1 rounded-full ${isRecording && !isPaused ? 'bg-emerald-100 text-emerald-700 animate-pulse' : isPaused ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-600'}`}>
+                            {isRecording && !isPaused && <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />}
+                            {isPaused && <div className="w-2 h-2 rounded-full bg-amber-500 mr-2" />}
+                            {isRecording && !isPaused ? 'LIVE' : isPaused ? 'PAUSED' : 'STANDBY'}
                         </Badge>
                     </CardHeader>
                     <CardContent className="space-y-6 pt-5">
-                        {isRecording ? (
+                        {isRecording && !isPaused ? (
                             <div className="bg-emerald-100/50 border border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-800 rounded-2xl p-4 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold shadow-sm">
                                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-3 animate-ping" />
                                 Perekaman Sedang Berlangsung
+                            </div>
+                        ) : isPaused ? (
+                            <div className="bg-amber-100/50 border border-amber-200 dark:bg-amber-900/30 dark:border-amber-800 rounded-2xl p-4 flex items-center justify-center text-amber-700 dark:text-amber-400 font-bold shadow-sm">
+                                <div className="w-2.5 h-2.5 rounded-full bg-amber-500 mr-3" />
+                                Perekaman Dijeda
                             </div>
                         ) : (
                             <div className="bg-slate-100/50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-center text-slate-600 dark:text-slate-400 font-bold shadow-sm">
@@ -411,27 +380,27 @@ return;
                 {/* Rekam Dari Sistem */}
                 <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden relative">
                     {/* Pulsing background effect when recording */}
-                    {isRecording && (
+                    {isRecording && !isPaused && (
                         <div className="absolute inset-0 bg-indigo-500/5 animate-pulse rounded-3xl pointer-events-none"></div>
                     )}
                     <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 relative z-10">
                         <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
                             Perekam Sistem
-                            {isRecording && <span className="flex h-3 w-3 relative"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span></span>}
+                            {isRecording && <span className="flex h-3 w-3 relative">{!isPaused && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>}<span className={`relative inline-flex rounded-full h-3 w-3 ${isPaused ? 'bg-amber-500' : 'bg-rose-500'}`}></span></span>}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col flex-1 items-center justify-center p-8 relative z-10">
-                        <h2 className={`text-6xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                        <h2 className={`text-6xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording && !isPaused ? 'text-indigo-600 dark:text-indigo-400' : isPaused ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'}`}>
                             {formatDuration(recordingDuration)}
                         </h2>
-                        <p className="text-sm font-medium text-slate-500 mb-10 bg-slate-100/50 dark:bg-slate-800/50 px-4 py-1 rounded-full">Durasi Perekaman Aktif</p>
+                        <p className={`text-sm font-medium mb-10 px-4 py-1 rounded-full ${isPaused ? 'text-amber-600 bg-amber-100/50 dark:bg-amber-900/30' : 'text-slate-500 bg-slate-100/50 dark:bg-slate-800/50'}`}>{isPaused ? 'Perekaman Dijeda' : 'Durasi Perekaman Aktif'}</p>
                         
                         {/* Fake Visualizer - Looks like a premium audio wave */}
                         <div className="flex items-center justify-center h-20 w-full gap-1.5 mb-12 overflow-hidden px-4">
                             {Array.from({ length: 32 }).map((_, i) => {
                                 // Create a dynamic curve look
                                 const heightBase = Math.sin(i / 5) * 40 + 50; 
-                                const randH = isRecording ? heightBase + (Math.sin(recordingDuration * 5 + i * 2.3) * 20) : 10;
+                                const randH = isRecording && !isPaused ? heightBase + (Math.sin(recordingDuration * 5 + i * 2.3) * 20) : isRecording && isPaused ? heightBase * 0.3 : 10;
 
                                 return (
                                     <div 
@@ -440,7 +409,7 @@ return;
                                         style={{ 
                                             height: `${Math.max(4, randH)}%`,
                                             backgroundColor: isRecording ? `hsl(230, 80%, ${60 + (i%5)*5}%)` : 'currentColor',
-                                            opacity: isRecording ? 1 : 0.1, 
+                                            opacity: isRecording && !isPaused ? 1 : isRecording && isPaused ? 0.4 : 0.1, 
                                         }}
                                     ></div>
                                 );
@@ -459,14 +428,18 @@ return;
                                 </Button>
                                 <Button 
                                     className={`flex-1 rounded-xl h-11 font-bold text-sm shadow-md transition-all ${
-                                        isRecording 
+                                        isRecording && !isPaused
                                         ? 'bg-amber-500 hover:bg-amber-600 text-white' 
+                                        : isPaused
+                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
                                         : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white hover:shadow-lg hover:-translate-y-1'
                                     }`}
-                                    onClick={toggleRecording}
+                                    onClick={isRecording ? togglePause : startRecordingSession}
                                 >
-                                    {isRecording ? (
+                                    {isRecording && !isPaused ? (
                                         <><PauseCircle className="w-5 h-5 mr-2" /> Pause</>
+                                    ) : isPaused ? (
+                                        <><Mic className="w-5 h-5 mr-2" /> Resume</>
                                     ) : (
                                         <><Mic className="w-5 h-5 mr-2" /> Start Record</>
                                     )}
@@ -526,7 +499,7 @@ return;
                                                 </div>
                                                 {/* Traffic Light Indicator */}
                                                 <div className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-800 ${
-                                                    rec.status === 'transcribed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' :
+                                                    rec.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' :
                                                     rec.status === 'transcribing' ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse' :
                                                     'bg-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.8)]'
                                                 }`}></div>
@@ -542,7 +515,7 @@ return;
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2 shrink-0">
-                                            {rec.status === 'transcribed' ? (
+                                            {rec.status === 'completed' ? (
                                                 <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
                                                     <CheckCircle2 className="w-3 h-3 mr-1" /> Transkrip Selesai
                                                 </Badge>
@@ -584,25 +557,32 @@ return;
                         </CardContent>
                     </Card>
 
-                    {/* Hasil Transkrip */}
-                    {meeting.transcripts && meeting.transcripts.length > 0 && (
-                        <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
-                            <CardHeader className="pb-3 pt-5 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30">
-                                <CardTitle className="text-sm font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4" /> Hasil Transkrip AI
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0 max-h-[300px] overflow-y-auto">
-                                <div className="p-5 space-y-3 text-sm font-mono">
-                                    {meeting.transcripts.map((t: any) => (
-                                        <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
-                                            <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
-                                            <span className="leading-relaxed">{t.text}</span>
+                    {/* Hasil Transkrip (Hanya Menampilkan Rekaman Terbaru) */}
+                    {meeting.recordings && meeting.recordings.filter((r: any) => r.transcripts?.length > 0).length > 0 && (
+                        (() => {
+                            const recordingsWithTranscripts = meeting.recordings.filter((r: any) => r.transcripts?.length > 0);
+                            const latestRecording = recordingsWithTranscripts[recordingsWithTranscripts.length - 1];
+                            
+                            return (
+                                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
+                                    <CardHeader className="pb-3 pt-5 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30">
+                                        <CardTitle className="text-sm font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
+                                            <CheckCircle2 className="w-4 h-4" /> Hasil Transkrip AI
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-0 max-h-[300px] overflow-y-auto">
+                                        <div className="p-5 space-y-3 text-sm font-mono">
+                                            {latestRecording?.transcripts?.map((t: any) => (
+                                                <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
+                                                    <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
+                                                    <span className="leading-relaxed">{t.text}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })()
                     )}
                 </div>
 
@@ -623,11 +603,7 @@ return;
                     <Button 
                         className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-12 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto"
                         onClick={() => {
-                            router.post(`/meetings/${meeting.id}/finish-recording`, {}, {
-                                onSuccess: () => {
-                                    router.visit('/dashboard');
-                                }
-                            });
+                            router.post(`/meetings/${meeting.id}/finish-recording`);
                         }}
                     >
                         Tutup Perekaman & Lanjut <CheckCircle2 className="w-5 h-5 ml-2" />

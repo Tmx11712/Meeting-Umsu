@@ -1,21 +1,67 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Eye, CheckCircle2, RotateCcw, Download, FileText, Info, Check } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Download, Eye, FileText, CheckCircle2, ChevronRight, Share2, Printer, ShieldCheck, Check, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { AlertCircle } from 'lucide-react';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { useState } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions } from '@/hooks/use-permissions';
+import { Meeting } from '@/types/meeting';
 
-export default function MeetingApproval({ meeting }: any) {
+export default function MeetingApproval({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
     const { canEdit } = usePermissions();
-    const canManageApproval = canEdit('report');
+    const canManageApproval = canEdit('approval');
     const [approving, setApproving] = useState(false);
     const [rejecting, setRejecting] = useState(false);
     const [notes, setNotes] = useState('');
+    const participants = meeting.participants || [];
+    
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editData, setEditData] = useState<any>(null);
+    const [savingEdit, setSavingEdit] = useState(false);
+
+    const formatReviewDate = (dateString?: string) => {
+        if (!dateString) return '-';
+        const d = new Date(dateString);
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const day = d.getDate();
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        const hours = String(d.getHours()).padStart(2, '0');
+        const mins = String(d.getMinutes()).padStart(2, '0');
+        return `${day} ${month} ${year} ${hours}:${mins} WIB`;
+    };
+
+    useMeetingWebSocket(meeting?.id);
+
+    const openEditModal = () => {
+        if (minutes?.content) {
+            setEditData(JSON.parse(JSON.stringify(minutes.content)));
+        } else {
+            setEditData({ pembukaan: '', pembahasan: [], keputusan: [] });
+        }
+        setEditModalOpen(true);
+    };
+
+    const saveEdit = () => {
+        setSavingEdit(true);
+        router.put(`/meetings/${meeting.id}/review`, { content: editData }, {
+            onSuccess: () => {
+                setEditModalOpen(false);
+            },
+            onFinish: () => setSavingEdit(false)
+        });
+    };
 
     const handleApprove = () => {
         setApproving(true);
@@ -31,7 +77,6 @@ export default function MeetingApproval({ meeting }: any) {
         });
     };
 
-    const participants = meeting.participants || [];
     const total = participants.length > 0 ? participants.length : 12;
     const getPct = (num: number) => total > 0 ? ((num / total) * 100).toFixed(2) : '0.00';
 
@@ -124,55 +169,12 @@ export default function MeetingApproval({ meeting }: any) {
             <div className="grid md:grid-cols-[1fr_1.5fr_1fr] gap-6">
                 
                 {/* Informasi Rapat */}
-                <Card className="rounded-xl border-slate-200 shadow-sm">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="text-base font-semibold flex items-center text-slate-900">
-                            <div className="p-1.5 bg-blue-50 text-blue-600 rounded-md mr-2">
-                                <Calendar className="w-4 h-4" />
-                            </div>
-                            Informasi Rapat
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <p className="text-xs text-slate-500 mb-1">Judul Rapat</p>
-                            <p className="font-semibold text-slate-900 text-base">{meeting.title || "-"}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-xs text-slate-500 mb-1">Tanggal</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                    {meeting.date || "-"}
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-slate-500 mb-1">Waktu</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700">
-                                    <Clock className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                    {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)} WIB` : "-"}
-                                </p>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs text-slate-500 mb-1">Ruangan / Lokasi</p>
-                                <div className="text-sm font-medium flex items-center text-slate-700">
-                                    <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                    <span className="truncate" title={meeting.location || "-"}>{meeting.location || "-"}</span>
-                                </div>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs text-slate-500 mb-1">Peserta Terdaftar</p>
-                                <div className="text-sm font-medium flex items-center text-slate-700">
-                                    <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                    <span className="truncate">{participants.length} Orang</span>
-                                </div>
-                            </div>
-                        </div>
-                        <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 mt-2">
-                            <Eye className="w-4 h-4 mr-2" /> Lihat Detail Rapat
-                        </Button>
-                    </CardContent>
-                </Card>
+                <MeetingInfoCard 
+                    meeting={meeting} 
+                    totalParticipants={participants.length} 
+                    showDetailButton={true} 
+                    className="rounded-xl border-slate-200 shadow-sm"
+                />
 
                 {/* Status Notulen */}
                 <Card className="rounded-xl border-slate-200 shadow-sm flex flex-col">
@@ -264,11 +266,16 @@ export default function MeetingApproval({ meeting }: any) {
                 
                 {/* Ringkasan Notulen */}
                 <Card className="rounded-xl border-slate-200 shadow-sm flex flex-col">
-                    <CardHeader className="pb-4 border-b border-slate-100">
+                    <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between space-y-0">
                         <CardTitle className="text-base font-semibold flex items-center text-slate-900">
                             <FileText className="w-4 h-4 mr-2 text-slate-500" />
                             Ringkasan Notulen
                         </CardTitle>
+                        {canManageApproval && (
+                            <Button variant="outline" size="sm" onClick={openEditModal} className="h-8 shadow-sm">
+                                <Edit3 className="w-3.5 h-3.5 mr-1.5" /> Edit Manual
+                            </Button>
+                        )}
                     </CardHeader>
                     <CardContent className="p-6 flex-1 text-sm text-slate-800 space-y-6">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
@@ -317,7 +324,7 @@ export default function MeetingApproval({ meeting }: any) {
                             <div>
                                 <h3 className="font-bold text-sm mb-2 text-slate-900">Tindak Lanjut</h3>
                                 <div className="space-y-2">
-                                    {minutes.action_items?.length > 0 ? minutes.action_items.map((item: any) => (
+                                    {minutes.action_items && minutes.action_items.length > 0 ? minutes.action_items.map((item: any) => (
                                         <div className="flex gap-2" key={item.id}>
                                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
                                             <p className="leading-relaxed text-sm">{item.description} (PIC: {item.pic}, Deadline: {item.deadline})</p>
@@ -326,11 +333,6 @@ export default function MeetingApproval({ meeting }: any) {
                                 </div>
                             </div>
                         </CardContent>
-                    <CardFooter className="pt-0 p-6">
-                        <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 h-10">
-                            <Eye className="w-4 h-4 mr-2" /> Lihat Notulen Lengkap
-                        </Button>
-                    </CardFooter>
                 </Card>
 
                 {/* Right Column: Documents and Approval Box */}
@@ -345,7 +347,7 @@ export default function MeetingApproval({ meeting }: any) {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {meeting.documents?.length > 0 ? meeting.documents.map((doc: any) => (
+                            {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
                                 <div key={doc.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
                                     <div className="flex items-center gap-3">
                                         <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md">
@@ -427,7 +429,7 @@ export default function MeetingApproval({ meeting }: any) {
                 
                 <div>
                     <p className="text-[10px] text-slate-400">Tanggal Review</p>
-                    <p className="text-xs font-semibold text-slate-900 mt-0.5">4 Juni 2026  11:35 WIB</p>
+                    <p className="text-xs font-semibold text-slate-900 mt-0.5">{formatReviewDate(minutes?.reviewed_at || minutes?.updated_at || meeting.updated_at)}</p>
                 </div>
                 
                 <div className="w-px h-8 bg-slate-100"></div>
@@ -437,6 +439,107 @@ export default function MeetingApproval({ meeting }: any) {
                     <p className="text-xs font-semibold text-slate-900 mt-0.5">v1.0 (Final)</p>
                 </div>
             </div>
+
+            {/* Edit Notulen Modal */}
+            <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+                <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Edit Notulen Rapat</DialogTitle>
+                    </DialogHeader>
+                    {editData && (
+                        <div className="space-y-6 py-4">
+                            <div className="space-y-2">
+                                <Label className="font-bold">Pembukaan</Label>
+                                <Textarea 
+                                    value={editData.pembukaan || ''} 
+                                    onChange={e => setEditData({...editData, pembukaan: e.target.value})}
+                                    rows={3}
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Pembahasan</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, pembahasan: [...(editData.pembahasan || []), {topik: '', narasi: ''}]})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Topik
+                                    </Button>
+                                </div>
+                                {editData.pembahasan?.map((bahas: any, idx: number) => (
+                                    <Card key={idx} className="p-4 relative">
+                                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-rose-500 hover:bg-rose-50 hover:text-rose-600" onClick={() => {
+                                            const newBahas = [...editData.pembahasan];
+                                            newBahas.splice(idx, 1);
+                                            setEditData({...editData, pembahasan: newBahas});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                        <div className="space-y-3 pr-8">
+                                            <div>
+                                                <Label className="text-xs">Topik</Label>
+                                                <Input 
+                                                    value={bahas.topik || ''} 
+                                                    onChange={e => {
+                                                        const newBahas = [...editData.pembahasan];
+                                                        newBahas[idx].topik = e.target.value;
+                                                        setEditData({...editData, pembahasan: newBahas});
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs">Narasi</Label>
+                                                <Textarea 
+                                                    value={bahas.narasi || ''} 
+                                                    onChange={e => {
+                                                        const newBahas = [...editData.pembahasan];
+                                                        newBahas[idx].narasi = e.target.value;
+                                                        setEditData({...editData, pembahasan: newBahas});
+                                                    }}
+                                                    rows={3}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Keputusan</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, keputusan: [...(editData.keputusan || []), '']})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Keputusan
+                                    </Button>
+                                </div>
+                                {editData.keputusan?.map((kep: string, idx: number) => (
+                                    <div key={idx} className="flex gap-2 items-center">
+                                        <div className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></div>
+                                        <Input 
+                                            value={kep} 
+                                            onChange={e => {
+                                                const newKep = [...editData.keputusan];
+                                                newKep[idx] = e.target.value;
+                                                setEditData({...editData, keputusan: newKep});
+                                            }}
+                                        />
+                                        <Button variant="ghost" size="icon" className="text-rose-500 shrink-0" onClick={() => {
+                                            const newKep = [...editData.keputusan];
+                                            newKep.splice(idx, 1);
+                                            setEditData({...editData, keputusan: newKep});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
+                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={saveEdit} disabled={savingEdit}>
+                            {savingEdit ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
         </div>
     );

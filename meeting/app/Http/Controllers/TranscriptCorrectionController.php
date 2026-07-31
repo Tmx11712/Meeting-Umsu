@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingTranscriptCorrection;
+use App\Events\MeetingUpdated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -76,6 +77,9 @@ class TranscriptCorrectionController extends Controller
         );
 
         $meeting->update(['current_stage' => 4]); // Move to Absensi
+
+        // Broadcast event to trigger auto-redirect on frontend
+        broadcast(new MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.attendance', $meeting->id);
     }

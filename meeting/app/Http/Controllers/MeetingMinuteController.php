@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
+use App\Events\MeetingUpdated;
 use App\Services\OpenAiTranscriptionService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -136,6 +137,8 @@ class MeetingMinuteController extends Controller
                 'reviewed_at' => now(),
             ]);
             $meeting->update(['current_stage' => 6]); // Move to Pimpinan
+            
+            event(new MeetingUpdated($meeting, 'stage_changed'));
         }
 
         return redirect()->route('dashboard')->with('success', 'Notulen dikirim ke pimpinan.');

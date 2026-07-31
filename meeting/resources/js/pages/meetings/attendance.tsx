@@ -8,11 +8,16 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
+import { Meeting } from '@/types/meeting';
 
-export default function MeetingAttendance({ meeting }: any) {
-    const { canEdit } = usePermissions();
+export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, signaturePath, hasSigned, total, present }: { meeting: Meeting, [key: string]: any }) {
+    const { canEdit, hasRole } = usePermissions();
     const { flash } = usePage().props as any;
     const canManageAttendance = canEdit('attendance');
+    
+    useMeetingWebSocket(meeting?.id);
     const participants = meeting.participants || [];
     const attendances = meeting.attendances || [];
     const isIrvanCloud = meeting.source === 'irvan_cloud';
@@ -65,14 +70,14 @@ export default function MeetingAttendance({ meeting }: any) {
         }
     };
 
-    const total = participants.length;
+    const totalParticipants = participants.length;
     const hadir = attendances.filter((a: any) => a.status === 'hadir').length;
     const terlambat = attendances.filter((a: any) => a.status === 'terlambat').length;
-    const tidakHadir = total - hadir - terlambat;
+    const tidakHadir = totalParticipants - hadir - terlambat;
 
-    const getHadirPct = () => total > 0 ? ((hadir / total) * 100).toFixed(2) : '0.00';
-    const getTerlambatPct = () => total > 0 ? ((terlambat / total) * 100).toFixed(2) : '0.00';
-    const getTidakHadirPct = () => total > 0 ? ((tidakHadir / total) * 100).toFixed(2) : '0.00';
+    const getHadirPct = () => totalParticipants > 0 ? ((hadir / totalParticipants) * 100).toFixed(2) : '0.00';
+    const getTerlambatPct = () => totalParticipants > 0 ? ((terlambat / totalParticipants) * 100).toFixed(2) : '0.00';
+    const getTidakHadirPct = () => totalParticipants > 0 ? ((tidakHadir / totalParticipants) * 100).toFixed(2) : '0.00';
 
     // Map table data and fix user_id & status bugs
     const tableData = participants.map((p: any) => {
@@ -169,59 +174,12 @@ export default function MeetingAttendance({ meeting }: any) {
             <div className="grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-6">
                 
                 {/* Informasi Rapat */}
-                <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl flex flex-col">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="text-base font-semibold flex items-center text-slate-800 dark:text-slate-200">
-                            <div className="p-1.5 bg-indigo-50/80 text-indigo-600 rounded-md mr-2 shadow-sm border border-indigo-100/50">
-                                <Calendar className="w-4 h-4" />
-                            </div>
-                            Informasi Rapat
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4 flex-1 flex flex-col">
-                        <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Judul Rapat</p>
-                            <p className="font-semibold text-slate-900 dark:text-white text-base">{meeting.title}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 flex-1">
-                            <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Tanggal</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                    {meeting.date || '4 Juni 2026'}
-                                </p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Waktu</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Clock className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                    {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)}` : '09:00 - 11:00'} WIB
-                                </p>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Ruangan / Lokasi</p>
-                                <div className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                    <span className="truncate" title={meeting.location || 'Rapat A - Lantai 3'}>
-                                        {meeting.location || 'Rapat A - Lantai 3'}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Total Peserta</p>
-                                <p className="text-sm font-medium flex items-center text-slate-700 dark:text-slate-300">
-                                    <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                    {total} Orang
-                                </p>
-                            </div>
-                        </div>
-                        <Button variant="outline" asChild className="w-full text-indigo-600 border-indigo-200/60 hover:bg-indigo-50/50 bg-white/50 backdrop-blur-sm rounded-xl mt-auto transition-all">
-                            <Link href={`/meetings/${meeting.id}`}>
-                                <Eye className="w-4 h-4 mr-2" /> Lihat Detail Rapat
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
+                <MeetingInfoCard 
+                    meeting={meeting} 
+                    totalParticipants={totalParticipants} 
+                    showDetailButton={true} 
+                    className="border-white/50 bg-glass backdrop-blur-xl" 
+                />
 
                 {/* Ringkasan Absensi */}
                 <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl">
@@ -247,7 +205,7 @@ export default function MeetingAttendance({ meeting }: any) {
                             </div>
                             <div className="bg-indigo-50/60 rounded-xl p-3 text-center border border-indigo-100/50 shadow-sm backdrop-blur-sm">
                                 <p className="text-xs text-indigo-700 font-medium mb-1">Total Peserta</p>
-                                <p className="text-2xl font-bold text-indigo-600">{total}</p>
+                                <p className="text-2xl font-bold text-indigo-600">{totalParticipants}</p>
                                 <p className="text-[10px] text-transparent mt-1">-</p>
                             </div>
                         </div>
@@ -257,9 +215,9 @@ export default function MeetingAttendance({ meeting }: any) {
                             <div className="relative w-28 h-28 drop-shadow-sm">
                                 <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
                                     <circle cx="50" cy="50" r="40" stroke="rgba(241, 245, 249, 0.5)" strokeWidth="20" fill="none" />
-                                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="20" fill="none" strokeDasharray={`${hadir/total*251 || 0} 251`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f59e0b" strokeWidth="20" fill="none" strokeDasharray={`${terlambat/total*251 || 0} 251`} strokeDashoffset={`-${hadir/total*251 || 0}`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f43f5e" strokeWidth="20" fill="none" strokeDasharray={`${tidakHadir/total*251 || 0} 251`} strokeDashoffset={`-${(hadir+terlambat)/total*251 || 0}`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="20" fill="none" strokeDasharray={`${hadir/totalParticipants*251 || 0} 251`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#f59e0b" strokeWidth="20" fill="none" strokeDasharray={`${terlambat/totalParticipants*251 || 0} 251`} strokeDashoffset={`-${hadir/totalParticipants*251 || 0}`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#f43f5e" strokeWidth="20" fill="none" strokeDasharray={`${tidakHadir/totalParticipants*251 || 0} 251`} strokeDashoffset={`-${(hadir+terlambat)/totalParticipants*251 || 0}`} />
                                     <circle cx="50" cy="50" r="25" fill="rgba(255, 255, 255, 0.5)" />
                                 </svg>
                             </div>
@@ -561,11 +519,12 @@ export default function MeetingAttendance({ meeting }: any) {
                     </Card>
 
                     {/* Action Buttons */}
-                    {canManageAttendance && meeting.current_stage === 4 ? (
+                    {canManageAttendance && meeting.current_stage === 4 && (
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-indigo-200 dark:shadow-indigo-900/20" onClick={handleFinish}>
                             <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi & Lanjut
                         </Button>
-                    ) : (
+                    )}
+                    {canManageAttendance && meeting.current_stage > 4 && (
                         <Button asChild className="w-full bg-slate-800 hover:bg-slate-900 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2">
                             <Link href={`/meetings/${meeting.id}/review`}>
                                 Lanjut ke Review Notulen

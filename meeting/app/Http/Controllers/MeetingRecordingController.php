@@ -13,7 +13,11 @@ class MeetingRecordingController extends Controller
 {
     public function show(Meeting $meeting)
     {
-        $meeting->load('recordings', 'participants.user', 'transcripts');
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
 
         return Inertia::render('meetings/recording', [
             'meeting' => $meeting,
@@ -97,7 +101,7 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
-        event(new \App\Events\MeetingUpdated($meeting, 'recording_finished'));
+        event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');

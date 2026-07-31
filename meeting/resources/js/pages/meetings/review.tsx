@@ -1,8 +1,11 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2 } from 'lucide-react';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { AlertCircle, Info } from 'lucide-react';
 import { useState } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
+import { Meeting } from '@/types/meeting';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,12 +16,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { usePermissions } from '@/hooks/use-permissions';
 
-export default function MeetingReview({ meeting }: any) {
+export default function MeetingReview({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
     const { canEdit, hasRole } = usePermissions();
-    const canManageReview = canEdit('minutes');
+    const canManageReview = canEdit('review');
     const isPimpinan = hasRole('Pimpinan');
+    const participants = meeting.participants || [];
+
+    useMeetingWebSocket(meeting?.id);
+
     const [sending, setSending] = useState(false);
     
     // Edit Modal States
@@ -63,7 +70,6 @@ export default function MeetingReview({ meeting }: any) {
     };
 
     // Dummy Attendance Logic
-    const participants = meeting.participants || [];
     const attendances = meeting.attendances || [];
     const total = participants.length > 0 ? participants.length : 12;
     const hadir = attendances.length > 0 ? attendances.filter((a: any) => a.status === 'hadir').length : (participants.length > 0 ? 0 : 10);
@@ -240,55 +246,12 @@ export default function MeetingReview({ meeting }: any) {
                 {/* Kiri: Info, Ringkasan AI, Dokumen */}
                 <div className="space-y-6">
                     {/* Informasi Rapat */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold flex items-center text-slate-900">
-                                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-md mr-2">
-                                    <Calendar className="w-4 h-4" />
-                                </div>
-                                Informasi Rapat
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <p className="text-xs text-slate-500 mb-1">Judul Rapat</p>
-                                <p className="font-semibold text-slate-900 text-base">{meeting.title || "-"}</p>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-xs text-slate-500 mb-1">Tanggal</p>
-                                    <p className="text-sm font-medium flex items-center text-slate-700">
-                                        <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                        {meeting.date || "-"}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-slate-500 mb-1">Waktu</p>
-                                    <p className="text-sm font-medium flex items-center text-slate-700">
-                                        <Clock className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                                        {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)} WIB` : "-"}
-                                    </p>
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-xs text-slate-500 mb-1">Ruangan / Lokasi</p>
-                                    <div className="text-sm font-medium flex items-center text-slate-700">
-                                        <MapPin className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                        <span className="truncate" title={meeting.location || "-"}>{meeting.location || "-"}</span>
-                                    </div>
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-xs text-slate-500 mb-1">Peserta Terdaftar</p>
-                                    <div className="text-sm font-medium flex items-center text-slate-700">
-                                        <Users className="w-3.5 h-3.5 mr-1.5 text-slate-400 shrink-0" />
-                                        <span className="truncate">{participants.length} Orang</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 mt-2">
-                                <Eye className="w-4 h-4 mr-2" /> Lihat Detail Rapat
-                            </Button>
-                        </CardContent>
-                    </Card>
+                    <MeetingInfoCard 
+                        meeting={meeting} 
+                        totalParticipants={participants.length} 
+                        showDetailButton={true} 
+                        className="rounded-xl border-slate-200 shadow-sm"
+                    />
 
                     {/* Ringkasan Otomatis */}
                     <Card className="rounded-xl border-slate-200 shadow-sm">
@@ -327,7 +290,7 @@ export default function MeetingReview({ meeting }: any) {
                             <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {meeting.documents?.length > 0 ? meeting.documents.map((doc: any) => (
+                            {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
                                 <div key={doc.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
                                     <div className="flex items-center gap-3">
                                         <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md">
@@ -431,7 +394,7 @@ export default function MeetingReview({ meeting }: any) {
                             <div>
                                 <h3 className="font-bold text-sm mb-2 text-slate-900">Tindak Lanjut</h3>
                                 <div className="space-y-2">
-                                    {minutes.action_items?.length > 0 ? minutes.action_items.map((item: any) => (
+                                    {minutes.action_items && minutes.action_items.length > 0 ? minutes.action_items.map((item: any) => (
                                         <div className="flex gap-2" key={item.id}>
                                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
                                             <p className="leading-relaxed text-sm">{item.description} (PIC: {item.pic}, Deadline: {item.deadline})</p>

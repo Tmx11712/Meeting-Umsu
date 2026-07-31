@@ -1,6 +1,6 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Calendar, MapPin, Clock, ArrowRight, Mic, PenTool, Users, FileText, CheckCircle, Lock } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -46,6 +46,25 @@ export default function TaskDashboard({ meetings, task }: any) {
     }
 
     const TaskIcon = IconMap[task.icon] || FileText;
+
+    // Real-time: listen for global meetings updates via WebSocket
+    useEffect(() => {
+        const channel = (window as any).Echo?.channel('meetings');
+        
+        if (channel) {
+            channel.listen('MeetingsListUpdated', (e: any) => {
+                console.log('Tasks real-time update:', e);
+                router.reload({ only: ['meetings', 'task'] });
+            });
+        }
+
+        return () => {
+            if (channel) {
+                channel.stopListening('MeetingsListUpdated');
+                (window as any).Echo?.leaveChannel('meetings');
+            }
+        };
+    }, []);
 
     return (
         <div className="flex h-full flex-1 flex-col gap-6 p-8 max-w-7xl mx-auto w-full">

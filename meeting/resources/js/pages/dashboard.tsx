@@ -1,4 +1,5 @@
-import { Head, Link, usePage, usePoll } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
 import { CalendarDays, CheckCircle, ClipboardCheck, PieChart, TrendingUp, Plus, Mic, FileText, Users, PenTool, Check, ArrowRight, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +26,25 @@ type Props = {
 
 export default function Dashboard({ stats, pipelines }: Props) {
     const { guardAction, hasRole, canEdit, isAdmin } = usePermissions();
-    usePoll(5000); // Polling every 5 seconds
+
+    // Real-time: listen for global meetings updates via WebSocket
+    useEffect(() => {
+        const channel = (window as any).Echo?.channel('meetings');
+        
+        if (channel) {
+            channel.listen('MeetingsListUpdated', (e: any) => {
+                console.log('Dashboard real-time update:', e);
+                router.reload({ only: ['stats', 'pipelines'] });
+            });
+        }
+
+        return () => {
+            if (channel) {
+                channel.stopListening('MeetingsListUpdated');
+                (window as any).Echo?.leaveChannel('meetings');
+            }
+        };
+    }, []);
 
     // Helper to format date
     const formatDate = (dateStr: string) => {

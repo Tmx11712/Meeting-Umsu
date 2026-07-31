@@ -111,6 +111,10 @@ class IrvanCloudSyncService
                 $this->syncEventDetails($event['id'], $meeting);
             }
 
+            if ($syncedCount > 0) {
+                broadcast(new \App\Events\MeetingsListUpdated('Terdapat ' . $syncedCount . ' rapat baru dari sinkronisasi Irvan Cloud'))->toOthers();
+            }
+
             return ['success' => true, 'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud."];
 
         } catch (\Exception $e) {

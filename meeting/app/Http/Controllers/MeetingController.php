@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MeetingsListUpdated;
 use App\Models\Meeting;
 use App\Models\User;
 use App\Services\AbsensiApiService;
@@ -106,6 +107,8 @@ class MeetingController extends Controller
             ]);
         }
 
+        broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'))->toOthers();
+
         return redirect()->route('meetings.index')->with('success', 'Rapat berhasil diperbarui.');
     }
 
@@ -114,6 +117,8 @@ class MeetingController extends Controller
         abort_unless(auth()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
 
         $meeting->forceDelete();
+
+        broadcast(new MeetingsListUpdated('Rapat telah dihapus'))->toOthers();
 
         return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen.');
     }

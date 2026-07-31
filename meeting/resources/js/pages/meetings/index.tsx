@@ -38,6 +38,24 @@ export default function MeetingIndex({ meetings, filters }: any) {
         }
     }, [canEdit, handleSync]);
 
+    useEffect(() => {
+        const channel = (window as any).Echo?.channel('meetings');
+        
+        if (channel) {
+            channel.listen('MeetingsListUpdated', (e: any) => {
+                console.log('Meetings list updated:', e);
+                router.reload({ only: ['meetings'] });
+            });
+        }
+
+        return () => {
+            if (channel) {
+                channel.stopListening('MeetingsListUpdated');
+                (window as any).Echo?.leaveChannel('meetings');
+            }
+        };
+    }, []);
+
     const applyFilter = (key: string, value: string) => {
         router.get('/meetings', { ...filters, [key]: value }, { preserveState: true, replace: true });
     };
@@ -195,6 +213,9 @@ return;
                                                             if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
+                                                                    onSuccess: () => {
+                                                                        handleSync();
+                                                                    }
                                                                 });
                                                             }
                                                         }}

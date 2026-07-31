@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MeetingUpdated implements ShouldBroadcast
+class MeetingUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -52,6 +52,7 @@ class MeetingUpdated implements ShouldBroadcast
         return [
             'id' => $this->meeting->id,
             'type' => $this->updateType,
+            'meeting' => $this->meeting->toArray(),
         ];
     }
 }
