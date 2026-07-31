@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Recording & Transcripts
     Route::get('meetings/{meeting}/recording', [MeetingRecordingController::class, 'show'])->name('meetings.recording');
     Route::post('meetings/{meeting}/recording', [MeetingRecordingController::class, 'store'])->name('meetings.recording.store');
+    Route::delete('meetings/{meeting}/recording/{recording}', [MeetingRecordingController::class, 'destroy'])->name('meetings.recording.destroy');
     Route::post('meetings/{meeting}/recording/transcribe', [MeetingRecordingController::class, 'transcribe'])->name('meetings.recording.transcribe');
     Route::post('meetings/{meeting}/finish-recording', [MeetingRecordingController::class, 'finishRecording'])->name('meetings.recording.finish');
     Route::get('meetings/{meeting}/recording/{recording}/stream', [MeetingRecordingController::class, 'stream'])->name('meetings.recording.stream');

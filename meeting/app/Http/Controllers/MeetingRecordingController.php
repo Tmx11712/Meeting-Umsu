@@ -57,6 +57,21 @@ class MeetingRecordingController extends Controller
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
 
+    public function destroy(Meeting $meeting, $recordingId)
+    {
+        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
+
+        $recording = MeetingRecording::findOrFail($recordingId);
+
+        if (Storage::disk('local')->exists($recording->file_path)) {
+            Storage::disk('local')->delete($recording->file_path);
+        }
+
+        $recording->delete();
+
+        return redirect()->back()->with('success', 'Rekaman berhasil dihapus.');
+    }
+
     /**
      * Trigger AI transcription for a specific recording (manual action by user)
      */

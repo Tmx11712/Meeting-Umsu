@@ -1,6 +1,6 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle, Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Trash2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
-import { showSuccess, showError } from '@/lib/sweetalert';
+import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
 import { Meeting } from '@/types/meeting';
 
 export default function MeetingRecording({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
@@ -45,6 +45,30 @@ export default function MeetingRecording({ meeting, ...props }: { meeting: Meeti
             only: ['openAiConfigured'],
             onFinish: () => setIsCheckingApi(false)
         });
+    };
+
+    const handleDeleteRecording = async (recordingId: string) => {
+        console.log('Delete button clicked for recording:', recordingId);
+        const confirmed = await confirmDelete(
+            'Hapus Rekaman',
+            'Apakah Anda yakin ingin menghapus rekaman ini? Tindakan ini tidak dapat dibatalkan.'
+        );
+
+        console.log('User confirmed:', confirmed);
+        if (confirmed) {
+            console.log('Sending router.delete to:', `/meetings/${meeting.id}/recording/${recordingId}`);
+            router.delete(`/meetings/${meeting.id}/recording/${recordingId}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    console.log('Delete success callback triggered');
+                    showSuccess('Rekaman berhasil dihapus');
+                },
+                onError: (errors) => {
+                    console.error('Delete error callback triggered', errors);
+                    showError('Gagal menghapus rekaman. Silakan coba lagi.');
+                }
+            });
+        }
     };
 
     useMeetingWebSocket(meeting?.id);
@@ -544,6 +568,18 @@ return;
                                                 <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:border-rose-800/50 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
                                                     Belum Ditranskrip
                                                 </Badge>
+                                            )}
+                                            
+                                            {canRecord && (
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="icon"
+                                                    className="h-8 w-8 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors ml-1 shrink-0"
+                                                    onClick={() => handleDeleteRecording(rec.id)}
+                                                    title="Hapus Rekaman"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
                                             )}
                                         </div>
                                     </div>
