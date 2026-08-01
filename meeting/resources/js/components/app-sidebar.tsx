@@ -87,7 +87,7 @@ function getRoleBadgeColor(role: string): string {
         case 'Bag. Humas':
             return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
         case 'Pimpinan':
-            return 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300';
+            return 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300';
         case 'Viewer':
             return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300';
         default:
@@ -125,12 +125,12 @@ export function AppSidebar() {
         : '/dashboard';
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="bg-glass border-r-0 shadow-soft z-50">
+        <Sidebar collapsible="icon" variant="inset" className="border-r border-border bg-sidebar z-50">
             {/* ── Header: Logo ── */}
             <SidebarHeader className="pt-6 pb-2 px-4">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="hover:bg-primary/5 transition-all duration-300 rounded-xl">
+                        <SidebarMenuButton size="lg" asChild className="hover:bg-accent transition-all duration-200 rounded-md">
                             <Link href={dashboardUrl} prefetch>
                                 <AppLogo />
                             </Link>
@@ -156,14 +156,14 @@ export function AppSidebar() {
                                         asChild
                                         isActive={active}
                                         tooltip={{ children: item.title }}
-                                        className={`rounded-xl transition-all duration-300 group ${
+                                        className={`rounded-md transition-all duration-200 group ${
                                             active 
-                                            ? 'bg-primary/10 text-primary font-semibold shadow-sm' 
-                                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/80'
+                                            ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                                         }`}
                                     >
                                         <Link href={item.href} prefetch className="flex items-center gap-3">
-                                            <item.icon className={`size-5 transition-transform duration-300 ${active ? 'scale-110 text-primary' : 'group-hover:scale-110 group-hover:text-primary/80'}`} />
+                                            <item.icon className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`} />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -191,10 +191,10 @@ export function AppSidebar() {
                                                 asChild
                                                 isActive={active}
                                                 tooltip={{ children: item.title }}
-                                                className={`rounded-xl transition-all duration-300 group ${
+                                                className={`rounded-md transition-all duration-200 group ${
                                                     active 
-                                                    ? 'bg-primary/10 text-primary font-semibold shadow-sm' 
-                                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/80'
+                                                    ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
+                                                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
                                                 }`}
                                             >
                                                 <Link 
@@ -202,7 +202,7 @@ export function AppSidebar() {
                                                     prefetch
                                                     className="flex items-center gap-3"
                                                 >
-                                                    <item.icon className={`size-5 transition-transform duration-300 ${active ? 'scale-110 text-primary' : 'group-hover:scale-110 group-hover:text-primary/80'}`} />
+                                                    <item.icon className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`} />
                                                     <span>{item.title}</span>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -219,19 +219,19 @@ export function AppSidebar() {
             <SidebarFooter className="p-4 pb-6">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <div className="flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:bg-transparent">
-                            <Avatar className="h-10 w-10 shrink-0 rounded-xl shadow-sm">
+                        <div className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 hover:bg-accent group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:bg-transparent">
+                            <Avatar className="h-10 w-10 shrink-0 rounded-md border border-border">
                                 <AvatarFallback
-                                    className={`rounded-xl text-sm font-bold ${getRoleBadgeColor(primaryRole)}`}
+                                    className={`rounded-md text-sm font-medium ${getRoleBadgeColor(primaryRole)}`}
                                 >
                                     {getRoleAbbreviation(primaryRole)}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                                <span className="truncate font-bold text-slate-800 dark:text-slate-200">
+                                <span className="truncate font-medium text-foreground">
                                     {primaryRole}
                                 </span>
-                                <span className="truncate text-xs font-medium text-slate-500 dark:text-slate-400">
+                                <span className="truncate text-xs text-muted-foreground">
                                     {user?.name || 'Admin Rapat'}
                                 </span>
                             </div>
@@ -241,11 +241,11 @@ export function AppSidebar() {
                         <SidebarMenuButton
                             asChild
                             tooltip={{ children: 'Keluar' }}
-                            className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all duration-300 flex justify-center"
+                            className="text-destructive hover:text-destructive-foreground hover:bg-destructive rounded-md transition-all duration-200 flex justify-center"
                         >
                             <Link href="/logout" method="post" as="button" className="w-full justify-center group">
                                 <LogOut className="size-4 group-hover:scale-110 transition-transform" />
-                                <span className="font-semibold">Keluar Aplikasi</span>
+                                <span className="font-medium">Keluar Aplikasi</span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

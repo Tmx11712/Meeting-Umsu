@@ -227,21 +227,21 @@ return;
     };
 
     return (
-        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Operator Rekam" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                         Operator Rekam
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Operator Rekam</span>
+                        <span className="text-blue-900 dark:text-blue-300 font-bold">Operator Rekam</span>
                     </div>
                 </div>
                 <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm">
@@ -252,7 +252,7 @@ return;
             </div>
 
             {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={3} />
             </div>
 
@@ -267,12 +267,12 @@ return;
             )}
 
             {/* Top Cards Row */}
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-4">
                 {/* Informasi Rapat */}
                 <MeetingInfoCard meeting={meeting} />
 
                 {/* Status Meeting */}
-                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                     <CardHeader className="pb-4 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30 flex flex-row items-center justify-between">
                         <CardTitle className="text-base font-bold text-emerald-900 dark:text-emerald-100">Status Rekaman</CardTitle>
                         <Badge variant="outline" className={`border-emerald-200 uppercase font-bold text-xs tracking-wider px-3 py-1 rounded-full ${isRecording && !isPaused ? 'bg-emerald-100 text-emerald-700 animate-pulse' : isPaused ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-600'}`}>
@@ -299,10 +299,10 @@ return;
                         )}
                         <div>
                             <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Durasi Rapat</p>
-                            <p className="text-4xl font-black text-slate-900 dark:text-white font-mono tracking-tighter">{formatDuration(recordingDuration)}</p>
+                            <p className="text-3xl font-black text-slate-900 dark:text-white font-mono tracking-tighter">{formatDuration(recordingDuration)}</p>
                         </div>
                         <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-                            <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold flex items-center justify-center text-sm uppercase shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold flex items-center justify-center text-sm uppercase shadow-sm">
                                 {auth?.user?.name?.substring(0, 2) || 'OP'}
                             </div>
                             <div>
@@ -314,7 +314,7 @@ return;
                 </Card>
 
                 {/* Koneksi API */}
-                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                     <CardHeader className="pb-4 bg-sky-50/50 dark:bg-sky-900/20 border-b border-sky-100/50 dark:border-sky-800/30 flex flex-row items-center justify-between">
                         <CardTitle className="text-base font-bold text-sky-900 dark:text-sky-100">Koneksi Sistem AI</CardTitle>
                         <Badge variant="outline" className="bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-800 font-bold rounded-full px-3">Online</Badge>
@@ -340,7 +340,7 @@ return;
                         <div className="border-t border-slate-100 dark:border-slate-800/50 pt-5">
                             <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Model Transkripsi</p>
                             <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
-                                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 mr-3 rounded-lg">gpt-4o-mini</Badge>
+                                <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 mr-3 rounded-lg">gpt-4o-mini</Badge>
                                 <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Siap memproses audio</span>
                             </div>
                         </div>
@@ -352,16 +352,16 @@ return;
             </div>
 
             {/* Bottom Areas */}
-            <div className="grid md:grid-cols-[1fr_1fr_1.2fr] gap-6 flex-1 min-h-[400px]">
+            <div className="grid md:grid-cols-[1fr_1fr_1.2fr] gap-4 flex-1 min-h-[400px]">
                 
                 {/* Upload Rekaman */}
-                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden">
+                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden">
                     <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50">
                         <CardTitle className="text-base font-bold text-slate-900 dark:text-white">Upload Manual</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-col flex-1 pb-6 pt-6 justify-between gap-4">
-                        <div className="border-2 border-dashed border-indigo-200 dark:border-indigo-800/50 rounded-[2rem] bg-indigo-50/30 dark:bg-indigo-900/10 hover:bg-indigo-50/60 dark:hover:bg-indigo-900/20 transition-colors flex-1 flex flex-col items-center justify-center p-6 text-center cursor-pointer group" onClick={() => canRecord && fileInputRef.current?.click()}>
-                            <div className="w-16 h-16 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full shadow-sm flex items-center justify-center mb-5 text-indigo-500 group-hover:scale-110 group-hover:text-indigo-600 transition-all duration-300">
+                    <CardContent className="flex flex-col flex-1 pb-4 pt-4 justify-between gap-4">
+                        <div className="border-2 border-dashed border-blue-200 dark:border-blue-800/50 rounded-[2rem] bg-blue-50/30 dark:bg-blue-900/10 hover:bg-blue-50/60 dark:hover:bg-blue-900/20 transition-colors flex-1 flex flex-col items-center justify-center p-4 text-center cursor-pointer group" onClick={() => canRecord && fileInputRef.current?.click()}>
+                            <div className="w-16 h-16 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full shadow-sm flex items-center justify-center mb-5 text-blue-500 group-hover:scale-110 group-hover:text-blue-600 transition-all duration-300">
                                 <UploadCloud className="w-8 h-8" />
                             </div>
                             {canRecord ? (
@@ -377,7 +377,7 @@ return;
                                     />
                                     <Button 
                                         disabled={uploading}
-                                        className="bg-indigo-600 hover:bg-indigo-700 rounded-xl px-6"
+                                        className="bg-blue-600 hover:bg-blue-700 rounded-xl px-4"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             fileInputRef.current?.click();
@@ -402,10 +402,10 @@ return;
                 </Card>
 
                 {/* Rekam Dari Sistem */}
-                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden relative">
+                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden relative">
                     {/* Pulsing background effect when recording */}
                     {isRecording && !isPaused && (
-                        <div className="absolute inset-0 bg-indigo-500/5 animate-pulse rounded-3xl pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-blue-500/5 animate-pulse rounded-2xl pointer-events-none"></div>
                     )}
                     <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 relative z-10">
                         <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
@@ -414,7 +414,7 @@ return;
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col flex-1 items-center justify-center p-8 relative z-10">
-                        <h2 className={`text-6xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording && !isPaused ? 'text-indigo-600 dark:text-indigo-400' : isPaused ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                        <h2 className={`text-5xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording && !isPaused ? 'text-blue-600 dark:text-blue-400' : isPaused ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'}`}>
                             {formatDuration(recordingDuration)}
                         </h2>
                         <p className={`text-sm font-medium mb-10 px-4 py-1 rounded-full ${isPaused ? 'text-amber-600 bg-amber-100/50 dark:bg-amber-900/30' : 'text-slate-500 bg-slate-100/50 dark:bg-slate-800/50'}`}>{isPaused ? 'Perekaman Dijeda' : 'Durasi Perekaman Aktif'}</p>
@@ -456,7 +456,7 @@ return;
                                         ? 'bg-amber-500 hover:bg-amber-600 text-white' 
                                         : isPaused
                                         ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                                        : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white hover:shadow-lg hover:-translate-y-1'
+                                        : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white hover:shadow-lg hover:-translate-y-1'
                                     }`}
                                     onClick={isRecording ? togglePause : startRecordingSession}
                                 >
@@ -480,9 +480,9 @@ return;
                 </Card>
 
                 {/* Daftar Rekaman & Transkrip */}
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
                     {uploading && (
-                        <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+                        <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                             <CardContent className="pb-5 pt-5">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -503,12 +503,12 @@ return;
                     )}
 
                     {/* Daftar File Rekaman */}
-                    <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex-1 flex flex-col min-h-[250px] overflow-hidden">
+                    <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex-1 flex flex-col min-h-[250px] overflow-hidden">
                         <CardHeader className="pb-3 pt-5 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 flex flex-row items-center justify-between">
                             <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 Daftar Rekaman
                             </CardTitle>
-                            <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 font-bold text-[10px] px-2 h-5 flex items-center rounded-full">
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 font-bold text-[10px] px-2 h-5 flex items-center rounded-full">
                                 {meeting.recordings?.length || 0} File
                             </Badge>
                         </CardHeader>
@@ -518,7 +518,7 @@ return;
                                     <div key={rec.id} className="flex items-center justify-between gap-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center gap-3 flex-1 min-w-0">
                                             <div className="relative">
-                                                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0 font-bold text-sm">
+                                                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0 font-bold text-sm">
                                                     {idx + 1}
                                                 </div>
                                                 {/* Traffic Light Indicator */}
@@ -554,7 +554,7 @@ return;
                                                     </Badge>
                                                     <Button
                                                         size="sm"
-                                                        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-[11px] px-3 h-8 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all"
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[11px] px-3 h-8 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all"
                                                         onClick={() => {
                                                             router.post(`/meetings/${meeting.id}/recording/transcribe`, {
                                                                 recording_id: rec.id
@@ -600,7 +600,7 @@ return;
                             const latestRecording = recordingsWithTranscripts[recordingsWithTranscripts.length - 1];
                             
                             return (
-                                <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
+                                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
                                     <CardHeader className="pb-3 pt-5 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30">
                                         <CardTitle className="text-sm font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
                                             <CheckCircle2 className="w-4 h-4" /> Hasil Transkrip AI
@@ -610,7 +610,7 @@ return;
                                         <div className="p-5 space-y-3 text-sm font-mono">
                                             {latestRecording?.transcripts?.map((t: any) => (
                                                 <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
-                                                    <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-indigo-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
+                                                    <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-blue-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
                                                     <span className="leading-relaxed">{t.text}</span>
                                                 </div>
                                             ))}
@@ -626,7 +626,7 @@ return;
 
             {/* Bottom Actions */}
             {canRecord && (
-                <div className="mt-4 flex flex-col sm:flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-3xl p-6 shadow-sm">
+                <div className="mt-4 flex flex-col sm:flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl p-4 shadow-sm">
                     <div className="flex items-center gap-4 text-emerald-800 dark:text-emerald-400 mb-4 sm:mb-0">
                         <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
                             <CheckCircle2 className="w-6 h-6 text-emerald-500" />

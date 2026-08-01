@@ -13,7 +13,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
             case 'selesai': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
-            case 'terjadwal': return 'bg-indigo-100/50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800 font-semibold';
+            case 'terjadwal': return 'bg-blue-100/50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 font-semibold';
             case 'review': return 'bg-orange-100/50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800 font-semibold';
             default: return 'bg-slate-100/50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-semibold';
         }
@@ -24,11 +24,22 @@ export default function MeetingIndex({ meetings, filters }: any) {
             return;
         }
 
-        router.post('/meetings/sync', {}, {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['meetings', 'flash']
-        });
+        // Ambil token CSRF Laravel
+        const getXsrfToken = () => {
+            const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+            return match ? decodeURIComponent(match[2]) : '';
+        };
+
+        // Gunakan native fetch agar request berjalan murni di latar belakang
+        // tanpa membatalkan navigasi pengguna atau menimpa state halaman lain.
+        fetch('/meetings/sync', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-XSRF-TOKEN': getXsrfToken(),
+                'Content-Type': 'application/json'
+            }
+        }).catch(() => {});
     }, [guardAction]);
 
     useEffect(() => {
@@ -71,20 +82,20 @@ export default function MeetingIndex({ meetings, filters }: any) {
     });
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex h-full flex-1 flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Jadwal Rapat" />
             
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-1">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-500 dark:from-blue-400 dark:to-sky-400 mb-1">
                         Jadwal Rapat
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar dan kelola jadwal rapat instansi</p>
                 </div>
             </div>
 
-            <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+            <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-0">
                     {/* Top Filters Bar */}
                     <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50">
@@ -93,7 +104,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                             <Input 
                                 type="search" 
                                 placeholder="Cari judul rapat..." 
-                                className="pl-9 w-full md:w-[320px] bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-indigo-500 rounded-xl h-11 transition-all"
+                                className="pl-9 w-full md:w-[320px] bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-xl h-11 transition-all"
                                 defaultValue={filters?.search || ''}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
@@ -106,7 +117,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                         <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                             <div className="relative shrink-0">
                                 <select 
-                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-indigo-500 appearance-none text-slate-700 dark:text-slate-300 w-[160px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
+                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-[160px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
                                     value={filters?.status || 'all'}
                                     onChange={(e) => applyFilter('status', e.target.value)}
                                 >
@@ -126,7 +137,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                     <Calendar className="h-4 w-4 text-slate-400" />
                                 </div>
                                 <select 
-                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-9 pr-10 text-sm outline-none focus:ring-1 focus:ring-indigo-500 appearance-none text-slate-700 dark:text-slate-300 w-[180px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
+                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-9 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-[180px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
                                     value={filters?.month || ''}
                                     onChange={(e) => applyFilter('month', e.target.value)}
                                 >
@@ -155,46 +166,46 @@ export default function MeetingIndex({ meetings, filters }: any) {
                         <table className="w-full text-sm text-left">
                             <thead className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 uppercase tracking-wider">
                                 <tr>
-                                    <th className="px-6 py-5 font-semibold">No</th>
-                                    <th className="px-6 py-5 font-semibold">Judul Rapat</th>
-                                    <th className="px-6 py-5 font-semibold">Tanggal</th>
-                                    <th className="px-6 py-5 font-semibold">Waktu</th>
-                                    <th className="px-6 py-5 font-semibold">Ruangan</th>
-                                    <th className="px-6 py-5 font-semibold text-center">Peserta</th>
-                                    <th className="px-6 py-5 font-semibold text-center">Status</th>
-                                    <th className="px-6 py-5 font-semibold text-center">Aksi</th>
+                                    <th className="px-4 py-5 font-semibold">No</th>
+                                    <th className="px-4 py-5 font-semibold">Judul Rapat</th>
+                                    <th className="px-4 py-5 font-semibold">Tanggal</th>
+                                    <th className="px-4 py-5 font-semibold">Waktu</th>
+                                    <th className="px-4 py-5 font-semibold">Ruangan</th>
+                                    <th className="px-4 py-5 font-semibold text-center">Peserta</th>
+                                    <th className="px-4 py-5 font-semibold text-center">Status</th>
+                                    <th className="px-4 py-5 font-semibold text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                                 {meetings?.data && meetings.data.length > 0 ? (
                                     meetings.data.map((meeting: any, index: number) => (
                                         <tr key={meeting.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group">
-                                            <td className="px-6 py-5 text-slate-500 dark:text-slate-400 font-medium">
+                                            <td className="px-4 py-5 text-slate-500 dark:text-slate-400 font-medium">
                                                 {((meetings.current_page - 1) * meetings.per_page) + index + 1}
                                             </td>
-                                            <td className="px-6 py-5">
-                                                <Link href={`/meetings/${meeting.id}`} className="font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                            <td className="px-4 py-5">
+                                                <Link href={`/meetings/${meeting.id}`} className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                     {meeting.title}
                                                 </Link>
                                             </td>
-                                            <td className="px-6 py-5 text-slate-600 dark:text-slate-300 font-medium">{meeting.date}</td>
-                                            <td className="px-6 py-5 text-slate-600 dark:text-slate-300 font-medium bg-slate-50/50 dark:bg-slate-800/20">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-6 py-5 text-slate-600 dark:text-slate-300 max-w-[200px]">
+                                            <td className="px-4 py-5 text-slate-600 dark:text-slate-300 font-medium">{meeting.date}</td>
+                                            <td className="px-4 py-5 text-slate-600 dark:text-slate-300 font-medium bg-slate-50/50 dark:bg-slate-800/20">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
+                                            <td className="px-4 py-5 text-slate-600 dark:text-slate-300 max-w-[200px]">
                                                 <span className="block truncate" title={meeting.location}>{meeting.location}</span>
                                             </td>
-                                            <td className="px-6 py-5 text-center text-slate-600 dark:text-slate-300 font-medium">
+                                            <td className="px-4 py-5 text-center text-slate-600 dark:text-slate-300 font-medium">
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants?.length ?? 0}</span>
                                             </td>
-                                            <td className="px-6 py-5 text-center">
+                                            <td className="px-4 py-5 text-center">
                                                 <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs border ${getStatusColor(meeting.status || 'terjadwal')} shadow-sm`}>
                                                     {(meeting.status || 'Terjadwal').charAt(0).toUpperCase() + (meeting.status || 'terjadwal').slice(1)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-5 text-center">
+                                            <td className="px-4 py-5 text-center">
                                                 <div className="flex items-center justify-center gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
                                                     <Link 
                                                         href={`/meetings/${meeting.id}`} 
-                                                        className="p-2 text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-all"
+                                                        className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all"
                                                         onClick={(e) => {
                                                             if (!guardAction('meeting')) {
                                                                 e.preventDefault();
@@ -228,7 +239,7 @@ return;
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-16 text-center">
+                                        <td colSpan={8} className="px-4 py-16 text-center">
                                             <div className="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400">
                                                 <Calendar className="w-12 h-12 mb-3 text-slate-300 dark:text-slate-600" />
                                                 <p className="font-medium">Belum ada data rapat.</p>
@@ -259,7 +270,7 @@ return;
                                         size="icon"
                                         className={`w-9 h-9 rounded-xl text-xs font-semibold transition-all ${
                                             link.active
-                                                ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md'
+                                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
                                                 : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 bg-white/50 dark:bg-slate-800/50'
                                         } ${!link.url ? 'opacity-40 cursor-not-allowed' : ''}`}
                                         disabled={!link.url}

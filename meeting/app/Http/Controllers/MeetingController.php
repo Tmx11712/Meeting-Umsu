@@ -53,6 +53,19 @@ class MeetingController extends Controller
         }
     }
 
+    public function autoSync(IrvanCloudSyncService $syncService)
+    {
+        // Gunakan cache lock selama 5 menit agar tidak membebani server (spam)
+        $lock = \Illuminate\Support\Facades\Cache::lock('irvan_cloud_auto_sync', 300);
+        
+        if ($lock->get()) {
+            $syncService->syncMeetings();
+            return response()->json(['status' => 'synced']);
+        }
+        
+        return response()->json(['status' => 'skipped_throttled']);
+    }
+
     public function show(Meeting $meeting)
     {
         $meeting->load('participants.user', 'recordings', 'minutes');
@@ -107,7 +120,11 @@ class MeetingController extends Controller
             ]);
         }
 
-        broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'))->toOthers();
+        try {
+            broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'))->toOthers();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed (Reverb offline): ' . $e->getMessage());
+        }
 
         return redirect()->route('meetings.index')->with('success', 'Rapat berhasil diperbarui.');
     }
@@ -118,7 +135,11 @@ class MeetingController extends Controller
 
         $meeting->forceDelete();
 
-        broadcast(new MeetingsListUpdated('Rapat telah dihapus'))->toOthers();
+        try {
+            broadcast(new MeetingsListUpdated('Rapat telah dihapus'))->toOthers();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed (Reverb offline): ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen.');
     }

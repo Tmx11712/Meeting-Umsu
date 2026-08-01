@@ -37,21 +37,21 @@ return;
     const totalTranscripts = recordings.reduce((sum: number, rec: any) => sum + (rec.transcripts?.length || 0), 0);
 
     return (
-        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Koreksi Transkrip" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                         Koreksi Transkrip
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Koreksi Transkrip</span>
+                        <span className="text-blue-900 dark:text-blue-300 font-bold">Koreksi Transkrip</span>
                     </div>
                 </div>
                 <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
@@ -62,7 +62,7 @@ return;
             </div>
 
             {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={4} />
             </div>
 
@@ -123,11 +123,11 @@ return;
             {/* Footer Action */}
             {canCorrect && (
                 <Card>
-                    <CardFooter className="flex justify-end pt-6 pb-6">
+                    <CardFooter className="flex justify-end pt-4 pb-4">
                         <Button 
                             onClick={handleFinish} 
                             disabled={totalTranscripts === 0}
-                            className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                            className="bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
                         >
                             Selesai & Lanjut ke Absensi
                         </Button>
@@ -180,8 +180,8 @@ function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrect
     return (
         <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
             isOpen 
-                ? 'bg-white dark:bg-slate-900 border-indigo-200 dark:border-indigo-800/50 shadow-md ring-1 ring-indigo-100 dark:ring-indigo-900/50' 
-                : 'bg-white/70 dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800/50'
+                ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800/50 shadow-md ring-1 ring-blue-100 dark:ring-blue-900/50' 
+                : 'bg-white/70 dark:bg-slate-900/70 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800/50'
         }`}>
             {/* Accordion Header */}
             <button
@@ -191,8 +191,8 @@ function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrect
                 {/* Index Badge */}
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm shadow-sm transition-colors ${
                     isOpen 
-                        ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300' 
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600'
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600'
                 }`}>
                     {index + 1}
                 </div>
@@ -200,7 +200,7 @@ function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrect
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                        <FileAudio2 className="w-4 h-4 text-indigo-500 shrink-0" />
+                        <FileAudio2 className="w-4 h-4 text-blue-500 shrink-0" />
                         <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{recordingLabel}</p>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
@@ -249,9 +249,9 @@ function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrect
                     {/* Audio Player */}
                     {(recording.status === 'completed' || recording.status === 'uploaded' || recording.status === 'transcribing') && (
                         <div className="px-5 pt-4 pb-2">
-                            <div className="bg-gradient-to-r from-slate-50 to-indigo-50/50 dark:from-slate-800/50 dark:to-indigo-900/20 rounded-xl p-4 border border-slate-100 dark:border-slate-700/50">
+                            <div className="bg-gradient-to-r from-slate-50 to-blue-50/50 dark:from-slate-800/50 dark:to-blue-900/20 rounded-xl p-4 border border-slate-100 dark:border-slate-700/50">
                                 <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center">
                                         <Play className="w-4 h-4" />
                                     </div>
                                     <p className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">Putar Audio</p>
@@ -343,13 +343,13 @@ function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, h
     return (
         <div className={`flex gap-3 p-3.5 rounded-xl group transition-all duration-200 ${
             isEditing 
-                ? 'bg-indigo-50/80 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800/50 shadow-sm' 
+                ? 'bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 shadow-sm' 
                 : 'hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent'
         }`}>
             {/* Timestamp (clickable for seek) */}
             <button
                 onClick={onSeek}
-                className="w-14 shrink-0 text-xs font-mono font-bold text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 pt-1 cursor-pointer transition-colors flex items-center gap-1 group/ts"
+                className="w-14 shrink-0 text-xs font-mono font-bold text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 pt-1 cursor-pointer transition-colors flex items-center gap-1 group/ts"
                 title="Klik untuk lompat ke bagian audio ini"
             >
                 <Clock className="w-3 h-3 opacity-0 group-hover/ts:opacity-100 transition-opacity" />
@@ -361,7 +361,7 @@ function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, h
                 {isEditing ? (
                     <div className="space-y-2">
                         <textarea 
-                            className="w-full bg-white dark:bg-slate-900 rounded-lg border border-indigo-200 dark:border-indigo-800 p-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 resize-none"
+                            className="w-full bg-white dark:bg-slate-900 rounded-lg border border-blue-200 dark:border-blue-800 p-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 resize-none"
                             rows={3}
                             value={text}
                             onChange={e => setText(e.target.value)}
@@ -371,7 +371,7 @@ function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, h
                             <Button variant="outline" size="sm" className="rounded-lg h-8 text-xs" onClick={() => {
  setText(initialText); setIsEditing(false); 
 }}>Batal</Button>
-                            <Button size="sm" className="rounded-lg h-8 text-xs bg-indigo-600 hover:bg-indigo-700" onClick={handleSave}>Simpan Koreksi</Button>
+                            <Button size="sm" className="rounded-lg h-8 text-xs bg-blue-600 hover:bg-blue-700" onClick={handleSave}>Simpan Koreksi</Button>
                         </div>
                     </div>
                 ) : (
@@ -392,7 +392,7 @@ function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, h
                     <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="rounded-lg h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-bold"
+                        className="rounded-lg h-7 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 font-bold"
                         onClick={() => setIsEditing(true)}
                     >
                         Koreksi

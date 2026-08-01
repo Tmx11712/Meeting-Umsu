@@ -33,20 +33,20 @@ return;
     };
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex h-full flex-1 flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Kelola Absensi" />
             
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-1">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-1">
                         Kelola Absensi
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar rapat yang memerlukan pengelolaan absensi</p>
                 </div>
             </div>
 
-            <Card className="rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+            <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
                 <CardContent className="p-0">
                     {/* Top Filters Bar */}
                     <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50">
@@ -102,36 +102,36 @@ return;
                         <table className="w-full text-sm text-left">
                             <thead className="text-xs text-slate-500 bg-slate-50/50 border-b border-slate-100">
                                 <tr>
-                                    <th className="px-6 py-4 font-medium">No</th>
-                                    <th className="px-6 py-4 font-medium">Judul Rapat</th>
-                                    <th className="px-6 py-4 font-medium">Tanggal</th>
-                                    <th className="px-6 py-4 font-medium">Waktu</th>
-                                    <th className="px-6 py-4 font-medium">Ruangan</th>
-                                    <th className="px-6 py-4 font-medium text-center">Peserta</th>
-                                    <th className="px-6 py-4 font-medium text-center">Status</th>
-                                    <th className="px-6 py-4 font-medium text-center">Aksi</th>
+                                    <th className="px-4 py-4 font-medium">No</th>
+                                    <th className="px-4 py-4 font-medium">Judul Rapat</th>
+                                    <th className="px-4 py-4 font-medium">Tanggal</th>
+                                    <th className="px-4 py-4 font-medium">Waktu</th>
+                                    <th className="px-4 py-4 font-medium">Ruangan</th>
+                                    <th className="px-4 py-4 font-medium text-center">Peserta</th>
+                                    <th className="px-4 py-4 font-medium text-center">Status</th>
+                                    <th className="px-4 py-4 font-medium text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                                 {meetings?.data && meetings.data.length > 0 ? (
                                     meetings.data.map((meeting: any, index: number) => (
                                         <tr key={meeting.id} className="hover:bg-slate-50/80 transition-colors group">
-                                            <td className="px-6 py-4 text-slate-500">{index + 1}</td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-4 py-4 text-slate-500">{index + 1}</td>
+                                            <td className="px-4 py-4">
                                                 <Link href={`/meetings/${meeting.id}/attendance`} className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
                                                     {meeting.title}
                                                 </Link>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-600">{meeting.date || '4 Jun 2026'}</td>
-                                            <td className="px-6 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-6 py-4 text-slate-600 max-w-[200px]"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
-                                            <td className="px-6 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
-                                            <td className="px-6 py-4 text-center">
+                                            <td className="px-4 py-4 text-slate-600">{meeting.date || '4 Jun 2026'}</td>
+                                            <td className="px-4 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
+                                            <td className="px-4 py-4 text-slate-600 max-w-[200px]"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
+                                            <td className="px-4 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
+                                            <td className="px-4 py-4 text-center">
                                                 <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs border ${getStatusColor(meeting.status || 'Terjadwal')}`}>
                                                     {(meeting.status || 'Terjadwal').charAt(0).toUpperCase() + (meeting.status || 'terjadwal').slice(1)}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-center">
+                                            <td className="px-4 py-4 text-center">
                                                 {canEdit('attendance') ? (
                                                     <Button asChild variant="outline" size="sm" className="h-8">
                                                         <Link href={`/meetings/${meeting.id}/attendance`}>
@@ -150,7 +150,7 @@ return;
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
+                                        <td colSpan={8} className="px-4 py-12 text-center text-slate-500">
                                             Belum ada data rapat.
                                         </td>
                                     </tr>

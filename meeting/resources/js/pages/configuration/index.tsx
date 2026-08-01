@@ -31,8 +31,8 @@ export default function ConfigurationIndex({ stats }: Props) {
             count: stats.rolesCount,
             href: '/configuration/roles',
             description: 'Kelola role pengguna',
-            color: 'text-indigo-600',
-            bg: 'bg-indigo-100'
+            color: 'text-blue-600',
+            bg: 'bg-blue-100'
         },
         {
             title: 'Permissions',
@@ -58,8 +58,8 @@ export default function ConfigurationIndex({ stats }: Props) {
             count: stats.rolePermissionsCount,
             href: '/configuration/role-permissions',
             description: 'Atur permission untuk setiap role',
-            color: 'text-purple-600',
-            bg: 'bg-purple-100'
+            color: 'text-sky-600',
+            bg: 'bg-sky-100'
         },
         {
             title: 'User Permissions',

@@ -47,7 +47,7 @@ export default function UsersIndex({ users, roles, filters }: Props) {
             case 'Bag. Humas':
                 return 'bg-orange-100 text-orange-700 hover:bg-orange-200';
             case 'Pimpinan':
-                return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+                return 'bg-sky-100 text-sky-700 hover:bg-sky-200';
             case 'Administrator':
             case 'Super Admin':
                 return 'bg-red-100 text-red-700 hover:bg-red-200';

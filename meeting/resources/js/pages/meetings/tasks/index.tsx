@@ -67,7 +67,7 @@ export default function TaskDashboard({ meetings, task }: any) {
     }, []);
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 p-8 max-w-7xl mx-auto w-full">
+        <div className="flex h-full flex-1 flex-col gap-4 p-8 max-w-7xl mx-auto w-full">
             <Head title={task.title} />
             
             {/* Header */}

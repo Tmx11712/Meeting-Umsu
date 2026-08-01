@@ -80,21 +80,21 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
 
     if (!minutes) {
         return (
-            <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <Head title="Review Notulen" />
                 
                 {/* Header & Breadcrumb */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                             Review Notulen
                         </h1>
                         <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                             <span>Dashboard</span>
                             <span>›</span>
-                            <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                            <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                             <span>›</span>
-                            <span className="text-indigo-900 dark:text-indigo-300 font-bold">Review Notulen</span>
+                            <span className="text-blue-900 dark:text-blue-300 font-bold">Review Notulen</span>
                         </div>
                     </div>
                     <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
@@ -105,15 +105,15 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                 </div>
 
                 {/* Stepper */}
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                     <MeetingStepper meeting={meeting} activeStage={6} />
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-3 gap-4">
                     {/* Left side: Transcripts reference */}
                     <div className="lg:col-span-2 space-y-4">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-indigo-500" />
+                            <FileText className="w-5 h-5 text-blue-500" />
                             Referensi Transkrip ({meeting.recordings?.length || 0} File)
                         </h3>
                         
@@ -136,7 +136,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                         <Card key={rec.id} className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
                                             <CardHeader className="bg-slate-50/80 dark:bg-slate-900/50 py-3 px-4 border-b border-slate-100 dark:border-slate-800 flex flex-row items-center justify-between space-y-0 backdrop-blur-sm">
                                                 <CardTitle className="text-sm font-bold flex items-center gap-2 text-slate-800 dark:text-slate-200">
-                                                    <span className="w-6 h-6 rounded-md bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                                                    <span className="w-6 h-6 rounded-md bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs">
                                                         {idx + 1}
                                                     </span>
                                                     {rec.label || `Rekaman #${idx + 1}`}
@@ -159,7 +159,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
 
                     {/* Right side: Action card */}
                     <div className="flex flex-col">
-                        <div className="text-center p-8 text-slate-500 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center sticky top-6">
+                        <div className="text-center p-8 text-slate-500 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center sticky top-4">
                             <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-5 shadow-inner rotate-3">
                                 <Lightbulb className="w-8 h-8" />
                             </div>
@@ -168,7 +168,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                 AI akan membaca semua transkrip dari rekaman yang ada dan merangkumnya menjadi notulen resmi lengkap dengan keputusan dan tindak lanjut.
                             </p>
                             <Button 
-                                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-indigo-200 dark:shadow-indigo-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
+                                className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
                                 onClick={() => {
                                     setSending(true);
                                     router.post(`/meetings/${meeting.id}/review/ai`, {}, {
@@ -190,21 +190,21 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     }
 
     return (
-        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Review Notulen" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                         Review Notulen
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Review Notulen</span>
+                        <span className="text-blue-900 dark:text-blue-300 font-bold">Review Notulen</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -214,12 +214,12 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                         </Link>
                     </Button>
                     {canManageReview && meeting.current_stage === 5 && !isPimpinan && (
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={sendToPimpinan} disabled={sending}>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-4 font-semibold" onClick={sendToPimpinan} disabled={sending}>
                             <Send className="w-4 h-4 mr-2" /> Kirim ke Pimpinan
                         </Button>
                     )}
                     {canManageReview && meeting.current_stage === 6 && isPimpinan && (
-                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={approveNotulen} disabled={sending}>
+                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-4 font-semibold" onClick={approveNotulen} disabled={sending}>
                             <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
                         </Button>
                     )}
@@ -227,7 +227,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
             </div>
 
             {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={6} />
             </div>
 
@@ -241,7 +241,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                 </Alert>
             )}
 
-            <div className="grid md:grid-cols-[1fr_2fr_1fr] gap-6">
+            <div className="grid md:grid-cols-[1fr_2fr_1fr] gap-4">
                 
                 {/* Kiri: Info, Ringkasan AI, Dokumen */}
                 <div className="space-y-6">
@@ -275,10 +275,10 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                     <p className="text-2xl font-bold text-yellow-600">{minutes.action_items?.length || 0}</p>
                                     <p className="text-[10px] text-yellow-500 mt-1">Action items</p>
                                 </div>
-                                <div className="bg-purple-50/50 rounded-lg p-3 text-center border border-purple-100">
-                                    <p className="text-[11px] text-purple-700 font-medium mb-1">Durasi Rapat</p>
-                                    <p className="text-xl font-bold text-purple-600 mt-1">{meeting.duration_formatted || "00:00:00"}</p>
-                                    <p className="text-[10px] text-purple-500 mt-1">Jam:Menit:Detik</p>
+                                <div className="bg-sky-50/50 rounded-lg p-3 text-center border border-sky-100">
+                                    <p className="text-[11px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
+                                    <p className="text-xl font-bold text-sky-600 mt-1">{meeting.duration_formatted || "00:00:00"}</p>
+                                    <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -320,7 +320,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                         <Button 
                                             variant="outline" 
                                             size="sm" 
-                                            className="h-8 text-xs text-purple-600 border-purple-200 hover:bg-purple-50"
+                                            className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
                                             onClick={() => {
                                                 if (confirm('Anda yakin ingin men-generate ulang notulen? Ini akan menimpa notulen yang ada saat ini dengan versi AI terbaru dari transkrip.')) {
                                                     setSending(true);
@@ -347,7 +347,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                 )}
                             </div>
                         </CardHeader>
-                        <CardContent className="p-6 flex-1 text-sm text-slate-800 space-y-8">
+                        <CardContent className="p-4 flex-1 text-sm text-slate-800 space-y-8">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
                                 <div className="space-y-8">
                                     {/* Pembukaan */}
@@ -489,15 +489,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                 <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 shadow-none text-xs font-medium border-0">Siap Dikirim</Badge>
                             </div>
 
-                            <div>
-                                <p className="text-[11px] text-slate-500 mb-1.5">Catatan (Opsional)</p>
-                                <textarea 
-                                    className="w-full min-h-[80px] p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 resize-none"
-                                    placeholder="Notulen sudah lengkap dan siap dikirim ke pimpinan untuk persetujuan."
-                                    disabled={!canManageReview}
-                                ></textarea>
-                                <p className="text-[10px] text-slate-400 text-right mt-1">68 / 500 karakter</p>
-                            </div>
+
                         </CardContent>
                     </Card>
 
@@ -608,7 +600,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                     )}
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={saveEdit} disabled={sending}>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={saveEdit} disabled={sending}>
                             {sending ? 'Menyimpan...' : 'Simpan Perubahan'}
                         </Button>
                     </DialogFooter>

@@ -33,10 +33,10 @@ class IrvanCloudSyncService
     public function syncMeetings($startDate = null, $endDate = null)
     {
         if (! $startDate) {
-            $startDate = now()->startOfMonth()->format('Y-m-d');
+            $startDate = now()->subMonths(3)->startOfMonth()->format('Y-m-d');
         }
         if (! $endDate) {
-            $endDate = now()->endOfMonth()->format('Y-m-d');
+            $endDate = now()->addMonths(3)->endOfMonth()->format('Y-m-d');
         }
 
         try {
@@ -112,7 +112,11 @@ class IrvanCloudSyncService
             }
 
             if ($syncedCount > 0) {
-                broadcast(new \App\Events\MeetingsListUpdated('Terdapat ' . $syncedCount . ' rapat baru dari sinkronisasi Irvan Cloud'))->toOthers();
+                try {
+                    broadcast(new \App\Events\MeetingsListUpdated('Terdapat ' . $syncedCount . ' rapat baru dari sinkronisasi Irvan Cloud'))->toOthers();
+                } catch (\Exception $e) {
+                    Log::warning('Broadcast failed during sync: ' . $e->getMessage());
+                }
             }
 
             return ['success' => true, 'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud."];

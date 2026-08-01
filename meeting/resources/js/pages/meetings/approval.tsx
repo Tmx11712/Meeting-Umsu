@@ -82,21 +82,21 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
 
     if (!minutes) {
         return (
-            <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <Head title="Pimpinan" />
                 
                 {/* Header & Breadcrumb */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                             Persetujuan Pimpinan
                         </h1>
                         <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                             <span>Dashboard</span>
                             <span>›</span>
-                            <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                            <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                             <span>›</span>
-                            <span className="text-indigo-900 dark:text-indigo-300 font-bold">Persetujuan Pimpinan</span>
+                            <span className="text-blue-900 dark:text-blue-300 font-bold">Persetujuan Pimpinan</span>
                         </div>
                     </div>
                     <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
@@ -107,7 +107,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                 </div>
 
                 {/* Stepper */}
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                     <MeetingStepper meeting={meeting} activeStage={7} />
                 </div>
 
@@ -119,21 +119,21 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
     }
 
     return (
-        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Pimpinan" />
             
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                         Persetujuan Pimpinan
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Persetujuan Pimpinan</span>
+                        <span className="text-blue-900 dark:text-blue-300 font-bold">Persetujuan Pimpinan</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                         </Link>
                     </Button>
                     {canManageApproval && (
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-6 font-semibold" onClick={handleApprove} disabled={approving || rejecting}>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-4 font-semibold" onClick={handleApprove} disabled={approving || rejecting}>
                             <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen
                         </Button>
                     )}
@@ -151,7 +151,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
             </div>
 
             {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={7} />
             </div>
 
@@ -166,7 +166,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
             )}
 
             {/* Top Row: 3 columns */}
-            <div className="grid md:grid-cols-[1fr_1.5fr_1fr] gap-6">
+            <div className="grid md:grid-cols-[1fr_1.5fr_1fr] gap-4">
                 
                 {/* Informasi Rapat */}
                 <MeetingInfoCard 
@@ -250,10 +250,10 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                                 <p className="text-2xl font-bold text-yellow-600">{minutes.action_items?.length || 0}</p>
                                 <p className="text-[10px] text-yellow-500 mt-1">Action Items</p>
                             </div>
-                            <div className="bg-purple-50/50 rounded-lg p-3 text-center border border-purple-100">
-                                <p className="text-[11px] text-purple-700 font-medium mb-1">Durasi Rapat</p>
-                                <p className="text-xl font-bold text-purple-600 mt-1">{meeting.duration_formatted || "00:00:00"}</p>
-                                <p className="text-[10px] text-purple-500 mt-1">Jam:Menit:Detik</p>
+                            <div className="bg-sky-50/50 rounded-lg p-3 text-center border border-sky-100">
+                                <p className="text-[11px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
+                                <p className="text-xl font-bold text-sky-600 mt-1">{meeting.duration_formatted || "00:00:00"}</p>
+                                <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
                             </div>
                         </div>
                     </CardContent>
@@ -262,7 +262,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
             </div>
 
             {/* Middle Row: 2 columns */}
-            <div className="grid md:grid-cols-[1.5fr_1fr] gap-6">
+            <div className="grid md:grid-cols-[1.5fr_1fr] gap-4">
                 
                 {/* Ringkasan Notulen */}
                 <Card className="rounded-xl border-slate-200 shadow-sm flex flex-col">
@@ -277,7 +277,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                             </Button>
                         )}
                     </CardHeader>
-                    <CardContent className="p-6 flex-1 text-sm text-slate-800 space-y-6">
+                    <CardContent className="p-4 flex-1 text-sm text-slate-800 space-y-6">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
                                 <div className="space-y-8">
                                     {/* Pembukaan */}
@@ -377,17 +377,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                                 </p>
                             </div>
 
-                            <div>
-                                <p className="text-[11px] text-slate-500 mb-1.5">Catatan (opsional)</p>
-                                <textarea 
-                                    className="w-full min-h-[90px] p-2.5 text-xs bg-white border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-blue-500 resize-none"
-                                    placeholder="Tulis catatan atau arahan tambahan..."
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                    disabled={!canManageApproval}
-                                ></textarea>
-                                <p className="text-[10px] text-slate-400 text-right mt-1">0 / 500 karakter</p>
-                            </div>
+
 
                             {canManageApproval && (
                                 <div className="grid grid-cols-2 gap-3 pt-2">
@@ -414,7 +404,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
             </div>
 
             {/* Bottom Row Info Banner */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 flex justify-between items-center px-6 mt-2">
+            <div className="bg-white border border-slate-200 rounded-xl p-4 flex justify-between items-center px-4 mt-2">
                 <div className="flex gap-4 items-center">
                     <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <Info className="w-4 h-4" />
@@ -534,7 +524,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                     )}
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={saveEdit} disabled={savingEdit}>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={saveEdit} disabled={savingEdit}>
                             {savingEdit ? 'Menyimpan...' : 'Simpan Perubahan'}
                         </Button>
                     </DialogFooter>

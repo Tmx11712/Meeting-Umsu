@@ -16,14 +16,14 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     const { canEdit, hasRole } = usePermissions();
     const { flash } = usePage().props as any;
     const canManageAttendance = canEdit('attendance');
-    
+
     useMeetingWebSocket(meeting?.id);
     const participants = meeting.participants || [];
     const attendances = meeting.attendances || [];
     const isIrvanCloud = meeting.source === 'irvan_cloud';
     const [qrCodeHtml, setQrCodeHtml] = useState<string | null>(null);
     const [loadingQr, setLoadingQr] = useState(false);
-    
+
     // States for filtering
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('Semua Status');
@@ -44,7 +44,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                         'X-CSRF-TOKEN': (document.head.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
                     }
                 });
-                
+
                 // Then reload the page data silently
                 router.reload({ only: ['meeting'] });
             } catch (e) {
@@ -97,10 +97,10 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     // Map table data and fix user_id & status bugs
     const tableData = participants.map((p: any) => {
         const att = attendances.find((a: any) => a.user_id === p.user_id);
-        const statusLabel = att 
-            ? (att.status === 'hadir' ? 'Hadir' : att.status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir') 
+        const statusLabel = att
+            ? (att.status === 'hadir' ? 'Hadir' : att.status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir')
             : 'Belum';
-        
+
         return {
             id: p.id,
             user_id: p.user_id, // Fix Bug #1: Ensure user_id is mapped
@@ -135,21 +135,21 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     const unrecordedParticipants = tableData.filter((r: any) => r.status === 'Belum' || r.status === 'Tidak Hadir');
 
     return (
-        <div className="flex flex-col gap-6 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Absensi Peserta" />
-            
+
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 mb-2">
+                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
                         Absensi Peserta
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-indigo-600 transition-colors">Jadwal Rapat</Link>
+                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
                         <span>›</span>
-                        <span className="text-indigo-900 dark:text-indigo-300 font-bold">Absensi Peserta</span>
+                        <span className="text-blue-900 dark:text-blue-300 font-bold">Absensi Peserta</span>
                     </div>
                 </div>
                 <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
@@ -160,7 +160,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
             </div>
 
             {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
                 <MeetingStepper meeting={meeting} activeStage={5} />
             </div>
 
@@ -186,14 +186,14 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
             )}
 
             {/* Top Cards Row */}
-            <div className={isIrvanCloud ? "grid md:grid-cols-[1.2fr_1.5fr] gap-6" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-6"}>
-                
+            <div className={isIrvanCloud ? "grid md:grid-cols-[1.2fr_1.5fr] gap-4" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-4"}>
+
                 {/* Informasi Rapat */}
-                <MeetingInfoCard 
-                    meeting={meeting} 
-                    totalParticipants={totalParticipants} 
-                    showDetailButton={true} 
-                    className="border-white/50 bg-glass backdrop-blur-xl" 
+                <MeetingInfoCard
+                    meeting={meeting}
+                    totalParticipants={totalParticipants}
+                    showDetailButton={true}
+                    className="border-white/50 bg-glass backdrop-blur-xl"
                 />
 
                 {/* Ringkasan Absensi */}
@@ -201,59 +201,55 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                     <CardHeader className="pb-4">
                         <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">Ringkasan Absensi</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="grid grid-cols-4 gap-3">
-                            <div className="bg-emerald-50/60 rounded-xl p-3 text-center border border-emerald-100/50 shadow-sm backdrop-blur-sm">
-                                <p className="text-xs text-emerald-700 font-medium mb-1">Hadir</p>
-                                <p className="text-2xl font-bold text-emerald-600">{hadir}</p>
-                                <p className="text-[10px] text-emerald-600/80 mt-1">{getHadirPct()}%</p>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-4 gap-2">
+                            <div className="bg-emerald-50/60 rounded-lg py-1.5 px-2 text-center border border-emerald-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
+                                <p className="text-[10px] text-emerald-700 font-medium">Hadir</p>
+                                <p className="text-lg font-bold text-emerald-600 leading-none mt-0.5">{hadir}</p>
                             </div>
-                            <div className="bg-amber-50/60 rounded-xl p-3 text-center border border-amber-100/50 shadow-sm backdrop-blur-sm">
-                                <p className="text-xs text-amber-700 font-medium mb-1">Terlambat</p>
-                                <p className="text-2xl font-bold text-amber-500">{terlambat}</p>
-                                <p className="text-[10px] text-amber-500/80 mt-1">{getTerlambatPct()}%</p>
+                            <div className="bg-amber-50/60 rounded-lg py-1.5 px-2 text-center border border-amber-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
+                                <p className="text-[10px] text-amber-700 font-medium">Terlambat</p>
+                                <p className="text-lg font-bold text-amber-500 leading-none mt-0.5">{terlambat}</p>
                             </div>
-                            <div className="bg-rose-50/60 rounded-xl p-3 text-center border border-rose-100/50 shadow-sm backdrop-blur-sm">
-                                <p className="text-xs text-rose-700 font-medium mb-1">Tidak Hadir</p>
-                                <p className="text-2xl font-bold text-rose-500">{tidakHadir}</p>
-                                <p className="text-[10px] text-rose-500/80 mt-1">{getTidakHadirPct()}%</p>
+                            <div className="bg-rose-50/60 rounded-lg py-1.5 px-2 text-center border border-rose-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
+                                <p className="text-[10px] text-rose-700 font-medium">Tidak Hadir</p>
+                                <p className="text-lg font-bold text-rose-500 leading-none mt-0.5">{tidakHadir}</p>
                             </div>
-                            <div className="bg-indigo-50/60 rounded-xl p-3 text-center border border-indigo-100/50 shadow-sm backdrop-blur-sm">
-                                <p className="text-xs text-indigo-700 font-medium mb-1">Total Peserta</p>
-                                <p className="text-2xl font-bold text-indigo-600">{totalParticipants}</p>
-                                <p className="text-[10px] text-transparent mt-1">-</p>
+                            <div className="bg-blue-50/60 rounded-lg py-1.5 px-2 text-center border border-blue-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
+                                <p className="text-[10px] text-blue-700 font-medium">Total</p>
+                                <p className="text-lg font-bold text-blue-600 leading-none mt-0.5">{totalParticipants}</p>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between px-2">
+                        <div className="flex items-center justify-start gap-6 px-2 mt-2">
                             {/* Fake Donut Chart */}
-                            <div className="relative w-28 h-28 drop-shadow-sm">
+                            <div className="relative w-24 h-24 drop-shadow-sm shrink-0">
                                 <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
                                     <circle cx="50" cy="50" r="40" stroke="rgba(241, 245, 249, 0.5)" strokeWidth="20" fill="none" />
-                                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="20" fill="none" strokeDasharray={`${hadir/totalParticipants*251 || 0} 251`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f59e0b" strokeWidth="20" fill="none" strokeDasharray={`${terlambat/totalParticipants*251 || 0} 251`} strokeDashoffset={`-${hadir/totalParticipants*251 || 0}`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f43f5e" strokeWidth="20" fill="none" strokeDasharray={`${tidakHadir/totalParticipants*251 || 0} 251`} strokeDashoffset={`-${(hadir+terlambat)/totalParticipants*251 || 0}`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="20" fill="none" strokeDasharray={`${hadir / totalParticipants * 251 || 0} 251`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#f59e0b" strokeWidth="20" fill="none" strokeDasharray={`${terlambat / totalParticipants * 251 || 0} 251`} strokeDashoffset={`-${hadir / totalParticipants * 251 || 0}`} />
+                                    <circle cx="50" cy="50" r="40" stroke="#f43f5e" strokeWidth="20" fill="none" strokeDasharray={`${tidakHadir / totalParticipants * 251 || 0} 251`} strokeDashoffset={`-${(hadir + terlambat) / totalParticipants * 251 || 0}`} />
                                     <circle cx="50" cy="50" r="25" fill="rgba(255, 255, 255, 0.5)" />
                                 </svg>
                             </div>
 
-                            <div className="space-y-3 flex-1 ml-8">
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-4 text-xs">
+                                    <div className="flex items-center gap-2 w-24">
                                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
                                         <span className="text-slate-700 dark:text-slate-300">Hadir</span>
                                     </div>
                                     <span className="font-medium text-slate-900 dark:text-white">{hadir} ({getHadirPct()}%)</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-4 text-xs">
+                                    <div className="flex items-center gap-2 w-24">
                                         <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-200"></div>
                                         <span className="text-slate-700 dark:text-slate-300">Terlambat</span>
                                     </div>
                                     <span className="font-medium text-slate-900 dark:text-white">{terlambat} ({getTerlambatPct()}%)</span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-4 text-xs">
+                                    <div className="flex items-center gap-2 w-24">
                                         <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-200"></div>
                                         <span className="text-slate-700 dark:text-slate-300">Tidak Hadir</span>
                                     </div>
@@ -292,9 +288,9 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                         </Button>
                                     </div>
                                 ) : (
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-max text-indigo-600 border-indigo-200/60 hover:bg-indigo-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 mt-2 rounded-lg"
+                                    <Button
+                                        variant="outline"
+                                        className="w-max text-blue-600 border-blue-200/60 hover:bg-blue-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 mt-2 rounded-lg"
                                         onClick={generateQrCode}
                                         disabled={loadingQr || !canManageAttendance}
                                     >
@@ -314,7 +310,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Absensi dilakukan secara manual oleh operator.</p>
                                     </div>
                                 </div>
-                                <Button variant="outline" className="w-max text-indigo-600 border-indigo-200/60 hover:bg-indigo-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 rounded-lg" disabled={!canManageAttendance}>
+                                <Button variant="outline" className="w-max text-blue-600 border-blue-200/60 hover:bg-blue-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 rounded-lg" disabled={!canManageAttendance}>
                                     Input Manual
                                 </Button>
                             </div>
@@ -324,17 +320,17 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
             </div>
 
             {/* Bottom Section */}
-            <div className="grid md:grid-cols-[1fr_300px] gap-6">
-                
+            <div className="grid md:grid-cols-[1fr_300px] gap-4">
+
                 {/* Table Area */}
                 <div className="flex flex-col gap-4">
                     {/* Filters (Fix Bug #6: Make filters work) */}
                     <div className="flex flex-wrap md:flex-nowrap gap-4">
                         <div className="relative flex-1 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-xl border border-white/50 shadow-soft">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                            <input 
-                                type="text" 
-                                placeholder="Cari nama atau departemen..." 
+                            <input
+                                type="text"
+                                placeholder="Cari nama atau departemen..."
                                 className="w-full h-10 pl-9 pr-4 text-sm bg-transparent border-0 focus:ring-0 outline-none rounded-xl"
                                 value={searchQuery}
                                 onChange={(e) => {
@@ -343,7 +339,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                 }}
                             />
                         </div>
-                        <select 
+                        <select
                             className="h-10 px-3 py-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 shadow-soft rounded-xl text-sm text-slate-700 outline-none w-40"
                             value={statusFilter}
                             onChange={(e) => {
@@ -357,7 +353,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                             <option>Terlambat</option>
                             <option>Tidak Hadir</option>
                         </select>
-                        <select 
+                        <select
                             className="h-10 px-3 py-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 shadow-soft rounded-xl text-sm text-slate-700 outline-none w-48"
                             value={deptFilter}
                             onChange={(e) => {
@@ -375,40 +371,39 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                             <table className="w-full text-sm text-left">
                                 <thead className="bg-white/40 dark:bg-slate-800/40 border-b border-white/20 text-slate-500 font-medium backdrop-blur-md">
                                     <tr>
-                                        <th className="py-4 px-6 font-medium">No</th>
-                                        <th className="py-4 px-6 font-medium">Nama Peserta</th>
-                                        <th className="py-4 px-6 font-medium">Departemen</th>
-                                        <th className="py-4 px-6 font-medium">Jabatan</th>
-                                        <th className="py-4 px-6 font-medium">Status</th>
-                                        <th className="py-4 px-6 font-medium">Waktu Absensi</th>
-                                        <th className="py-4 px-6 font-medium">Metode</th>
-                                        {!isIrvanCloud && <th className="py-4 px-6 font-medium text-right">Aksi</th>}
+                                        <th className="py-4 px-4 font-medium">No</th>
+                                        <th className="py-4 px-4 font-medium">Nama Peserta</th>
+                                        <th className="py-4 px-4 font-medium">Departemen</th>
+                                        <th className="py-4 px-4 font-medium">Jabatan</th>
+                                        <th className="py-4 px-4 font-medium">Status</th>
+                                        <th className="py-4 px-4 font-medium">Waktu Absensi</th>
+                                        <th className="py-4 px-4 font-medium">Metode</th>
+                                        {!isIrvanCloud && <th className="py-4 px-4 font-medium text-right">Aksi</th>}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/20">
                                     {currentData.length > 0 ? currentData.map((row: any, i: number) => (
                                         <tr key={row.id} className="hover:bg-white/30 dark:hover:bg-slate-800/30 transition-colors">
-                                            <td className="py-3 px-6 text-slate-600 dark:text-slate-400">{startIndex + i}</td>
-                                            <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white">{row.name}</td>
-                                            <td className="py-3 px-6 text-slate-600 dark:text-slate-400">{row.dept}</td>
-                                            <td className="py-3 px-6 text-slate-600 dark:text-slate-400">{row.job}</td>
-                                            <td className="py-3 px-6">
-                                                <Badge variant="outline" className={`font-medium border shadow-sm backdrop-blur-sm ${
-                                                    row.status === 'Hadir' ? 'bg-emerald-50/80 text-emerald-600 border-emerald-200/60' : 
-                                                    row.status === 'Terlambat' ? 'bg-amber-50/80 text-amber-600 border-amber-200/60' : 
-                                                    row.status === 'Tidak Hadir' ? 'bg-rose-50/80 text-rose-600 border-rose-200/60' :
-                                                    'bg-slate-100/80 text-slate-600 border-slate-200/60'
-                                                }`}>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{startIndex + i}</td>
+                                            <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">{row.name}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.dept}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.job}</td>
+                                            <td className="py-3 px-4">
+                                                <Badge variant="outline" className={`font-medium border shadow-sm backdrop-blur-sm ${row.status === 'Hadir' ? 'bg-emerald-50/80 text-emerald-600 border-emerald-200/60' :
+                                                        row.status === 'Terlambat' ? 'bg-amber-50/80 text-amber-600 border-amber-200/60' :
+                                                            row.status === 'Tidak Hadir' ? 'bg-rose-50/80 text-rose-600 border-rose-200/60' :
+                                                                'bg-slate-100/80 text-slate-600 border-slate-200/60'
+                                                    }`}>
                                                     {row.status}
                                                 </Badge>
                                             </td>
-                                            <td className="py-3 px-6 text-slate-600 dark:text-slate-400">{row.time}</td>
-                                            <td className="py-3 px-6 text-slate-600 dark:text-slate-400">{row.method}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.method}</td>
                                             {!isIrvanCloud && (
-                                                <td className="py-3 px-6 text-right">
+                                                <td className="py-3 px-4 text-right">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button 
-                                                            variant="outline" 
+                                                        <Button
+                                                            variant="outline"
                                                             size="sm"
                                                             className="h-8 text-emerald-600 border-emerald-200/60 hover:bg-emerald-50/80 bg-white/50 backdrop-blur-sm shadow-sm rounded-lg"
                                                             onClick={() => handleManualAttendance(row.user_id, 'hadir')}
@@ -417,8 +412,8 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                                             Hadir
                                                         </Button>
                                                         {/* Fix Bug #3: Disable Alpha if it's already 'Tidak Hadir' or 'Hadir' */}
-                                                        <Button 
-                                                            variant="outline" 
+                                                        <Button
+                                                            variant="outline"
                                                             size="sm"
                                                             className="h-8 text-rose-500 border-rose-200/60 hover:bg-rose-50/80 bg-white/50 backdrop-blur-sm shadow-sm rounded-lg"
                                                             onClick={() => handleManualAttendance(row.user_id, 'tidak_hadir')}
@@ -440,7 +435,7 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         {/* Pagination (Fix Bug #5: Dynamic calculations) */}
                         {filteredData.length > 0 && (
                             <div className="p-4 border-t border-white/20 flex items-center justify-between mt-auto bg-white/20 dark:bg-slate-800/20 backdrop-blur-md">
@@ -448,28 +443,28 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                     Menampilkan {startIndex} - {endIndex} dari {filteredData.length} peserta
                                 </span>
                                 <div className="flex gap-1">
-                                    <Button 
-                                        variant="outline" size="icon" 
+                                    <Button
+                                        variant="outline" size="icon"
                                         className="w-8 h-8 rounded-lg bg-white/60 border-slate-200/50 text-slate-600"
                                         onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                                         disabled={currentPage === 1}
                                     >
                                         <ChevronLeft className="w-4 h-4" />
                                     </Button>
-                                    
+
                                     {Array.from({ length: totalPages }).map((_, i) => (
-                                        <Button 
+                                        <Button
                                             key={i}
-                                            variant="outline" size="icon" 
-                                            className={`w-8 h-8 rounded-lg ${currentPage === i + 1 ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white/60 border-slate-200/50 text-slate-600 hover:bg-slate-50/80'}`}
+                                            variant="outline" size="icon"
+                                            className={`w-8 h-8 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white border-blue-600' : 'bg-white/60 border-slate-200/50 text-slate-600 hover:bg-slate-50/80'}`}
                                             onClick={() => setCurrentPage(i + 1)}
                                         >
                                             {i + 1}
                                         </Button>
                                     ))}
-                                    
-                                    <Button 
-                                        variant="outline" size="icon" 
+
+                                    <Button
+                                        variant="outline" size="icon"
                                         className="w-8 h-8 rounded-lg bg-white/60 border-slate-200/50 text-slate-600"
                                         onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                                         disabled={currentPage === totalPages}
@@ -483,59 +478,11 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                 </div>
 
                 {/* Sidebar */}
-                <div className="flex flex-col gap-6">
-                    {/* Fix Bug #4: Dynamic Sidebar for unrecorded/absent participants */}
-                    <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl">
-                        <CardHeader className="pb-3 border-b border-white/20 flex flex-row items-center justify-between">
-                            <CardTitle className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                                <Users className="w-4 h-4 text-rose-500" />
-                                Peserta Belum/Tidak Hadir ({unrecordedParticipants.length})
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4 flex flex-col gap-3 max-h-[300px] overflow-y-auto custom-scrollbar">
-                            {unrecordedParticipants.length > 0 ? unrecordedParticipants.map((user: any, idx: number) => (
-                                <div key={user.id} className="flex items-center justify-between p-3 bg-white/40 dark:bg-slate-800/40 rounded-xl border border-white/50 shadow-sm backdrop-blur-sm">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-6 h-6 rounded-full bg-slate-200/80 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0">
-                                            {idx + 1}
-                                        </div>
-                                        <div className="overflow-hidden">
-                                            <p className="text-sm font-semibold text-slate-900 dark:text-white truncate max-w-[120px]">{user.name}</p>
-                                            <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[120px]">{user.dept}</p>
-                                        </div>
-                                    </div>
-                                    <Badge variant="outline" className={`text-[10px] h-5 px-1.5 border backdrop-blur-sm shadow-sm ${user.status === 'Tidak Hadir' ? 'bg-rose-50/80 text-rose-600 border-rose-200/60' : 'bg-slate-100/80 text-slate-600 border-slate-200/60'}`}>
-                                        {user.status}
-                                    </Badge>
-                                </div>
-                            )) : (
-                                <p className="text-xs text-center text-slate-500 italic py-4">Semua peserta telah hadir.</p>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl flex-1 flex flex-col">
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-semibold text-slate-900 dark:text-white">Catatan (opsional)</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-1 flex flex-col">
-                            {!canManageAttendance && (
-                                <div className="mb-2 p-2 bg-amber-50/80 text-amber-700 text-xs rounded-lg border border-amber-200/60 backdrop-blur-sm shadow-sm">
-                                    Mode read-only: Anda tidak memiliki akses untuk mengubah catatan.
-                                </div>
-                            )}
-                            <textarea 
-                                className="w-full flex-1 min-h-[120px] p-3 text-sm bg-white/40 dark:bg-slate-800/40 border border-white/50 shadow-inner rounded-xl outline-none focus:ring-1 focus:ring-indigo-500/50 resize-none backdrop-blur-sm transition-all"
-                                placeholder="Tulis catatan absensi jika diperlukan..."
-                                disabled={!canManageAttendance}
-                            ></textarea>
-                            <p className="text-[10px] text-slate-400 text-right mt-2">0 / 500 karakter</p>
-                        </CardContent>
-                    </Card>
+                <div className="flex flex-col gap-4">
 
                     {/* Action Buttons */}
                     {canManageAttendance && meeting.current_stage === 4 && (
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-indigo-200 dark:shadow-indigo-900/20" onClick={handleFinish}>
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-blue-200 dark:shadow-blue-900/20" onClick={handleFinish}>
                             <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi & Lanjut
                         </Button>
                     )}

@@ -27,6 +27,10 @@ type Props = {
 export default function Dashboard({ stats, pipelines }: Props) {
     const { guardAction, hasRole, canEdit, isAdmin } = usePermissions();
 
+    const page = usePage<any>();
+    const roles: string[] = page.props.auth?.roles || [];
+    const primaryRole = roles[0] || 'User';
+
     // Real-time: listen for global meetings updates via WebSocket
     useEffect(() => {
         const channel = (window as any).Echo?.channel('meetings');
@@ -61,298 +65,203 @@ return '';
         <>
             <Head title={`Dashboard Rapat`} />
             
-            <div className="flex h-full flex-1 flex-col gap-8 p-6 lg:p-8 w-full max-w-[1600px] mx-auto overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
-                {/* Header Section with subtle gradient text */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-6 rounded-3xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-[1600px] mx-auto overflow-hidden bg-[#fafafa] dark:bg-slate-950">
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-2">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
-                            Dashboard E-Notulen
+                        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                            Dashboard <span className="text-slate-300 dark:text-slate-700">—</span> {primaryRole}
                         </h1>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium">
-                            Pantau status dan tindak lanjuti seluruh jadwal rapat Anda di satu tempat.
+                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · Selamat datang kembali
                         </p>
                     </div>
-                    <Button asChild className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 rounded-xl px-6 h-11">
+                    <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-5 h-10 shadow-sm font-medium">
                         <Link href="/meetings">
-                            <CalendarDays className="mr-2 h-5 w-5" />
-                            <span className="font-semibold">Kelola Rapat</span>
+                            <CalendarDays className="mr-2 h-4 w-4" />
+                            Jadwal Rapat
                         </Link>
                     </Button>
                 </div>
 
-                {/* Premium Stats Row */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 shrink-0">
-                    {/* Stat 1 */}
-                    <Card className="p-0 rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:shadow-soft-hover transition-all duration-300 group overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <CardContent className="p-6 relative z-10">
-                            <div className="flex items-center gap-5">
-                                <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                    <CalendarDays className="size-7" />
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{stats?.meetingsThisMonth || 0}</div>
-                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Rapat bulan ini</p>
-                                </div>
-                            </div>
+                {/* 4 Stat Cards */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 shrink-0">
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                            <div className="text-2xl font-semibold text-slate-900 dark:text-white mb-1">{stats?.meetingsThisMonth || 0}</div>
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Rapat bulan ini</p>
                         </CardContent>
                     </Card>
-
-                    {/* Stat 2 */}
-                    <Card className="p-0 rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:shadow-soft-hover transition-all duration-300 group overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <CardContent className="p-6 relative z-10">
-                            <div className="flex items-center gap-5">
-                                <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                    <CheckCircle className="size-7" />
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{stats?.minutesCompleted || 0}</div>
-                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Notulen selesai</p>
-                                </div>
-                            </div>
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                            <div className="text-2xl font-semibold text-emerald-600 dark:text-emerald-500 mb-1">{stats?.minutesCompleted || 0}</div>
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Notulen selesai</p>
                         </CardContent>
                     </Card>
-
-                    {/* Stat 3 */}
-                    <Card className="p-0 rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:shadow-soft-hover transition-all duration-300 group overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <CardContent className="p-6 relative z-10">
-                            <div className="flex items-center gap-5">
-                                <div className="p-4 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                    <ClipboardCheck className="size-7" />
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{stats?.openActionItems || 0}</div>
-                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Tindak lanjut aktif</p>
-                                </div>
-                            </div>
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                            <div className="text-2xl font-semibold text-orange-600 dark:text-orange-500 mb-1">{stats?.openActionItems || 0}</div>
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Action item terbuka</p>
                         </CardContent>
                     </Card>
-
-                    {/* Stat 4 */}
-                    <Card className="p-0 rounded-3xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:shadow-soft-hover transition-all duration-300 group overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <CardContent className="p-6 relative z-10">
-                            <div className="flex items-center gap-5">
-                                <div className="p-4 bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                    <PieChart className="size-7" />
-                                </div>
-                                <div>
-                                    <div className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{stats?.avgAttendance || 0}%</div>
-                                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Rata-rata kehadiran</p>
-                                </div>
-                            </div>
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+                            <div className="text-2xl font-semibold text-blue-600 dark:text-blue-500 mb-1">{stats?.avgAttendance || 0}%</div>
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Rata-rata kehadiran</p>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Pipeline Board (Kanban) - Modern Glass Style */}
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 gap-6 pb-6 items-start min-h-[500px]">
+                {/* Pipeline Board */}
+                <div className="flex overflow-x-auto gap-4 pb-4 items-start min-h-[500px] mt-2">
                     
                     {/* Column 1: Recording */}
-                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
-                        <div className="flex items-center justify-between px-2 mb-1">
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="p-1.5 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-lg">
-                                    <Mic className="w-4 h-4" />
+                    <div className="flex-none w-[270px] flex flex-col gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span className="p-1 bg-blue-50 text-blue-600 rounded-md">
+                                    <Mic className="w-3.5 h-3.5" />
                                 </span>
                                 Menunggu Rekaman
                             </h3>
-                            <span className="bg-white dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-full">{pipelines.recording.length}</span>
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">{pipelines?.recording?.length || 0}</span>
                         </div>
-                        <div className="flex flex-col gap-4 overflow-y-auto pr-1">
-                            {pipelines.recording.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border border-blue-100 dark:border-blue-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 to-cyan-400"></div>
-                                    <CardContent className="p-4 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1.5 rounded-md border border-blue-100/50 dark:border-blue-800/50">
-                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-                                            {formatDate(m.date)} • {m.start_time}
-                                        </div>
-                                        <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                                            {canEdit('recording') ? (
-                                                <Button asChild size="sm" className="w-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white rounded-xl transition-colors shadow-none group-hover:bg-blue-600 group-hover:text-white">
-                                                    <Link href={`/meetings/${m.id}/recording`}>
-                                                        Mulai Rekam <ArrowRight className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            ) : (
-                                                <Button asChild size="sm" variant="secondary" className="w-full rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
-                                                    <Link href={`/meetings/${m.id}`}>
-                                                        Lihat Detail <Eye className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <div className="flex flex-col gap-2.5">
+                            {pipelines?.recording?.map(m => (
+                                <div key={m.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-sm flex flex-col gap-2">
+                                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 leading-snug">{m.title}</h4>
+                                    <div className="flex items-center gap-1 text-[10px] text-blue-600 font-medium bg-blue-50 px-1.5 py-1 rounded-md w-fit">
+                                        <CalendarDays className="w-3 h-3" /> {formatDate(m.date)} • {m.start_time}
+                                    </div>
+                                    <div className="mt-1 border-t border-slate-100 dark:border-slate-700 pt-2.5">
+                                        {canEdit('recording') ? (
+                                            <Button asChild size="sm" variant="outline" className="w-full text-[11px] h-7 rounded-md text-blue-600 border-blue-200 hover:bg-blue-50">
+                                                <Link href={`/meetings/${m.id}/recording`}>Lihat Detail <Eye className="w-3 h-3 ml-1.5" /></Link>
+                                            </Button>
+                                        ) : (
+                                            <Button asChild size="sm" variant="outline" className="w-full text-[11px] h-7 rounded-md text-slate-600 hover:bg-slate-50">
+                                                <Link href={`/meetings/${m.id}`}>Lihat Detail <Eye className="w-3 h-3 ml-1.5" /></Link>
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Column 2: Correction & Attendance */}
-                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
-                        <div className="flex items-center justify-between px-2 mb-1">
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 rounded-lg">
-                                    <PenTool className="w-4 h-4" />
+                    <div className="flex-none w-[270px] flex flex-col gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span className="p-1 bg-orange-50 text-orange-600 rounded-md">
+                                    <PenTool className="w-3.5 h-3.5" />
                                 </span>
                                 Koreksi & Absen
                             </h3>
-                            <span className="bg-white dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-full">{pipelines.correction.length}</span>
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">{pipelines?.correction?.length || 0}</span>
                         </div>
-                        <div className="flex flex-col gap-4 overflow-y-auto pr-1">
-                            {pipelines.correction.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border border-orange-100 dark:border-orange-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-orange-200 dark:hover:border-orange-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1.5 w-full bg-gradient-to-r from-orange-400 to-amber-400"></div>
-                                    <CardContent className="p-4 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-900/30 px-2.5 py-1.5 rounded-md border border-orange-100/50 dark:border-orange-800/50">
-                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-                                            {formatDate(m.date)} • {m.start_time}
-                                        </div>
-                                        <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700 flex gap-2">
-                                            {canEdit('transcript') ? (
-                                                <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-orange-200 dark:border-orange-900/50 text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/30 rounded-xl">
-                                                    <Link href={`/meetings/${m.id}/correction`}>
-                                                        Koreksi
-                                                    </Link>
-                                                </Button>
-                                            ) : (
-                                                <Button asChild size="sm" variant="secondary" className="flex-1 text-xs rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
-                                                    <Link href={`/meetings/${m.id}/correction`}>
-                                                        Lihat Transkrip
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                            {canEdit('attendance') && (
-                                                <Button asChild size="sm" variant="outline" className="flex-1 text-xs border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-xl">
-                                                    <Link href={`/meetings/${m.id}/attendance`}>
-                                                        Absensi
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <div className="flex flex-col gap-2.5">
+                            {pipelines?.correction?.map(m => (
+                                <div key={m.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-sm flex flex-col gap-2">
+                                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 leading-snug">{m.title}</h4>
+                                    <div className="flex items-center gap-1 text-[10px] text-orange-600 font-medium bg-orange-50 px-1.5 py-1 rounded-md w-fit">
+                                        <CalendarDays className="w-3 h-3" /> {formatDate(m.date)} • {m.start_time}
+                                    </div>
+                                    <div className="mt-1 border-t border-slate-100 dark:border-slate-700 pt-2.5 flex gap-2">
+                                        <Button asChild size="sm" variant="outline" className="flex-1 text-[10px] h-7 rounded-md text-slate-600 hover:bg-slate-50">
+                                            <Link href={`/meetings/${m.id}/correction`}>Transkrip</Link>
+                                        </Button>
+                                        {canEdit('attendance') && (
+                                            <Button asChild size="sm" variant="outline" className="flex-1 text-[10px] h-7 rounded-md text-orange-600 border-orange-200 hover:bg-orange-50">
+                                                <Link href={`/meetings/${m.id}/attendance`}>Absensi</Link>
+                                            </Button>
+                                        )}
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Column 3: Review */}
-                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
-                        <div className="flex items-center justify-between px-2 mb-1">
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="p-1.5 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-lg">
-                                    <FileText className="w-4 h-4" />
+                    <div className="flex-none w-[270px] flex flex-col gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span className="p-1 bg-sky-50 text-sky-600 rounded-md">
+                                    <FileText className="w-3.5 h-3.5" />
                                 </span>
                                 Review Notulen
                             </h3>
-                            <span className="bg-white dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-full">{pipelines.review.length}</span>
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">{pipelines?.review?.length || 0}</span>
                         </div>
-                        <div className="flex flex-col gap-4 overflow-y-auto pr-1">
-                            {pipelines.review.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border border-purple-100 dark:border-purple-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1.5 w-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                                    <CardContent className="p-4 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/30 px-2.5 py-1.5 rounded-md border border-purple-100/50 dark:border-purple-800/50">
-                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-                                            {formatDate(m.date)}
-                                        </div>
-                                        <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                                            {canEdit('minutes') ? (
-                                                <Button asChild size="sm" className="w-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-600 hover:text-white dark:hover:bg-purple-600 dark:hover:text-white rounded-xl transition-colors shadow-none group-hover:bg-purple-600 group-hover:text-white">
-                                                    <Link href={`/meetings/${m.id}/review`}>
-                                                        Review (AI) <ArrowRight className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            ) : (
-                                                <Button asChild size="sm" variant="secondary" className="w-full rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
-                                                    <Link href={`/meetings/${m.id}`}>
-                                                        Lihat Detail <Eye className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <div className="flex flex-col gap-2.5">
+                            {pipelines?.review?.map(m => (
+                                <div key={m.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-sm flex flex-col gap-2">
+                                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 leading-snug">{m.title}</h4>
+                                    <div className="flex items-center gap-1 text-[10px] text-sky-600 font-medium bg-sky-50 px-1.5 py-1 rounded-md w-fit">
+                                        <CalendarDays className="w-3 h-3" /> {formatDate(m.date)}
+                                    </div>
+                                    <div className="mt-1 border-t border-slate-100 dark:border-slate-700 pt-2.5">
+                                        <Button asChild size="sm" variant="outline" className="w-full text-[11px] h-7 rounded-md text-sky-600 border-sky-200 hover:bg-sky-50">
+                                            <Link href={canEdit('minutes') ? `/meetings/${m.id}/review` : `/meetings/${m.id}`}>Lihat Detail <Eye className="w-3 h-3 ml-1.5" /></Link>
+                                        </Button>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Column 4: Approval */}
-                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm shadow-sm">
-                        <div className="flex items-center justify-between px-2 mb-1">
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="p-1.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-lg">
-                                    <CheckCircle className="w-4 h-4" />
+                    <div className="flex-none w-[270px] flex flex-col gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span className="p-1 bg-emerald-50 text-emerald-600 rounded-md">
+                                    <CheckCircle className="w-3.5 h-3.5" />
                                 </span>
                                 Persetujuan
                             </h3>
-                            <span className="bg-white dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-full">{pipelines.approval.length}</span>
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">{pipelines?.approval?.length || 0}</span>
                         </div>
-                        <div className="flex flex-col gap-4 overflow-y-auto pr-1">
-                            {pipelines.approval.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border border-emerald-100 dark:border-emerald-900/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-emerald-200 dark:hover:border-emerald-800 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1.5 w-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-                                    <CardContent className="p-4 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1.5 rounded-md border border-emerald-100/50 dark:border-emerald-800/50">
-                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-                                            {formatDate(m.date)}
-                                        </div>
-                                        <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                                            {(isAdmin || hasRole('Pimpinan')) ? (
-                                                <Button asChild size="sm" className="w-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white rounded-xl transition-colors shadow-none group-hover:bg-emerald-600 group-hover:text-white">
-                                                    <Link href={`/meetings/${m.id}/approval`}>
-                                                        Tinjau & Setujui <ArrowRight className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            ) : (
-                                                <Button asChild size="sm" variant="secondary" className="w-full rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">
-                                                    <Link href={`/meetings/${m.id}`}>
-                                                        Lihat Detail <Eye className="w-3 h-3 ml-2" />
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <div className="flex flex-col gap-2.5">
+                            {pipelines?.approval?.map(m => (
+                                <div key={m.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-sm flex flex-col gap-2">
+                                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 leading-snug">{m.title}</h4>
+                                    <div className="flex items-center gap-1 text-[10px] text-emerald-600 font-medium bg-emerald-50 px-1.5 py-1 rounded-md w-fit">
+                                        <CalendarDays className="w-3 h-3" /> {formatDate(m.date)}
+                                    </div>
+                                    <div className="mt-1 border-t border-slate-100 dark:border-slate-700 pt-2.5">
+                                        <Button asChild size="sm" variant="outline" className="w-full text-[11px] h-7 rounded-md text-emerald-600 border-emerald-200 hover:bg-emerald-50">
+                                            <Link href={(isAdmin || hasRole('Pimpinan')) ? `/meetings/${m.id}/approval` : `/meetings/${m.id}`}>Lihat Detail <Eye className="w-3 h-3 ml-1.5" /></Link>
+                                        </Button>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
 
                     {/* Column 5: Finished */}
-                    <div className="flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-4 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 h-full backdrop-blur-sm opacity-80 hover:opacity-100 transition-opacity shadow-sm">
-                        <div className="flex items-center justify-between px-2 mb-1">
-                            <h3 className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="p-1.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg">
-                                    <Check className="w-4 h-4" />
+                    <div className="flex-none w-[270px] flex flex-col gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm opacity-80 hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                <span className="p-1 bg-slate-100 text-slate-600 rounded-md">
+                                    <Check className="w-3.5 h-3.5" />
                                 </span>
                                 Selesai
                             </h3>
-                            <span className="bg-white/80 dark:bg-slate-700 shadow-sm text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-full">{pipelines.finished.length}</span>
+                            <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-full">{pipelines?.finished?.length || 0}</span>
                         </div>
-                        <div className="flex flex-col gap-4 overflow-y-auto pr-1">
-                            {pipelines.finished.map(m => (
-                                <Card key={m.id} className="p-0 gap-0 border border-slate-200/80 dark:border-slate-700/50 shadow-sm bg-white dark:bg-slate-800 hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden group">
-                                    <div className="h-1.5 w-full bg-gradient-to-r from-slate-400 to-gray-500"></div>
-                                    <CardContent className="p-4 flex flex-col gap-3">
-                                        <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">{m.title}</h4>
-                                        <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 px-2.5 py-1.5 rounded-md border border-slate-100 dark:border-slate-800/50">
-                                            <CalendarDays className="w-3.5 h-3.5 opacity-70" />
-                                            {formatDate(m.date)}
-                                        </div>
-                                        <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                                            <Button asChild size="sm" variant="outline" className="w-full text-sm font-medium hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100 rounded-xl border-slate-200 dark:border-slate-600 transition-colors">
-                                                <a href={`/meetings/${m.id}/review/pdf`} target="_blank">Unduh PDF</a>
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <div className="flex flex-col gap-2.5">
+                            {pipelines?.finished?.map(m => (
+                                <div key={m.id} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-3 rounded-xl flex flex-col gap-2">
+                                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 leading-snug">{m.title}</h4>
+                                    <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium px-1.5 py-1 rounded-md bg-white border border-slate-100 w-fit">
+                                        <CalendarDays className="w-3 h-3" /> {formatDate(m.date)}
+                                    </div>
+                                    <div className="mt-1 border-t border-slate-200 dark:border-slate-700 pt-2.5 flex gap-2">
+                                        <Button asChild size="sm" variant="outline" className="flex-1 text-[11px] h-7 rounded-md text-slate-600 hover:bg-slate-100 bg-white">
+                                            <a href={`/meetings/${m.id}/review/pdf`} target="_blank">Unduh PDF</a>
+                                        </Button>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>

@@ -9,7 +9,7 @@ export default function AttendanceScan({ meeting, message }: { meeting: any; mes
             <Head title="Konfirmasi Absensi" />
 
             <Card className="w-full max-w-md shadow-lg border-slate-200 bg-white rounded-2xl">
-                <CardContent className="p-8 flex flex-col items-center gap-6 text-center">
+                <CardContent className="p-8 flex flex-col items-center gap-4 text-center">
                     {/* Success icon */}
                     <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center">
                         <CheckCircle2 className="w-10 h-10 text-green-500" />
