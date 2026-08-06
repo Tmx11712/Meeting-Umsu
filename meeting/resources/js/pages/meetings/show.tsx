@@ -17,10 +17,10 @@ export default function MeetingShow({ meeting }: any) {
     const isHumas = roles.includes('Bag. Humas');
     const isPimpinan = roles.includes('Pimpinan');
 
-    const canRecord = (isAdmin || isHumas) && ['terjadwal', 'recording', 'recorded'].includes(meeting.status);
-    const canEnterRecordingRoom = ['terjadwal', 'recording', 'recorded'].includes(meeting.status);
-    const canCorrect = (isAdmin || isUmum) && ['recorded', 'corrected'].includes(meeting.status);
-    const canAttend = (isAdmin || isUmum || isHumas) && ['recorded', 'corrected', 'reviewed'].includes(meeting.status);
+    const canRecord = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
+    const canEnterRecordingRoom = ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
+    const canCorrect = (isAdmin || isUmum) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
+    const canAttend = (isAdmin || isUmum || isHumas) && ['berlangsung', 'recorded', 'corrected', 'reviewed'].includes(meeting.status);
     const canReview = (isAdmin || isUmum) && ['corrected', 'reviewed'].includes(meeting.status);
     const canApprove = (isAdmin || isPimpinan) && meeting.status === 'reviewed';
     const hasOperationalActions = canEnterRecordingRoom || canCorrect || canAttend || canReview || canApprove;

@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { AlertCircle, Info } from 'lucide-react';
@@ -36,7 +36,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
         if (minutes?.content) {
             setEditData(JSON.parse(JSON.stringify(minutes.content)));
         } else {
-            setEditData({ pembukaan: '', pembahasan: [], keputusan: [] });
+            setEditData({ latar_belakang: '', peserta_rapat: [], pembahasan: [], keputusan: [] });
         }
         setEditModalOpen(true);
     };
@@ -67,6 +67,30 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
 
     const downloadPdf = () => {
         window.location.href = `/meetings/${meeting.id}/review/pdf`;
+    };
+
+    // Document Handlers
+    const [uploadingDoc, setUploadingDoc] = useState(false);
+    
+    const handleUploadDocument = (e: any) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploadingDoc(true);
+        const formData = new FormData();
+        formData.append('document', file);
+
+        router.post(`/meetings/${meeting.id}/documents`, formData, {
+            onFinish: () => {
+                setUploadingDoc(false);
+                e.target.value = null; // reset input
+            }
+        });
+    };
+
+    const handleDeleteDocument = (id: string) => {
+        if (!confirm('Hapus dokumen ini?')) return;
+        router.delete(`/meetings/${meeting.id}/documents/${id}`);
     };
 
     // Dummy Attendance Logic
@@ -284,29 +308,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                         </CardContent>
                     </Card>
 
-                    {/* Dokumen Pendukung */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm">
-                        <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
-                                <div key={doc.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-1.5 bg-blue-50 text-blue-500 rounded-md">
-                                            <FileText className="w-4 h-4" />
-                                        </div>
-                                        <p className="text-sm font-medium text-slate-700">{doc.title || doc.file_name}</p>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-slate-600" asChild>
-                                            <a href={`/storage/${doc.file_path}`} download><Download className="w-3.5 h-3.5" /></a>
-                                        </Button>
-                                    </div>
-                                </div>
-                            )) : <div className="text-slate-500 italic text-sm">Belum ada dokumen.</div>}
-                        </CardContent>
-                    </Card>
+
                 </div>
 
                 {/* Tengah: Notulen Rapat */}
@@ -350,8 +352,26 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                         <CardContent className="p-4 flex-1 text-sm text-slate-800 space-y-8">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
                                 <div className="space-y-8">
-                                    {/* Pembukaan */}
-                                    {minutes.content.pembukaan && (
+                                    {/* Peserta Rapat */}
+                                    {minutes.content.peserta_rapat && Array.isArray(minutes.content.peserta_rapat) && minutes.content.peserta_rapat.length > 0 && (
+                                        <div>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Peserta Rapat</h3>
+                                            <ul className="list-disc pl-5 space-y-1.5">
+                                                {minutes.content.peserta_rapat.map((peserta: string, idx: number) => (
+                                                    <li key={idx} className="leading-relaxed text-slate-700">{peserta}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+
+                                    {/* Latar Belakang */}
+                                    {minutes.content.latar_belakang && (
+                                        <div>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Latar Belakang</h3>
+                                            <p className="leading-relaxed text-slate-700">{minutes.content.latar_belakang}</p>
+                                        </div>
+                                    )}
+                                    {minutes.content.pembukaan && !minutes.content.latar_belakang && (
                                         <div>
                                             <h3 className="font-bold text-sm mb-2 text-slate-900">Pembukaan</h3>
                                             <p className="leading-relaxed text-slate-700">{minutes.content.pembukaan}</p>
@@ -450,11 +470,60 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                     <span className="font-bold text-slate-900">{participants.length} Orang</span>
                                 </div>
                             </div>
-                            <Button variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50 text-xs h-8 mt-2" asChild>
-                                <Link href={`/meetings/${meeting.id}/attendance`}>
-                                    <Users className="w-3 h-3 mr-2" /> Lihat Detail Absensi
-                                </Link>
-                            </Button>
+                        </CardContent>
+                    </Card>
+
+                    {/* Dokumen Pendukung */}
+                    <Card className="rounded-xl border-slate-200 shadow-sm">
+                        <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100">
+                            <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
+                            {canManageReview && (
+                                <div className="relative">
+                                    <input 
+                                        type="file" 
+                                        id="document-upload" 
+                                        className="hidden" 
+                                        accept=".pdf,.txt"
+                                        onChange={handleUploadDocument}
+                                        disabled={uploadingDoc}
+                                    />
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="h-8 text-xs bg-white text-slate-700 hover:bg-slate-50"
+                                        disabled={uploadingDoc}
+                                        onClick={() => document.getElementById('document-upload')?.click()}
+                                    >
+                                        {uploadingDoc ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : <Upload className="w-3 h-3 mr-2" />}
+                                        Upload
+                                    </Button>
+                                </div>
+                            )}
+                        </CardHeader>
+                        <CardContent className="space-y-3 pt-4">
+                            {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
+                                <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                    <div className="flex items-center gap-3 overflow-hidden">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                            <FileText className="w-4 h-4" />
+                                        </div>
+                                        <div className="truncate">
+                                            <p className="text-sm font-medium text-slate-900 truncate" title={doc.file_name}>{doc.file_name}</p>
+                                            <p className="text-[10px] text-slate-500 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                                        </div>
+                                    </div>
+                                    {canManageReview && (
+                                        <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    )}
+                                </div>
+                            )) : (
+                                <div className="text-center py-6 text-slate-500">
+                                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                                    <p className="text-xs">Belum ada dokumen tambahan.</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -514,11 +583,40 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                     </DialogHeader>
                     {editData && (
                         <div className="space-y-6 py-4">
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Peserta Rapat</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, peserta_rapat: [...(editData.peserta_rapat || []), '']})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Peserta
+                                    </Button>
+                                </div>
+                                {editData.peserta_rapat?.map((peserta: string, idx: number) => (
+                                    <div key={`p-${idx}`} className="flex gap-2 items-center">
+                                        <div className="w-2 h-2 rounded-full bg-slate-400 shrink-0"></div>
+                                        <Input 
+                                            value={peserta} 
+                                            onChange={e => {
+                                                const newData = [...editData.peserta_rapat];
+                                                newData[idx] = e.target.value;
+                                                setEditData({...editData, peserta_rapat: newData});
+                                            }}
+                                        />
+                                        <Button variant="ghost" size="icon" className="text-rose-500 shrink-0" onClick={() => {
+                                            const newData = [...editData.peserta_rapat];
+                                            newData.splice(idx, 1);
+                                            setEditData({...editData, peserta_rapat: newData});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+
                             <div className="space-y-2">
-                                <Label className="font-bold">Pembukaan</Label>
+                                <Label className="font-bold">Latar Belakang</Label>
                                 <Textarea 
-                                    value={editData.pembukaan || ''} 
-                                    onChange={e => setEditData({...editData, pembukaan: e.target.value})}
+                                    value={editData.latar_belakang || editData.pembukaan || ''} 
+                                    onChange={e => setEditData({...editData, latar_belakang: e.target.value, pembukaan: e.target.value})}
                                     rows={3}
                                 />
                             </div>

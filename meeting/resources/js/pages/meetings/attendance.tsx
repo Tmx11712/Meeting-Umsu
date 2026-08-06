@@ -107,8 +107,10 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
             name: p.user?.name,
             dept: p.user?.department || '-',
             job: p.user?.roles?.[0]?.name || '-',
+            nip: p.user?.nip || '-', // Added NIP
             status: statusLabel, // Fix Bug #2: Handle 'tidak_hadir'
-            time: att?.check_in_time ? new Date(att.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '-',
+            time_in: att?.check_in_time ? new Date(att.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
+            time_out: att?.check_out_time ? new Date(att.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
             method: isIrvanCloud ? 'UMSU Employee App' : 'Manual'
         };
     });
@@ -374,9 +376,10 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                         <th className="py-4 px-4 font-medium">No</th>
                                         <th className="py-4 px-4 font-medium">Nama Peserta</th>
                                         <th className="py-4 px-4 font-medium">Departemen</th>
-                                        <th className="py-4 px-4 font-medium">Jabatan</th>
+                                        <th className="py-4 px-4 font-medium">NIP</th>
+                                        <th className="py-4 px-4 font-medium">Masuk</th>
+                                        <th className="py-4 px-4 font-medium">Keluar</th>
                                         <th className="py-4 px-4 font-medium">Status</th>
-                                        <th className="py-4 px-4 font-medium">Waktu Absensi</th>
                                         <th className="py-4 px-4 font-medium">Metode</th>
                                         {!isIrvanCloud && <th className="py-4 px-4 font-medium text-right">Aksi</th>}
                                     </tr>
@@ -387,7 +390,9 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                             <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{startIndex + i}</td>
                                             <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">{row.name}</td>
                                             <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.dept}</td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.job}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono text-xs">{row.nip}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time_in}</td>
+                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time_out}</td>
                                             <td className="py-3 px-4">
                                                 <Badge variant="outline" className={`font-medium border shadow-sm backdrop-blur-sm ${row.status === 'Hadir' ? 'bg-emerald-50/80 text-emerald-600 border-emerald-200/60' :
                                                         row.status === 'Terlambat' ? 'bg-amber-50/80 text-amber-600 border-amber-200/60' :
@@ -397,7 +402,6 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
                                                     {row.status}
                                                 </Badge>
                                             </td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time}</td>
                                             <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.method}</td>
                                             {!isIrvanCloud && (
                                                 <td className="py-3 px-4 text-right">

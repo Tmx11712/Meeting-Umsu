@@ -26,6 +26,7 @@ class Meeting extends Model
         'external_id',
         'created_by',
         'current_stage',
+        'recording_started_at',
     ];
 
     public function createdBy()

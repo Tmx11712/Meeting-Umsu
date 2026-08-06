@@ -15,8 +15,8 @@ class MeetingMinuteController extends Controller
 {
     public function index(Request $request)
     {
-        // Stage 5 = Review / Notulen
-        $query = Meeting::where('current_stage', 5);
+        // Stage 5, 6, 7 = Review / Notulen, Persetujuan, Selesai
+        $query = Meeting::whereIn('current_stage', [5, 6, 7]);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -67,9 +67,39 @@ class MeetingMinuteController extends Controller
             return response()->json(['error' => 'Transkrip kosong. Harap rekam atau upload audio.'], 400);
         }
 
+        // 1.5 Ambil daftar peserta asli yang hadir
+        $attendees = $meeting->attendances()->whereIn('status', ['hadir', 'terlambat'])->with('user')->get();
+        $pesertaAsli = [];
+        foreach ($attendees as $att) {
+            $pesertaAsli[] = $att->user ? $att->user->name : 'Peserta Tidak Dikenal';
+        }
+        $pesertaText = empty($pesertaAsli) ? 'Tidak ada data absensi.' : implode(', ', $pesertaAsli);
+
+        // 1.8 Ekstrak teks dari dokumen tambahan jika ada
+        $dokumenText = '';
+        $documents = $meeting->documents;
+        if ($documents && $documents->count() > 0) {
+            foreach ($documents as $doc) {
+                $filePath = storage_path('app/public/' . str_replace('public/', '', $doc->file_path));
+                if (file_exists($filePath)) {
+                    if ($doc->mime_type === 'application/pdf') {
+                        try {
+                            $parser = new \Smalot\PdfParser\Parser();
+                            $pdf = $parser->parseFile($filePath);
+                            $dokumenText .= "\n--- Dokumen PDF: {$doc->file_name} ---\n" . $pdf->getText();
+                        } catch (\Exception $e) {
+                            // Abaikan jika gagal parsing
+                        }
+                    } elseif ($doc->mime_type === 'text/plain') {
+                        $dokumenText .= "\n--- Dokumen TXT: {$doc->file_name} ---\n" . file_get_contents($filePath);
+                    }
+                }
+            }
+        }
+
         // 2. Generate Summary using AI
         try {
-            $summaryJson = $aiService->generateSummary($meeting, $transcriptText);
+            $summaryJson = $aiService->generateSummary($meeting, $transcriptText, $pesertaText, $dokumenText);
 
             // 3. Save to MeetingMinute
             $minute = MeetingMinute::updateOrCreate(
@@ -137,11 +167,12 @@ class MeetingMinuteController extends Controller
                 'reviewed_at' => now(),
             ]);
             $meeting->update(['current_stage' => 6]); // Move to Pimpinan
-            
-            event(new MeetingUpdated($meeting, 'stage_changed'));
+            try {
+                event(new MeetingUpdated($meeting, 'stage_changed'));
+            } catch (\Exception $e) {}
         }
 
-        return redirect()->route('dashboard')->with('success', 'Notulen dikirim ke pimpinan.');
+        return redirect()->route('meetings.approval', $meeting->id)->with('success', 'Notulen dikirim ke pimpinan.');
     }
 
     public function downloadPdf(Meeting $meeting)

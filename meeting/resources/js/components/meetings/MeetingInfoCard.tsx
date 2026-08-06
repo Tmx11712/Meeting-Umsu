@@ -68,13 +68,7 @@ export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton =
                         </div>
                     </div>
                 </div>
-                {showDetailButton && (
-                    <Button variant="outline" size="sm" asChild className="w-full text-blue-600 border-blue-200/60 hover:bg-blue-50/50 bg-white/50 backdrop-blur-sm rounded-lg mt-auto transition-all h-8 text-xs">
-                        <Link href={`/meetings/${meeting.id}`}>
-                            <Eye className="w-3.5 h-3.5 mr-1.5" /> Lihat Detail Rapat
-                        </Link>
-                    </Button>
-                )}
+
             </CardContent>
         </Card>
     );

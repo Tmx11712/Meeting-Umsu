@@ -161,6 +161,7 @@ class IrvanCloudSyncService
                         'name' => $fullname,
                         'email' => $p['email'],
                         'password' => Hash::make('password123'), // Default password
+                        'nip' => $p['nip'] ?? null,
                         'department' => 'Umum', // Default fallback
                         'position' => 'Staff',
                         'phone' => null,
@@ -168,6 +169,8 @@ class IrvanCloudSyncService
                     ]);
                     // Assign Viewer role
                     $user->assignRole('Viewer');
+                } else if (!empty($p['nip']) && empty($user->nip)) {
+                    $user->update(['nip' => $p['nip']]);
                 }
 
                 // 2. Add as Meeting Participant
@@ -180,6 +183,7 @@ class IrvanCloudSyncService
                 if (! empty($p['scanned_at'])) {
                     // Try to parse the scanned_at time. API returns ISO8601 (e.g., 2026-05-25T09:53:32.000Z)
                     $checkInTime = Carbon::parse($p['scanned_at'])->setTimezone(config('app.timezone'));
+                    $checkOutTime = !empty($p['scanned_out_at']) ? Carbon::parse($p['scanned_out_at'])->setTimezone(config('app.timezone')) : null;
 
                     MeetingAttendance::updateOrCreate(
                         [
@@ -189,6 +193,7 @@ class IrvanCloudSyncService
                         [
                             'status' => 'hadir',
                             'check_in_time' => $checkInTime,
+                            'check_out_time' => $checkOutTime,
                             'method' => 'irvan_cloud_app',
                             'recorded_by' => null,
                         ]

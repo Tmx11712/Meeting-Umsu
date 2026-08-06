@@ -19,6 +19,7 @@
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
         "pusher/pusher-php-server": "*",
+        "smalot/pdfparser": "^2.12",
         "spatie/laravel-permission": "^8.3"
     },
     "require-dev": {

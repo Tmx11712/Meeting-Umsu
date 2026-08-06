@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Meeting::query()->with('minutes', 'participants');
+        $query = Meeting::query()->with('minutes', 'participants', 'attendances');
 
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('date', [$request->start_date, $request->end_date]);
@@ -28,7 +28,7 @@ class ReportController extends Controller
 
     public function download(Request $request)
     {
-        $query = Meeting::query()->with('minutes', 'participants');
+        $query = Meeting::query()->with('minutes', 'participants', 'attendances');
 
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('date', [$request->start_date, $request->end_date]);

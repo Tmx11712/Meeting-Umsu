@@ -71,7 +71,9 @@ class AttendanceController extends Controller
             ]
         );
 
-        event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
+        try {
+            event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
+        } catch (\Exception $e) {}
 
         return back();
     }
@@ -82,7 +84,9 @@ class AttendanceController extends Controller
 
         $meeting->update(['current_stage' => 5]); // Move to Review
 
-        event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
+        try {
+            event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
+        } catch (\Exception $e) {}
 
         return redirect()->route('meetings.review', $meeting->id);
     }
@@ -109,7 +113,9 @@ class AttendanceController extends Controller
             ]
         );
 
-        event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
+        try {
+            event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
+        } catch (\Exception $e) {}
 
         return Inertia::render('meetings/attendance-scan', [
             'meeting' => $meeting->load('participants.user'),

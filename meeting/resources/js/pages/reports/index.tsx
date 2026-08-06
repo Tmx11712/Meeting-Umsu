@@ -78,15 +78,19 @@ export default function ReportIndex({ meetings, filters }: any) {
                                         <td className="p-4 text-center">{minute?.ai_decisions_count || 0}</td>
                                         <td className="p-4 text-center">
                                             {meeting.participants?.length > 0 
-                                                ? Math.round((meeting.attendances?.length || 0) / meeting.participants.length * 100) 
+                                                ? Math.round((meeting.attendances?.filter((a: any) => ['hadir', 'terlambat'].includes(a.status)).length || 0) / meeting.participants.length * 100) 
                                                 : 0}%
                                         </td>
                                         <td className="p-4 text-right">
-                                            <Button variant="outline" size="sm" asChild>
-                                                <a href={`/meetings/${meeting.id}/review/pdf`}>
-                                                    <FileText className="mr-2 h-4 w-4" /> PDF Notulen
-                                                </a>
-                                            </Button>
+                                            {minute ? (
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={`/meetings/${meeting.id}/review/pdf`}>
+                                                        <FileText className="mr-2 h-4 w-4" /> PDF Notulen
+                                                    </a>
+                                                </Button>
+                                            ) : (
+                                                <span className="text-muted-foreground text-xs italic">Belum ada hasil</span>
+                                            )}
                                         </td>
                                     </tr>
                                 );

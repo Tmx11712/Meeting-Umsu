@@ -79,7 +79,11 @@ class TranscriptCorrectionController extends Controller
         $meeting->update(['current_stage' => 4]); // Move to Absensi
 
         // Broadcast event to trigger auto-redirect on frontend
-        broadcast(new MeetingUpdated($meeting, 'stage_changed'));
+        try {
+            broadcast(new MeetingUpdated($meeting, 'stage_changed'));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Broadcast failed in TranscriptCorrectionController: ' . $e->getMessage());
+        }
 
         return redirect()->route('meetings.attendance', $meeting->id);
     }

@@ -63,32 +63,34 @@ class OpenAiTranscriptionService
     /**
      * Generate summary using GPT based on corrected transcript.
      */
-    public function generateSummary(Meeting $meeting, string $correctedTranscript): array
+    public function generateSummary(Meeting $meeting, string $correctedTranscript, string $pesertaText = '', string $dokumenText = ''): array
     {
         $apiKey = config('services.openai.key') ?? env('OPENAI_API_KEY');
         if (empty($apiKey)) {
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
 
-        $systemPrompt = <<<'PROMPT'
-Anda adalah asisten notulis rapat yang ahli. Tugas Anda adalah merangkum transkrip rapat menjadi notulen berstruktur JSON.
+        $systemPrompt = <<<PROMPT
+Anda adalah asisten notulis rapat yang ahli. Tugas Anda adalah merangkum transkrip rapat menjadi notulen berstruktur JSON yang sangat resmi.
 Aturan ketat:
-1. Heading/Topik ditentukan secara dinamis dari isi transkrip, bukan dipaksakan pada struktur baku.
-2. Gunakan paragraf naratif yang profesional untuk pembahasan, BUKAN bullet points.
-3. Kaitkan pernyataan ke nama seseorang HANYA JIKA disebut secara eksplisit dalam transkrip. JANGAN PERNAH mengarang nama.
-4. Gunakan tabel markdown (dalam string JSON) hanya untuk data tabular jika ada.
-5. Gunakan list markdown hanya untuk poin-poin yang memang merupakan urutan/daftar penting.
-6. Hasilkan keputusan rapat sebagai array string.
-7. Hasilkan daftar tindak lanjut (action items) secara akurat dari pembahasan, mencakup deskripsi, PIC (jika ada), dan deadline (jika ada).
+1. Heading/Topik ditentukan secara dinamis dari isi transkrip.
+2. Gunakan paragraf naratif yang profesional untuk pembahasan.
+3. JANGAN PERNAH mengarang nama peserta. Gunakan HANYA nama yang diberikan di 'Daftar Hadir Asli' untuk mengisi field "peserta_rapat". Jika tidak disebutkan, sertakan yang ada di Daftar Hadir Asli.
+4. "latar_belakang" berisi teks naratif pembukaan/tujuan rapat secara formal. Jika ada dokumen pendukung, Anda BISA menggunakan isi dokumen tersebut untuk memperkaya konteks latar belakang dan pembahasan.
+5. Hasilkan daftar tindak lanjut secara akurat.
 
-Format Output JSON:
+Daftar Hadir Asli: {$pesertaText}
+Dokumen Pendukung: {$dokumenText}
+
+Format Output JSON HARUS SEPERTI INI:
 {
-    "pembukaan": "Teks naratif pembukaan...",
+    "latar_belakang": "Teks naratif latar belakang/pembukaan rapat...",
+    "peserta_rapat": ["Nama 1", "Nama 2"],
     "pembahasan": [
         {
-            "topik": "Judul Topik 1",
+            "topik": "Judul Topik",
             "narasi": "Paragraf naratif penjelasan...",
-            "tabel": "Tabel markdown opsional",
+            "tabel": "Tabel markdown opsional jika ada",
             "list": "List markdown opsional"
         }
     ],
@@ -97,7 +99,7 @@ Format Output JSON:
         {
             "description": "Lakukan X",
             "pic": "Nama/PIC",
-            "deadline": "2026-10-12 atau string deskriptif"
+            "deadline": "2026-10-12 atau string"
         }
     ],
     "topik_count": 1,

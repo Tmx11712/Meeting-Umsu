@@ -37,6 +37,7 @@
         <p>{{ strtoupper($meeting->title) }}</p>
     </div>
 
+    <div class="section-title">I. INFORMASI RAPAT</div>
     <table class="info-table">
         <tr>
             <th>Tanggal</th>
@@ -62,15 +63,31 @@
     @endphp
 
     @if($content)
-        @if(!empty($content['pembukaan']))
-            <div class="section-title">I. PEMBUKAAN</div>
+        @if(!empty($content['peserta_rapat']) && is_array($content['peserta_rapat']))
+            <div class="section-title">II. PESERTA RAPAT</div>
+            <div class="content-block">
+                <ul>
+                @foreach($content['peserta_rapat'] as $peserta)
+                    <li>{{ $peserta }}</li>
+                @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(!empty($content['latar_belakang']))
+            <div class="section-title">III. LATAR BELAKANG</div>
+            <div class="content-block">
+                <p>{{ $content['latar_belakang'] }}</p>
+            </div>
+        @elseif(!empty($content['pembukaan']))
+            <div class="section-title">III. PEMBUKAAN</div>
             <div class="content-block">
                 <p>{{ $content['pembukaan'] }}</p>
             </div>
         @endif
 
         @if(!empty($content['pembahasan']) && is_array($content['pembahasan']))
-            <div class="section-title">II. PEMBAHASAN</div>
+            <div class="section-title">IV. PEMBAHASAN</div>
             <div class="content-block">
                 <ol>
                 @foreach($content['pembahasan'] as $bahas)
@@ -91,7 +108,7 @@
         @endif
 
         @if(!empty($content['keputusan']) && is_array($content['keputusan']))
-            <div class="section-title">III. KEPUTUSAN</div>
+            <div class="section-title">V. KEPUTUSAN</div>
             <div class="content-block">
                 <ul>
                 @foreach($content['keputusan'] as $kep)
@@ -101,13 +118,13 @@
             </div>
         @endif
     @else
-        <div class="section-title">I. HASIL RAPAT</div>
+        <div class="section-title">II. HASIL RAPAT</div>
         <div class="content-block">
             <p><i>Konten notulen belum tersedia atau format tidak didukung.</i></p>
         </div>
     @endif
 
-    <div class="section-title">IV. TINDAK LANJUT</div>
+    <div class="section-title">VI. TINDAK LANJUT</div>
     @if($minute && $minute->actionItems->count() > 0)
         <table class="action-table">
             <thead>

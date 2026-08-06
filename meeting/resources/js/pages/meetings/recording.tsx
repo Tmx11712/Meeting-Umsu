@@ -1,105 +1,122 @@
-import { Head, Link, usePage, router } from '@inertiajs/react';
-import { Mic, UploadCloud, Square, Loader2, RefreshCw, CheckCircle2, PauseCircle, Calendar, Clock, MapPin, Users } from 'lucide-react';
-import { AlertCircle, Trash2 } from 'lucide-react';
+import { Head, usePage, router } from '@inertiajs/react';
+import { Square, UploadCloud, Info, Send, Key, Megaphone, Monitor, CheckCircle2, AlertCircle, Loader2, Bot, Database, Trash2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { MeetingStepper } from '@/components/meeting-stepper';
-import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from '@/components/ui/badge';
+import { Meeting } from '@/types/meeting';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
-import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
-import { Meeting } from '@/types/meeting';
 
-export default function MeetingRecording({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
+export default function MeetingRecording({ meeting, openAiConfigured }: { meeting: Meeting, openAiConfigured?: boolean }) {
+    useMeetingWebSocket(meeting?.id);
     const { auth } = usePage().props as any;
     const { canEdit } = usePermissions();
     const canRecord = canEdit('recording');
+    const canTranscribe = canEdit('transcript');
+
+    // Server-synced state
+    const serverStartedAt = meeting?.recording_started_at ? new Date(meeting.recording_started_at).getTime() : null;
+    const isServerRecording = serverStartedAt !== null;
+
+    // Fallback polling in case WebSocket server is dead
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ only: ['meeting'], preserveScroll: true, preserveState: true });
+        }, 5000); // 5 seconds polling
+        return () => clearInterval(interval);
+    }, [meeting?.id]);
+    
+    const [activeTab, setActiveTab] = useState<'upload' | 'record'>('record');
     const [isRecording, setIsRecording] = useState(false);
-    const [isPaused, setIsPaused] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
-    const [isCheckingApi, setIsCheckingApi] = useState(false);
-    
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    
-    // Live Recording Refs
+    const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [isTranscribing, setIsTranscribing] = useState<number | null>(null);
+
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const chunksRef = useRef<Blob[]>([]);
-    const isRecordingRef = useRef(false); 
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const formatDuration = (seconds: number) => {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = seconds % 60;
-
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    };
-
-    const checkApiConnection = () => {
-        setIsCheckingApi(true);
-        router.reload({
-            only: ['openAiConfigured'],
-            onFinish: () => setIsCheckingApi(false)
+    const triggerTranscription = (recordingId: number) => {
+        setIsTranscribing(recordingId);
+        router.post(`/meetings/${meeting.id}/recording/transcribe`, {
+            recording_id: recordingId
+        }, {
+            onSuccess: () => {
+                showSuccess('Diproses', 'Audio sedang ditranskripsi oleh AI.');
+                setIsTranscribing(null);
+            },
+            onError: () => {
+                showError('Error', 'Gagal memulai transkripsi.');
+                setIsTranscribing(null);
+            }
         });
     };
 
-    const handleDeleteRecording = async (recordingId: string) => {
-        console.log('Delete button clicked for recording:', recordingId);
-        const confirmed = await confirmDelete(
-            'Hapus Rekaman',
-            'Apakah Anda yakin ingin menghapus rekaman ini? Tindakan ini tidak dapat dibatalkan.'
-        );
+    const finishRecording = () => {
+        router.post(`/meetings/${meeting.id}/finish-recording`);
+    };
 
-        console.log('User confirmed:', confirmed);
-        if (confirmed) {
-            console.log('Sending router.delete to:', `/meetings/${meeting.id}/recording/${recordingId}`);
+    const deleteRecording = async (recordingId: number) => {
+        const isConfirmed = await confirmDelete(
+            'Hapus Rekaman Audio?',
+            'File audio yang sudah dihapus tidak dapat dikembalikan.'
+        );
+        
+        if (isConfirmed) {
             router.delete(`/meetings/${meeting.id}/recording/${recordingId}`, {
-                preserveScroll: true,
                 onSuccess: () => {
-                    console.log('Delete success callback triggered');
-                    showSuccess('Rekaman berhasil dihapus');
+                    showSuccess('Dihapus', 'Rekaman berhasil dihapus.');
                 },
-                onError: (errors) => {
-                    console.error('Delete error callback triggered', errors);
-                    showError('Gagal menghapus rekaman. Silakan coba lagi.');
+                onError: () => {
+                    showError('Error', 'Gagal menghapus rekaman.');
                 }
             });
         }
     };
 
-    useMeetingWebSocket(meeting?.id);
-
+    // Timer Logic synced with server
     useEffect(() => {
         let interval: NodeJS.Timeout;
-
-        if (isRecording && !isPaused) {
+        if (isServerRecording && serverStartedAt) {
+            // Initial sync
+            setRecordingDuration(Math.floor((Date.now() - serverStartedAt) / 1000));
+            
+            interval = setInterval(() => {
+                setRecordingDuration(Math.floor((Date.now() - serverStartedAt) / 1000));
+            }, 1000);
+        } else if (isRecording) {
+            // Fallback to local timer if server hasn't responded yet but local is recording
             interval = setInterval(() => {
                 setRecordingDuration(prev => prev + 1);
             }, 1000);
+        } else {
+            setRecordingDuration(0);
         }
-
         return () => clearInterval(interval);
-    }, [isRecording, isPaused]);
+    }, [isRecording, isServerRecording, serverStartedAt]);
 
+    // Cleanup on unmount
     useEffect(() => {
-        // Cleanup on unmount
         return () => {
             if (streamRef.current) {
-streamRef.current.getTracks().forEach(track => track.stop());
-}
+                streamRef.current.getTracks().forEach(track => track.stop());
+            }
         };
     }, []);
 
+    const formatDuration = (seconds: number) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
     const handleFileUpload = async (e: any) => {
         const file = e.target.files[0];
-
-        if (!file) {
-return;
-}
+        if (!file) return;
 
         setUploading(true);
         const formData = new FormData();
@@ -114,66 +131,43 @@ return;
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 }
             });
-            const data = await response.json();
-
+            
             if (response.ok) {
-                await showSuccess('Sukses', 'Audio berhasil diupload dan sedang ditranskripsi.');
+                await showSuccess('Sukses', 'Audio berhasil diunggah.');
                 window.location.reload();
             } else {
-                showError('Error', data.message);
+                const data = await response.json();
+                showError('Error', data.message || 'Gagal mengunggah audio.');
             }
         } catch (error) {
-            console.error(error);
-            showError('Gagal', 'Terjadi kesalahan saat upload.');
+            showError('Gagal', 'Terjadi kesalahan saat mengunggah.');
         } finally {
             setUploading(false);
-        }
-    };
-
-    const uploadRecordedAudio = async (blob: Blob) => {
-        if (blob.size === 0) {
-            showError('Perhatian', 'Rekaman kosong, tidak ada audio yang terekam.');
-
-            return;
-        }
-
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('file', blob, `rekaman-${Date.now()}.webm`);
-        formData.append('source', 'system_record');
-
-        try {
-            const response = await fetch(`/meetings/${meeting.id}/recording`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                }
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                await showSuccess('Sukses', 'Rekaman berhasil disimpan dan sedang ditranskripsi oleh AI.');
-                window.location.reload();
-            } else {
-                showError('Error', data.message || 'Gagal menyimpan rekaman.');
-            }
-        } catch (error) {
-            console.error('Failed to upload recording', error);
-            showError('Gagal', 'Terjadi kesalahan saat menyimpan rekaman.');
-        } finally {
-            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
         }
     };
 
     const startRecordingSession = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            streamRef.current = stream;
-            isRecordingRef.current = true;
-            setIsRecording(true);
+            setErrorMsg('');
             setRecordingDuration(0);
             chunksRef.current = [];
+            setRecordedBlob(null);
+
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+                audio: true // Meminta sistem audio
+            });
+            
+            // Check jika audio track ada
+            if (stream.getAudioTracks().length === 0) {
+                stream.getTracks().forEach(track => track.stop());
+                setErrorMsg('Anda tidak membagikan Audio Sistem. Harap ulangi dan centang "Share system audio".');
+                return;
+            }
+
+            streamRef.current = stream;
+            setIsRecording(true);
 
             const mediaRecorder = new MediaRecorder(stream);
             mediaRecorderRef.current = mediaRecorder;
@@ -185,189 +179,193 @@ return;
             };
 
             mediaRecorder.onstop = () => {
-                // Combine all chunks into a single audio file
                 const fullBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
-                // Upload the complete file to server for AI transcription
-                uploadRecordedAudio(fullBlob);
+                setRecordedBlob(fullBlob);
             };
 
-            // Start recording, collect data every 1 second for reliability
+            // Berhenti rekam otomatis jika user menekan "Stop sharing" pada browser UI
+            stream.getVideoTracks()[0].onended = () => {
+                stopRecordingSession();
+            };
+
             mediaRecorder.start(1000);
-        } catch (err) {
+
+            // Tembakkan sinyal ke backend bahwa rekaman dimulai
+            await fetch(`/meetings/${meeting.id}/recording/start-session`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+
+        } catch (err: any) {
             console.error(err);
-            showError('Akses Ditolak', 'Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin dan mengakses via localhost/HTTPS.');
+            setErrorMsg(`Gagal memulai rekaman: ${err.message}`);
         }
     };
 
-    const stopRecordingSession = () => {
-        isRecordingRef.current = false;
+    const stopRecordingSession = async () => {
         setIsRecording(false);
-        setIsPaused(false);
-
-        if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
-            mediaRecorderRef.current.stop(); // This triggers onstop → uploadRecordedAudio
+        
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.stop();
         }
-
+        
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
             streamRef.current = null;
         }
+
+        // Tembakkan sinyal ke backend bahwa rekaman dihentikan
+        await fetch(`/meetings/${meeting.id}/recording/stop-session`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        });
     };
 
-    const togglePause = () => {
-        if (!mediaRecorderRef.current || !isRecording) return;
+    const sendRecordingToBackend = async () => {
+        if (!recordedBlob) {
+            showError('Perhatian', 'Belum ada rekaman audio yang siap dikirim.');
+            return;
+        }
 
-        if (isPaused) {
-            mediaRecorderRef.current.resume();
-            setIsPaused(false);
-        } else {
-            mediaRecorderRef.current.pause();
-            setIsPaused(true);
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', recordedBlob, `rekaman-${Date.now()}.webm`);
+        formData.append('source', 'system_record');
+
+        try {
+            const response = await fetch(`/meetings/${meeting.id}/recording`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+            
+            if (response.ok) {
+                await showSuccess('Sukses', 'Audio berhasil dikirim ke backend.');
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                showError('Error', data.message || 'Gagal menyimpan rekaman.');
+            }
+        } catch (error) {
+            showError('Gagal', 'Terjadi kesalahan saat mengirim rekaman.');
+        } finally {
+            setUploading(false);
+            setRecordedBlob(null);
+            setRecordingDuration(0);
         }
     };
 
     return (
-        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Head title="Operator Rekam" />
-            
-            {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <Head title="Operator Rekaman" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
-                        Operator Rekam
-                    </h1>
-                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
-                        <span>Dashboard</span>
-                        <span>›</span>
-                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
-                        <span>›</span>
-                        <span className="text-blue-900 dark:text-blue-300 font-bold">Operator Rekam</span>
+                    <h1 className="text-[22px] font-semibold text-slate-900 leading-tight">Operator rekaman</h1>
+                    <p className="text-[13px] text-slate-500 mt-1">Tekan Play untuk mulai merekam rapat</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${isServerRecording ? 'bg-rose-500 animate-pulse' : 'bg-slate-400'}`}></div>
+                    <span className={`text-[12px] font-bold ${isServerRecording ? 'text-rose-600' : 'text-slate-500'}`}>
+                        {isServerRecording ? '🔴 LIVE: Sedang Merekam' : 'Menunggu'}
+                    </span>
+                </div>
+            </div>
+
+            {/* Meeting Info Card & API Key Card (Top Section) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex items-center justify-between h-full">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                            <Megaphone className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <h2 className="text-[14px] font-bold text-slate-900">{meeting?.title || 'Review Strategi'}</h2>
+                            <p className="text-[12px] text-slate-500 mt-0.5">{meeting?.location || 'Ruang Rapat'} - {meeting?.date}</p>
+                        </div>
                     </div>
                 </div>
-                <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm">
-                    <Link href="/meetings">
-                        Kembali ke Jadwal
-                    </Link>
-                </Button>
+                
+                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-5 h-full">
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-[13px] font-semibold text-slate-900 flex items-center gap-2">
+                            <Key className="w-3.5 h-3.5 text-slate-400" />
+                            Koneksi OpenAI API
+                        </h3>
+                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${openAiConfigured ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                            {openAiConfigured && <CheckCircle2 className="w-3 h-3" />}
+                            {openAiConfigured ? 'Terhubung' : 'Belum Terhubung'}
+                        </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500">Konfigurasi API dikelola di backend (.env). Tidak perlu memasukkan API key secara manual.</p>
+                </div>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={3} />
-            </div>
-
-            {!canRecord && (
-                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
-                    <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
-                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
-                        Anda tidak memiliki izin untuk mengelola rekaman rapat ini. Anda hanya dapat melihat status rekaman.
-                    </AlertDescription>
-                </Alert>
-            )}
-
-            {/* Top Cards Row */}
-            <div className="grid md:grid-cols-3 gap-4">
-                {/* Informasi Rapat */}
-                <MeetingInfoCard meeting={meeting} />
-
-                {/* Status Meeting */}
-                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-                    <CardHeader className="pb-4 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30 flex flex-row items-center justify-between">
-                        <CardTitle className="text-base font-bold text-emerald-900 dark:text-emerald-100">Status Rekaman</CardTitle>
-                        <Badge variant="outline" className={`border-emerald-200 uppercase font-bold text-xs tracking-wider px-3 py-1 rounded-full ${isRecording && !isPaused ? 'bg-emerald-100 text-emerald-700 animate-pulse' : isPaused ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-600'}`}>
-                            {isRecording && !isPaused && <div className="w-2 h-2 rounded-full bg-emerald-500 mr-2" />}
-                            {isPaused && <div className="w-2 h-2 rounded-full bg-amber-500 mr-2" />}
-                            {isRecording && !isPaused ? 'LIVE' : isPaused ? 'PAUSED' : 'STANDBY'}
-                        </Badge>
-                    </CardHeader>
-                    <CardContent className="space-y-6 pt-5">
-                        {isRecording && !isPaused ? (
-                            <div className="bg-emerald-100/50 border border-emerald-200 dark:bg-emerald-900/30 dark:border-emerald-800 rounded-2xl p-4 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold shadow-sm">
-                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-3 animate-ping" />
-                                Perekaman Sedang Berlangsung
-                            </div>
-                        ) : isPaused ? (
-                            <div className="bg-amber-100/50 border border-amber-200 dark:bg-amber-900/30 dark:border-amber-800 rounded-2xl p-4 flex items-center justify-center text-amber-700 dark:text-amber-400 font-bold shadow-sm">
-                                <div className="w-2.5 h-2.5 rounded-full bg-amber-500 mr-3" />
-                                Perekaman Dijeda
-                            </div>
-                        ) : (
-                            <div className="bg-slate-100/50 border border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-center text-slate-600 dark:text-slate-400 font-bold shadow-sm">
-                                Sistem Siap Merekam
-                            </div>
-                        )}
-                        <div>
-                            <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Durasi Rapat</p>
-                            <p className="text-3xl font-black text-slate-900 dark:text-white font-mono tracking-tighter">{formatDuration(recordingDuration)}</p>
-                        </div>
-                        <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-                            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold flex items-center justify-center text-sm uppercase shadow-sm">
-                                {auth?.user?.name?.substring(0, 2) || 'OP'}
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-slate-900 dark:text-white">{auth?.user?.name || 'Operator'}</p>
-                                <p className="text-xs font-medium text-slate-500">{auth?.user?.department || 'Operator'}</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Koneksi API */}
-                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-                    <CardHeader className="pb-4 bg-sky-50/50 dark:bg-sky-900/20 border-b border-sky-100/50 dark:border-sky-800/30 flex flex-row items-center justify-between">
-                        <CardTitle className="text-base font-bold text-sky-900 dark:text-sky-100">Koneksi Sistem AI</CardTitle>
-                        <Badge variant="outline" className="bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-800 font-bold rounded-full px-3">Online</Badge>
-                    </CardHeader>
-                    <CardContent className="space-y-5 pt-5">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Status API</p>
-                                <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
-                                    <CheckCircle2 className="w-5 h-5 mr-2" />
-                                    Terhubung (OpenAI)
-                                </p>
-                            </div>
+            {/* Main Content Layout - Side by Side */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
+                
+                {/* KOLOM KIRI (Upload & Rekam) - Visible to everyone so Pimpinan can record */}
+                <div className="lg:col-span-5 flex flex-col gap-6">
+                    {/* Recording Controls */}
+                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm">
+                        <div className="flex p-1 gap-1 border-b border-slate-100">
                             <button 
-                                onClick={checkApiConnection}
-                                disabled={isCheckingApi}
-                                className="p-3 bg-sky-50 hover:bg-sky-100 dark:bg-sky-900/30 dark:hover:bg-sky-900/50 rounded-2xl transition-colors disabled:opacity-50 cursor-pointer"
-                                title="Cek Status API"
+                                onClick={() => setActiveTab('upload')}
+                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'upload' ? 'bg-blue-50/50 text-blue-600 border border-blue-100/50' : 'text-slate-600 hover:bg-slate-50'}`}
                             >
-                                <RefreshCw className={`w-5 h-5 text-sky-600 dark:text-sky-400 ${isCheckingApi ? 'animate-spin' : ''}`} />
+                                <UploadCloud className={`w-4 h-4 ${activeTab === 'upload' ? 'text-blue-500' : 'text-slate-400'}`} /> Unggah berkas
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('record')}
+                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'record' ? 'bg-blue-50/50 text-blue-600 border border-blue-100/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                            >
+                                <Monitor className={`w-4 h-4 ${activeTab === 'record' ? 'text-blue-500' : 'text-slate-400'}`} /> Rekam (Sistem)
                             </button>
                         </div>
-                        <div className="border-t border-slate-100 dark:border-slate-800/50 pt-5">
-                            <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Model Transkripsi</p>
-                            <div className="flex items-center bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
-                                <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 mr-3 rounded-lg">gpt-4o-mini</Badge>
-                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Siap memproses audio</span>
-                            </div>
-                        </div>
-                        <p className="text-xs font-medium text-slate-500 leading-relaxed px-1">
-                            Sistem terhubung ke server AI untuk melakukan transkripsi otomatis dan pemrosesan natural language.
-                        </p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Bottom Areas */}
-            <div className="grid md:grid-cols-[1fr_1fr_1.2fr] gap-4 flex-1 min-h-[400px]">
-                
-                {/* Upload Rekaman */}
-                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden">
-                    <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50">
-                        <CardTitle className="text-base font-bold text-slate-900 dark:text-white">Upload Manual</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col flex-1 pb-4 pt-4 justify-between gap-4">
-                        <div className="border-2 border-dashed border-blue-200 dark:border-blue-800/50 rounded-[2rem] bg-blue-50/30 dark:bg-blue-900/10 hover:bg-blue-50/60 dark:hover:bg-blue-900/20 transition-colors flex-1 flex flex-col items-center justify-center p-4 text-center cursor-pointer group" onClick={() => canRecord && fileInputRef.current?.click()}>
-                            <div className="w-16 h-16 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full shadow-sm flex items-center justify-center mb-5 text-blue-500 group-hover:scale-110 group-hover:text-blue-600 transition-all duration-300">
-                                <UploadCloud className="w-8 h-8" />
-                            </div>
-                            {canRecord ? (
+                        
+                        <div className="p-4">
+                            {activeTab === 'record' ? (
                                 <>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">Klik untuk Upload File<br/><span className="text-slate-400 font-medium text-xs mt-1 block">Drag & drop didukung</span></p>
-                                    
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={startRecordingSession}
+                                            disabled={isRecording || !canRecord}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700'}`}
+                                        >
+                                            <div className={`w-1.5 h-1.5 rounded-full border-[1.5px] ${isRecording ? 'border-slate-400' : 'border-rose-500'}`}></div> 
+                                            Mulai rekam
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={stopRecordingSession}
+                                            disabled={!isRecording}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${!isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'}`}
+                                        >
+                                            <Square className="w-3.5 h-3.5" /> Berhenti
+                                        </Button>
+                                    </div>
+                                    {errorMsg && (
+                                        <span className="text-[11px] text-rose-500 flex items-center mb-2">
+                                            <AlertCircle className="w-3 h-3 mr-1" /> {errorMsg}
+                                        </span>
+                                    )}
+                                    <p className="text-[11px] text-slate-500 flex items-start gap-2 leading-relaxed">
+                                        <Info className="w-3.5 h-3.5 shrink-0 text-slate-400 mt-0.5" />
+                                        Browser akan menampilkan dialog "Choose what to share" - pilih tab/jendela rapat (Zoom/Teams/dll) dan pastikan centang "Share system audio". 
+                                    </p>
+                                </>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center py-6 text-slate-400">
+                                    <UploadCloud className="w-8 h-8 mb-2 opacity-50" />
+                                    <p className="text-xs font-medium text-slate-600 mb-4">Unggah file audio secara manual</p>
                                     <input 
                                         type="file" 
                                         accept="audio/*" 
@@ -376,277 +374,135 @@ return;
                                         onChange={handleFileUpload}
                                     />
                                     <Button 
-                                        disabled={uploading}
-                                        className="bg-blue-600 hover:bg-blue-700 rounded-xl px-4"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            fileInputRef.current?.click();
-                                        }}
+                                        onClick={() => canRecord && fileInputRef.current?.click()}
+                                        disabled={uploading || !canRecord}
+                                        className="bg-blue-600 hover:bg-blue-700 h-9 text-[12px] px-6"
                                     >
-                                        {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                        {uploading ? 'Mengupload...' : 'Pilih File Rekaman'}
+                                        {uploading ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : null}
+                                        {uploading ? 'Mengunggah...' : 'Pilih File Audio'}
                                     </Button>
-                                    
-                                    <p className="text-[11px] font-medium text-slate-400 mt-6 bg-white/50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg">
-                                        Format: .mp3, .wav, .m4a (Max 200MB)
-                                    </p>
-                                </>
-                            ) : (
-                                <div className="text-center py-4">
-                                    <p className="text-sm font-bold text-slate-700 mb-2">Akses Terbatas</p>
-                                    <p className="text-xs text-slate-500">Hanya Bagian Humas yang dapat mengunggah rekaman.</p>
                                 </div>
                             )}
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
 
-                {/* Rekam Dari Sistem */}
-                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col h-full overflow-hidden relative">
-                    {/* Pulsing background effect when recording */}
-                    {isRecording && !isPaused && (
-                        <div className="absolute inset-0 bg-blue-500/5 animate-pulse rounded-2xl pointer-events-none"></div>
-                    )}
-                    <CardHeader className="pb-2 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 relative z-10">
-                        <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                            Perekam Sistem
-                            {isRecording && <span className="flex h-3 w-3 relative">{!isPaused && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>}<span className={`relative inline-flex rounded-full h-3 w-3 ${isPaused ? 'bg-amber-500' : 'bg-rose-500'}`}></span></span>}
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col flex-1 items-center justify-center p-8 relative z-10">
-                        <h2 className={`text-5xl font-mono font-black tracking-tighter mb-2 transition-colors duration-500 ${isRecording && !isPaused ? 'text-blue-600 dark:text-blue-400' : isPaused ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'}`}>
-                            {formatDuration(recordingDuration)}
-                        </h2>
-                        <p className={`text-sm font-medium mb-10 px-4 py-1 rounded-full ${isPaused ? 'text-amber-600 bg-amber-100/50 dark:bg-amber-900/30' : 'text-slate-500 bg-slate-100/50 dark:bg-slate-800/50'}`}>{isPaused ? 'Perekaman Dijeda' : 'Durasi Perekaman Aktif'}</p>
-                        
-                        {/* Fake Visualizer - Looks like a premium audio wave */}
-                        <div className="flex items-center justify-center h-20 w-full gap-1.5 mb-12 overflow-hidden px-4">
-                            {Array.from({ length: 32 }).map((_, i) => {
-                                // Create a dynamic curve look
-                                const heightBase = Math.sin(i / 5) * 40 + 50; 
-                                const randH = isRecording && !isPaused ? heightBase + (Math.sin(recordingDuration * 5 + i * 2.3) * 20) : isRecording && isPaused ? heightBase * 0.3 : 10;
-
-                                return (
-                                    <div 
-                                        key={i} 
-                                        className="w-1.5 rounded-full transition-all duration-150 ease-out" 
-                                        style={{ 
-                                            height: `${Math.max(4, randH)}%`,
-                                            backgroundColor: isRecording ? `hsl(230, 80%, ${60 + (i%5)*5}%)` : 'currentColor',
-                                            opacity: isRecording && !isPaused ? 1 : isRecording && isPaused ? 0.4 : 0.1, 
-                                        }}
-                                    ></div>
-                                );
-                            })}
-                        </div>
-
-                        {canRecord ? (
-                            <div className="flex w-full gap-4">
-                                <Button 
-                                    variant="outline" 
-                                    className="flex-1 border-rose-200 hover:bg-rose-50 text-rose-600 rounded-xl h-11 font-bold text-sm transition-all"
-                                    onClick={stopRecordingSession}
-                                    disabled={!isRecording}
-                                >
-                                    <Square className="w-5 h-5 mr-2" fill="currentColor" /> Stop
-                                </Button>
-                                <Button 
-                                    className={`flex-1 rounded-xl h-11 font-bold text-sm shadow-md transition-all ${
-                                        isRecording && !isPaused
-                                        ? 'bg-amber-500 hover:bg-amber-600 text-white' 
-                                        : isPaused
-                                        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                                        : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white hover:shadow-lg hover:-translate-y-1'
-                                    }`}
-                                    onClick={isRecording ? togglePause : startRecordingSession}
-                                >
-                                    {isRecording && !isPaused ? (
-                                        <><PauseCircle className="w-5 h-5 mr-2" /> Pause</>
-                                    ) : isPaused ? (
-                                        <><Mic className="w-5 h-5 mr-2" /> Resume</>
-                                    ) : (
-                                        <><Mic className="w-5 h-5 mr-2" /> Start Record</>
-                                    )}
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="text-center py-8 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full">
-                                <Mic className="w-8 h-8 text-slate-400 mx-auto mb-3" />
-                                <p className="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">Rapat sedang ditangani oleh Humas</p>
-                                <p className="text-xs font-medium text-slate-500">Harap tunggu di ruangan ini sampai proses rekaman dan transkripsi selesai.</p>
+                    {/* Timer & Send Action */}
+                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-12 flex flex-col items-center text-center relative overflow-hidden">
+                        {uploading && (
+                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
+                                <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-3" />
+                                <p className="text-sm font-bold text-emerald-700">Sedang mengirim audio ke server...</p>
                             </div>
                         )}
-                    </CardContent>
-                </Card>
-
-                {/* Daftar Rekaman & Transkrip */}
-                <div className="flex flex-col gap-4">
-                    {uploading && (
-                        <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-                            <CardContent className="pb-5 pt-5">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex justify-between text-xs font-bold mb-2">
-                                            <span className="text-slate-700 dark:text-slate-300">Menyimpan Audio...</span>
-                                            <span className="text-blue-600 dark:text-blue-400">Uploading</span>
-                                        </div>
-                                        <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                            <div className="h-full bg-blue-500 w-full rounded-full animate-pulse"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Daftar File Rekaman */}
-                    <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex-1 flex flex-col min-h-[250px] overflow-hidden">
-                        <CardHeader className="pb-3 pt-5 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 flex flex-row items-center justify-between">
-                            <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                Daftar Rekaman
-                            </CardTitle>
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 font-bold text-[10px] px-2 h-5 flex items-center rounded-full">
-                                {meeting.recordings?.length || 0} File
-                            </Badge>
-                        </CardHeader>
-                        <CardContent className="p-0 flex-1 overflow-y-auto bg-slate-50/30 dark:bg-slate-900/20">
-                            <div className="p-5 space-y-4">
-                                {meeting.recordings && meeting.recordings.length > 0 ? meeting.recordings.map((rec: any, idx: number) => (
-                                    <div key={rec.id} className="flex items-center justify-between gap-4 bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm">
-                                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                                            <div className="relative">
-                                                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0 font-bold text-sm">
-                                                    {idx + 1}
-                                                </div>
-                                                {/* Traffic Light Indicator */}
-                                                <div className={`absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-800 ${
-                                                    rec.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' :
-                                                    rec.status === 'transcribing' ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-pulse' :
-                                                    'bg-rose-500 shadow-[0_0_8px_rgba(225,29,72,0.8)]'
-                                                }`}></div>
-                                            </div>
-                                            <div className="min-w-0">
-                                                <p className="text-sm font-bold text-slate-900 dark:text-white truncate flex items-center gap-2">
-                                                    Rekaman #{idx + 1}
-                                                </p>
-                                                <p className="text-xs font-medium text-slate-500">
-                                                    {rec.source === 'upload' ? 'Upload Manual' : 'Rekaman Sistem'} 
-                                                    {rec.file_size ? ` • ${(rec.file_size / 1024 / 1024).toFixed(1)} MB` : ''}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2 shrink-0">
-                                            {rec.status === 'completed' ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
-                                                    <CheckCircle2 className="w-3 h-3 mr-1" /> Transkrip Selesai
-                                                </Badge>
-                                            ) : rec.status === 'transcribing' ? (
-                                                <Badge className="bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
-                                                    <Loader2 className="w-3 h-3 mr-1 animate-spin" /> Sedang Diproses AI
-                                                </Badge>
-                                            ) : canRecord ? (
-                                                <>
-                                                    <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:border-rose-800/50 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm mr-2">
-                                                        Belum Ditranskrip
-                                                    </Badge>
-                                                    <Button
-                                                        size="sm"
-                                                        className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[11px] px-3 h-8 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all"
-                                                        onClick={() => {
-                                                            router.post(`/meetings/${meeting.id}/recording/transcribe`, {
-                                                                recording_id: rec.id
-                                                            });
-                                                        }}
-                                                    >
-                                                        <Mic className="w-3.5 h-3.5 mr-1.5" /> Generate Transkrip AI
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <Badge variant="outline" className="bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:border-rose-800/50 font-bold rounded-full px-2.5 py-0.5 text-[10px] shadow-sm">
-                                                    Belum Ditranskrip
-                                                </Badge>
-                                            )}
-                                            
-                                            {canRecord && (
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="icon"
-                                                    className="h-8 w-8 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors ml-1 shrink-0"
-                                                    onClick={() => handleDeleteRecording(rec.id)}
-                                                    title="Hapus Rekaman"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </div>
-                                )) : (
-                                    <div className="flex flex-col items-center justify-center py-10 text-slate-400 opacity-60">
-                                        <Mic className="w-10 h-10 mb-3 text-slate-300" />
-                                        <p className="font-sans font-medium text-sm text-center px-4">Belum ada rekaman.<br/>Upload file atau rekam langsung untuk memulai.</p>
-                                    </div>
-                                )}
+                        
+                        <div className="flex items-center gap-1.5 mb-6">
+                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`}></div>
+                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '150ms'}}></div>
+                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '300ms'}}></div>
+                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '450ms'}}></div>
+                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '600ms'}}></div>
+                        </div>
+                        
+                        <div className={`font-mono text-5xl font-black tracking-widest mb-3 ${isServerRecording ? 'text-rose-600' : 'text-slate-900'}`}>
+                            {formatDuration(recordingDuration)}
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-medium mb-10">Waktu proses perekaman</p>
+                        
+                        <button 
+                            onClick={sendRecordingToBackend}
+                            disabled={isRecording || !recordedBlob || uploading}
+                            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all mb-6 shadow-sm ${(!recordedBlob || isRecording) ? 'bg-slate-50 border border-slate-100 text-slate-300 cursor-not-allowed' : 'bg-emerald-50 border border-emerald-100 text-emerald-600 hover:bg-emerald-100 hover:scale-105 cursor-pointer'}`}
+                            title={isRecording ? 'Harap hentikan perekaman terlebih dahulu' : !recordedBlob ? 'Belum ada rekaman tersimpan' : 'Kirim rekaman sekarang'}
+                        >
+                            <Send className="w-5 h-5 ml-0.5" />
+                        </button>
+                        
+                        <h3 className="text-[14px] font-bold text-slate-900 mb-1">Kirim audio ke backend</h3>
+                        <p className="text-[12px] text-slate-500">Pastikan proses rekaman telah dihentikan sebelum mengirim file</p>
+                        
+                        {recordedBlob && !isRecording && (
+                            <div className="mt-4 px-3 py-1 bg-emerald-50 text-emerald-600 text-[11px] font-bold rounded-full border border-emerald-100">
+                                ✓ Audio {(recordedBlob.size / 1024 / 1024).toFixed(2)} MB siap dikirim
                             </div>
-                        </CardContent>
-                    </Card>
+                        )}
+                    </div>
+                </div>
 
-                    {/* Hasil Transkrip (Hanya Menampilkan Rekaman Terbaru) */}
-                    {meeting.recordings && meeting.recordings.filter((r: any) => r.transcripts?.length > 0).length > 0 && (
-                        (() => {
-                            const recordingsWithTranscripts = meeting.recordings.filter((r: any) => r.transcripts?.length > 0);
-                            const latestRecording = recordingsWithTranscripts[recordingsWithTranscripts.length - 1];
-                            
-                            return (
-                                <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden">
-                                    <CardHeader className="pb-3 pt-5 bg-emerald-50/50 dark:bg-emerald-900/20 border-b border-emerald-100/50 dark:border-emerald-800/30">
-                                        <CardTitle className="text-sm font-bold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
-                                            <CheckCircle2 className="w-4 h-4" /> Hasil Transkrip AI
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-0 max-h-[300px] overflow-y-auto">
-                                        <div className="p-5 space-y-3 text-sm font-mono">
-                                            {latestRecording?.transcripts?.map((t: any) => (
-                                                <div key={t.id} className="flex gap-4 text-slate-700 dark:text-slate-300 group">
-                                                    <span className="text-slate-400 shrink-0 w-14 font-semibold group-hover:text-blue-400 transition-colors">{formatDuration(t.timestamp_seconds || 0)}</span>
-                                                    <span className="leading-relaxed">{t.text}</span>
-                                                </div>
-                                            ))}
+                {/* KOLOM KANAN (Hasil Audio & Transkripsi) */}
+                <div className="lg:col-span-7 flex flex-col gap-6">
+                    {/* Hasil Audio Tersimpan */}
+                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-6">
+                        <h3 className="text-[15px] font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <Database className="w-4 h-4 text-slate-500" /> Hasil Audio Tersimpan
+                        </h3>
+                        
+                        {meeting?.recordings && meeting.recordings.length > 0 ? (
+                            <div className="flex flex-col gap-4">
+                                {meeting.recordings.map((rec: any, index: number) => (
+                                    <div key={rec.id} className="border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50/30">
+                                        <div className="flex-1 w-full">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="font-bold text-slate-700 text-[13px]">Rekaman #{index + 1}</span>
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${rec.status === 'uploaded' ? 'bg-amber-100 text-amber-700' : rec.status === 'transcribing' ? 'bg-blue-100 text-blue-700 animate-pulse' : rec.status === 'failed' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                                                    {rec.status === 'uploaded' ? 'Menunggu Transkripsi' : rec.status === 'transcribing' ? 'Sedang Diproses AI...' : rec.status === 'failed' ? 'Gagal Transkripsi' : 'Selesai Transkripsi'}
+                                                </span>
+                                            </div>
+                                            <p className="text-[11px] text-slate-500 mb-3">{new Date(rec.created_at).toLocaleString('id-ID')} • {(rec.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                                            
+                                            <audio controls src={`/meetings/${meeting.id}/recording/${rec.id}/stream`} className="h-9 w-full max-w-sm rounded-lg border border-slate-200/60" />
                                         </div>
-                                    </CardContent>
-                                </Card>
-                            );
-                        })()
+                                        <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                                            {(rec.status === 'uploaded' || rec.status === 'failed') && (
+                                                <>
+                                                    {canRecord && (
+                                                        <Button 
+                                                            variant="outline"
+                                                            onClick={() => deleteRecording(rec.id)}
+                                                            className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 text-xs h-9 px-3 shadow-sm flex-none"
+                                                            disabled={isTranscribing === rec.id}
+                                                            title="Hapus Rekaman"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    )}
+                                                    {canTranscribe && (
+                                                        <Button 
+                                                            onClick={() => triggerTranscription(rec.id)}
+                                                            className="bg-indigo-600 hover:bg-indigo-700 text-xs h-9 flex-1 sm:flex-none shadow-sm"
+                                                            disabled={!canTranscribe || isTranscribing === rec.id}
+                                                        >
+                                                            {isTranscribing === rec.id ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
+                                                            {isTranscribing === rec.id ? 'Memproses...' : 'Mulai Transkripsi AI'}
+                                                        </Button>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-10 bg-slate-50/50 rounded-lg border border-slate-100 border-dashed">
+                                <Database className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                                <p className="text-sm font-medium text-slate-500">Belum ada rekaman yang tersimpan</p>
+                                <p className="text-xs text-slate-400 mt-1">Lakukan proses rekam atau unggah berkas terlebih dahulu.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Selesai Rekaman Action */}
+                    {meeting?.recordings && meeting.recordings.length > 0 && canTranscribe && (
+                        <div className="flex justify-end">
+                            <Button 
+                                onClick={finishRecording}
+                                className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-sm h-11 px-6 text-sm"
+                            >
+                                Selesai & Lanjut Koreksi
+                            </Button>
+                        </div>
                     )}
                 </div>
-
             </div>
-
-            {/* Bottom Actions */}
-            {canRecord && (
-                <div className="mt-4 flex flex-col sm:flex-row items-center justify-between bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl p-4 shadow-sm">
-                    <div className="flex items-center gap-4 text-emerald-800 dark:text-emerald-400 mb-4 sm:mb-0">
-                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
-                            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                        </div>
-                        <div>
-                            <p className="text-base font-bold">Langkah Perekaman Selesai?</p>
-                            <p className="text-sm font-medium opacity-80">Pastikan semua sesi telah terekam sebelum lanjut ke tahap koreksi teks.</p>
-                        </div>
-                    </div>
-                    <Button 
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl h-12 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto"
-                        onClick={() => {
-                            router.post(`/meetings/${meeting.id}/finish-recording`);
-                        }}
-                    >
-                        Tutup Perekaman & Lanjut <CheckCircle2 className="w-5 h-5 ml-2" />
-                    </Button>
-                </div>
-            )}
-            
         </div>
     );
 }

@@ -48,12 +48,21 @@ class DashboardController extends Controller
             $avgAttendance = round($totalRates / $finishedMeetings->count());
         }
 
-        // Pipeline Data
-        $pipeline_recording = Meeting::whereIn('current_stage', [1, 2])->orderBy('date')->orderBy('start_time')->get();
-        $pipeline_correction = Meeting::whereIn('current_stage', [3, 4])->orderBy('date')->orderBy('start_time')->get();
-        $pipeline_review = Meeting::whereIn('current_stage', [5])->orderBy('date')->orderBy('start_time')->get();
-        $pipeline_approval = Meeting::whereIn('current_stage', [6])->orderBy('date')->orderBy('start_time')->get();
-        $pipeline_finished = Meeting::whereIn('current_stage', [7])->orderBy('updated_at', 'desc')->take(10)->get(); // Limit to 10 recent finished
+        // Latest Meetings (Rapat terbaru)
+        $latestMeetings = Meeting::with('participants')
+            ->orderBy('date', 'desc')
+            ->orderBy('start_time', 'desc')
+            ->take(5)
+            ->get();
+
+        // Upcoming Meetings (Jadwal mendatang)
+        $upcomingMeetings = Meeting::with('participants')
+            ->where('date', '>=', $now->toDateString())
+            ->whereIn('current_stage', [1]) // Still scheduled, not started
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->take(3)
+            ->get();
 
         return Inertia::render('dashboard', [
             'stats' => [
@@ -64,13 +73,8 @@ class DashboardController extends Controller
                 'openActionItems' => $openActionItems,
                 'avgAttendance' => $avgAttendance,
             ],
-            'pipelines' => [
-                'recording' => $pipeline_recording,
-                'correction' => $pipeline_correction,
-                'review' => $pipeline_review,
-                'approval' => $pipeline_approval,
-                'finished' => $pipeline_finished,
-            ],
+            'latestMeetings' => $latestMeetings,
+            'upcomingMeetings' => $upcomingMeetings,
         ]);
     }
 }

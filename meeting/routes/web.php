@@ -11,6 +11,7 @@ use App\Http\Controllers\Configuration\UserPermissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeetingApprovalController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MeetingDocumentController;
 use App\Http\Controllers\MeetingMinuteController;
 use App\Http\Controllers\MeetingRecordingController;
 use App\Http\Controllers\ReportController;
@@ -36,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Recording & Transcripts
     Route::get('meetings/{meeting}/recording', [MeetingRecordingController::class, 'show'])->name('meetings.recording');
     Route::post('meetings/{meeting}/recording', [MeetingRecordingController::class, 'store'])->name('meetings.recording.store');
+    Route::post('meetings/{meeting}/recording/start-session', [MeetingRecordingController::class, 'startSession'])->name('meetings.recording.startSession');
+    Route::post('meetings/{meeting}/recording/stop-session', [MeetingRecordingController::class, 'stopSession'])->name('meetings.recording.stopSession');
     Route::delete('meetings/{meeting}/recording/{recording}', [MeetingRecordingController::class, 'destroy'])->name('meetings.recording.destroy');
     Route::post('meetings/{meeting}/recording/transcribe', [MeetingRecordingController::class, 'transcribe'])->name('meetings.recording.transcribe');
     Route::post('meetings/{meeting}/finish-recording', [MeetingRecordingController::class, 'finishRecording'])->name('meetings.recording.finish');
@@ -65,6 +68,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('meetings/{meeting}/review', [MeetingMinuteController::class, 'update'])->name('meetings.review.update');
     Route::post('meetings/{meeting}/review/send', [MeetingMinuteController::class, 'sendToPimpinan'])->name('meetings.review.send');
     Route::get('meetings/{meeting}/review/pdf', [MeetingMinuteController::class, 'downloadPdf'])->name('meetings.review.pdf');
+
+    // Documents
+    Route::post('meetings/{meeting}/documents', [MeetingDocumentController::class, 'store'])->name('meetings.documents.store');
+    Route::delete('meetings/{meeting}/documents/{document}', [MeetingDocumentController::class, 'destroy'])->name('meetings.documents.destroy');
 
     // Approval
     Route::get('meetings/{meeting}/approval', [MeetingApprovalController::class, 'show'])->name('meetings.approval');

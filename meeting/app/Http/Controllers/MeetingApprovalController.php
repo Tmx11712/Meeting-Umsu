@@ -52,8 +52,9 @@ class MeetingApprovalController extends Controller
         }
 
         // Broadcast agar semua user yang sedang melihat halaman ini redirect ke dashboard
-        $meeting->refresh();
-        broadcast(new MeetingUpdated($meeting, 'approval'))->toOthers();
+        try {
+            broadcast(new MeetingUpdated($meeting, 'approval'))->toOthers();
+        } catch (\Exception $e) {}
 
         return redirect()->route('dashboard')->with('success', 'Keputusan notulen berhasil disimpan.');
     }
