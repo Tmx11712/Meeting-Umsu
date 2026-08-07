@@ -7,12 +7,17 @@ use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Events\MeetingUpdated;
-use App\Services\MeetingMinuteGenerationService;
+use App\Actions\Meetings\GenerateMeetingMinuteAction;
 use App\Services\OpenAiTranscriptionService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: THIN CONTROLLER]
+ * Controller ini dirancang agar sangat "Tipis" (Thin). Ia tidak berisi logika bisnis yang rumit.
+ * Tugas Controller HANYA: menerima Request dari user, mendelegasikannya ke Action Class, dan mengembalikan Response.
+ */
 class MeetingMinuteController extends Controller
 {
     public function index(Request $request)
@@ -53,12 +58,18 @@ class MeetingMinuteController extends Controller
         ]);
     }
 
-    public function generateAiSummary(Request $request, Meeting $meeting, MeetingMinuteGenerationService $service)
+    /**
+     * [EDUKASI ARSITEKTUR: DEPENDENCY INJECTION]
+     * Perhatikan parameter GenerateMeetingMinuteAction $action.
+     * Laravel secara otomatis membuatkan (instantiate) class Action tersebut untuk kita.
+     * Kita tinggal memanggil `$action->execute($meeting)`. Sangat rapi dan profesional!
+     */
+    public function generateAiSummary(Request $request, Meeting $meeting, GenerateMeetingMinuteAction $action)
     {
         abort_unless(auth()->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
         try {
-            $service->generate($meeting);
+            $action->execute($meeting);
 
             return back()->with('success', 'Ringkasan berhasil digenerate oleh AI.');
         } catch (\Exception $e) {

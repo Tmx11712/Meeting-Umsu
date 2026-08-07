@@ -1,12 +1,19 @@
 <?php
 
-namespace App\Services;
+namespace App\Actions\Meetings;
 
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
+use App\Services\OpenAiTranscriptionService;
 
-class MeetingMinuteGenerationService
+/**
+ * [EDUKASI ARSITEKTUR]
+ * Ini adalah contoh dari pola arsitektur "Action Class" (Single Responsibility Principle).
+ * Pola ini menggantikan "Fat Controller" atau "God Service". 
+ * 1 Class = 1 Tugas Mutlak. Sangat mudah dites dan bisa dipanggil dari mana saja (Controller, Cron Job, Terminal).
+ */
+class GenerateMeetingMinuteAction
 {
     public function __construct(
         protected OpenAiTranscriptionService $aiService,
@@ -15,8 +22,9 @@ class MeetingMinuteGenerationService
     /**
      * Generate AI summary for a meeting: build context, call AI, persist results.
      */
-    public function generate(Meeting $meeting): MeetingMinute
+    public function execute(Meeting $meeting): MeetingMinute
     {
+        // 1. Mengumpulkan data mentah
         $transcriptText = $this->buildTranscriptText($meeting);
 
         if (empty(trim($transcriptText))) {

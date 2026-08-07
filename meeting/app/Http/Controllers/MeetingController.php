@@ -6,7 +6,7 @@ use App\Events\MeetingsListUpdated;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
 use App\Models\User;
-use App\Services\AbsensiApiService;
+
 use App\Actions\IrvanCloud\SyncMeetingsAction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,6 +16,13 @@ class MeetingController extends Controller
 {
     public function index(Request $request)
     {
+        /**
+         * [EDUKASI ARSITEKTUR: MENCEGAH N+1 QUERY]
+         * Kita menggunakan `withCount('participants')` alih-alih `with('participants')`.
+         * Alih-alih merender seluruh baris data peserta ke dalam memori PHP (yang bisa bikin RAM overload), 
+         * kita memerintahkan database (SQL) untuk hanya menghitung angkanya saja (`SELECT COUNT()`).
+         * Jauh lebih ringan dan cepat!
+         */
         $query = Meeting::query()->withCount('participants');
 
         if ($request->search) {
@@ -33,16 +40,6 @@ class MeetingController extends Controller
         ]);
     }
 
-    public function fetchExternalSchedules(Request $request, AbsensiApiService $apiService)
-    {
-        $validated = $request->validate([
-            'date' => 'nullable|date_format:Y-m-d',
-        ]);
-        $date = $validated['date'] ?? now()->format('Y-m-d');
-        $schedules = $apiService->getSchedules($date);
-
-        return response()->json($schedules);
-    }
 
     public function syncFromIrvanCloud(Request $request, SyncMeetingsAction $syncAction)
     {

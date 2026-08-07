@@ -5,6 +5,12 @@ namespace App\Actions\Meetings;
 use App\Models\Meeting;
 use App\Models\User;
 
+/**
+ * [EDUKASI ARSITEKTUR: UPSERT LOGIC]
+ * Action ini menangani logika "Upsert" (Update if exists, Insert if new).
+ * Sangat krusial dalam proses sinkronisasi agar ketika tombol sinkron ditekan berkali-kali, 
+ * data tidak terduplikasi.
+ */
 class UpsertMeetingAction
 {
     /**
@@ -22,6 +28,11 @@ class UpsertMeetingAction
             $defaultAdminId = $admin ? $admin->id : null;
         }
 
+        /**
+         * [EDUKASI ARSITEKTUR: CEGAH DUPLIKASI]
+         * Kita mencari berdasarkan 'external_id' (UUID dari Irvan Cloud).
+         * Jika belum ada, kita `create` (Insert). Jika sudah ada, kita `update`.
+         */
         $meeting = Meeting::where('external_id', $event['uuid'])->first();
         $wasRecentlyCreated = false;
 

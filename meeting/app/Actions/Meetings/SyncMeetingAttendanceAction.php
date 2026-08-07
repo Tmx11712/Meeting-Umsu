@@ -8,6 +8,12 @@ use App\Models\MeetingParticipant;
 use App\Models\User;
 use Carbon\Carbon;
 
+/**
+ * [EDUKASI ARSITEKTUR: ELOQUENT PIVOT]
+ * Action ini khusus mengurus tabel pivot (relasi Many-to-Many antara Rapat dan Peserta).
+ * Karena satu peserta bisa ikut banyak rapat, dan satu rapat punya banyak peserta, 
+ * maka logika penyambungannya (sync) dipisahkan ke sini agar tidak mengotori logika pembuatan Rapat.
+ */
 class SyncMeetingAttendanceAction
 {
     /**
@@ -20,7 +26,11 @@ class SyncMeetingAttendanceAction
      */
     public function execute(array $participantData, Meeting $meeting, User $user): void
     {
-        // 1. Add as Meeting Participant
+        /**
+         * [EDUKASI ARSITEKTUR: FIRST OR CREATE]
+         * Metode firstOrCreate sangat tangguh. Ia akan mengecek apakah data sudah ada di database.
+         * Jika belum ada, baru ia melakukan INSERT. Ini mencegah duplikasi data (Duplicate Entry Error).
+         */
         MeetingParticipant::firstOrCreate([
             'meeting_id' => $meeting->id,
             'user_id' => $user->id,

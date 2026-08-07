@@ -29,7 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     // Meetings
-    Route::get('meetings/external', [MeetingController::class, 'fetchExternalSchedules'])->name('meetings.external');
+
     Route::post('meetings/sync', [MeetingController::class, 'syncFromIrvanCloud'])->name('meetings.sync');
     Route::post('meetings/auto-sync', [MeetingController::class, 'autoSync'])->name('meetings.auto-sync');
     Route::resource('meetings', MeetingController::class)->except(['create', 'store']);

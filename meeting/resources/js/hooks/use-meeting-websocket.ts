@@ -24,6 +24,17 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
         }
     }, [meeting?.current_stage, meetingId]);
 
+    // Fallback polling in case WebSocket server is dead/blocked
+    useEffect(() => {
+        if (!meetingId) return;
+        
+        const interval = setInterval(() => {
+            router.reload({ only: ['meeting', 'meetings'] });
+        }, 5000); // 5 seconds polling
+        
+        return () => clearInterval(interval);
+    }, [meetingId]);
+
     useEffect(() => {
         if (!meetingId) return;
 

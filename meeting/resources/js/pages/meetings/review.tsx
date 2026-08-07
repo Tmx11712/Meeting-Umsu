@@ -24,6 +24,12 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     const isPimpinan = hasRole('Pimpinan');
     const participants = meeting.participants || [];
 
+    /**
+     * [EDUKASI ARSITEKTUR: REACT CUSTOM HOOKS]
+     * useMeetingWebSocket adalah Custom Hook.
+     * Ini menyembunyikan kompleksitas WebSockets (Pusher/Echo) dari UI Component.
+     * Komponen ini tidak perlu tahu BAGAIMANA data masuk, ia hanya akan otomatis ter-re-render jika ada pesan baru.
+     */
     useMeetingWebSocket(meeting?.id);
 
     const [sending, setSending] = useState(false);
@@ -41,6 +47,12 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
         setEditModalOpen(true);
     };
 
+    /**
+     * [EDUKASI ARSITEKTUR: STATE MANAGEMENT INERTIA]
+     * Inertia.js tidak butuh kita untuk 'fetch' data via axios lalu di-set pakai 'useState'.
+     * Inertia me-request dari server dan me-refresh 'props' komponen ini secara ajaib (SPA feeling).
+     * Saat `onSuccess` dipanggil, `meeting` props di atas akan otomatis memiliki data terbaru!
+     */
     const saveEdit = () => {
         setSending(true);
         router.put(`/meetings/${meeting.id}/review`, { content: editData }, {

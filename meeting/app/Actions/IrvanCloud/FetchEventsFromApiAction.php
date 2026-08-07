@@ -5,6 +5,13 @@ namespace App\Actions\IrvanCloud;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * [EDUKASI ARSITEKTUR: ISOLATION OF CONCERNS]
+ * Action ini hanya bertugas mengambil data dari API Irvan Cloud.
+ * Jika besok Irvan Cloud merubah struktur API-nya, kita HANYA perlu memperbaiki class ini.
+ * Class SyncMeetingsAction (Sang Mandor) tidak akan menyadari adanya perubahan, karena ia hanya menerima output Array dari class ini.
+ * Ini disebut "Loose Coupling" (Keterikatan Rendah) yang sangat disukai di rekayasa perangkat lunak.
+ */
 class FetchEventsFromApiAction
 {
     /**

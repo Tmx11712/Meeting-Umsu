@@ -6,6 +6,13 @@ use App\Models\Meeting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * [EDUKASI ARSITEKTUR: SERVICE PATTERN]
+ * Kenapa kelas ini disebut "Service" (dan bukan "Action")? 
+ * Dalam arsitektur kita, "Service" dikhususkan untuk kelas yang murni bertugas berkomunikasi dengan PIHAK KETIGA (External API seperti OpenAI).
+ * Sedangkan logika bisnis internal aplikasi (seperti pembuatan Notulen ke Database) diletakkan di "Action".
+ * Pemisahan ini membuat kode kita sangat modular. Jika besok kita ganti OpenAI ke Claude, kita hanya ubah file Service ini.
+ */
 class OpenAiTranscriptionService
 {
     /**

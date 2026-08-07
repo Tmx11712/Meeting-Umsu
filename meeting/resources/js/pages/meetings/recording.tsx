@@ -18,14 +18,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
     const serverStartedAt = meeting?.recording_started_at ? new Date(meeting.recording_started_at).getTime() : null;
     const isServerRecording = serverStartedAt !== null;
 
-    // Fallback polling in case WebSocket server is dead
-    useEffect(() => {
-        const interval = setInterval(() => {
-            router.reload({ only: ['meeting'] });
-        }, 5000); // 5 seconds polling
-        return () => clearInterval(interval);
-    }, [meeting?.id]);
-    
+    // Fallback polling now handled globally by useMeetingWebSocket hook
     const [activeTab, setActiveTab] = useState<'upload' | 'record'>('record');
     const [isRecording, setIsRecording] = useState(false);
     const [uploading, setUploading] = useState(false);

@@ -20,7 +20,12 @@ class DashboardController extends Controller
         $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
         $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
 
-        // Cache statistik selama 5 menit (300 detik)
+        /**
+         * [EDUKASI ARSITEKTUR: BACKEND CACHING]
+         * Daripada melakukan query COUNT() ke database setiap kali user me-refresh halaman (yang bisa membuat server jebol saat traffic tinggi),
+         * kita menyimpan hasilnya di RAM (Cache) selama 5 menit (300 detik).
+         * Trade-off: Data statistik mungkin terlambat maksimal 5 menit, tapi performa server meningkat 99%.
+         */
         $stats = Cache::remember('dashboard_stats', 300, function () use ($now, $startOfMonth, $startOfLastMonth, $endOfLastMonth) {
             // 1. Rapat bulan ini
             $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $now->endOfMonth()])->count();

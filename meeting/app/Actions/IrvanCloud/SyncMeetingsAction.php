@@ -7,6 +7,12 @@ use App\Actions\Meetings\UpsertMeetingAction;
 use App\Actions\Users\UpsertUserFromExternalAction;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * [EDUKASI ARSITEKTUR: ORCHESTRATOR PATTERN]
+ * Class ini bertindak sebagai "Mandor" (Orchestrator). Ia tidak melakukan insert/update DB secara langsung, 
+ * melainkan memanggil Action-Action lain yang lebih kecil (UpsertMeetingAction, UpsertUserAction, dll) secara berurutan.
+ * Ini mencegah kelas ini menjadi terlalu gendut (God Class) dan mempertahankan kemudahan Testing.
+ */
 class SyncMeetingsAction
 {
     protected FetchEventsFromApiAction $fetchEvents;

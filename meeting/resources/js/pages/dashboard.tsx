@@ -17,7 +17,12 @@ type Props = {
     latestMeetings: any[];
     upcomingMeetings: any[];
 };
-
+/**
+ * [EDUKASI ARSITEKTUR: INERTIA PROPS]
+ * Perhatikan fungsi `Dashboard` menerima `{ stats, latestMeetings, upcomingMeetings }`.
+ * Data ini datang langsung dari Backend (Controller) tanpa perlu Fetch API, Axios, atau Loading State!
+ * Inertia.js yang menjahitnya di belakang layar. Ini menghemat ratusan baris kode.
+ */
 export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: Props) {
     const { guardAction, hasRole, canEdit, isAdmin } = usePermissions();
 

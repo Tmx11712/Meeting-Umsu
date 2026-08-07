@@ -72,7 +72,16 @@ export default function MeetingIndex({ meetings, filters }: any) {
     const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
     const applyFilter = (key: string, value: string) => {
-        router.get('/meetings', { ...filters, [key]: value }, { 
+        const currentFilters = { ...filters, [key]: value };
+        
+        /**
+         * [EDUKASI ARSITEKTUR: PARTIAL RELOADS INERTIA]
+         * Saat filter/search diubah, kita me-request data ke backend.
+         * Dengan `only: ['meetings']`, backend TIDAK akan merender seluruh halaman (navbar, sidebar).
+         * Backend hanya mengirimkan potongan data 'meetings' berupa JSON.
+         * Ini menghemat bandwidth secara drastis (SPA Experience).
+         */
+        router.get('/meetings', currentFilters, { 
             preserveState: true, 
             replace: true,
             preserveScroll: true,
@@ -81,6 +90,11 @@ export default function MeetingIndex({ meetings, filters }: any) {
     };
 
     const handleSearchChange = (value: string) => {
+        /**
+         * [EDUKASI ARSITEKTUR: DEBOUNCING]
+         * Mencegah server dibombardir request (DDoS) setiap kali tombol keyboard ditekan.
+         * Request ke server HANYA akan dikirim jika user berhenti mengetik selama 300 milidetik.
+         */
         if (searchTimeout.current) clearTimeout(searchTimeout.current);
         searchTimeout.current = setTimeout(() => {
             applyFilter('search', value);
