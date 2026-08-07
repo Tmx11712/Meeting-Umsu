@@ -21,7 +21,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
     // Fallback polling in case WebSocket server is dead
     useEffect(() => {
         const interval = setInterval(() => {
-            router.reload({ only: ['meeting'], preserveScroll: true, preserveState: true });
+            router.reload({ only: ['meeting'] });
         }, 5000); // 5 seconds polling
         return () => clearInterval(interval);
     }, [meeting?.id]);

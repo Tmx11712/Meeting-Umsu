@@ -14,9 +14,9 @@ class AbsensiApiService
 
     public function __construct()
     {
-        $this->baseUrl = config('services.absensi.url', env('ABSENSI_API_URL'));
-        $this->apiKey = config('services.absensi.key', env('ABSENSI_API_KEY'));
-        $this->secretKey = config('services.absensi.secret', env('ABSENSI_SECRET_KEY'));
+        $this->baseUrl = config('services.absensi.url');
+        $this->apiKey = config('services.absensi.key');
+        $this->secretKey = config('services.absensi.secret');
     }
 
     /**

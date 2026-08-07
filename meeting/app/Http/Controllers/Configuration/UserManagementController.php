@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Configuration;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Configuration\StoreUserRequest;
+use App\Http\Requests\Configuration\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -57,15 +59,9 @@ class UserManagementController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'role_id' => 'required|exists:roles,id',
-            'status' => 'required|in:aktif,nonaktif',
-        ]);
+        $validated = $request->validated();
 
         $user = User::create([
             'name' => $validated['name'],
@@ -100,14 +96,9 @@ class UserManagementController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,{$user->id}",
-            'role_id' => 'required|exists:roles,id',
-            'status' => 'required|in:aktif,nonaktif',
-        ]);
+        $validated = $request->validated();
 
         $user->update([
             'name' => $validated['name'],
@@ -116,10 +107,8 @@ class UserManagementController extends Controller
             'initials' => strtoupper(collect(explode(' ', $validated['name']))->map(fn ($w) => $w[0])->take(2)->join('')),
         ]);
 
-        // If password is provided, update it
         if ($request->filled('password')) {
-            $request->validate(['password' => 'string|min:8']);
-            $user->update(['password' => bcrypt($request->input('password'))]);
+            $user->update(['password' => bcrypt($validated['password'])]);
         }
 
         $role = Role::findById($validated['role_id']);

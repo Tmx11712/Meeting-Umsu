@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\MeetingsListUpdated;
+use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
 use App\Models\User;
 use App\Services\AbsensiApiService;
-use App\Services\IrvanCloudSyncService;
+use App\Actions\IrvanCloud\SyncMeetingsAction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,7 @@ class MeetingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Meeting::query()->with('participants');
+        $query = Meeting::query()->withCount('participants');
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -34,17 +35,20 @@ class MeetingController extends Controller
 
     public function fetchExternalSchedules(Request $request, AbsensiApiService $apiService)
     {
-        $date = $request->query('date', now()->format('Y-m-d'));
+        $validated = $request->validate([
+            'date' => 'nullable|date_format:Y-m-d',
+        ]);
+        $date = $validated['date'] ?? now()->format('Y-m-d');
         $schedules = $apiService->getSchedules($date);
 
         return response()->json($schedules);
     }
 
-    public function syncFromIrvanCloud(Request $request, IrvanCloudSyncService $syncService)
+    public function syncFromIrvanCloud(Request $request, SyncMeetingsAction $syncAction)
     {
         $date = $request->query('date');
         // By default, it will sync current month's events
-        $result = $syncService->syncMeetings();
+        $result = $syncAction->execute();
 
         if ($result['success']) {
             return redirect()->route('meetings.index')->with('success', $result['message']);
@@ -53,13 +57,13 @@ class MeetingController extends Controller
         }
     }
 
-    public function autoSync(IrvanCloudSyncService $syncService)
+    public function autoSync(SyncMeetingsAction $syncAction)
     {
         // Gunakan cache lock selama 5 menit agar tidak membebani server (spam)
         $lock = \Illuminate\Support\Facades\Cache::lock('irvan_cloud_auto_sync', 300);
         
         if ($lock->get()) {
-            $syncService->syncMeetings();
+            $syncAction->execute();
             return response()->json(['status' => 'synced']);
         }
         
@@ -89,22 +93,9 @@ class MeetingController extends Controller
         ]);
     }
 
-    public function update(Request $request, Meeting $meeting)
+    public function update(UpdateMeetingRequest $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('meeting.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola rapat.');
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'location' => 'required|string|max:255',
-            'type' => 'required|string',
-            'notes' => 'nullable|string',
-            'participants' => 'required|array',
-            'participants.*' => 'exists:users,id',
-        ]);
+        $validated = $request->validated();
 
         $start = Carbon::parse($validated['start_time']);
         $end = Carbon::parse($validated['end_time']);
@@ -112,19 +103,24 @@ class MeetingController extends Controller
 
         $meeting->update($validated);
 
-        $meeting->participants()->delete();
-        foreach ($validated['participants'] as $userId) {
+        $existingIds = $meeting->participants()->pluck('user_id')->toArray();
+        $newIds = $validated['participants'] ?? [];
+        
+        $toDelete = array_diff($existingIds, $newIds);
+        $toAdd = array_diff($newIds, $existingIds);
+        
+        if (!empty($toDelete)) {
+            $meeting->participants()->whereIn('user_id', $toDelete)->delete();
+        }
+        
+        foreach ($toAdd as $userId) {
             $meeting->participants()->create([
                 'user_id' => $userId,
                 'is_invited' => true,
             ]);
         }
 
-        try {
-            broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'))->toOthers();
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning('Broadcast failed (Reverb offline): ' . $e->getMessage());
-        }
+        safe_broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'));
 
         return redirect()->route('meetings.index')->with('success', 'Rapat berhasil diperbarui.');
     }
@@ -135,11 +131,7 @@ class MeetingController extends Controller
 
         $meeting->forceDelete();
 
-        try {
-            broadcast(new MeetingsListUpdated('Rapat telah dihapus'))->toOthers();
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning('Broadcast failed (Reverb offline): ' . $e->getMessage());
-        }
+        safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'));
 
         return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen.');
     }

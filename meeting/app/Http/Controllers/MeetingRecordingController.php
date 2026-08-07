@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Meeting\StoreRecordingRequest;
+use App\Http\Requests\Meeting\TranscribeRecordingRequest;
 use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
@@ -21,24 +23,14 @@ class MeetingRecordingController extends Controller
 
         return Inertia::render('meetings/recording', [
             'meeting' => $meeting,
-            'openAiConfigured' => ! empty(config('services.openai.key') ?? env('OPENAI_API_KEY')),
+            'openAiConfigured' => ! empty(config('services.openai.key')),
         ]);
     }
 
-    public function store(Request $request, Meeting $meeting)
+    public function store(StoreRecordingRequest $request, Meeting $meeting)
     {
-        // Hanya Bagian Humas (yang punya permission recording.create) yang boleh upload
-        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah rekaman.');
-
-        $request->validate([
-            'file' => 'required|file|mimes:mp3,wav,m4a,webm,ogg|max:204800', // 200MB max
-            'source' => 'required|in:upload,system_record',
-            'label' => 'nullable|string|max:255',
-        ]);
-
         $file = $request->file('file');
-        $extension = $file->getClientOriginalExtension() ?: 'mp3';
-        $path = $file->storeAs('recordings/'.$meeting->id, uniqid('rec_').'.'.$extension, 'local');
+        $path = $file->store('recordings/'.$meeting->id, 'local');
 
         $recording = $meeting->recordings()->create([
             'file_path' => $path,
@@ -53,11 +45,7 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'recording_started'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed: ' . $e->getMessage());
-        }
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_started'));
 
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
@@ -80,14 +68,8 @@ class MeetingRecordingController extends Controller
     /**
      * Trigger AI transcription for a specific recording (manual action by user)
      */
-    public function transcribe(Request $request, Meeting $meeting)
+    public function transcribe(TranscribeRecordingRequest $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mentranskripsi rekaman.');
-
-        $request->validate([
-            'recording_id' => 'required|exists:meeting_recordings,id',
-        ]);
-
         $recording = MeetingRecording::findOrFail($request->recording_id);
 
         // Don't re-transcribe if already done
@@ -97,7 +79,7 @@ class MeetingRecordingController extends Controller
 
         $recording->update([
             'status' => 'transcribing',
-            'openai_model_used' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),
+            'openai_model_used' => config('services.openai.transcribe_model'),
         ]);
 
         // Dispatch job for transcription
@@ -107,11 +89,7 @@ class MeetingRecordingController extends Controller
             'current_stage' => max($meeting->current_stage, 3),
         ]);
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed: ' . $e->getMessage());
-        }
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
 
         return redirect()->back()->with('success', 'Transkripsi AI sedang diproses. Harap tunggu beberapa saat.');
     }
@@ -125,11 +103,7 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed: ' . $e->getMessage());
-        }
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
@@ -172,11 +146,7 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'recording_session_started'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed: ' . $e->getMessage());
-        }
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_session_started'));
 
         return response()->json(['message' => 'Recording session started']);
     }
@@ -189,11 +159,7 @@ class MeetingRecordingController extends Controller
             'recording_started_at' => null,
         ]);
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'recording_session_stopped'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Broadcast failed: ' . $e->getMessage());
-        }
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_session_stopped'));
 
         return response()->json(['message' => 'Recording session stopped']);
     }

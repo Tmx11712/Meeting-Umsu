@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Meeting\StoreApprovalRequest;
 use App\Models\Meeting;
 use App\Models\MeetingApproval;
 use App\Events\MeetingUpdated;
@@ -19,19 +20,8 @@ class MeetingApprovalController extends Controller
         ]);
     }
 
-    public function store(Request $request, Meeting $meeting)
+    public function store(StoreApprovalRequest $request, Meeting $meeting)
     {
-        abort_unless(
-            auth()->user()->hasAnyRole(['Pimpinan', 'Super Admin', 'Administrator']),
-            403,
-            'Akses Terbatas: Hanya Pimpinan yang dapat memberikan keputusan.'
-        );
-
-        $request->validate([
-            'decision' => 'required|in:approved,rejected',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
         MeetingApproval::create([
@@ -51,10 +41,7 @@ class MeetingApprovalController extends Controller
             ]);
         }
 
-        // Broadcast agar semua user yang sedang melihat halaman ini redirect ke dashboard
-        try {
-            broadcast(new MeetingUpdated($meeting, 'approval'))->toOthers();
-        } catch (\Exception $e) {}
+        safe_broadcast(new MeetingUpdated($meeting, 'approval'));
 
         return redirect()->route('dashboard')->with('success', 'Keputusan notulen berhasil disimpan.');
     }

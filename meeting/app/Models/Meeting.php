@@ -91,13 +91,7 @@ class Meeting extends Model
         $seconds = $this->duration;
         
         if (!$seconds && $this->start_time && $this->end_time) {
-            try {
-                $start = \Carbon\Carbon::parse($this->start_time);
-                $end = \Carbon\Carbon::parse($this->end_time);
-                $seconds = $end->diffInSeconds($start);
-            } catch (\Exception $e) {
-                // do nothing
-            }
+            $seconds = max(0, strtotime($this->end_time) - strtotime($this->start_time));
         }
 
         if (! $seconds) {

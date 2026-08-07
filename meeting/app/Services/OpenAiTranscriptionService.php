@@ -15,7 +15,7 @@ class OpenAiTranscriptionService
      */
     public function transcribeChunk(string $filePath): array
     {
-        $apiKey = config('services.openai.key') ?? env('OPENAI_API_KEY');
+        $apiKey = config('services.openai.key');
         if (empty($apiKey)) {
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
@@ -24,7 +24,7 @@ class OpenAiTranscriptionService
             ->timeout(120)
             ->attach('file', file_get_contents($filePath), basename($filePath))
             ->post('https://api.openai.com/v1/audio/transcriptions', [
-                'model' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),
+                'model' => config('services.openai.transcribe_model'),
                 'language' => 'id',
                 'response_format' => 'verbose_json',
                 'timestamp_granularities' => ['segment'],
@@ -65,7 +65,7 @@ class OpenAiTranscriptionService
      */
     public function generateSummary(Meeting $meeting, string $correctedTranscript, string $pesertaText = '', string $dokumenText = ''): array
     {
-        $apiKey = config('services.openai.key') ?? env('OPENAI_API_KEY');
+        $apiKey = config('services.openai.key');
         if (empty($apiKey)) {
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
@@ -110,7 +110,7 @@ PROMPT;
         $response = Http::withToken($apiKey)
             ->timeout(180)
             ->post('https://api.openai.com/v1/chat/completions', [
-                'model' => env('OPENAI_SUMMARY_MODEL', 'gpt-4o-mini'),
+                'model' => config('services.openai.summary_model'),
                 'response_format' => ['type' => 'json_object'],
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Meeting\UpdateMinuteRequest;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Events\MeetingUpdated;
+use App\Services\MeetingMinuteGenerationService;
 use App\Services\OpenAiTranscriptionService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -51,84 +53,12 @@ class MeetingMinuteController extends Controller
         ]);
     }
 
-    public function generateAiSummary(Request $request, Meeting $meeting, OpenAiTranscriptionService $aiService)
+    public function generateAiSummary(Request $request, Meeting $meeting, MeetingMinuteGenerationService $service)
     {
         abort_unless(auth()->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
-        // 1. Ambil transkrip yang dikoreksi (atau asli jika belum dikoreksi)
-        $transcripts = $meeting->transcripts()->with('corrections')->orderBy('sequence_order')->get();
-        $transcriptText = '';
-        foreach ($transcripts as $t) {
-            $text = $t->corrections->count() > 0 ? $t->corrections->last()->corrected_text : $t->text;
-            $transcriptText .= $text.' ';
-        }
-
-        if (empty(trim($transcriptText))) {
-            return response()->json(['error' => 'Transkrip kosong. Harap rekam atau upload audio.'], 400);
-        }
-
-        // 1.5 Ambil daftar peserta asli yang hadir
-        $attendees = $meeting->attendances()->whereIn('status', ['hadir', 'terlambat'])->with('user')->get();
-        $pesertaAsli = [];
-        foreach ($attendees as $att) {
-            $pesertaAsli[] = $att->user ? $att->user->name : 'Peserta Tidak Dikenal';
-        }
-        $pesertaText = empty($pesertaAsli) ? 'Tidak ada data absensi.' : implode(', ', $pesertaAsli);
-
-        // 1.8 Ekstrak teks dari dokumen tambahan jika ada
-        $dokumenText = '';
-        $documents = $meeting->documents;
-        if ($documents && $documents->count() > 0) {
-            foreach ($documents as $doc) {
-                $filePath = storage_path('app/public/' . str_replace('public/', '', $doc->file_path));
-                if (file_exists($filePath)) {
-                    if ($doc->mime_type === 'application/pdf') {
-                        try {
-                            $parser = new \Smalot\PdfParser\Parser();
-                            $pdf = $parser->parseFile($filePath);
-                            $dokumenText .= "\n--- Dokumen PDF: {$doc->file_name} ---\n" . $pdf->getText();
-                        } catch (\Exception $e) {
-                            // Abaikan jika gagal parsing
-                        }
-                    } elseif ($doc->mime_type === 'text/plain') {
-                        $dokumenText .= "\n--- Dokumen TXT: {$doc->file_name} ---\n" . file_get_contents($filePath);
-                    }
-                }
-            }
-        }
-
-        // 2. Generate Summary using AI
         try {
-            $summaryJson = $aiService->generateSummary($meeting, $transcriptText, $pesertaText, $dokumenText);
-
-            // 3. Save to MeetingMinute
-            $minute = MeetingMinute::updateOrCreate(
-                ['meeting_id' => $meeting->id],
-                [
-                    'content' => collect($summaryJson)->except(['topik_count', 'keputusan_count'])->toArray(),
-                    'ai_topics_count' => $summaryJson['topik_count'] ?? 0,
-                    'ai_decisions_count' => $summaryJson['keputusan_count'] ?? 0,
-                    'ai_summary_generated_at' => now(),
-                    'status' => 'review',
-                ]
-            );
-
-            // 4. Create Action Items from AI output
-            if (! empty($summaryJson['tindak_lanjut'])) {
-                $minute->actionItems()->delete(); // reset old action items
-                foreach ($summaryJson['tindak_lanjut'] as $actionItem) {
-                    $deadlineStr = $actionItem['deadline'] ?? null;
-                    $deadlineTimestamp = $deadlineStr ? strtotime($deadlineStr) : false;
-                    
-                    MeetingActionItem::create([
-                        'meeting_id' => $meeting->id,
-                        'minute_id' => $minute->id,
-                        'description' => $actionItem['description'] ?? '-',
-                        'pic' => $actionItem['pic'] ?? '-',
-                        'deadline' => $deadlineTimestamp ? date('Y-m-d', $deadlineTimestamp) : null,
-                    ]);
-                }
-            }
+            $service->generate($meeting);
 
             return back()->with('success', 'Ringkasan berhasil digenerate oleh AI.');
         } catch (\Exception $e) {
@@ -136,14 +66,8 @@ class MeetingMinuteController extends Controller
         }
     }
 
-    public function update(Request $request, Meeting $meeting)
+    public function update(UpdateMinuteRequest $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengedit notulen.');
-
-        $request->validate([
-            'content' => 'required|array',
-        ]);
-
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
             $minute->update([

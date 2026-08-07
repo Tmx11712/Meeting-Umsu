@@ -22,6 +22,7 @@ export interface MeetingAttendance {
     user_id: number;
     status: string;
     check_in_time?: string;
+    check_out_time?: string;
     method?: string;
     notes?: string;
     user?: User;
@@ -56,6 +57,7 @@ export interface Meeting {
     duration_formatted?: string;
     source?: string;
     creator?: User;
+    recording_started_at?: string;
     created_at?: string;
     updated_at?: string;
 }

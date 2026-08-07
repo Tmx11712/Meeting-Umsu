@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Meeting\StoreManualAttendanceRequest;
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
 use Illuminate\Http\Request;
@@ -47,16 +48,8 @@ class AttendanceController extends Controller
         return response()->json(['qr_code' => base64_encode($qrCode)]);
     }
 
-    public function storeManual(Request $request, Meeting $meeting)
+    public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('attendance.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyimpan absensi.');
-
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:hadir,terlambat,tidak_hadir',
-            'notes' => 'nullable|string',
-        ]);
-
         MeetingAttendance::updateOrCreate(
             [
                 'meeting_id' => $meeting->id,
@@ -71,9 +64,7 @@ class AttendanceController extends Controller
             ]
         );
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
-        } catch (\Exception $e) {}
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'attendance'), false);
 
         return back();
     }
@@ -84,9 +75,7 @@ class AttendanceController extends Controller
 
         $meeting->update(['current_stage' => 5]); // Move to Review
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
-        } catch (\Exception $e) {}
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'stage_changed'), false);
 
         return redirect()->route('meetings.review', $meeting->id);
     }
@@ -113,9 +102,7 @@ class AttendanceController extends Controller
             ]
         );
 
-        try {
-            event(new \App\Events\MeetingUpdated($meeting, 'attendance'));
-        } catch (\Exception $e) {}
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'attendance'), false);
 
         return Inertia::render('meetings/attendance-scan', [
             'meeting' => $meeting->load('participants.user'),

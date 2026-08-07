@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, Filter, Calendar, Edit3, Trash2 } from 'lucide-react';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,8 @@ export default function MeetingIndex({ meetings, filters }: any) {
                 'X-XSRF-TOKEN': getXsrfToken(),
                 'Content-Type': 'application/json'
             }
+        }).then(() => {
+            router.reload({ only: ['meetings'] });
         }).catch(() => {});
     }, [guardAction]);
 
@@ -67,8 +69,22 @@ export default function MeetingIndex({ meetings, filters }: any) {
         };
     }, []);
 
+    const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+
     const applyFilter = (key: string, value: string) => {
-        router.get('/meetings', { ...filters, [key]: value }, { preserveState: true, replace: true });
+        router.get('/meetings', { ...filters, [key]: value }, { 
+            preserveState: true, 
+            replace: true,
+            preserveScroll: true,
+            only: ['meetings']
+        });
+    };
+
+    const handleSearchChange = (value: string) => {
+        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        searchTimeout.current = setTimeout(() => {
+            applyFilter('search', value);
+        }, 300);
     };
 
     const monthOptions = Array.from({ length: 12 }, (_, i) => {
@@ -106,8 +122,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 placeholder="Cari judul rapat..." 
                                 className="pl-9 w-full md:w-[320px] bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-xl h-11 transition-all"
                                 defaultValue={filters?.search || ''}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
+                                        if (searchTimeout.current) clearTimeout(searchTimeout.current);
                                         applyFilter('search', (e.target as HTMLInputElement).value);
                                     }
                                 }}
@@ -194,7 +212,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                 <span className="block truncate" title={meeting.location}>{meeting.location}</span>
                                             </td>
                                             <td className="px-4 py-5 text-center text-slate-600 dark:text-slate-300 font-medium">
-                                                <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants?.length ?? 0}</span>
+                                                <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants_count ?? 0}</span>
                                             </td>
                                             <td className="px-4 py-5 text-center">
                                                 <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs border ${getStatusColor(meeting.status || 'terjadwal')} shadow-sm`}>
@@ -274,7 +292,11 @@ return;
                                                 : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 bg-white/50 dark:bg-slate-800/50'
                                         } ${!link.url ? 'opacity-40 cursor-not-allowed' : ''}`}
                                         disabled={!link.url}
-                                        onClick={() => link.url && router.get(link.url, filters, { preserveState: true })}
+                                        onClick={() => link.url && router.get(link.url, filters, { 
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                            only: ['meetings']
+                                        })}
                                     >
                                         {label}
                                     </Button>

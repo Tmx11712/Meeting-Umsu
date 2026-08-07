@@ -15,6 +15,7 @@ class MeetingAttendance extends Model
         'user_id',
         'status',
         'check_in_time',
+        'check_out_time',
         'method',
         'recorded_by',
         'notes',
@@ -22,6 +23,7 @@ class MeetingAttendance extends Model
 
     protected $casts = [
         'check_in_time' => 'datetime',
+        'check_out_time' => 'datetime',
     ];
 
     public function meeting()

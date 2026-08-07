@@ -70,6 +70,10 @@ class RolePermissionController extends Controller
 
         $role->syncPermissions($validated['permissions'] ?? []);
 
+        foreach ($role->users as $user) {
+            \Illuminate\Support\Facades\Cache::forget("user_menus_{$user->id}");
+        }
+
         return back()->with('flash', [
             'type' => 'success',
             'message' => "Permissions untuk role {$role->name} berhasil diperbarui.",

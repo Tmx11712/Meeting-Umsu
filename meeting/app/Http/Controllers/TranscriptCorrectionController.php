@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Meeting\StoreCorrectionRequest;
 use App\Models\Meeting;
 use App\Models\MeetingTranscriptCorrection;
 use App\Events\MeetingUpdated;
@@ -45,16 +46,8 @@ class TranscriptCorrectionController extends Controller
         ]);
     }
 
-    public function store(Request $request, Meeting $meeting)
+    public function store(StoreCorrectionRequest $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('transcript.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengoreksi transkrip.');
-
-        $request->validate([
-            'transcript_id' => 'required|exists:meeting_transcripts,id',
-            'original_text' => 'required|string',
-            'corrected_text' => 'required|string',
-        ]);
-
         MeetingTranscriptCorrection::updateOrCreate(
             ['transcript_id' => $request->transcript_id],
             [
@@ -78,12 +71,7 @@ class TranscriptCorrectionController extends Controller
 
         $meeting->update(['current_stage' => 4]); // Move to Absensi
 
-        // Broadcast event to trigger auto-redirect on frontend
-        try {
-            broadcast(new MeetingUpdated($meeting, 'stage_changed'));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::warning('Broadcast failed in TranscriptCorrectionController: ' . $e->getMessage());
-        }
+        safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'), false);
 
         return redirect()->route('meetings.attendance', $meeting->id);
     }

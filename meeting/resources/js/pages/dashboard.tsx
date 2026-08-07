@@ -172,7 +172,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                                                     {m.title}
                                                 </h4>
                                                 <p className="text-xs text-slate-500 mt-0.5 truncate">
-                                                    {isToday ? 'Hari ini' : formatDate(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''}–{m.end_time ? m.end_time.substring(0,5) : ''} · {m.participants?.length || 0} peserta
+                                                    {isToday ? 'Hari ini' : formatDate(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''}–{m.end_time ? m.end_time.substring(0,5) : ''} · {m.participants_count || 0} peserta
                                                 </p>
                                             </div>
 
@@ -219,7 +219,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                                                     {m.title}
                                                 </h4>
                                                 <p className="text-xs text-slate-500 mt-1.5">
-                                                    {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''} · {m.participants?.length || 0} peserta
+                                                    {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''} · {m.participants_count || 0} peserta
                                                 </p>
                                             </div>
                                         </CardContent>

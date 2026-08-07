@@ -92,6 +92,8 @@ class UserPermissionController extends Controller
 
         $user->syncPermissions($validated['permissions'] ?? []);
 
+        \Illuminate\Support\Facades\Cache::forget("user_menus_{$user->id}");
+
         return back()->with('flash', [
             'type' => 'success',
             'message' => "Direct permissions untuk user {$user->name} berhasil diperbarui.",

@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'absensi' => [
+        'url' => env('ABSENSI_API_URL'),
+        'key' => env('ABSENSI_API_KEY'),
+        'secret' => env('ABSENSI_SECRET_KEY'),
+    ],
+
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'transcribe_model' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),
+        'summary_model' => env('OPENAI_SUMMARY_MODEL', 'gpt-4o-mini'),
+    ],
+
 ];
