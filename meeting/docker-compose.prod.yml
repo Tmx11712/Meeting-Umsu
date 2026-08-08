@@ -76,9 +76,9 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-enotulen}
-      POSTGRES_USER: ${DB_USERNAME:-enotulen}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-enotulen123!}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - "enotulen-pgsql:/var/lib/postgresql/data"
 

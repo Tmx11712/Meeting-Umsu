@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: enotulen
       POSTGRES_USER: enotulen
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-enotulen123!}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - "enotulen-pgsql:/var/lib/postgresql/data"
     healthcheck:
@@ -34,8 +34,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-enotulenadmin}
-      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-enotulenadmin123}
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
     volumes:
       - "enotulen-minio:/data"
     healthcheck:
@@ -59,8 +59,8 @@ services:
       mc anonymous set public myminio/enotulen-documents;
       "
     environment:
-      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-enotulenadmin}
-      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-enotulenadmin123}
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
 
 volumes:
   enotulen-pgsql:
