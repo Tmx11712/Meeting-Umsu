@@ -13,9 +13,12 @@ import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Meeting } from '@/types/meeting';
 
 export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, signaturePath, hasSigned, total, present }: { meeting: Meeting, [key: string]: any }) {
-    const { canEdit, hasRole } = usePermissions();
+    const { canEdit, hasRole, isAdmin } = usePermissions();
     const { flash } = usePage().props as any;
-    const canManageAttendance = canEdit('attendance');
+    
+    // Logika Bypass Admin: Jika status rapat sudah selesai/direview, hanya Admin yang boleh mengubah.
+    const isLocked = ['selesai', 'reviewed'].includes(meeting.status);
+    const canManageAttendance = isAdmin || (canEdit('attendance') && !isLocked);
 
     useMeetingWebSocket(meeting?.id);
     const participants = meeting.participants || [];

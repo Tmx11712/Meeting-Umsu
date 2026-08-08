@@ -5,24 +5,22 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
     const page = usePage<any>();
     const meeting = page.props.meeting;
 
-    // Logic for routing based on stage
+    // Logic for routing based on stage (only used for realtime advancement, not on mount)
     const checkAndRedirect = (stage: number) => {
         if (!meetingId) return;
         const currentPath = window.location.pathname;
         
+        // We no longer aggressively redirect on mount, so users can navigate freely.
+        // The redirects below are only triggered by realtime WS events to pull users forward.
         if (stage === 3 && !currentPath.includes('/correction')) router.visit(`/meetings/${meetingId}/correction`);
         else if (stage === 4 && !currentPath.includes('/attendance')) router.visit(`/meetings/${meetingId}/attendance`);
         else if (stage === 5 && !currentPath.includes('/review')) router.visit(`/meetings/${meetingId}/review`);
         else if (stage === 6 && !currentPath.includes('/approval')) router.visit(`/meetings/${meetingId}/approval`);
-        else if (stage === 7) router.visit('/dashboard');
+        // Removed stage === 7 redirect to dashboard so users can view finished meetings.
     };
 
-    // Watch for prop changes (e.g., from fallback polling)
-    useEffect(() => {
-        if (meeting?.current_stage) {
-            checkAndRedirect(meeting.current_stage);
-        }
-    }, [meeting?.current_stage, meetingId]);
+    // Removed the aggressive mount-time redirect useEffect so users can click older tabs.
+
 
     // Fallback polling in case WebSocket server is dead/blocked
     useEffect(() => {
