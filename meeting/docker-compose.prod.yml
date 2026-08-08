@@ -1,0 +1,95 @@
+services:
+  # ==========================================
+  # 1. Main PHP-FPM Application
+  # ==========================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: enotulen-app:latest
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      # You should pass all other environment variables via an .env file or CI/CD secrets
+    env_file:
+      - .env
+    volumes:
+      # Keep storage persistent (if not using S3 for everything)
+      - enotulen-storage:/var/www/html/storage
+    depends_on:
+      - pgsql
+      - redis
+
+  # ==========================================
+  # 2. Nginx Web Server
+  # ==========================================
+  web:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      # Use our custom Nginx config
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      # Share the public directory from the app container so Nginx can serve static assets directly
+      - enotulen-public:/var/www/html/public
+    depends_on:
+      - app
+
+  # ==========================================
+  # 3. Queue Worker
+  # ==========================================
+  worker:
+    image: enotulen-app:latest
+    restart: unless-stopped
+    command: php artisan queue:work --queue=default --sleep=3 --tries=3
+    env_file:
+      - .env
+    volumes:
+      - enotulen-storage:/var/www/html/storage
+    depends_on:
+      - app
+      - redis
+
+  # ==========================================
+  # 4. Reverb WebSocket Server
+  # ==========================================
+  reverb:
+    image: enotulen-app:latest
+    restart: unless-stopped
+    # 8080 is the default Reverb port inside the container
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - app
+      - redis
+
+  # ==========================================
+  # Infrastructure Dependencies (from your dev setup)
+  # In a real production, you might use managed services (RDS, ElastiCache, S3)
+  # ==========================================
+  pgsql:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-enotulen}
+      POSTGRES_USER: ${DB_USERNAME:-enotulen}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-enotulen123!}
+    volumes:
+      - "enotulen-pgsql:/var/lib/postgresql/data"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - "enotulen-redis:/data"
+
+volumes:
+  enotulen-storage:
+  enotulen-public:
+  enotulen-pgsql:
+  enotulen-redis:
