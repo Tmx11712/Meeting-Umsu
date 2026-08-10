@@ -29,6 +29,10 @@ class Meeting extends Model
         'recording_started_at',
     ];
 
+    protected $casts = [
+        'recording_started_at' => 'datetime',
+    ];
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -89,8 +93,8 @@ class Meeting extends Model
     public function getDurationFormattedAttribute()
     {
         $seconds = $this->duration;
-        
-        if (!$seconds && $this->start_time && $this->end_time) {
+
+        if (! $seconds && $this->start_time && $this->end_time) {
             $seconds = max(0, strtotime($this->end_time) - strtotime($this->start_time));
         }
 

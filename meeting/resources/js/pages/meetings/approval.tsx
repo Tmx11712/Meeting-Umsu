@@ -30,6 +30,10 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
     const [editData, setEditData] = useState<any>(null);
     const [savingEdit, setSavingEdit] = useState(false);
 
+    const [editActionModalOpen, setEditActionModalOpen] = useState(false);
+    const [actionItemsData, setActionItemsData] = useState<any[]>([]);
+    const [savingActionItems, setSavingActionItems] = useState(false);
+
     const formatReviewDate = (dateString?: string) => {
         if (!dateString) return '-';
         const d = new Date(dateString);
@@ -61,6 +65,41 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
             },
             onFinish: () => setSavingEdit(false)
         });
+    };
+
+    const openActionItemsModal = () => {
+        if (minutes?.action_items) {
+            setActionItemsData(JSON.parse(JSON.stringify(minutes.action_items)));
+        } else {
+            setActionItemsData([]);
+        }
+        setEditActionModalOpen(true);
+    };
+
+    const saveActionItems = () => {
+        setSavingActionItems(true);
+        router.put(`/meetings/${meeting.id}/approval/action-items`, { action_items: actionItemsData }, {
+            onSuccess: () => {
+                setEditActionModalOpen(false);
+            },
+            onFinish: () => setSavingActionItems(false)
+        });
+    };
+
+    const addActionItem = () => {
+        setActionItemsData([...actionItemsData, { description: '', pic: '', deadline: '' }]);
+    };
+
+    const updateActionItem = (index: number, field: string, value: string) => {
+        const newData = [...actionItemsData];
+        newData[index][field] = value;
+        setActionItemsData(newData);
+    };
+
+    const removeActionItem = (index: number) => {
+        const newData = [...actionItemsData];
+        newData.splice(index, 1);
+        setActionItemsData(newData);
     };
 
     const handleApprove = () => {
@@ -321,13 +360,22 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                                 <div className="text-slate-500 italic">Konten notulen tidak tersedia atau format tidak didukung.</div>
                             )}
 
-                            <div>
-                                <h3 className="font-bold text-sm mb-2 text-slate-900">Tindak Lanjut</h3>
-                                <div className="space-y-2">
+                            <div className="mt-8">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-bold text-sm text-slate-900">Tindak Lanjut</h3>
+                                    {canManageApproval && (
+                                        <Button variant="outline" size="sm" onClick={openActionItemsModal} className="h-7 text-xs shadow-sm">
+                                            <Edit3 className="w-3 h-3 mr-1" /> Edit
+                                        </Button>
+                                    )}
+                                </div>
+                                <div className="space-y-3">
                                     {minutes.action_items && minutes.action_items.length > 0 ? minutes.action_items.map((item: any) => (
                                         <div className="flex gap-2" key={item.id}>
                                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                                            <p className="leading-relaxed text-sm">{item.description} (PIC: {item.pic}, Deadline: {item.deadline})</p>
+                                            <p className="leading-relaxed text-sm">
+                                                {item.description} (PIC: {item.pic}, Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-'})
+                                            </p>
                                         </div>
                                     )) : <div className="text-slate-500 italic text-sm">Tidak ada tindak lanjut.</div>}
                                 </div>
@@ -526,6 +574,74 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
                         <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={saveEdit} disabled={savingEdit}>
                             {savingEdit ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Edit Action Items Modal */}
+            <Dialog open={editActionModalOpen} onOpenChange={setEditActionModalOpen}>
+                <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Edit Tindak Lanjut</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        {actionItemsData.map((item, index) => (
+                            <div key={index} className="flex flex-col md:flex-row gap-3 items-start border border-slate-200 rounded-lg p-4 bg-slate-50/50">
+                                <div className="w-full space-y-3">
+                                    <div>
+                                        <Label className="text-xs">Tugas / Tindak Lanjut</Label>
+                                        <Input 
+                                            value={item.description || ''} 
+                                            onChange={e => updateActionItem(index, 'description', e.target.value)}
+                                            placeholder="Deskripsi tugas..."
+                                            className="mt-1"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <Label className="text-xs">PIC</Label>
+                                            <Input 
+                                                value={item.pic || ''} 
+                                                onChange={e => updateActionItem(index, 'pic', e.target.value)}
+                                                placeholder="Nama PIC"
+                                                className="mt-1"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className="text-xs">Deadline</Label>
+                                            <Input 
+                                                type="date"
+                                                value={item.deadline ? item.deadline.substring(0,10) : ''} 
+                                                onChange={e => updateActionItem(index, 'deadline', e.target.value)}
+                                                className="mt-1"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <Button 
+                                    variant="outline" 
+                                    size="icon" 
+                                    className="text-red-500 hover:text-red-600 shrink-0 self-start mt-6"
+                                    onClick={() => removeActionItem(index)}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        ))}
+                        {actionItemsData.length === 0 && (
+                            <div className="text-center py-8 text-slate-500 italic border border-dashed rounded-lg">
+                                Belum ada tindak lanjut.
+                            </div>
+                        )}
+                        <Button variant="outline" onClick={addActionItem} className="w-full border-dashed border-2 py-6 text-slate-500 hover:text-slate-700">
+                            <Plus className="w-4 h-4 mr-2" /> Tambah Tugas
+                        </Button>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditActionModalOpen(false)}>Batal</Button>
+                        <Button onClick={saveActionItems} disabled={savingActionItems} className="bg-blue-600 hover:bg-blue-700 text-white">
+                            {savingActionItems ? 'Menyimpan...' : 'Simpan Tindak Lanjut'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

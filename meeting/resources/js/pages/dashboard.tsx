@@ -29,6 +29,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
     const page = usePage<any>();
     const roles: string[] = page.props.auth?.roles || [];
     const primaryRole = roles[0] || 'User';
+    const isPimpinan = roles.includes('Pimpinan');
 
     // Real-time: listen for global meetings updates via WebSocket
     useEffect(() => {
@@ -60,6 +61,16 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
         if (!dateStr) return '';
         const d = new Date(dateStr);
         return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    };
+
+    // Smart Routing for meetings
+    const getMeetingUrl = (m: any) => {
+        // Jika Pimpinan dan rapat sudah masuk tahap review/persetujuan (stage >= 5)
+        // Langsung arahkan ke halaman persetujuan agar tidak perlu lewat meeting hub
+        if (isPimpinan && m.current_stage >= 5) {
+            return `/meetings/${m.id}/approval`;
+        }
+        return `/meetings/${m.id}`;
     };
 
     // Status helpers
@@ -163,7 +174,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                                     return (
                                         <Link
                                             key={m.id}
-                                            href={`/meetings/${m.id}`}
+                                            href={getMeetingUrl(m)}
                                             className="group flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                                         >
                                             {/* Icon */}
@@ -213,7 +224,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                         <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3">Jadwal mendatang</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {upcomingMeetings.map((m, idx) => (
-                                <Link key={m.id} href={`/meetings/${m.id}`}>
+                                <Link key={m.id} href={getMeetingUrl(m)}>
                                     <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
                                         <CardContent className="p-5 flex flex-col gap-3">
                                             <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${idx === 0 ? 'bg-blue-50' : idx === 1 ? 'bg-emerald-50' : 'bg-violet-50'}`}>

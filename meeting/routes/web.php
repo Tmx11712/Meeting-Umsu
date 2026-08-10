@@ -76,6 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Approval
     Route::get('meetings/{meeting}/approval', [MeetingApprovalController::class, 'show'])->name('meetings.approval');
     Route::post('meetings/{meeting}/approval', [MeetingApprovalController::class, 'store'])->name('meetings.approval.store');
+    Route::put('meetings/{meeting}/approval/action-items', [MeetingApprovalController::class, 'updateActionItems'])->name('meetings.approval.action-items');
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');

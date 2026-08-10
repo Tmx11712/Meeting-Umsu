@@ -18,7 +18,7 @@ export default function MeetingShow({ meeting }: any) {
     const isPimpinan = roles.includes('Pimpinan');
 
     const canRecord = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canEnterRecordingRoom = ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
+    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum || isPimpinan) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
     const canCorrect = (isAdmin || isUmum) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
     const canAttend = (isAdmin || isUmum || isHumas) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
     const canReview = (isAdmin || isUmum) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);

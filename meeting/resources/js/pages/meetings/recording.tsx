@@ -1,5 +1,5 @@
 import { Head, usePage, router } from '@inertiajs/react';
-import { Square, UploadCloud, Info, Send, Key, Megaphone, Monitor, CheckCircle2, AlertCircle, Loader2, Bot, Database, Trash2 } from 'lucide-react';
+import { Square, UploadCloud, Info, Send, Key, Megaphone, Monitor, CheckCircle2, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Meeting } from '@/types/meeting';
 import { Button } from '@/components/ui/button';
@@ -18,9 +18,15 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
     const serverStartedAt = meeting?.recording_started_at ? new Date(meeting.recording_started_at).getTime() : null;
     const isServerRecording = serverStartedAt !== null;
 
+    const getXsrfToken = () => {
+        const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : '';
+    };
+
     // Fallback polling now handled globally by useMeetingWebSocket hook
     const [activeTab, setActiveTab] = useState<'upload' | 'record'>('record');
     const [isRecording, setIsRecording] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
@@ -73,23 +79,28 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
     // Timer Logic synced with server
     useEffect(() => {
         let interval: NodeJS.Timeout;
-        if (isServerRecording && serverStartedAt) {
-            // Initial sync
+        const isLocalRecorder = mediaRecorderRef.current !== null;
+
+        if (recordedBlob) {
+            return () => {};
+        }
+
+        if (isServerRecording && serverStartedAt && !isRecording && !isLocalRecorder) {
+            // For viewers who are not recording, use server time
             setRecordingDuration(Math.floor((Date.now() - serverStartedAt) / 1000));
-            
             interval = setInterval(() => {
                 setRecordingDuration(Math.floor((Date.now() - serverStartedAt) / 1000));
             }, 1000);
-        } else if (isRecording) {
-            // Fallback to local timer if server hasn't responded yet but local is recording
+        } else if (isRecording && !isPaused) {
+            // For the active recorder, just increment locally
             interval = setInterval(() => {
                 setRecordingDuration(prev => prev + 1);
             }, 1000);
-        } else {
+        } else if (!isRecording && !isServerRecording) {
             setRecordingDuration(0);
         }
         return () => clearInterval(interval);
-    }, [isRecording, isServerRecording, serverStartedAt]);
+    }, [isRecording, isPaused, isServerRecording, serverStartedAt, recordedBlob]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -121,7 +132,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    'X-XSRF-TOKEN': getXsrfToken()
                 }
             });
             
@@ -129,11 +140,11 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                 await showSuccess('Sukses', 'Audio berhasil diunggah.');
                 window.location.reload();
             } else {
-                const data = await response.json();
+                const data = await response.json().catch(() => ({}));
                 showError('Error', data.message || 'Gagal mengunggah audio.');
             }
-        } catch (error) {
-            showError('Gagal', 'Terjadi kesalahan saat mengunggah.');
+        } catch (error: any) {
+            showError('Gagal', error.message || 'Terjadi kesalahan saat mengunggah.');
         } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -146,6 +157,7 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
             setRecordingDuration(0);
             chunksRef.current = [];
             setRecordedBlob(null);
+            setIsPaused(false);
 
             const stream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
@@ -187,7 +199,8 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
             await fetch(`/meetings/${meeting.id}/recording/start-session`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    'X-XSRF-TOKEN': getXsrfToken(),
+                    'Accept': 'application/json'
                 }
             });
 
@@ -197,10 +210,23 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
         }
     };
 
+    const togglePauseRecording = () => {
+        if (!mediaRecorderRef.current) return;
+        
+        if (mediaRecorderRef.current.state === 'recording') {
+            mediaRecorderRef.current.pause();
+            setIsPaused(true);
+        } else if (mediaRecorderRef.current.state === 'paused') {
+            mediaRecorderRef.current.resume();
+            setIsPaused(false);
+        }
+    };
+
     const stopRecordingSession = async () => {
         setIsRecording(false);
+        setIsPaused(false);
         
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        if (mediaRecorderRef.current && (mediaRecorderRef.current.state === 'recording' || mediaRecorderRef.current.state === 'paused')) {
             mediaRecorderRef.current.stop();
         }
         
@@ -210,12 +236,17 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
         }
 
         // Tembakkan sinyal ke backend bahwa rekaman dihentikan
-        await fetch(`/meetings/${meeting.id}/recording/stop-session`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-            }
-        });
+        try {
+            await fetch(`/meetings/${meeting.id}/recording/stop-session`, {
+                method: 'POST',
+                headers: {
+                    'X-XSRF-TOKEN': getXsrfToken(),
+                    'Accept': 'application/json'
+                }
+            });
+        } catch (err) {
+            console.error('Gagal menghentikan rekaman di server', err);
+        }
     };
 
     const sendRecordingToBackend = async () => {
@@ -228,13 +259,14 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
         const formData = new FormData();
         formData.append('file', recordedBlob, `rekaman-${Date.now()}.webm`);
         formData.append('source', 'system_record');
+        formData.append('duration_seconds', recordingDuration.toString());
 
         try {
             const response = await fetch(`/meetings/${meeting.id}/recording`, {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    'X-XSRF-TOKEN': getXsrfToken()
                 }
             });
             
@@ -242,15 +274,16 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                 await showSuccess('Sukses', 'Audio berhasil dikirim ke backend.');
                 window.location.reload();
             } else {
-                const data = await response.json();
+                const data = await response.json().catch(() => ({}));
                 showError('Error', data.message || 'Gagal menyimpan rekaman.');
             }
-        } catch (error) {
-            showError('Gagal', 'Terjadi kesalahan saat mengirim rekaman.');
+        } catch (error: any) {
+            showError('Gagal', error.message || 'Terjadi kesalahan saat mengirim rekaman.');
         } finally {
             setUploading(false);
             setRecordedBlob(null);
             setRecordingDuration(0);
+            mediaRecorderRef.current = null;
         }
     };
 
@@ -338,9 +371,18 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                                         </Button>
                                         <Button 
                                             variant="outline" 
-                                            onClick={stopRecordingSession}
+                                            onClick={togglePauseRecording}
                                             disabled={!isRecording}
-                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${!isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'}`}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${!isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'}`}
+                                        >
+                                            {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+                                            {isPaused ? 'Lanjut' : 'Jeda'}
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            onClick={stopRecordingSession}
+                                            disabled={!isRecording && !isServerRecording}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${(!isRecording && !isServerRecording) ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'}`}
                                         >
                                             <Square className="w-3.5 h-3.5" /> Berhenti
                                         </Button>
@@ -440,7 +482,10 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                                                     {rec.status === 'uploaded' ? 'Menunggu Transkripsi' : rec.status === 'transcribing' ? 'Sedang Diproses AI...' : rec.status === 'failed' ? 'Gagal Transkripsi' : 'Selesai Transkripsi'}
                                                 </span>
                                             </div>
-                                            <p className="text-[11px] text-slate-500 mb-3">{new Date(rec.created_at).toLocaleString('id-ID')} • {(rec.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                                            <p className="text-[11px] text-slate-500 mb-3">
+                                                {new Date(rec.created_at).toLocaleString('id-ID')} • {(rec.file_size / 1024 / 1024).toFixed(2)} MB
+                                                {rec.duration_seconds ? ` • ${formatDuration(rec.duration_seconds)}` : ''}
+                                            </p>
                                             
                                             <audio controls src={`/meetings/${meeting.id}/recording/${rec.id}/stream`} className="h-9 w-full max-w-sm rounded-lg border border-slate-200/60" />
                                         </div>

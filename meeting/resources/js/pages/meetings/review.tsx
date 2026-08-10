@@ -429,7 +429,9 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                     {minutes.action_items && minutes.action_items.length > 0 ? minutes.action_items.map((item: any) => (
                                         <div className="flex gap-2" key={item.id}>
                                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                                            <p className="leading-relaxed text-sm">{item.description} (PIC: {item.pic}, Deadline: {item.deadline})</p>
+                                            <p className="leading-relaxed text-sm">
+                                                {item.description} (PIC: {item.pic}, Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-'})
+                                            </p>
                                         </div>
                                     )) : <div className="text-slate-500 italic text-sm">Tidak ada tindak lanjut.</div>}
                                 </div>

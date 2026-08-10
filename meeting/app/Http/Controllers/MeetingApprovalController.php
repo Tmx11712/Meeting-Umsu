@@ -6,6 +6,7 @@ use App\Http\Requests\Meeting\StoreApprovalRequest;
 use App\Models\Meeting;
 use App\Models\MeetingApproval;
 use App\Events\MeetingUpdated;
+use App\Services\MeetingActionItemService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -44,5 +45,19 @@ class MeetingApprovalController extends Controller
         safe_broadcast(new MeetingUpdated($meeting, 'approval'));
 
         return redirect()->route('dashboard')->with('success', 'Keputusan notulen berhasil disimpan.');
+    }
+
+    public function updateActionItems(Request $request, Meeting $meeting, MeetingActionItemService $actionItemService)
+    {
+        $request->validate([
+            'action_items' => 'array',
+            'action_items.*.description' => 'required|string',
+            'action_items.*.pic' => 'nullable|string',
+            'action_items.*.deadline' => 'nullable|date',
+        ]);
+
+        $actionItemService->updateForMeeting($meeting, $request->action_items ?? []);
+
+        return back()->with('success', 'Tindak lanjut berhasil diperbarui.');
     }
 }

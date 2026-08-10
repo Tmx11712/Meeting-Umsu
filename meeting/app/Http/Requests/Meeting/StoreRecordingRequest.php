@@ -20,6 +20,7 @@ class StoreRecordingRequest extends FormRequest
             'file' => 'required|file|mimes:mp3,wav,m4a,webm,ogg|max:204800',
             'source' => 'required|in:upload,system_record',
             'label' => 'nullable|string|max:255',
+            'duration_seconds' => 'nullable|integer',
         ];
     }
 

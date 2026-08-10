@@ -36,6 +36,7 @@ class MeetingRecordingController extends Controller
             'file_path' => $path,
             'label' => $request->label,
             'file_size' => $file->getSize(),
+            'duration_seconds' => $request->duration_seconds ?? 0,
             'source' => $request->source,
             'status' => 'uploaded',
             'recorded_by' => $request->user()->id,
