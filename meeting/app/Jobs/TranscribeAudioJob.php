@@ -37,14 +37,14 @@ class TranscribeAudioJob implements ShouldQueue
         }
 
         try {
-            $recording->update(['status' => 'transcribing']);
+            $recording->update(['status' => \App\Enums\MeetingRecordingStatus::TRANSCRIBING->value]);
 
             // Assuming the file is on local storage
             // But Whisper API needs the actual file content/path.
             // We can download it to a temporary local file.
             $fileContent = Storage::disk('local')->get($recording->file_path);
             if (! $fileContent) {
-                throw new \Exception('File rekaman tidak ditemukan di storage.');
+                throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
 
             $tempPath = sys_get_temp_dir().'/'.basename($recording->file_path);
@@ -70,7 +70,7 @@ class TranscribeAudioJob implements ShouldQueue
 
             // Update recording with duration info
             $recording->update([
-                'status' => 'completed',
+                'status' => \App\Enums\MeetingRecordingStatus::COMPLETED->value,
                 'duration_seconds' => (int) round($result['duration'] ?? 0),
             ]);
 
@@ -87,20 +87,30 @@ class TranscribeAudioJob implements ShouldQueue
                     Log::error('Broadcast failed: '.$broadcastEx->getMessage());
                 }
             }
-        } catch (\Exception $e) {
-            Log::error('TranscribeAudioJob Error: '.$e->getMessage());
-            $recording->update(['status' => 'failed']);
-            
-            $meeting = Meeting::find($recording->meeting_id);
-            if ($meeting) {
-                try {
-                    event(new \App\Events\MeetingUpdated($meeting, 'transcript_failed'));
-                } catch (\Exception $broadcastEx) {
-                    Log::error('Broadcast failed: '.$broadcastEx->getMessage());
-                }
-            }
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            Log::error('Transcribe API Network Error: '.$e->getMessage());
+            $this->failJob($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
+        } catch (\RuntimeException $e) {
+            Log::error('Transcribe Runtime Error: '.$e->getMessage());
+            $this->failJob($recording, $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('Transcribe System Error: '.$e->getMessage());
+            $this->failJob($recording, 'Terjadi kesalahan sistem internal.');
+            throw $e; // Re-throw critical system errors (like syntax errors) to be caught by the queue worker properly
+        }
+    }
 
-            throw $e; // Trigger retry
+    protected function failJob(MeetingRecording $recording, string $reason)
+    {
+        $recording->update(['status' => \App\Enums\MeetingRecordingStatus::FAILED->value]);
+        
+        $meeting = Meeting::find($recording->meeting_id);
+        if ($meeting) {
+            try {
+                event(new \App\Events\MeetingUpdated($meeting, 'transcript_failed'));
+            } catch (\Exception $broadcastEx) {
+                Log::error('Broadcast failed: '.$broadcastEx->getMessage());
+            }
         }
     }
 }

@@ -36,8 +36,12 @@ class GenerateMeetingMinuteAction
 
         $summaryJson = $this->aiService->generateSummary($meeting, $transcriptText, $pesertaText, $dokumenText);
 
-        $minute = $this->persistMinute($meeting, $summaryJson);
-        $this->persistActionItems($meeting, $minute, $summaryJson);
+        $minute = \Illuminate\Support\Facades\DB::transaction(function () use ($meeting, $summaryJson) {
+            $minute = $this->persistMinute($meeting, $summaryJson);
+            $this->persistActionItems($meeting, $minute, $summaryJson);
+            
+            return $minute;
+        });
 
         return $minute;
     }
@@ -99,8 +103,8 @@ class GenerateMeetingMinuteAction
                     $parser = new \Smalot\PdfParser\Parser();
                     $pdf = $parser->parseFile($filePath);
                     $parts[] = "\n--- Dokumen PDF: {$doc->file_name} ---\n".$pdf->getText();
-                } catch (\Exception $e) {
-                    // Skip if PDF parsing fails
+                } catch (\Throwable $e) {
+                    // Skip if PDF parsing fails (corrupt file, unreadable, or missing dependencies)
                 }
             } elseif ($doc->mime_type === 'text/plain') {
                 $parts[] = "\n--- Dokumen TXT: {$doc->file_name} ---\n".file_get_contents($filePath);
@@ -122,7 +126,7 @@ class GenerateMeetingMinuteAction
                 'ai_topics_count' => $summaryJson['topik_count'] ?? 0,
                 'ai_decisions_count' => $summaryJson['keputusan_count'] ?? 0,
                 'ai_summary_generated_at' => now(),
-                'status' => 'review',
+                'status' => \App\Enums\MeetingMinuteStatus::REVIEW->value,
             ]
         );
     }

@@ -54,34 +54,46 @@ class SyncMeetingsAction
         try {
             $events = $this->fetchEvents->execute($startDate, $endDate);
             $syncedCount = 0;
-
+            
+            // Phase 1: Fetch all data first (Do NOT hold DB locks during HTTP requests)
+            $meetingsToProcess = [];
             foreach ($events as $event) {
-                // We only care about meetings
                 if (! isset($event['is_meeting']) || ! $event['is_meeting']) {
                     continue;
                 }
-
-                // Upsert Meeting
-                $upsertResult = $this->upsertMeeting->execute($event);
-                $meeting = $upsertResult['meeting'];
-
-                if ($upsertResult['wasRecentlyCreated']) {
-                    $syncedCount++;
-                }
-
-                // Fetch & Sync Participants Details
-                $details = $this->fetchEventDetails->execute($event['id']);
                 
-                if ($details && isset($details['data']['participants'])) {
-                    foreach ($details['data']['participants'] as $participantData) {
-                        $user = $this->upsertUser->execute($participantData);
-                        
-                        if ($user) {
-                            $this->syncAttendance->execute($participantData, $meeting, $user);
+                $details = $this->fetchEventDetails->execute($event['id']);
+                $meetingsToProcess[] = [
+                    'event' => $event,
+                    'details' => $details
+                ];
+            }
+
+            // Phase 2: Perform all database writes inside a transaction
+            \Illuminate\Support\Facades\DB::transaction(function () use ($meetingsToProcess, &$syncedCount) {
+                foreach ($meetingsToProcess as $data) {
+                    $event = $data['event'];
+                    $details = $data['details'];
+
+                    // Upsert Meeting
+                    $upsertResult = $this->upsertMeeting->execute($event);
+                    $meeting = $upsertResult['meeting'];
+
+                    if ($upsertResult['wasRecentlyCreated']) {
+                        $syncedCount++;
+                    }
+
+                    if ($details && isset($details['data']['participants'])) {
+                        foreach ($details['data']['participants'] as $participantData) {
+                            $user = $this->upsertUser->execute($participantData);
+                            
+                            if ($user) {
+                                $this->syncAttendance->execute($participantData, $meeting, $user);
+                            }
                         }
                     }
                 }
-            }
+            });
 
             if ($syncedCount > 0) {
                 safe_broadcast(new \App\Events\MeetingsListUpdated('Terdapat ' . $syncedCount . ' rapat baru dari sinkronisasi Irvan Cloud'));

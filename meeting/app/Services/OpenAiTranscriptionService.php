@@ -71,7 +71,7 @@ class OpenAiTranscriptionService
                 
             if ($response->failed()) {
                 Log::error('OpenAI Whisper Error on chunk ' . $index . ': ' . $response->body());
-                throw new \Exception('Gagal melakukan transkripsi pada bagian ' . ($index + 1) . ': ' . $response->json('error.message', 'Unknown error'));
+                $response->throw();
             }
 
             $data = $response->json();
