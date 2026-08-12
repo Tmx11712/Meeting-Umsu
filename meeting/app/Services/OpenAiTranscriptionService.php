@@ -32,7 +32,6 @@ class OpenAiTranscriptionService
             ->attach('file', file_get_contents($filePath), basename($filePath))
             ->post('https://api.openai.com/v1/audio/transcriptions', [
                 'model' => config('services.openai.transcribe_model'),
-                'language' => 'id',
                 'response_format' => 'verbose_json',
                 'timestamp_granularities' => ['segment'],
             ]);

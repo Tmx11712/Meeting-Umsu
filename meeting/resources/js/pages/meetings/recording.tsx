@@ -358,8 +358,8 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                                         <Button 
                                             variant="outline" 
                                             onClick={togglePauseRecording}
-                                            disabled={!isRecording}
-                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${!isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'}`}
+                                            disabled={!isRecording || !canRecord}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${!isRecording || !canRecord ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200'}`}
                                         >
                                             {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
                                             {isPaused ? 'Lanjut' : 'Jeda'}
@@ -367,8 +367,8 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                                         <Button 
                                             variant="outline" 
                                             onClick={stopRecordingSession}
-                                            disabled={!isRecording && !isServerRecording}
-                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${(!isRecording && !isServerRecording) ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'}`}
+                                            disabled={(!isRecording && !isServerRecording) || !canRecord}
+                                            className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${(!isRecording && !isServerRecording) || !canRecord ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200'}`}
                                         >
                                             <Square className="w-3.5 h-3.5" /> Berhenti
                                         </Button>
