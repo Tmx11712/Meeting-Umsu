@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { Sun, Moon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
@@ -18,6 +18,7 @@ function useAppearance() {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsDark(document.documentElement.classList.contains('dark'));
     }, []);
 

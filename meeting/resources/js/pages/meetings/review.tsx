@@ -1,20 +1,20 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Eye, Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
-import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
-import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
 import { AlertCircle, Info } from 'lucide-react';
 import { useState } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
-import { Meeting } from '@/types/meeting';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
+import type { Meeting } from '@/types/meeting';
 
 export default function MeetingReview({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
@@ -44,6 +44,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
         } else {
             setEditData({ latar_belakang: '', peserta_rapat: [], pembahasan: [], keputusan: [] });
         }
+
         setEditModalOpen(true);
     };
 
@@ -86,7 +87,10 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     
     const handleUploadDocument = (e: any) => {
         const file = e.target.files[0];
-        if (!file) return;
+
+        if (!file) {
+return;
+}
 
         setUploadingDoc(true);
         const formData = new FormData();
@@ -101,7 +105,10 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     };
 
     const handleDeleteDocument = (id: string) => {
-        if (!confirm('Hapus dokumen ini?')) return;
+        if (!confirm('Hapus dokumen ini?')) {
+return;
+}
+
         router.delete(`/meetings/${meeting.id}/documents/${id}`);
     };
 
@@ -165,6 +172,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
                                     const transcripts = rec.transcripts || [];
                                     const combinedText = transcripts.map((t: any) => {
                                         const latest = t.corrections?.length > 0 ? t.corrections[t.corrections.length - 1].corrected_text : t.text;
+
                                         return latest;
                                     }).join(' ');
 

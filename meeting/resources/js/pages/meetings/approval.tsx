@@ -1,20 +1,19 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Download, Eye, FileText, CheckCircle2, ChevronRight, Share2, Printer, ShieldCheck, Check, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
+import { Download, FileText, CheckCircle2, Check, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
-import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { useState } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Meeting } from '@/types/meeting';
+import type { Meeting } from '@/types/meeting';
 
 export default function MeetingApproval({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
@@ -35,7 +34,10 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
     const [savingActionItems, setSavingActionItems] = useState(false);
 
     const formatReviewDate = (dateString?: string) => {
-        if (!dateString) return '-';
+        if (!dateString) {
+return '-';
+}
+
         const d = new Date(dateString);
         const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         const day = d.getDate();
@@ -43,6 +45,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
         const year = d.getFullYear();
         const hours = String(d.getHours()).padStart(2, '0');
         const mins = String(d.getMinutes()).padStart(2, '0');
+
         return `${day} ${month} ${year} ${hours}:${mins} WIB`;
     };
 
@@ -54,6 +57,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
         } else {
             setEditData({ pembukaan: '', pembahasan: [], keputusan: [] });
         }
+
         setEditModalOpen(true);
     };
 
@@ -73,6 +77,7 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
         } else {
             setActionItemsData([]);
         }
+
         setEditActionModalOpen(true);
     };
 

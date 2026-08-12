@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Meeting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Process;
 
 /**
  * [EDUKASI ARSITEKTUR: SERVICE PATTERN]
@@ -27,42 +28,81 @@ class OpenAiTranscriptionService
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
 
-        $response = Http::withToken($apiKey)
-            ->timeout(120)
-            ->attach('file', file_get_contents($filePath), basename($filePath))
-            ->post('https://api.openai.com/v1/audio/transcriptions', [
-                'model' => config('services.openai.transcribe_model'),
-                'response_format' => 'verbose_json',
-                'timestamp_granularities' => ['segment'],
-            ]);
+        // Split audio into 20-minute segments (1200 seconds) at 32kbps MP3
+        $segmentDuration = 1200; 
+        
+        $tempDir = sys_get_temp_dir() . '/whisper_chunks_' . uniqid();
+        if (!mkdir($tempDir) && !is_dir($tempDir)) {
+            throw new \Exception('Gagal membuat direktori temporary untuk chunk.');
+        }
+        
+        $chunkPattern = $tempDir . '/chunk_%03d.mp3';
 
-        if ($response->failed()) {
-            Log::error('OpenAI Whisper Error: '.$response->body());
-            throw new \Exception('Gagal melakukan transkripsi: '.$response->json('error.message', 'Unknown error'));
+        $process = new Process([
+            'ffmpeg', '-y', '-i', $filePath,
+            '-f', 'segment', '-segment_time', (string)$segmentDuration,
+            '-c:a', 'libmp3lame', '-b:a', '32k', '-ac', '1', '-ar', '16000',
+            $chunkPattern
+        ]);
+        $process->setTimeout(600); // 10 minutes for FFmpeg processing
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \Exception('FFMPEG splitting failed: ' . $process->getErrorOutput());
         }
 
-        $data = $response->json();
-        $segments = $data['segments'] ?? [];
-        $duration = $data['duration'] ?? 0;
+        $chunks = glob($tempDir . '/chunk_*.mp3');
+        sort($chunks);
 
-        // If segments are available, return them with timestamps
-        if (! empty($segments)) {
-            return [
-                'duration' => $duration,
-                'segments' => array_map(fn ($s) => [
-                    'start' => $s['start'] ?? 0,
-                    'end' => $s['end'] ?? 0,
-                    'text' => trim($s['text'] ?? ''),
-                ], $segments),
-            ];
+        $allSegments = [];
+        $totalDuration = 0;
+
+        foreach ($chunks as $index => $chunkPath) {
+            $offset = $index * $segmentDuration;
+            
+            $response = Http::withToken($apiKey)
+                ->timeout(300) // 5 minutes max per chunk
+                ->attach('file', file_get_contents($chunkPath), basename($chunkPath))
+                ->post('https://api.openai.com/v1/audio/transcriptions', [
+                    'model' => config('services.openai.transcribe_model'),
+                    'response_format' => 'verbose_json',
+                    'timestamp_granularities' => ['segment'],
+                ]);
+                
+            if ($response->failed()) {
+                Log::error('OpenAI Whisper Error on chunk ' . $index . ': ' . $response->body());
+                throw new \Exception('Gagal melakukan transkripsi pada bagian ' . ($index + 1) . ': ' . $response->json('error.message', 'Unknown error'));
+            }
+
+            $data = $response->json();
+            $chunkDuration = $data['duration'] ?? 0;
+            $totalDuration += $chunkDuration;
+            
+            $segments = $data['segments'] ?? [];
+            if (empty($segments)) {
+                $segments = [
+                    ['start' => 0, 'end' => $chunkDuration, 'text' => $data['text'] ?? ''],
+                ];
+            }
+
+            foreach ($segments as $s) {
+                $allSegments[] = [
+                    'start' => ($s['start'] ?? 0) + $offset,
+                    'end'   => ($s['end'] ?? 0) + $offset,
+                    'text'  => trim($s['text'] ?? ''),
+                ];
+            }
         }
 
-        // Fallback: return whole text as single segment
+        // Cleanup
+        foreach ($chunks as $chunkPath) {
+            @unlink($chunkPath);
+        }
+        @rmdir($tempDir);
+
         return [
-            'duration' => $duration,
-            'segments' => [
-                ['start' => 0, 'end' => $duration, 'text' => $data['text'] ?? ''],
-            ],
+            'duration' => $totalDuration,
+            'segments' => $allSegments,
         ];
     }
 

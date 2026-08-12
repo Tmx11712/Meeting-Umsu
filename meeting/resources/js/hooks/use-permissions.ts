@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 
 /**
@@ -25,7 +25,8 @@ type PermissionResource = keyof typeof ROLE_PERMISSIONS;
 
 export function usePermissions() {
     const page = usePage<any>();
-    const roles: string[] = page.props.auth?.roles || [];
+    const authRoles = page.props.auth?.roles;
+    const roles: string[] = useMemo(() => authRoles || [], [authRoles]);
 
     /** Check if the current user has any of the specified roles */
     const hasRole = useCallback(

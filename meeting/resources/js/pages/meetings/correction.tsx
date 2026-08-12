@@ -1,14 +1,14 @@
 import { Head, router, Link } from '@inertiajs/react';
-import { AlertCircle, ChevronDown, ChevronRight, FileAudio2, Loader2, Play, CheckCircle2, XCircle, Upload, Mic, Clock } from 'lucide-react';
+import { AlertCircle, ChevronDown, FileAudio2, Loader2, Play, CheckCircle2, XCircle, Upload, Mic, Clock } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { usePermissions } from '@/hooks/use-permissions';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
-import { Meeting } from '@/types/meeting';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { Meeting } from '@/types/meeting';
 
 export default function MeetingCorrection({ meeting, ...props }: { meeting: Meeting, [key: string]: any }) {
     const { canEdit, hasRole } = usePermissions();
@@ -159,11 +159,15 @@ function RecordingAccordion({ recording, index, meetingId, canCorrect, onCorrect
     const formatDuration = (seconds: number) => {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
+
         return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
     const formatFileSize = (bytes: number) => {
-        if (!bytes) return '';
+        if (!bytes) {
+return '';
+}
+
         return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
     };
 
@@ -337,6 +341,7 @@ function TranscriptItem({ transcript, initialText, onSave, onSeek, canCorrect, h
     const formatTimestamp = (seconds: number) => {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
+
         return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 

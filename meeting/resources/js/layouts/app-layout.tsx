@@ -1,7 +1,7 @@
+import { useEffect } from 'react';
 import { useFlashToast } from '@/hooks/use-flash-toast';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
-import { useEffect } from 'react';
 
 export default function AppLayout({
     breadcrumbs = [],
@@ -17,6 +17,7 @@ export default function AppLayout({
         // Backend sudah memiliki proteksi Cache Lock 5 menit agar tidak membebani server.
         const getXsrfToken = () => {
             const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+
             return match ? decodeURIComponent(match[2]) : '';
         };
 

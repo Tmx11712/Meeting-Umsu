@@ -1,8 +1,6 @@
+import { Calendar, Clock, MapPin, Users } from 'lucide-react';
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Calendar, Clock, MapPin, Users, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from '@inertiajs/react';
 
 interface Meeting {
     title: string;

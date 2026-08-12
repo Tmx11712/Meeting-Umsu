@@ -1,6 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { CalendarDays, FileText, Users, Clock } from 'lucide-react';
 import { useEffect } from 'react';
-import { CalendarDays, CheckCircle, Mic, FileText, Users, PenTool, Check, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
@@ -52,14 +52,22 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
 
     // Helper to format date
     const formatDate = (dateStr: string) => {
-        if (!dateStr) return '';
+        if (!dateStr) {
+return '';
+}
+
         const d = new Date(dateStr);
+
         return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
     };
 
     const formatDateShort = (dateStr: string) => {
-        if (!dateStr) return '';
+        if (!dateStr) {
+return '';
+}
+
         const d = new Date(dateStr);
+
         return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     };
 
@@ -70,6 +78,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
         if (isPimpinan && m.current_stage >= 5) {
             return `/meetings/${m.id}/approval`;
         }
+
         return `/meetings/${m.id}`;
     };
 
@@ -82,11 +91,22 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
             if (isPast) {
                 return { text: 'Belum Diproses', badgeClass: 'text-slate-600 bg-slate-50 border-slate-200', isLive: false };
             }
+
             return { text: 'Live', badgeClass: 'text-red-600 bg-red-50 border-red-200', isLive: true };
         }
-        if (stage <= 4) return { text: 'Koreksi', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
-        if (stage === 5) return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
-        if (stage === 6) return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
+
+        if (stage <= 4) {
+return { text: 'Koreksi', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
+}
+
+        if (stage === 5) {
+return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
+}
+
+        if (stage === 6) {
+return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
+}
+
         return { text: 'Selesai', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-200', isLive: false };
     };
 

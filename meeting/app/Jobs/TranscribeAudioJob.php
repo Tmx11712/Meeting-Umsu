@@ -83,8 +83,8 @@ class TranscribeAudioJob implements ShouldQueue
             if ($meeting) {
                 try {
                     event(new \App\Events\MeetingUpdated($meeting, 'transcript_ready'));
-                } catch (\Exception $e) {
-                    Log::error('Broadcast failed: '.$e->getMessage());
+                } catch (\Exception $broadcastEx) {
+                    Log::error('Broadcast failed: '.$broadcastEx->getMessage());
                 }
             }
         } catch (\Exception $e) {
@@ -95,8 +95,8 @@ class TranscribeAudioJob implements ShouldQueue
             if ($meeting) {
                 try {
                     event(new \App\Events\MeetingUpdated($meeting, 'transcript_failed'));
-                } catch (\Exception $e) {
-                    Log::error('Broadcast failed: '.$e->getMessage());
+                } catch (\Exception $broadcastEx) {
+                    Log::error('Broadcast failed: '.$broadcastEx->getMessage());
                 }
             }
 

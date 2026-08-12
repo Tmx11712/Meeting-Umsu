@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { Check } from 'lucide-react';
 import { Fragment } from 'react';
 

@@ -1,11 +1,11 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle } from 'lucide-react';
 import { MeetingStepper } from '@/components/meeting-stepper';
-import { useInitials } from '@/hooks/use-initials';
-import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useInitials } from '@/hooks/use-initials';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 
 export default function MeetingShow({ meeting }: any) {
     useMeetingWebSocket(meeting?.id);
@@ -16,13 +16,14 @@ export default function MeetingShow({ meeting }: any) {
     const isUmum = roles.includes('Bag. Umum');
     const isHumas = roles.includes('Bag. Humas');
     const isPimpinan = roles.includes('Pimpinan');
+    const isViewer = roles.includes('Viewer');
 
     const canRecord = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum || isPimpinan) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canCorrect = (isAdmin || isUmum) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
-    const canAttend = (isAdmin || isUmum || isHumas) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canReview = (isAdmin || isUmum) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canApprove = (isAdmin || isPimpinan) && meeting.status === 'reviewed';
+    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum || isPimpinan || isViewer) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
+    const canCorrect = (isAdmin || isUmum || isViewer) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
+    const canAttend = (isAdmin || isUmum || isHumas || isViewer) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
+    const canReview = (isAdmin || isUmum || isViewer) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);
+    const canApprove = (isAdmin || isPimpinan || isViewer) && meeting.status === 'reviewed';
     const hasOperationalActions = canEnterRecordingRoom || canCorrect || canAttend || canReview || canApprove;
 
     return (

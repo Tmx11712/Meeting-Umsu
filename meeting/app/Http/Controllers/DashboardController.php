@@ -76,7 +76,7 @@ class DashboardController extends Controller
         // Upcoming Meetings (Jadwal mendatang)
         $upcomingMeetings = Meeting::withCount('participants')
             ->where('date', '>=', $now->toDateString())
-            ->whereIn('current_stage', [1]) // Still scheduled, not started
+            ->whereIn('current_stage', [1, 2]) // Still scheduled or Humas Rekam
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->take(3)

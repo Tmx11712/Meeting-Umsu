@@ -1,5 +1,5 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
-import { Plus, Search, Filter, Calendar, Edit3, Trash2, RefreshCw } from 'lucide-react';
+import { Search, Filter, Calendar } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

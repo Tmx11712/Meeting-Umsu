@@ -27,6 +27,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
         // Ambil token CSRF Laravel
         const getXsrfToken = () => {
             const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+
             return match ? decodeURIComponent(match[2]) : '';
         };
 
@@ -95,7 +96,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
          * Mencegah server dibombardir request (DDoS) setiap kali tombol keyboard ditekan.
          * Request ke server HANYA akan dikirim jika user berhenti mengetik selama 300 milidetik.
          */
-        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
         searchTimeout.current = setTimeout(() => {
             applyFilter('search', value);
         }, 300);
@@ -139,7 +143,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 onChange={(e) => handleSearchChange(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+                                        if (searchTimeout.current) {
+clearTimeout(searchTimeout.current);
+}
+
                                         applyFilter('search', (e.target as HTMLInputElement).value);
                                     }
                                 }}

@@ -1,16 +1,16 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Calendar, Clock, MapPin, Users, Eye, QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { MeetingStepper } from '@/components/meeting-stepper';
+import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
-import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
-import { Meeting } from '@/types/meeting';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { Meeting } from '@/types/meeting';
 
 export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, signaturePath, hasSigned, total, present }: { meeting: Meeting, [key: string]: any }) {
     const { canEdit, hasRole, isAdmin } = usePermissions();
@@ -36,7 +36,9 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
 
     // Realtime polling specifically for IrvanCloud (UMSU Employee) QR Scans
     useEffect(() => {
-        if (!isIrvanCloud) return;
+        if (!isIrvanCloud) {
+return;
+}
 
         const interval = setInterval(async () => {
             try {

@@ -99,11 +99,28 @@ class MeetingRecordingController extends Controller
     {
         abort_unless(auth()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
+        // Otomatis jalankan transkripsi untuk semua rekaman yang masih berstatus 'uploaded'
+        $untranscribedRecordings = $meeting->recordings()->where('status', 'uploaded')->get();
+        $transcriptionStarted = false;
+
+        foreach ($untranscribedRecordings as $recording) {
+            $recording->update([
+                'status' => 'transcribing',
+                'openai_model_used' => config('services.openai.transcribe_model'),
+            ]);
+
+            TranscribeAudioJob::dispatch($recording->id);
+            $transcriptionStarted = true;
+        }
+
         $meeting->update([
             'current_stage' => 3,
             'status' => 'berlangsung',
         ]);
 
+        if ($transcriptionStarted) {
+            safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
+        }
         safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.correction', $meeting->id)
