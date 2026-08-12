@@ -16,8 +16,8 @@ class MeetingUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $meeting;
-    public $updateType;
+    public Meeting $meeting;
+    public string $updateType;
 
     /**
      * Create a new event instance.

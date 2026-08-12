@@ -150,7 +150,7 @@ trait HasTeams
         $role = $this->teamRole($team);
 
         return new UserTeam(
-            id: $team->id,
+            id: (string) $team->id,
             name: $team->name,
             slug: $team->slug,
             isPersonal: $team->is_personal,

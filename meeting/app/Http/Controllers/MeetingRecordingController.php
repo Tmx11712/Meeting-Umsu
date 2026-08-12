@@ -32,19 +32,28 @@ class MeetingRecordingController extends Controller
         $file = $request->file('file');
         $path = $file->store('recordings/'.$meeting->id, 'local');
 
-        $recording = $meeting->recordings()->create([
-            'file_path' => $path,
-            'label' => $request->label,
-            'file_size' => $file->getSize(),
-            'duration_seconds' => $request->duration_seconds ?? 0,
-            'source' => $request->source,
-            'status' => 'uploaded',
-            'recorded_by' => $request->user()->id,
-        ]);
+        try {
+            $recording = \Illuminate\Support\Facades\DB::transaction(function () use ($meeting, $request, $path, $file) {
+                $recording = $meeting->recordings()->create([
+                    'file_path' => $path,
+                    'label' => $request->label,
+                    'file_size' => $file->getSize(),
+                    'duration_seconds' => $request->duration_seconds ?? 0,
+                    'source' => $request->source,
+                    'status' => \App\Enums\MeetingRecordingStatus::UPLOADED->value,
+                    'recorded_by' => $request->user()->id,
+                ]);
 
-        $meeting->update([
-            'status' => 'berlangsung',
-        ]);
+                $meeting->update([
+                    'status' => \App\Enums\MeetingStatus::BERLANGSUNG->value,
+                ]);
+
+                return $recording;
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Storage::disk('local')->delete($path);
+            throw $e;
+        }
 
         safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_started'));
 

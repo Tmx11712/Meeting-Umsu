@@ -96,12 +96,18 @@ class MeetingMinuteController extends Controller
 
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
-            $minute->update([
-                'status' => 'menunggu_persetujuan',
-                'reviewed_by' => $request->user()->id,
-                'reviewed_at' => now(),
-            ]);
-            $meeting->update(['current_stage' => 6]); // Move to Pimpinan
+            \Illuminate\Support\Facades\DB::transaction(function () use ($minute, $meeting, $request) {
+                $minute->update([
+                    'status' => \App\Enums\MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
+                    'reviewed_by' => $request->user()->id,
+                    'reviewed_at' => now(),
+                ]);
+                
+                $meeting->update([
+                    'current_stage' => 6,
+                ]);
+            });
+
             try {
                 event(new MeetingUpdated($meeting, 'stage_changed'));
             } catch (\Exception $e) {}

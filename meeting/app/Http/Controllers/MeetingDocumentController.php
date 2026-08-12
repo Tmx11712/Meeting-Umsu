@@ -31,15 +31,20 @@ class MeetingDocumentController extends Controller
         $uuidName = Str::uuid()->toString() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('public/documents', $uuidName);
 
-        $document = MeetingDocument::create([
-            'meeting_id' => $meeting->id,
-            'file_path' => $path,
-            'file_name' => $fileName,
-            'file_size' => $fileSize,
-            'mime_type' => $mimeType,
-            'category' => 'Lainnya',
-            'uploaded_by' => auth()->id() ?? User::first()->id,
-        ]);
+        try {
+            $document = MeetingDocument::create([
+                'meeting_id' => $meeting->id,
+                'file_path' => $path,
+                'file_name' => $fileName,
+                'file_size' => $fileSize,
+                'mime_type' => $mimeType,
+                'category' => 'Lainnya',
+                'uploaded_by' => auth()->id() ?? User::first()->id,
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Storage::delete($path);
+            throw $e;
+        }
 
         return redirect()->back()->with('success', 'Dokumen berhasil diunggah.');
     }

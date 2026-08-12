@@ -14,7 +14,7 @@ class MeetingsListUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    public string $message;
 
     public function __construct(string $message = 'Daftar rapat telah diperbarui')
     {
