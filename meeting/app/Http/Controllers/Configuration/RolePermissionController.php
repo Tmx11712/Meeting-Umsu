@@ -70,8 +70,9 @@ class RolePermissionController extends Controller
 
         $role->syncPermissions($validated['permissions'] ?? []);
 
-        foreach ($role->users as $user) {
-            \Illuminate\Support\Facades\Cache::forget("user_menus_{$user->id}");
+        $userIds = $role->users()->pluck('users.id');
+        foreach ($userIds as $id) {
+            \Illuminate\Support\Facades\Cache::forget("user_menus_{$id}");
         }
 
         return back()->with('flash', [

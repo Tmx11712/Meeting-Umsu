@@ -43,26 +43,30 @@ class MenuController extends Controller
             'parent_id' => 'nullable|exists:menus,id',
         ]);
 
-        $menu = Menu::create($validated);
+        $menu = \Illuminate\Support\Facades\DB::transaction(function () use ($validated) {
+            $menu = Menu::create($validated);
 
-        // Auto-generate basic permissions for the new menu
-        $baseName = strtolower(str_replace(' ', '_', $menu->name));
-        $actions = [
-            'create' => 'Dapat membuat',
-            'read' => 'Dapat melihat daftar',
-            'update' => 'Dapat mengubah',
-            'delete' => 'Dapat menghapus',
-        ];
+            // Auto-generate basic permissions for the new menu
+            $baseName = strtolower(str_replace(' ', '_', $menu->name));
+            $actions = [
+                'create' => 'Dapat membuat',
+                'read' => 'Dapat melihat daftar',
+                'update' => 'Dapat mengubah',
+                'delete' => 'Dapat menghapus',
+            ];
 
-        foreach ($actions as $action => $actionLabel) {
-            Permission::firstOrCreate([
-                'name' => "{$baseName}.{$action}",
-                'guard_name' => 'web',
-            ], [
-                'group' => $menu->name,
-                'description' => "{$actionLabel} {$menu->name}",
-            ]);
-        }
+            foreach ($actions as $action => $actionLabel) {
+                Permission::firstOrCreate([
+                    'name' => "{$baseName}.{$action}",
+                    'guard_name' => 'web',
+                ], [
+                    'group' => $menu->name,
+                    'description' => "{$actionLabel} {$menu->name}",
+                ]);
+            }
+
+            return $menu;
+        });
 
         return back()->with('flash', [
             'type' => 'success',

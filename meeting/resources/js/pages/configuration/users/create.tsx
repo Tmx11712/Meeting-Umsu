@@ -145,14 +145,7 @@ export default function UsersCreate({ roles }: Props) {
                                     </Select>
                                     {errors.role_id && <p className="text-sm text-red-500">{errors.role_id}</p>}
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-slate-700">Deskripsi</Label>
-                                    <Textarea 
-                                        readOnly 
-                                        value={selectedRole?.description || 'Silakan pilih role untuk melihat deskripsi.'}
-                                        className="resize-none h-24 bg-slate-50 border-slate-200 text-slate-600 rounded-lg" 
-                                    />
-                                </div>
+
                             </CardContent>
                         </Card>
 

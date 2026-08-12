@@ -80,14 +80,14 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
 
         if (stage <= 2) {
             if (isPast) {
-                return { icon: <Clock className="w-5 h-5" />, iconColor: 'text-slate-400', iconBg: 'bg-slate-100', text: 'Belum Diproses', badgeColor: 'text-slate-400', dotColor: 'bg-slate-300', isLive: false };
+                return { text: 'Belum Diproses', badgeClass: 'text-slate-600 bg-slate-50 border-slate-200', isLive: false };
             }
-            return { icon: <Mic className="w-5 h-5" />, iconColor: 'text-red-600', iconBg: 'bg-red-50', text: 'Live', badgeColor: 'text-red-600', dotColor: 'bg-red-500', isLive: true };
+            return { text: 'Live', badgeClass: 'text-red-600 bg-red-50 border-red-200', isLive: true };
         }
-        if (stage <= 4) return { icon: <PenTool className="w-5 h-5" />, iconColor: 'text-orange-600', iconBg: 'bg-orange-50', text: 'Koreksi', badgeColor: 'text-orange-600', dotColor: 'bg-orange-500', isLive: false };
-        if (stage === 5) return { icon: <FileText className="w-5 h-5" />, iconColor: 'text-sky-600', iconBg: 'bg-sky-50', text: 'Review', badgeColor: 'text-sky-600', dotColor: 'bg-sky-500', isLive: false };
-        if (stage === 6) return { icon: <CheckCircle className="w-5 h-5" />, iconColor: 'text-emerald-600', iconBg: 'bg-emerald-50', text: 'Persetujuan', badgeColor: 'text-emerald-600', dotColor: 'bg-emerald-500', isLive: false };
-        return { icon: <Check className="w-5 h-5" />, iconColor: 'text-slate-500', iconBg: 'bg-slate-100', text: 'Selesai', badgeColor: 'text-slate-500', dotColor: 'bg-slate-400', isLive: false };
+        if (stage <= 4) return { text: 'Koreksi', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
+        if (stage === 5) return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
+        if (stage === 6) return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
+        return { text: 'Selesai', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-200', isLive: false };
     };
 
     // Upcoming meeting icons (rotating)
@@ -122,101 +122,91 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                 </div>
 
                 {/* 4 Stat Cards — single horizontal row */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900">
-                        <CardContent className="p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                            <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{stats?.meetingsThisMonth || 0}</div>
-                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Rapat bulan ini</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                        <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
+                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Rapat bulan ini</div>
+                            <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white leading-none">{stats?.meetingsThisMonth || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900">
-                        <CardContent className="p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                            <div className="text-2xl sm:text-3xl font-bold text-emerald-600">{stats?.minutesCompleted || 0}</div>
-                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Notulen selesai</p>
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                        <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
+                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Notulen selesai</div>
+                            <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white leading-none">{stats?.minutesCompleted || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900">
-                        <CardContent className="p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                            <div className="text-2xl sm:text-3xl font-bold text-orange-500">{stats?.openActionItems || 0}</div>
-                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Action item terbuka</p>
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                        <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
+                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Action item terbuka</div>
+                            <div className="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-500 leading-none">{stats?.openActionItems || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900">
-                        <CardContent className="p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                            <div className="text-2xl sm:text-3xl font-bold text-blue-600">{stats?.avgAttendance || 0}%</div>
-                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Rata-rata kehadiran</p>
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                        <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
+                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Rata-rata kehadiran</div>
+                            <div className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-500 leading-none">{stats?.avgAttendance || 0}%</div>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Rapat terbaru */}
-                <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900">
-                    <div className="flex items-center justify-between px-5 pt-5 pb-3">
-                        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
-                        {latestMeetings?.some(m => { const today = new Date().toISOString().slice(0, 10); return m.current_stage <= 2 && m.date >= today; }) && (
-                            <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                </span>
-                                Live
-                            </span>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                    <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
+                        <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
+                    </div>
+                    <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-[400px]">
+                        {latestMeetings && latestMeetings.length > 0 ? (
+                            latestMeetings.map((m, idx) => {
+                                const status = getStatusInfo(m.current_stage, m.date);
+                                const today = new Date().toISOString().slice(0, 10);
+                                const isToday = m.date === today;
+
+                                return (
+                                    <Link
+                                        key={m.id}
+                                        href={getMeetingUrl(m)}
+                                        className="p-4 sm:p-5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group flex justify-between items-start"
+                                    >
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <h3 className="text-[15px] sm:text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors mb-2 truncate">
+                                                {m.title}
+                                            </h3>
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-slate-500 dark:text-slate-400 font-mono tracking-tight">
+                                                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                    {isToday ? 'Hari ini' : formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0,5) : ''}
+                                                </span>
+                                                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                                                    <Users className="w-3.5 h-3.5 text-slate-400" />
+                                                    {m.participants_count || 0} Peserta
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="shrink-0 pt-1">
+                                            {status.isLive ? (
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
+                                                    <span className="relative flex h-1.5 w-1.5">
+                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-600"></span>
+                                                    </span>
+                                                    {status.text}
+                                                </span>
+                                            ) : (
+                                                <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
+                                                    {status.text}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </Link>
+                                );
+                            })
+                        ) : (
+                            <div className="p-8 text-center text-slate-400 text-sm">Belum ada rapat terbaru.</div>
                         )}
                     </div>
-                    <CardContent className="p-0 pb-2">
-                        <div className="flex flex-col">
-                            {latestMeetings && latestMeetings.length > 0 ? (
-                                latestMeetings.map((m, idx) => {
-                                    const status = getStatusInfo(m.current_stage, m.date);
-                                    const today = new Date().toISOString().slice(0, 10);
-                                    const isToday = m.date === today;
-
-                                    return (
-                                        <Link
-                                            key={m.id}
-                                            href={getMeetingUrl(m)}
-                                            className="group flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
-                                        >
-                                            {/* Icon */}
-                                            <div className={`p-2.5 rounded-xl ${status.iconBg} ${status.iconColor} shrink-0`}>
-                                                {status.icon}
-                                            </div>
-
-                                            {/* Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate">
-                                                    {m.title}
-                                                </h4>
-                                                <p className="text-xs text-slate-500 mt-0.5 truncate">
-                                                    {isToday ? 'Hari ini' : formatDate(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''}–{m.end_time ? m.end_time.substring(0,5) : ''} · {m.participants_count || 0} peserta
-                                                </p>
-                                            </div>
-
-                                            {/* Status Badge */}
-                                            <div className="shrink-0">
-                                                {status.isLive ? (
-                                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600">
-                                                        <span className="relative flex h-1.5 w-1.5">
-                                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                                                        </span>
-                                                        Live
-                                                    </span>
-                                                ) : (
-                                                    <span className={`text-xs font-semibold ${status.badgeColor}`}>
-                                                        {status.text}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </Link>
-                                    );
-                                })
-                            ) : (
-                                <div className="p-8 text-center text-slate-400 text-sm">Belum ada rapat terbaru.</div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
+                </div>
 
                 {/* Jadwal mendatang */}
                 {upcomingMeetings && upcomingMeetings.length > 0 && (
@@ -225,7 +215,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: P
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {upcomingMeetings.map((m, idx) => (
                                 <Link key={m.id} href={getMeetingUrl(m)}>
-                                    <Card className="rounded-2xl border-slate-200/80 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
+                                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
                                         <CardContent className="p-5 flex flex-col gap-3">
                                             <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${idx === 0 ? 'bg-blue-50' : idx === 1 ? 'bg-emerald-50' : 'bg-violet-50'}`}>
                                                 {upcomingIcons[idx % 3]}

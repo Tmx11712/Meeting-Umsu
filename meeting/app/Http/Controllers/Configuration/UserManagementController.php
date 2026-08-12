@@ -52,7 +52,7 @@ class UserManagementController extends Controller
 
     public function create()
     {
-        $roles = Role::orderBy('name')->get(['id', 'name']);
+        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
 
         return Inertia::render('configuration/users/create', [
             'roles' => $roles,
@@ -82,7 +82,7 @@ class UserManagementController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::orderBy('name')->get(['id', 'name']);
+        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
 
         return Inertia::render('configuration/users/edit', [
             'user' => [

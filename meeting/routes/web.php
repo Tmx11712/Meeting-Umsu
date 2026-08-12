@@ -87,7 +87,7 @@ Route::middleware(['auth', 'verified', EnsureConfigAccess::class])->prefix('conf
     Route::get('/', [ConfigurationController::class, 'index'])->name('index');
 
     Route::resource('users', UserManagementController::class)->except(['show']);
-    Route::resource('roles', RoleController::class)->except(['show']);
+    Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class)->except(['create', 'edit', 'show']);
     Route::resource('menus', MenuController::class)->except(['create', 'edit', 'show']);
     Route::post('menus/{menu}/toggle', [MenuController::class, 'toggleStatus'])->name('menus.toggle');

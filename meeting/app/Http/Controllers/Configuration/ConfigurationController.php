@@ -14,15 +14,19 @@ class ConfigurationController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('configuration/index', [
-            'stats' => [
+        $stats = \Illuminate\Support\Facades\Cache::remember('configuration_dashboard_stats', 3600, function () {
+            return [
                 'usersCount' => User::count(),
                 'rolesCount' => Role::count(),
                 'permissionsCount' => Permission::count(),
                 'menusCount' => Menu::count(),
                 'rolePermissionsCount' => Role::count(),
                 'userPermissionsCount' => User::whereHas('permissions')->count(),
-            ],
+            ];
+        });
+
+        return Inertia::render('configuration/index', [
+            'stats' => $stats,
         ]);
     }
 }

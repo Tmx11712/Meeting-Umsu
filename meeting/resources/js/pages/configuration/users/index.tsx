@@ -138,12 +138,7 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                                         </td>
                                         <td className="py-4 px-4 text-center">
                                             <div className="flex items-center justify-center gap-3">
-                                                <Link 
-                                                    href={`/configuration/users/${user.id}`}
-                                                    className="text-slate-400 hover:text-slate-600 transition"
-                                                >
-                                                    <Eye className="size-4" />
-                                                </Link>
+
                                                 <Link 
                                                     href={`/configuration/users/${user.id}/edit`}
                                                     className="text-slate-400 hover:text-slate-600 transition"

@@ -152,14 +152,7 @@ export default function UsersEdit({ user, roles }: Props) {
                                     </Select>
                                     {errors.role_id && <p className="text-sm text-red-500">{errors.role_id}</p>}
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-slate-700">Deskripsi</Label>
-                                    <Textarea 
-                                        readOnly 
-                                        value={selectedRole?.description || 'Silakan pilih role untuk melihat deskripsi.'}
-                                        className="resize-none h-24 bg-slate-50 border-slate-200 text-slate-600 rounded-lg" 
-                                    />
-                                </div>
+
                                 
                                 <div className="pt-4 mt-4 border-t border-slate-100 flex flex-col gap-3">
                                     <div className="flex justify-between items-center text-sm">

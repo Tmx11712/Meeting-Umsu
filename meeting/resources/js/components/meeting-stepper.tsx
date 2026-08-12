@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Check } from 'lucide-react';
+import { Fragment } from 'react';
 
 export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeStage: number }) {
     const steps = [
@@ -39,7 +40,7 @@ return '#';
                     const isAccessible = true; 
 
                     return (
-                        <div key={step.id} className={`flex items-center ${index < steps.length - 1 ? 'flex-1' : ''}`}>
+                        <Fragment key={step.id}>
                             <Link
                                 href={isAccessible ? getRoutePath(step.route, meeting.id) : '#'}
                                 className={`flex items-center gap-3 shrink-0 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
@@ -68,7 +69,7 @@ return '#';
                                     ${isCompleted ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}
                                 `}></div>
                             )}
-                        </div>
+                        </Fragment>
                     );
                 })}
             </div>

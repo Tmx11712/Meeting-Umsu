@@ -57,6 +57,36 @@ class RoleController extends Controller
         ]);
     }
 
+    public function show(Role $role, Request $request)
+    {
+        $query = $role->users();
+
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->orderBy('name')->paginate(10)->through(fn ($user) => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'status' => $user->status ?? 'aktif',
+        ]);
+
+        return Inertia::render('configuration/roles/show', [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'description' => $role->description,
+                'users_count' => $role->users()->count(),
+            ],
+            'users' => $users,
+            'filters' => $request->only(['search']),
+        ]);
+    }
+
     public function edit(Role $role)
     {
         return Inertia::render('configuration/roles/edit', [

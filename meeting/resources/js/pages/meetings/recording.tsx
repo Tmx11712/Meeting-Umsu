@@ -305,9 +305,9 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                 </div>
             </div>
 
-            {/* Meeting Info Card & API Key Card (Top Section) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex items-center justify-between h-full">
+            {/* Meeting Info Card (Top Section) */}
+            <div className="w-full">
+                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
                             <Megaphone className="w-5 h-5" />
@@ -317,20 +317,6 @@ export default function MeetingRecording({ meeting, openAiConfigured }: { meetin
                             <p className="text-[12px] text-slate-500 mt-0.5">{meeting?.location || 'Ruang Rapat'} - {meeting?.date}</p>
                         </div>
                     </div>
-                </div>
-                
-                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-5 h-full">
-                    <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-[13px] font-semibold text-slate-900 flex items-center gap-2">
-                            <Key className="w-3.5 h-3.5 text-slate-400" />
-                            Koneksi OpenAI API
-                        </h3>
-                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${openAiConfigured ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
-                            {openAiConfigured && <CheckCircle2 className="w-3 h-3" />}
-                            {openAiConfigured ? 'Terhubung' : 'Belum Terhubung'}
-                        </span>
-                    </div>
-                    <p className="text-[11px] text-slate-500">Konfigurasi API dikelola di backend (.env). Tidak perlu memasukkan API key secara manual.</p>
                 </div>
             </div>
 
