@@ -25,22 +25,24 @@ class MeetingApprovalController extends Controller
     {
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
-        MeetingApproval::create([
-            'meeting_id' => $meeting->id,
-            'minute_id' => $minute->id,
-            'approved_by' => $request->user()->id,
-            'decision' => $request->decision,
-            'notes' => $request->notes,
-            'decided_at' => now(),
-        ]);
-
-        $minute->update(['status' => $request->decision === 'approved' ? 'disetujui' : 'ditolak']);
-        if ($request->decision === 'approved') {
-            $meeting->update([
-                'status' => 'selesai',
-                'current_stage' => 7,
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $meeting, $minute) {
+            MeetingApproval::create([
+                'meeting_id' => $meeting->id,
+                'minute_id' => $minute->id,
+                'approved_by' => $request->user()->id,
+                'decision' => $request->decision,
+                'notes' => $request->notes,
+                'decided_at' => now(),
             ]);
-        }
+
+            $minute->update(['status' => $request->decision === 'approved' ? \App\Enums\MeetingMinuteStatus::DISETUJUI->value : \App\Enums\MeetingMinuteStatus::DITOLAK->value]);
+            if ($request->decision === 'approved') {
+                $meeting->update([
+                    'status' => \App\Enums\MeetingStatus::SELESAI->value,
+                    'current_stage' => 7,
+                ]);
+            }
+        });
 
         safe_broadcast(new MeetingUpdated($meeting, 'approval'));
 
