@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreManualAttendanceRequest;
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
+use App\Services\IrvanCloudSyncService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Services\IrvanCloudSyncService;
 
 class AttendanceController extends Controller
 {
@@ -64,7 +65,7 @@ class AttendanceController extends Controller
             ]
         );
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'attendance'), false);
+        safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
         return back();
     }
@@ -75,7 +76,7 @@ class AttendanceController extends Controller
 
         $meeting->update(['current_stage' => 5]); // Move to Review
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'stage_changed'), false);
+        safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'), false);
 
         return redirect()->route('meetings.review', $meeting->id);
     }
@@ -102,7 +103,7 @@ class AttendanceController extends Controller
             ]
         );
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'attendance'), false);
+        safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
         return Inertia::render('meetings/attendance-scan', [
             'meeting' => $meeting->load('participants.user'),

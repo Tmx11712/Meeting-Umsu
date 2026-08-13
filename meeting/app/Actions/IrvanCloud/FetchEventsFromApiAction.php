@@ -17,9 +17,6 @@ class FetchEventsFromApiAction
     /**
      * Fetch events from Irvan Cloud API within a date range.
      *
-     * @param string $startDate
-     * @param string $endDate
-     * @return array
      * @throws \Exception
      */
     public function execute(string $startDate, string $endDate): array
@@ -41,13 +38,14 @@ class FetchEventsFromApiAction
 
         if (! $response->successful()) {
             Log::error('Failed to fetch from Irvan Cloud (Events)', [
-                'status' => $response->status(), 
-                'body' => $response->body()
+                'status' => $response->status(),
+                'body' => $response->body(),
             ]);
-            throw new \Exception('Gagal terhubung ke API Irvan Cloud. Status: ' . $response->status());
+            throw new \Exception('Gagal terhubung ke API Irvan Cloud. Status: '.$response->status());
         }
 
         $data = $response->json();
+
         return $data['data']['page_data'] ?? [];
     }
 }

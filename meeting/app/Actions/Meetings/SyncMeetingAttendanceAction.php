@@ -11,18 +11,13 @@ use Carbon\Carbon;
 /**
  * [EDUKASI ARSITEKTUR: ELOQUENT PIVOT]
  * Action ini khusus mengurus tabel pivot (relasi Many-to-Many antara Rapat dan Peserta).
- * Karena satu peserta bisa ikut banyak rapat, dan satu rapat punya banyak peserta, 
+ * Karena satu peserta bisa ikut banyak rapat, dan satu rapat punya banyak peserta,
  * maka logika penyambungannya (sync) dipisahkan ke sini agar tidak mengotori logika pembuatan Rapat.
  */
 class SyncMeetingAttendanceAction
 {
     /**
      * Ensure the user is a participant and record their attendance if available.
-     *
-     * @param array $participantData
-     * @param Meeting $meeting
-     * @param User $user
-     * @return void
      */
     public function execute(array $participantData, Meeting $meeting, User $user): void
     {
@@ -40,7 +35,7 @@ class SyncMeetingAttendanceAction
         if (! empty($participantData['scanned_at'])) {
             // Try to parse the scanned_at time. API returns ISO8601
             $checkInTime = Carbon::parse($participantData['scanned_at'])->setTimezone(config('app.timezone'));
-            $checkOutTime = !empty($participantData['scanned_out_at']) ? Carbon::parse($participantData['scanned_out_at'])->setTimezone(config('app.timezone')) : null;
+            $checkOutTime = ! empty($participantData['scanned_out_at']) ? Carbon::parse($participantData['scanned_out_at'])->setTimezone(config('app.timezone')) : null;
 
             MeetingAttendance::updateOrCreate(
                 [

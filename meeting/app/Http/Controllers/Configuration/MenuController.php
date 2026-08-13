@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -43,7 +44,7 @@ class MenuController extends Controller
             'parent_id' => 'nullable|exists:menus,id',
         ]);
 
-        $menu = \Illuminate\Support\Facades\DB::transaction(function () use ($validated) {
+        $menu = DB::transaction(function () use ($validated) {
             $menu = Menu::create($validated);
 
             // Auto-generate basic permissions for the new menu

@@ -9,9 +9,6 @@ class UpsertUserFromExternalAction
 {
     /**
      * Get or create a user based on external participant data.
-     *
-     * @param array $participantData
-     * @return User|null
      */
     public function execute(array $participantData): ?User
     {
@@ -20,7 +17,7 @@ class UpsertUserFromExternalAction
         }
 
         $user = User::where('email', $participantData['email'])->first();
-        
+
         if (! $user) {
             $fullname = $participantData['fullname'] ?? explode('@', $participantData['email'])[0];
             $user = User::create([
@@ -35,7 +32,7 @@ class UpsertUserFromExternalAction
             ]);
             // Assign Viewer role
             $user->assignRole('Viewer');
-        } else if (!empty($participantData['nip']) && empty($user->nip)) {
+        } elseif (! empty($participantData['nip']) && empty($user->nip)) {
             $user->update(['nip' => $participantData['nip']]);
         }
 

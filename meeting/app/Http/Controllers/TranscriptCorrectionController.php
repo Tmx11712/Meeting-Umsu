@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreCorrectionRequest;
 use App\Models\Meeting;
 use App\Models\MeetingTranscriptCorrection;
-use App\Events\MeetingUpdated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 

@@ -6,11 +6,11 @@ export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeS
     const steps = [
         { id: 1, name: 'Login', desc: '', route: null }, // Dummy step as per UI
         { id: 2, name: 'Buat Rapat', desc: '', route: 'meetings.show' },
-        { id: 3, name: 'Humas Rekam', desc: 'Rekam & Transkripsi', route: 'meetings.recording' },
-        { id: 4, name: 'Koreksi Transkrip', desc: 'Koreksi & Finalisasi', route: 'meetings.correction' },
-        { id: 5, name: 'Absensi', desc: 'Daftar Kehadiran', route: 'meetings.attendance' },
-        { id: 6, name: 'Review', desc: 'Review Notulen', route: 'meetings.review' },
-        { id: 7, name: 'Pimpinan', desc: 'Persetujuan', route: 'meetings.approval' },
+        { id: 3, name: 'Humas Rekam', desc: '', route: 'meetings.recording' },
+        { id: 4, name: 'Koreksi Transkrip', desc: '', route: 'meetings.correction' },
+        { id: 5, name: 'Absensi', desc: '', route: 'meetings.attendance' },
+        { id: 6, name: 'Review', desc: '', route: 'meetings.review' },
+        { id: 7, name: 'Pimpinan', desc: '', route: 'meetings.approval' },
     ];
 
     const currentStage = meeting.current_stage || 1;

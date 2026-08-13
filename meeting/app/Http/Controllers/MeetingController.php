@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\IrvanCloud\SyncMeetingsAction;
 use App\Events\MeetingsListUpdated;
+use App\Http\Requests\Meeting\StoreMeetingRequest;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
+use App\Models\MeetingParticipant;
 use App\Models\User;
-
-use App\Actions\IrvanCloud\SyncMeetingsAction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class MeetingController extends Controller
@@ -19,7 +22,7 @@ class MeetingController extends Controller
         /**
          * [EDUKASI ARSITEKTUR: MENCEGAH N+1 QUERY]
          * Kita menggunakan `withCount('participants')` alih-alih `with('participants')`.
-         * Alih-alih merender seluruh baris data peserta ke dalam memori PHP (yang bisa bikin RAM overload), 
+         * Alih-alih merender seluruh baris data peserta ke dalam memori PHP (yang bisa bikin RAM overload),
          * kita memerintahkan database (SQL) untuk hanya menghitung angkanya saja (`SELECT COUNT()`).
          * Jauh lebih ringan dan cepat!
          */
@@ -40,6 +43,52 @@ class MeetingController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $users = User::where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
+
+        return Inertia::render('meetings/create', [
+            'users' => $users,
+        ]);
+    }
+
+    public function store(StoreMeetingRequest $request)
+    {
+        $validated = $request->validated();
+
+        $start = Carbon::parse($validated['start_time']);
+        $end = Carbon::parse($validated['end_time']);
+        $validated['duration'] = $end->diffInSeconds($start);
+
+        $validated['created_by'] = auth()->id();
+        $validated['status'] = 'terjadwal';
+        $validated['current_stage'] = 1;
+        $validated['source'] = 'manual';
+
+        if (! empty($validated['agenda'])) {
+            // Encode agenda array to JSON for storing in notes
+            $validated['notes'] = json_encode(['agenda' => $validated['agenda']]);
+        }
+
+        $meeting = Meeting::create($validated);
+
+        if (! empty($validated['participants'])) {
+            $participants = [];
+            foreach ($validated['participants'] as $userId) {
+                $participants[] = [
+                    'id' => Str::uuid()->toString(),
+                    'meeting_id' => $meeting->id,
+                    'user_id' => $userId,
+                    'is_invited' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            MeetingParticipant::insert($participants);
+        }
+
+        return redirect()->route('meetings.index')->with('success', 'Rapat berhasil dibuat dan dijadwalkan.');
+    }
 
     public function syncFromIrvanCloud(Request $request, SyncMeetingsAction $syncAction)
     {
@@ -57,19 +106,20 @@ class MeetingController extends Controller
     public function autoSync(SyncMeetingsAction $syncAction)
     {
         // Gunakan cache lock selama 5 menit agar tidak membebani server (spam)
-        $lock = \Illuminate\Support\Facades\Cache::lock('irvan_cloud_auto_sync', 300);
-        
+        $lock = Cache::lock('irvan_cloud_auto_sync', 300);
+
         if ($lock->get()) {
             $syncAction->execute();
+
             return response()->json(['status' => 'synced']);
         }
-        
+
         return response()->json(['status' => 'skipped_throttled']);
     }
 
     public function show(Meeting $meeting)
     {
-        $meeting->load('participants.user', 'recordings', 'minutes');
+        $meeting->load('participants.user', 'recordings', 'minutes', 'attendances');
 
         // redirect to the current stage page
         // 1=Buat Rapat, 2=Humas Rekam, 3=Koreksi, 4=Absensi, 5=Review, 6=Pimpinan
@@ -102,14 +152,14 @@ class MeetingController extends Controller
 
         $existingIds = $meeting->participants()->pluck('user_id')->toArray();
         $newIds = $validated['participants'] ?? [];
-        
+
         $toDelete = array_diff($existingIds, $newIds);
         $toAdd = array_diff($newIds, $existingIds);
-        
-        if (!empty($toDelete)) {
+
+        if (! empty($toDelete)) {
             $meeting->participants()->whereIn('user_id', $toDelete)->delete();
         }
-        
+
         foreach ($toAdd as $userId) {
             $meeting->participants()->create([
                 'user_id' => $userId,
@@ -117,7 +167,7 @@ class MeetingController extends Controller
             ]);
         }
 
-        safe_broadcast(new MeetingsListUpdated('Rapat ' . $meeting->title . ' telah diperbarui'));
+        safe_broadcast(new MeetingsListUpdated('Rapat '.$meeting->title.' telah diperbarui'));
 
         return redirect()->route('meetings.index')->with('success', 'Rapat berhasil diperbarui.');
     }

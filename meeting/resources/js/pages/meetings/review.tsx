@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
 import { AlertCircle, Info } from 'lucide-react';
 import { useState } from 'react';
-import { MeetingStepper } from '@/components/meeting-stepper';
+
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
@@ -147,10 +147,6 @@ return;
                     </Button>
                 </div>
 
-                {/* Stepper */}
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                    <MeetingStepper meeting={meeting} activeStage={6} />
-                </div>
 
                 <div className="grid lg:grid-cols-3 gap-4">
                     {/* Left side: Transcripts reference */}
@@ -270,10 +266,6 @@ return;
                 </div>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={6} />
-            </div>
 
             {!canManageReview && (
                 <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">

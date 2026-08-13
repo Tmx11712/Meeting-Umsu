@@ -2,15 +2,18 @@
 
 namespace App\Actions\Meetings;
 
+use App\Enums\MeetingMinuteStatus;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Services\OpenAiTranscriptionService;
+use Illuminate\Support\Facades\DB;
+use Smalot\PdfParser\Parser;
 
 /**
  * [EDUKASI ARSITEKTUR]
  * Ini adalah contoh dari pola arsitektur "Action Class" (Single Responsibility Principle).
- * Pola ini menggantikan "Fat Controller" atau "God Service". 
+ * Pola ini menggantikan "Fat Controller" atau "God Service".
  * 1 Class = 1 Tugas Mutlak. Sangat mudah dites dan bisa dipanggil dari mana saja (Controller, Cron Job, Terminal).
  */
 class GenerateMeetingMinuteAction
@@ -36,10 +39,10 @@ class GenerateMeetingMinuteAction
 
         $summaryJson = $this->aiService->generateSummary($meeting, $transcriptText, $pesertaText, $dokumenText);
 
-        $minute = \Illuminate\Support\Facades\DB::transaction(function () use ($meeting, $summaryJson) {
+        $minute = DB::transaction(function () use ($meeting, $summaryJson) {
             $minute = $this->persistMinute($meeting, $summaryJson);
             $this->persistActionItems($meeting, $minute, $summaryJson);
-            
+
             return $minute;
         });
 
@@ -56,7 +59,7 @@ class GenerateMeetingMinuteAction
         $recordings = $meeting->recordings()->with(['transcripts' => function ($q) {
             $q->orderBy('sequence_order');
         }, 'transcripts.corrections'])->orderBy('created_at')->get();
-        
+
         $parts = [];
 
         foreach ($recordings as $recording) {
@@ -107,7 +110,7 @@ class GenerateMeetingMinuteAction
 
             if ($doc->mime_type === 'application/pdf') {
                 try {
-                    $parser = new \Smalot\PdfParser\Parser();
+                    $parser = new Parser;
                     $pdf = $parser->parseFile($filePath);
                     $parts[] = "\n--- Dokumen PDF: {$doc->file_name} ---\n".$pdf->getText();
                 } catch (\Throwable $e) {
@@ -133,7 +136,7 @@ class GenerateMeetingMinuteAction
                 'ai_topics_count' => $summaryJson['topik_count'] ?? 0,
                 'ai_decisions_count' => $summaryJson['keputusan_count'] ?? 0,
                 'ai_summary_generated_at' => now(),
-                'status' => \App\Enums\MeetingMinuteStatus::REVIEW->value,
+                'status' => MeetingMinuteStatus::REVIEW->value,
             ]
         );
     }

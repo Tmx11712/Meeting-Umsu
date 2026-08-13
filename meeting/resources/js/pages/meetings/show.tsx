@@ -1,14 +1,30 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle } from 'lucide-react';
-import { MeetingStepper } from '@/components/meeting-stepper';
+import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle, QrCode, Download } from 'lucide-react';
+import { useState } from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useInitials } from '@/hooks/use-initials';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 
 export default function MeetingShow({ meeting }: any) {
     useMeetingWebSocket(meeting?.id);
+    const [isQrOpen, setIsQrOpen] = useState(false);
+
+    const handleDownloadQR = () => {
+        const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
+        if (!canvas) return;
+        const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngUrl;
+        downloadLink.download = `QR_Absensi_${meeting?.title?.replace(/\s+/g, '_') || 'Meeting'}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
     const { auth } = usePage<any>().props;
     const getInitials = useInitials();
     const roles = auth?.roles || [];
@@ -65,10 +81,6 @@ export default function MeetingShow({ meeting }: any) {
                 </div>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={2} />
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-2 space-y-6">
@@ -111,11 +123,16 @@ export default function MeetingShow({ meeting }: any) {
                             </CardHeader>
                             <CardContent className="flex flex-wrap gap-3">
                                 {canEnterRecordingRoom && (
-                                    <Button asChild variant="default" className="bg-blue-600 hover:bg-blue-700">
-                                        <Link href={`/meetings/${meeting.id}/recording`}>
-                                            <Mic className="mr-2 h-4 w-4" /> Buka Ruang Rekaman
-                                        </Link>
-                                    </Button>
+                                    <>
+                                        <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
+                                            <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
+                                        </Button>
+                                        <Button asChild variant="default" className="bg-blue-600 hover:bg-blue-700">
+                                            <Link href={`/meetings/${meeting.id}/recording`}>
+                                                <Mic className="mr-2 h-4 w-4" /> Buka Ruang Rekaman
+                                            </Link>
+                                        </Button>
+                                    </>
                                 )}
                                 {canCorrect && (
                                     <Button asChild variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
@@ -153,12 +170,12 @@ export default function MeetingShow({ meeting }: any) {
                 <div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Peserta Terundang ({meeting.participants?.length || 0})</CardTitle>
+                            <CardTitle>Daftar Peserta ({(meeting.participants?.length || 0) + (meeting.attendances?.filter((a: any) => !a.user_id).length || 0)})</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ul className="space-y-3">
                                 {meeting.participants?.map((participant: any) => (
-                                    <li key={participant.id} className="flex items-center space-x-3">
+                                    <li key={`internal-${participant.id}`} className="flex items-center space-x-3">
                                         <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
                                             {participant.user?.name ? getInitials(participant.user.name) : '??'}
                                         </div>
@@ -168,11 +185,54 @@ export default function MeetingShow({ meeting }: any) {
                                         </div>
                                     </li>
                                 ))}
+                                
+                                {meeting.attendances?.filter((a: any) => !a.user_id).map((guest: any) => (
+                                    <li key={`external-${guest.id}`} className="flex items-center space-x-3">
+                                        <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-700">
+                                            {guest.guest_name ? getInitials(guest.guest_name) : '??'}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium leading-none">{guest.guest_name}</p>
+                                            <p className="text-xs text-muted-foreground">{guest.guest_institution || 'Tamu Eksternal'}</p>
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
                         </CardContent>
                     </Card>
                 </div>
             </div>
+            <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-center">QR Code Absensi</DialogTitle>
+                        <DialogDescription className="text-center">
+                            Scan QR Code ini menggunakan aplikasi UMSU Employee untuk mencatat kehadiran pada rapat.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col items-center justify-center py-6 gap-4">
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <QRCodeCanvas 
+                                id="qr-code-canvas"
+                                value={`http://192.168.100.98:8000/attend/${meeting.id}`} 
+                                size={250}
+                                level="H"
+                                includeMargin={false}
+                            />
+                        </div>
+                        <div className="text-center space-y-1">
+                            <h4 className="font-semibold text-slate-900 dark:text-slate-100">{meeting.title}</h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                                {meeting.date} • {meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}
+                            </p>
+                        </div>
+                        <Button onClick={handleDownloadQR} className="mt-2" variant="outline">
+                            <Download className="w-4 h-4 mr-2" />
+                            Download QR Code
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

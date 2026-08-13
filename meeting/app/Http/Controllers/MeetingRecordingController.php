@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MeetingRecordingStatus;
+use App\Enums\MeetingStatus;
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreRecordingRequest;
 use App\Http\Requests\Meeting\TranscribeRecordingRequest;
 use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -33,29 +37,29 @@ class MeetingRecordingController extends Controller
         $path = $file->store('recordings/'.$meeting->id, 'local');
 
         try {
-            $recording = \Illuminate\Support\Facades\DB::transaction(function () use ($meeting, $request, $path, $file) {
+            $recording = DB::transaction(function () use ($meeting, $request, $path, $file) {
                 $recording = $meeting->recordings()->create([
                     'file_path' => $path,
                     'label' => $request->label,
                     'file_size' => $file->getSize(),
                     'duration_seconds' => $request->duration_seconds ?? 0,
                     'source' => $request->source,
-                    'status' => \App\Enums\MeetingRecordingStatus::UPLOADED->value,
+                    'status' => MeetingRecordingStatus::UPLOADED->value,
                     'recorded_by' => $request->user()->id,
                 ]);
 
                 $meeting->update([
-                    'status' => \App\Enums\MeetingStatus::BERLANGSUNG->value,
+                    'status' => MeetingStatus::BERLANGSUNG->value,
                 ]);
 
                 return $recording;
             });
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Storage::disk('local')->delete($path);
+            Storage::disk('local')->delete($path);
             throw $e;
         }
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_started'));
+        safe_broadcast(new MeetingUpdated($meeting, 'recording_started'));
 
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
@@ -71,8 +75,8 @@ class MeetingRecordingController extends Controller
         }
 
         $recording->delete();
-        
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_deleted'));
+
+        safe_broadcast(new MeetingUpdated($meeting, 'recording_deleted'));
 
         return redirect()->back()->with('success', 'Rekaman berhasil dihapus.');
     }
@@ -101,7 +105,7 @@ class MeetingRecordingController extends Controller
             'current_stage' => max($meeting->current_stage, 3),
         ]);
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
+        safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
 
         return redirect()->back()->with('success', 'Transkripsi AI sedang diproses. Harap tunggu beberapa saat.');
     }
@@ -130,9 +134,9 @@ class MeetingRecordingController extends Controller
         ]);
 
         if ($transcriptionStarted) {
-            safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'transcription_started'));
+            safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
         }
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'stage_changed'));
+        safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
@@ -175,7 +179,7 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ]);
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_session_started'));
+        safe_broadcast(new MeetingUpdated($meeting, 'recording_session_started'));
 
         return response()->json(['message' => 'Recording session started']);
     }
@@ -188,7 +192,7 @@ class MeetingRecordingController extends Controller
             'recording_started_at' => null,
         ]);
 
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_session_stopped'));
+        safe_broadcast(new MeetingUpdated($meeting, 'recording_session_stopped'));
 
         return response()->json(['message' => 'Recording session stopped']);
     }

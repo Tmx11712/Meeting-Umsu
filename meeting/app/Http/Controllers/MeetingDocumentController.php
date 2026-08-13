@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingDocument;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Models\User;
 
 class MeetingDocumentController extends Controller
 {
@@ -19,7 +19,7 @@ class MeetingDocumentController extends Controller
             'document' => 'required|file|mimes:pdf,txt|max:10240', // 10MB max, PDF & TXT only
         ], [
             'document.mimes' => 'Hanya format PDF dan TXT yang didukung agar bisa dianalisis oleh AI.',
-            'document.max' => 'Ukuran maksimal file adalah 10MB.'
+            'document.max' => 'Ukuran maksimal file adalah 10MB.',
         ]);
 
         $file = $request->file('document');
@@ -28,7 +28,7 @@ class MeetingDocumentController extends Controller
         $mimeType = $file->getMimeType();
 
         // Generate unique name
-        $uuidName = Str::uuid()->toString() . '.' . $file->getClientOriginalExtension();
+        $uuidName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('public/documents', $uuidName);
 
         try {
@@ -42,7 +42,7 @@ class MeetingDocumentController extends Controller
                 'uploaded_by' => auth()->id() ?? User::first()->id,
             ]);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Storage::delete($path);
+            Storage::delete($path);
             throw $e;
         }
 

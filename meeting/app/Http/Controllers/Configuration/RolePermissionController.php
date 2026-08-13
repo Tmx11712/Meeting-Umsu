@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -72,7 +73,7 @@ class RolePermissionController extends Controller
 
         $userIds = $role->users()->pluck('users.id');
         foreach ($userIds as $id) {
-            \Illuminate\Support\Facades\Cache::forget("user_menus_{$id}");
+            Cache::forget("user_menus_{$id}");
         }
 
         return back()->with('flash', [

@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Download, FileText, CheckCircle2, Check, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { MeetingStepper } from '@/components/meeting-stepper';
+
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
@@ -150,10 +150,7 @@ return '-';
                     </Button>
                 </div>
 
-                {/* Stepper */}
-                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                    <MeetingStepper meeting={meeting} activeStage={7} />
-                </div>
+
 
                 <div className="text-center py-20 text-slate-500 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     Notulen belum digenerate atau belum dikirim oleh operator.
@@ -194,10 +191,7 @@ return '-';
                 </div>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={7} />
-            </div>
+
 
             {!canManageApproval && (
                 <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">

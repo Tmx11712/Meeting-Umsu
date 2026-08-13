@@ -25,6 +25,10 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
+// Public Attendance Routes
+Route::get('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'show'])->name('attend.form');
+Route::post('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'store'])->name('attend.submit');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
@@ -32,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('meetings/sync', [MeetingController::class, 'syncFromIrvanCloud'])->name('meetings.sync');
     Route::post('meetings/auto-sync', [MeetingController::class, 'autoSync'])->name('meetings.auto-sync');
-    Route::resource('meetings', MeetingController::class)->except(['create', 'store']);
+    Route::resource('meetings', MeetingController::class);
 
     // Recording & Transcripts
     Route::get('meetings/{meeting}/recording', [MeetingRecordingController::class, 'show'])->name('meetings.recording');

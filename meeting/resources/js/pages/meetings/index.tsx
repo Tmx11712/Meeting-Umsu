@@ -1,14 +1,30 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, Filter, Calendar, Edit3, Trash2 } from 'lucide-react';
-import { useEffect, useCallback, useRef } from 'react';
+import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { QRCodeCanvas } from 'qrcode.react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { confirmDelete } from '@/lib/sweetalert';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
+    const [qrMeeting, setQrMeeting] = useState<any>(null);
+
+    const handleDownloadQR = () => {
+        const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
+        if (!canvas) return;
+        const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngUrl;
+        downloadLink.download = `QR_Absensi_${qrMeeting?.title?.replace(/\s+/g, '_') || 'Meeting'}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
+
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
             case 'berlangsung': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
@@ -126,6 +142,16 @@ clearTimeout(searchTimeout.current);
                         Jadwal Rapat
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar dan kelola jadwal rapat instansi</p>
+                </div>
+                <div className="flex gap-2">
+                    {canEdit('meeting') && (
+                        <Link href="/meetings/create">
+                            <Button className="rounded-xl shadow-sm bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 border-0 h-11 px-5 text-white font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                                Buat Rapat
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </div>
 
@@ -254,6 +280,13 @@ clearTimeout(searchTimeout.current);
                                                         <Edit3 className="w-4 h-4" />
                                                     </Link>
                                                     <button 
+                                                        className="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-all"
+                                                        onClick={() => setQrMeeting(meeting)}
+                                                        title="Tampilkan QR Code"
+                                                    >
+                                                        <QrCode className="w-4 h-4" />
+                                                    </button>
+                                                    <button 
                                                         className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
                                                         onClick={async () => {
                                                             if (!guardAction('meeting')) {
@@ -327,6 +360,39 @@ return;
                     </div>
                 </CardContent>
             </Card>
+            <Dialog open={!!qrMeeting} onOpenChange={(open) => !open && setQrMeeting(null)}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-center">QR Code Absensi</DialogTitle>
+                        <DialogDescription className="text-center">
+                            Scan QR Code ini menggunakan aplikasi UMSU Employee untuk mencatat kehadiran pada rapat.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {qrMeeting && (
+                        <div className="flex flex-col items-center justify-center py-6 gap-4">
+                            <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                                <QRCodeCanvas 
+                                    id="qr-code-canvas"
+                                    value={`http://192.168.100.98:8000/attend/${qrMeeting.id}`} 
+                                    size={250}
+                                    level="H"
+                                    includeMargin={false}
+                                />
+                            </div>
+                            <div className="text-center space-y-1">
+                                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{qrMeeting.title}</h4>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">
+                                    {qrMeeting.date} • {qrMeeting.start_time?.substring(0,5)} - {qrMeeting.end_time?.substring(0,5)}
+                                </p>
+                            </div>
+                            <Button onClick={handleDownloadQR} className="mt-2" variant="outline">
+                                <Download className="w-4 h-4 mr-2" />
+                                Download QR Code
+                            </Button>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

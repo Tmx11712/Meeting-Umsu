@@ -8,7 +8,7 @@ use App\Models\User;
 /**
  * [EDUKASI ARSITEKTUR: UPSERT LOGIC]
  * Action ini menangani logika "Upsert" (Update if exists, Insert if new).
- * Sangat krusial dalam proses sinkronisasi agar ketika tombol sinkron ditekan berkali-kali, 
+ * Sangat krusial dalam proses sinkronisasi agar ketika tombol sinkron ditekan berkali-kali,
  * data tidak terduplikasi.
  */
 class UpsertMeetingAction
@@ -16,7 +16,6 @@ class UpsertMeetingAction
     /**
      * Create or update a meeting from external event data.
      *
-     * @param array $event
      * @return array Contains the Meeting instance and a boolean 'wasRecentlyCreated'
      */
     public function execute(array $event): array

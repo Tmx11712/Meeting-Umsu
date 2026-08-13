@@ -52,7 +52,8 @@ class HandleInertiaRequests extends Middleware
             });
 
             $menus = collect($menusData)->map(function ($menu) {
-                $menu['url'] = !empty($menu['route']) && \Route::has($menu['route']) ? route($menu['route']) : '#';
+                $menu['url'] = ! empty($menu['route']) && \Route::has($menu['route']) ? route($menu['route']) : '#';
+
                 return $menu;
             })->toArray();
         }
@@ -76,4 +77,3 @@ class HandleInertiaRequests extends Middleware
         ];
     }
 }
-

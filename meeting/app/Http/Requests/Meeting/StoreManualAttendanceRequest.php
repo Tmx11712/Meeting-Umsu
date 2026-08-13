@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Meeting;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreManualAttendanceRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreManualAttendanceRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

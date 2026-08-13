@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,7 +15,7 @@ class ConfigurationController extends Controller
 {
     public function index(): Response
     {
-        $stats = \Illuminate\Support\Facades\Cache::remember('configuration_dashboard_stats', 3600, function () {
+        $stats = Cache::remember('configuration_dashboard_stats', 3600, function () {
             return [
                 'usersCount' => User::count(),
                 'rolesCount' => Role::count(),

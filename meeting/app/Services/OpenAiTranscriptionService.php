@@ -9,7 +9,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * [EDUKASI ARSITEKTUR: SERVICE PATTERN]
- * Kenapa kelas ini disebut "Service" (dan bukan "Action")? 
+ * Kenapa kelas ini disebut "Service" (dan bukan "Action")?
  * Dalam arsitektur kita, "Service" dikhususkan untuk kelas yang murni bertugas berkomunikasi dengan PIHAK KETIGA (External API seperti OpenAI).
  * Sedangkan logika bisnis internal aplikasi (seperti pembuatan Notulen ke Database) diletakkan di "Action".
  * Pemisahan ini membuat kode kita sangat modular. Jika besok kita ganti OpenAI ke Claude, kita hanya ubah file Service ini.
@@ -29,29 +29,29 @@ class OpenAiTranscriptionService
         }
 
         // Split audio into 20-minute segments (1200 seconds) at 32kbps MP3
-        $segmentDuration = 1200; 
-        
-        $tempDir = sys_get_temp_dir() . '/whisper_chunks_' . uniqid();
-        if (!mkdir($tempDir) && !is_dir($tempDir)) {
+        $segmentDuration = 1200;
+
+        $tempDir = sys_get_temp_dir().'/whisper_chunks_'.uniqid();
+        if (! mkdir($tempDir) && ! is_dir($tempDir)) {
             throw new \Exception('Gagal membuat direktori temporary untuk chunk.');
         }
-        
-        $chunkPattern = $tempDir . '/chunk_%03d.mp3';
+
+        $chunkPattern = $tempDir.'/chunk_%03d.mp3';
 
         $process = new Process([
             'ffmpeg', '-y', '-i', $filePath,
-            '-f', 'segment', '-segment_time', (string)$segmentDuration,
+            '-f', 'segment', '-segment_time', (string) $segmentDuration,
             '-c:a', 'libmp3lame', '-b:a', '32k', '-ac', '1', '-ar', '16000',
-            $chunkPattern
+            $chunkPattern,
         ]);
         $process->setTimeout(600); // 10 minutes for FFmpeg processing
         $process->run();
 
-        if (!$process->isSuccessful()) {
-            throw new \Exception('FFMPEG splitting failed: ' . $process->getErrorOutput());
+        if (! $process->isSuccessful()) {
+            throw new \Exception('FFMPEG splitting failed: '.$process->getErrorOutput());
         }
 
-        $chunks = glob($tempDir . '/chunk_*.mp3');
+        $chunks = glob($tempDir.'/chunk_*.mp3');
         sort($chunks);
 
         $allSegments = [];
@@ -59,7 +59,7 @@ class OpenAiTranscriptionService
 
         foreach ($chunks as $index => $chunkPath) {
             $offset = $index * $segmentDuration;
-            
+
             $response = Http::withToken($apiKey)
                 ->timeout(300) // 5 minutes max per chunk
                 ->attach('file', file_get_contents($chunkPath), basename($chunkPath))
@@ -68,16 +68,16 @@ class OpenAiTranscriptionService
                     'response_format' => 'verbose_json',
                     'timestamp_granularities' => ['segment'],
                 ]);
-                
+
             if ($response->failed()) {
-                Log::error('OpenAI Whisper Error on chunk ' . $index . ': ' . $response->body());
+                Log::error('OpenAI Whisper Error on chunk '.$index.': '.$response->body());
                 $response->throw();
             }
 
             $data = $response->json();
             $chunkDuration = $data['duration'] ?? 0;
             $totalDuration += $chunkDuration;
-            
+
             $segments = $data['segments'] ?? [];
             if (empty($segments)) {
                 $segments = [
@@ -88,8 +88,8 @@ class OpenAiTranscriptionService
             foreach ($segments as $s) {
                 $allSegments[] = [
                     'start' => ($s['start'] ?? 0) + $offset,
-                    'end'   => ($s['end'] ?? 0) + $offset,
-                    'text'  => trim($s['text'] ?? ''),
+                    'end' => ($s['end'] ?? 0) + $offset,
+                    'text' => trim($s['text'] ?? ''),
                 ];
             }
         }

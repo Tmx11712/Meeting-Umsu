@@ -94,43 +94,43 @@
 
 /* Minimalist Zinc - Light Theme */
 :root {
-    --background: #fafafa;
-    --foreground: #09090b;
+    --background: #f5f4f0;
+    --foreground: #1a1917;
     --card: #ffffff;
-    --card-foreground: #09090b;
+    --card-foreground: #1a1917;
     --popover: #ffffff;
-    --popover-foreground: #09090b;
-    --primary: #2563eb; /* blue-600 */
+    --popover-foreground: #1a1917;
+    --primary: #1a56db;
     --primary-foreground: #ffffff;
-    --secondary: #f4f4f5;
-    --secondary-foreground: #18181b;
-    --muted: #f4f4f5;
-    --muted-foreground: #71717a;
-    --accent: #f4f4f5;
-    --accent-foreground: #18181b;
-    --destructive: #ef4444;
-    --destructive-foreground: #fafafa;
-    --border: #e4e4e7;
-    --input: #e4e4e7;
-    --ring: #3b82f6; /* blue-500 */
+    --secondary: #f0efe9;
+    --secondary-foreground: #1a1917;
+    --muted: #f0efe9;
+    --muted-foreground: #6b6a65;
+    --accent: #eff4ff;
+    --accent-foreground: #1e429f;
+    --destructive: #c81e1e;
+    --destructive-foreground: #ffffff;
+    --border: #e6e6e6; /* rgba(0,0,0,0.08) approx */
+    --input: #dbdbdb; /* rgba(0,0,0,0.14) approx */
+    --ring: #1a56db;
     
-    --chart-1: #18181b;
-    --chart-2: #27272a;
-    --chart-3: #3f3f46;
-    --chart-4: #52525b;
-    --chart-5: #71717a;
+    --chart-1: #1a1917;
+    --chart-2: #6b6a65;
+    --chart-3: #9e9c96;
+    --chart-4: #1a56db;
+    --chart-5: #057a55;
     
-    --radius: 0.5rem;
+    --radius: 0.625rem; /* 10px to match prototype */
     
     /* Sidebar Minimalist */
     --sidebar: #ffffff;
-    --sidebar-foreground: #27272a;
-    --sidebar-primary: #2563eb; /* blue-600 */
+    --sidebar-foreground: #1a1917;
+    --sidebar-primary: #1a56db;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #f4f4f5;
-    --sidebar-accent-foreground: #09090b;
-    --sidebar-border: #e4e4e7;
-    --sidebar-ring: #3b82f6; /* blue-500 */
+    --sidebar-accent: #f0efe9;
+    --sidebar-accent-foreground: #1a1917;
+    --sidebar-border: #e6e6e6;
+    --sidebar-ring: #1a56db;
 }
 
 /* Minimalist Zinc - Dark Theme */

@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\TeamInvitation;
-use Illuminate\Support\Facades\Schedule;
-use Illuminate\Support\Facades\Artisan;
 use App\Services\IrvanCloudSyncService;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 Schedule::call(function () {
     TeamInvitation::query()

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Meetings\GenerateMeetingMinuteAction;
+use App\Enums\MeetingMinuteStatus;
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\UpdateMinuteRequest;
 use App\Models\Meeting;
-use App\Models\MeetingActionItem;
-use App\Models\MeetingMinute;
-use App\Events\MeetingUpdated;
-use App\Actions\Meetings\GenerateMeetingMinuteAction;
-use App\Services\OpenAiTranscriptionService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 /**
@@ -40,9 +39,9 @@ class MeetingMinuteController extends Controller
     public function show(Meeting $meeting)
     {
         $meeting->load([
-            'participants.user', 
-            'minutes.actionItems', 
-            'documents', 
+            'participants.user',
+            'minutes.actionItems',
+            'documents',
             'attendances',
             'recordings' => function ($q) {
                 $q->orderBy('created_at', 'asc');
@@ -50,7 +49,7 @@ class MeetingMinuteController extends Controller
             'recordings.transcripts' => function ($q) {
                 $q->orderBy('sequence_order', 'asc');
             },
-            'recordings.transcripts.corrections'
+            'recordings.transcripts.corrections',
         ]);
 
         return Inertia::render('meetings/review', [
@@ -84,9 +83,10 @@ class MeetingMinuteController extends Controller
             $minute->update([
                 'content' => $request->content,
             ]);
+
             return back()->with('success', 'Notulen berhasil diperbarui.');
         }
-        
+
         return back()->with('error', 'Notulen belum tersedia.');
     }
 
@@ -96,13 +96,13 @@ class MeetingMinuteController extends Controller
 
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
-            \Illuminate\Support\Facades\DB::transaction(function () use ($minute, $meeting, $request) {
+            DB::transaction(function () use ($minute, $meeting, $request) {
                 $minute->update([
-                    'status' => \App\Enums\MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
+                    'status' => MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
                     'reviewed_by' => $request->user()->id,
                     'reviewed_at' => now(),
                 ]);
-                
+
                 $meeting->update([
                     'current_stage' => 6,
                 ]);
@@ -110,7 +110,8 @@ class MeetingMinuteController extends Controller
 
             try {
                 event(new MeetingUpdated($meeting, 'stage_changed'));
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return redirect()->route('meetings.approval', $meeting->id)->with('success', 'Notulen dikirim ke pimpinan.');

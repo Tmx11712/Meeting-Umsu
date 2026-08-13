@@ -17,11 +17,11 @@ if (! function_exists('safe_broadcast')) {
             if ($toOthers) {
                 $pending->toOthers();
             }
-            
+
             // Force __destruct to run inside the try-catch block
             // so we can actually catch the Reverb connection exception!
             unset($pending);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::warning('Broadcast failed (Reverb offline): '.$e->getMessage());
         }
     }

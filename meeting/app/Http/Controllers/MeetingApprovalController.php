@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MeetingMinuteStatus;
+use App\Enums\MeetingStatus;
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreApprovalRequest;
 use App\Models\Meeting;
 use App\Models\MeetingApproval;
-use App\Events\MeetingUpdated;
 use App\Services\MeetingActionItemService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class MeetingApprovalController extends Controller
@@ -25,7 +28,7 @@ class MeetingApprovalController extends Controller
     {
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $meeting, $minute) {
+        DB::transaction(function () use ($request, $meeting, $minute) {
             MeetingApproval::create([
                 'meeting_id' => $meeting->id,
                 'minute_id' => $minute->id,
@@ -35,10 +38,10 @@ class MeetingApprovalController extends Controller
                 'decided_at' => now(),
             ]);
 
-            $minute->update(['status' => $request->decision === 'approved' ? \App\Enums\MeetingMinuteStatus::DISETUJUI->value : \App\Enums\MeetingMinuteStatus::DITOLAK->value]);
+            $minute->update(['status' => $request->decision === 'approved' ? MeetingMinuteStatus::DISETUJUI->value : MeetingMinuteStatus::DITOLAK->value]);
             if ($request->decision === 'approved') {
                 $meeting->update([
-                    'status' => \App\Enums\MeetingStatus::SELESAI->value,
+                    'status' => MeetingStatus::SELESAI->value,
                     'current_stage' => 7,
                 ]);
             }

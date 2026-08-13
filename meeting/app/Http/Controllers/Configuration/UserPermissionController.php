@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -92,7 +93,7 @@ class UserPermissionController extends Controller
 
         $user->syncPermissions($validated['permissions'] ?? []);
 
-        \Illuminate\Support\Facades\Cache::forget("user_menus_{$user->id}");
+        Cache::forget("user_menus_{$user->id}");
 
         return back()->with('flash', [
             'type' => 'success',

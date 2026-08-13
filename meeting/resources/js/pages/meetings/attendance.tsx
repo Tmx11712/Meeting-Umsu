@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { MeetingStepper } from '@/components/meeting-stepper';
+
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
@@ -90,7 +90,8 @@ return;
         }
     };
 
-    const totalParticipants = participants.length;
+    const guestAttendances = attendances.filter((a: any) => !a.user_id);
+    const totalParticipants = participants.length + guestAttendances.length;
     const hadir = attendances.filter((a: any) => a.status === 'hadir').length;
     const terlambat = attendances.filter((a: any) => a.status === 'terlambat').length;
     const tidakHadir = totalParticipants - hadir - terlambat;
@@ -118,6 +119,22 @@ return;
             time_out: att?.check_out_time ? new Date(att.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
             method: isIrvanCloud ? 'UMSU Employee App' : 'Manual'
         };
+    });
+
+    // Append external guests (attendances without user_id)
+    guestAttendances.forEach((guest: any) => {
+        tableData.push({
+            id: guest.id,
+            user_id: null,
+            name: guest.guest_name + ' (Tamu)',
+            dept: guest.guest_institution || '-',
+            job: 'Tamu / Eksternal',
+            nip: '-',
+            status: guest.status === 'hadir' ? 'Hadir' : (guest.status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir'),
+            time_in: guest.check_in_time ? new Date(guest.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
+            time_out: guest.check_out_time ? new Date(guest.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
+            method: 'QR Code (Web)'
+        });
     });
 
     // Extract unique departments for filter
@@ -166,10 +183,7 @@ return;
                 </Button>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={5} />
-            </div>
+
 
             {!canManageAttendance && (
                 <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">

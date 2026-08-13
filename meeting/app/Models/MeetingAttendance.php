@@ -13,6 +13,9 @@ class MeetingAttendance extends Model
     protected $fillable = [
         'meeting_id',
         'user_id',
+        'guest_name',
+        'guest_email',
+        'guest_institution',
         'status',
         'check_in_time',
         'check_out_time',

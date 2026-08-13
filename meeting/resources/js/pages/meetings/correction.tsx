@@ -1,7 +1,7 @@
 import { Head, router, Link } from '@inertiajs/react';
 import { AlertCircle, ChevronDown, FileAudio2, Loader2, Play, CheckCircle2, XCircle, Upload, Mic, Clock } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
-import { MeetingStepper } from '@/components/meeting-stepper';
+
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,10 +61,7 @@ return;
                 </Button>
             </div>
 
-            {/* Stepper */}
-            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm px-4 py-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm">
-                <MeetingStepper meeting={meeting} activeStage={4} />
-            </div>
+
 
             {!canCorrect && (
                 <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">

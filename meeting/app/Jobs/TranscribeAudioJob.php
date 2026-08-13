@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\MeetingRecordingStatus;
+use App\Events\MeetingUpdated;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use App\Models\MeetingTranscript;
@@ -9,6 +11,7 @@ use App\Services\OpenAiTranscriptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +40,7 @@ class TranscribeAudioJob implements ShouldQueue
         }
 
         try {
-            $recording->update(['status' => \App\Enums\MeetingRecordingStatus::TRANSCRIBING->value]);
+            $recording->update(['status' => MeetingRecordingStatus::TRANSCRIBING->value]);
 
             // Assuming the file is on local storage
             // But Whisper API needs the actual file content/path.
@@ -70,7 +73,7 @@ class TranscribeAudioJob implements ShouldQueue
 
             // Update recording with duration info
             $recording->update([
-                'status' => \App\Enums\MeetingRecordingStatus::COMPLETED->value,
+                'status' => MeetingRecordingStatus::COMPLETED->value,
                 'duration_seconds' => (int) round($result['duration'] ?? 0),
             ]);
 
@@ -82,12 +85,12 @@ class TranscribeAudioJob implements ShouldQueue
 
             if ($meeting) {
                 try {
-                    event(new \App\Events\MeetingUpdated($meeting, 'transcript_ready'));
+                    event(new MeetingUpdated($meeting, 'transcript_ready'));
                 } catch (\Exception $broadcastEx) {
                     Log::error('Broadcast failed: '.$broadcastEx->getMessage());
                 }
             }
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        } catch (RequestException $e) {
             Log::error('Transcribe API Network Error: '.$e->getMessage());
             $this->failJob($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
         } catch (\RuntimeException $e) {
@@ -102,12 +105,12 @@ class TranscribeAudioJob implements ShouldQueue
 
     protected function failJob(MeetingRecording $recording, string $reason)
     {
-        $recording->update(['status' => \App\Enums\MeetingRecordingStatus::FAILED->value]);
-        
+        $recording->update(['status' => MeetingRecordingStatus::FAILED->value]);
+
         $meeting = Meeting::find($recording->meeting_id);
         if ($meeting) {
             try {
-                event(new \App\Events\MeetingUpdated($meeting, 'transcript_failed'));
+                event(new MeetingUpdated($meeting, 'transcript_failed'));
             } catch (\Exception $broadcastEx) {
                 Log::error('Broadcast failed: '.$broadcastEx->getMessage());
             }

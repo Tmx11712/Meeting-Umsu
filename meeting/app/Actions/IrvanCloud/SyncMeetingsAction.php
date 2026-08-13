@@ -5,20 +5,26 @@ namespace App\Actions\IrvanCloud;
 use App\Actions\Meetings\SyncMeetingAttendanceAction;
 use App\Actions\Meetings\UpsertMeetingAction;
 use App\Actions\Users\UpsertUserFromExternalAction;
+use App\Events\MeetingsListUpdated;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
  * [EDUKASI ARSITEKTUR: ORCHESTRATOR PATTERN]
- * Class ini bertindak sebagai "Mandor" (Orchestrator). Ia tidak melakukan insert/update DB secara langsung, 
+ * Class ini bertindak sebagai "Mandor" (Orchestrator). Ia tidak melakukan insert/update DB secara langsung,
  * melainkan memanggil Action-Action lain yang lebih kecil (UpsertMeetingAction, UpsertUserAction, dll) secara berurutan.
  * Ini mencegah kelas ini menjadi terlalu gendut (God Class) dan mempertahankan kemudahan Testing.
  */
 class SyncMeetingsAction
 {
     protected FetchEventsFromApiAction $fetchEvents;
+
     protected FetchEventDetailsFromApiAction $fetchEventDetails;
+
     protected UpsertMeetingAction $upsertMeeting;
+
     protected UpsertUserFromExternalAction $upsertUser;
+
     protected SyncMeetingAttendanceAction $syncAttendance;
 
     public function __construct(
@@ -37,10 +43,6 @@ class SyncMeetingsAction
 
     /**
      * Orchestrates the fetching and syncing of meetings from Irvan Cloud.
-     *
-     * @param string|null $startDate
-     * @param string|null $endDate
-     * @return array
      */
     public function execute(?string $startDate = null, ?string $endDate = null): array
     {
@@ -54,23 +56,23 @@ class SyncMeetingsAction
         try {
             $events = $this->fetchEvents->execute($startDate, $endDate);
             $syncedCount = 0;
-            
+
             // Phase 1: Fetch all data first (Do NOT hold DB locks during HTTP requests)
             $meetingsToProcess = [];
             foreach ($events as $event) {
                 if (! isset($event['is_meeting']) || ! $event['is_meeting']) {
                     continue;
                 }
-                
+
                 $details = $this->fetchEventDetails->execute($event['id']);
                 $meetingsToProcess[] = [
                     'event' => $event,
-                    'details' => $details
+                    'details' => $details,
                 ];
             }
 
             // Phase 2: Perform all database writes inside a transaction
-            \Illuminate\Support\Facades\DB::transaction(function () use ($meetingsToProcess, &$syncedCount) {
+            DB::transaction(function () use ($meetingsToProcess, &$syncedCount) {
                 foreach ($meetingsToProcess as $data) {
                     $event = $data['event'];
                     $details = $data['details'];
@@ -86,7 +88,7 @@ class SyncMeetingsAction
                     if ($details && isset($details['data']['participants'])) {
                         foreach ($details['data']['participants'] as $participantData) {
                             $user = $this->upsertUser->execute($participantData);
-                            
+
                             if ($user) {
                                 $this->syncAttendance->execute($participantData, $meeting, $user);
                             }
@@ -96,20 +98,20 @@ class SyncMeetingsAction
             });
 
             if ($syncedCount > 0) {
-                safe_broadcast(new \App\Events\MeetingsListUpdated('Terdapat ' . $syncedCount . ' rapat baru dari sinkronisasi Irvan Cloud'));
+                safe_broadcast(new MeetingsListUpdated('Terdapat '.$syncedCount.' rapat baru dari sinkronisasi Irvan Cloud'));
             }
 
             return [
-                'success' => true, 
-                'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud."
+                'success' => true,
+                'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud.",
             ];
 
         } catch (\Exception $e) {
             Log::error('Exception during Irvan Cloud sync: '.$e->getMessage());
 
             return [
-                'success' => false, 
-                'message' => 'Terjadi kesalahan sistem saat sinkronisasi: '.$e->getMessage()
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem saat sinkronisasi: '.$e->getMessage(),
             ];
         }
     }

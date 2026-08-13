@@ -10,7 +10,6 @@ class FetchEventDetailsFromApiAction
     /**
      * Fetch event details (including participants) from Irvan Cloud API.
      *
-     * @param string $eventId
      * @return array|null Returns array of details or null if failed
      */
     public function execute(string $eventId): ?array
@@ -26,8 +25,9 @@ class FetchEventDetailsFromApiAction
 
         if (! $response->successful()) {
             Log::warning("Failed to fetch details for event ID {$eventId}", [
-                'status' => $response->status()
+                'status' => $response->status(),
             ]);
+
             return null;
         }
 

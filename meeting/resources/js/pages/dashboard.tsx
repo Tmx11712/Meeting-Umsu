@@ -121,7 +121,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
         <>
             <Head title={`Dashboard Rapat`} />
             
-            <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-[1200px] mx-auto bg-[#fafafa] dark:bg-slate-950">
+            <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-[1200px] mx-auto bg-background dark:bg-slate-950">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
@@ -132,13 +132,24 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                             {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · Selamat datang kembali
                         </p>
                     </div>
-                    <Link
-                        href="/meetings"
-                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 h-10 text-sm font-semibold shadow-sm transition-colors shrink-0"
-                    >
-                        <CalendarDays className="h-4 w-4" />
-                        Jadwal Rapat
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+                        <Link
+                            href="/meetings"
+                            className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-full px-5 h-10 text-sm font-semibold shadow-sm transition-colors"
+                        >
+                            <CalendarDays className="h-4 w-4" />
+                            Jadwal Rapat
+                        </Link>
+                        {canEdit('meeting') && (
+                            <Link
+                                href="/meetings/create"
+                                className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 h-10 text-sm font-semibold shadow-sm transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+                                Buat Rapat
+                            </Link>
+                        )}
+                    </div>
                 </div>
 
                 {/* 4 Stat Cards — single horizontal row */}

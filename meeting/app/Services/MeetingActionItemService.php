@@ -10,10 +10,6 @@ class MeetingActionItemService
 {
     /**
      * Update action items for a specific meeting minute.
-     *
-     * @param Meeting $meeting
-     * @param array $actionItems
-     * @return void
      */
     public function updateForMeeting(Meeting $meeting, array $actionItems): void
     {
@@ -28,12 +24,12 @@ class MeetingActionItemService
                 if (empty(trim($item['description']))) {
                     continue; // Skip empty descriptions
                 }
-                
+
                 $minute->actionItems()->create([
                     'meeting_id' => $meeting->id,
                     'description' => trim($item['description']),
                     'pic' => trim($item['pic'] ?? '-'),
-                    'deadline' => !empty($item['deadline']) ? Carbon::parse($item['deadline'])->format('Y-m-d') : null,
+                    'deadline' => ! empty($item['deadline']) ? Carbon::parse($item['deadline'])->format('Y-m-d') : null,
                     'status' => 'pending',
                 ]);
             }
