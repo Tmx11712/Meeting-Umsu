@@ -1,4 +1,6 @@
 import { Head, usePage, router } from '@inertiajs/react';
+// @ts-ignore
+import ysFixWebmDuration from 'fix-webm-duration';
 import axios from 'axios';
 import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
@@ -24,6 +26,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const [isRecording, setIsRecording] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
@@ -93,8 +96,8 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
                 setRecordingDuration(prev => prev + 1);
             }, 1000);
         } else if (!isRecording && !isServerRecording) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setRecordingDuration(0);
+            // We intentionally don't reset to 0 here so viewers can see the final duration
+            // while waiting for the host to upload the file.
         }
 
         return () => clearInterval(interval);
@@ -108,6 +111,13 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
             }
         };
     }, []);
+
+    // Reset UI to 00:00:00 when a new recording is successfully saved (e.g. via Websocket sync)
+    useEffect(() => {
+        if (!isRecording && !isServerRecording) {
+            setRecordingDuration(0);
+        }
+    }, [meeting.recordings?.length]);
 
     const formatDuration = (seconds: number) => {
         const h = Math.floor(seconds / 3600);
@@ -125,6 +135,7 @@ return;
 }
 
         setUploading(true);
+        setUploadProgress(0);
         const formData = new FormData();
         formData.append('file', file);
         formData.append('source', 'upload');
@@ -133,6 +144,12 @@ return;
             const response = await axios.post(`/meetings/${meeting.id}/recording`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setUploadProgress(percentCompleted);
+                    }
                 }
             });
             
@@ -173,7 +190,11 @@ fileInputRef.current.value = '';
             streamRef.current = stream;
             setIsRecording(true);
 
-            const mediaRecorder = new MediaRecorder(stream);
+            // Extract ONLY the audio tracks to ensure the file size is very small (no video recorded)
+            const audioTracks = stream.getAudioTracks();
+            const audioOnlyStream = new MediaStream(audioTracks);
+
+            const mediaRecorder = new MediaRecorder(audioOnlyStream);
             mediaRecorderRef.current = mediaRecorder;
 
             mediaRecorder.ondataavailable = (e) => {
@@ -184,7 +205,14 @@ fileInputRef.current.value = '';
 
             mediaRecorder.onstop = () => {
                 const fullBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
-                setRecordedBlob(fullBlob);
+                
+                // Inject duration metadata into the WebM blob so the audio player knows its length
+                setRecordingDuration(currentDuration => {
+                    ysFixWebmDuration(fullBlob, currentDuration * 1000, (fixedBlob: Blob) => {
+                        setRecordedBlob(fixedBlob);
+                    });
+                    return currentDuration;
+                });
             };
 
             // Berhenti rekam otomatis jika user menekan "Stop sharing" pada browser UI
@@ -246,6 +274,7 @@ return;
         }
 
         setUploading(true);
+        setUploadProgress(0);
         const formData = new FormData();
         formData.append('file', recordedBlob, `rekaman-${Date.now()}.webm`);
         formData.append('source', 'system_record');
@@ -255,6 +284,12 @@ return;
             const response = await axios.post(`/meetings/${meeting.id}/recording`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent) => {
+                    if (progressEvent.total) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setUploadProgress(percentCompleted);
+                    }
                 }
             });
             
@@ -393,11 +428,29 @@ return;
                     {/* Timer & Send Action */}
                     <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-12 flex flex-col items-center text-center relative overflow-hidden">
                         {uploading && (
-                            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
-                                <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-3" />
-                                <p className="text-sm font-bold text-emerald-700">Sedang mengirim audio ke server...</p>
+                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12">
+                                <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
+                                <p className="text-sm font-bold text-emerald-700 mb-3">Mengirim audio ke server... {uploadProgress}%</p>
+                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 rounded-full overflow-hidden shadow-inner">
+                                    <div 
+                                        className="h-full bg-emerald-500 transition-all duration-300 ease-out rounded-full"
+                                        style={{ width: `${uploadProgress}%` }}
+                                    ></div>
+                                </div>
                             </div>
                         )}
+
+                        {(!isRecording && !isServerRecording && recordingDuration > 0 && !recordedBlob && activeTab === 'record') && (
+                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12 animate-in fade-in duration-500">
+                                <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
+                                <p className="text-sm font-bold text-emerald-700 mb-2">Operator sedang mengunggah file rekaman...</p>
+                                <p className="text-xs text-slate-500 mb-4">Selesai merekam ({formatDuration(recordingDuration)})</p>
+                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 rounded-full overflow-hidden shadow-inner">
+                                    <div className="h-full bg-emerald-500 w-full animate-pulse rounded-full"></div>
+                                </div>
+                            </div>
+                        )}
+
                         
                         <div className="flex items-center gap-1.5 mb-6">
                             <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`}></div>

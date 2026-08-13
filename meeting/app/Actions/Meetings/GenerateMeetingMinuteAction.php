@@ -51,13 +51,20 @@ class GenerateMeetingMinuteAction
      */
     protected function buildTranscriptText(Meeting $meeting): string
     {
-        $transcripts = $meeting->transcripts()->with('corrections')->orderBy('sequence_order')->get();
+        // Ambil transkrip berdasarkan urutan rekaman (waktu dibuat) agar tidak tercampur (interleaved)
+        // jika ada lebih dari 1 file audio.
+        $recordings = $meeting->recordings()->with(['transcripts' => function ($q) {
+            $q->orderBy('sequence_order');
+        }, 'transcripts.corrections'])->orderBy('created_at')->get();
+        
         $parts = [];
 
-        foreach ($transcripts as $t) {
-            $parts[] = $t->corrections->count() > 0
-                ? $t->corrections->last()->corrected_text
-                : $t->text;
+        foreach ($recordings as $recording) {
+            foreach ($recording->transcripts as $t) {
+                $parts[] = $t->corrections->count() > 0
+                    ? $t->corrections->last()->corrected_text
+                    : $t->text;
+            }
         }
 
         return implode(' ', $parts);

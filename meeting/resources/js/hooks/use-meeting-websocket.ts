@@ -29,6 +29,11 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
             router.visit(`/meetings/${meetingId}/approval`);
 
             return true; 
+        } else if (stage >= 7 && currentPath.includes(`/meetings/${meetingId}`)) {
+            // Jika rapat sudah selesai (tahap 7), tendang semua partisipan (kecuali mereka sudah di luar ruang rapat) kembali ke Dashboard
+            router.visit(`/meetings`);
+
+            return true;
         }
         
         return false;
@@ -40,14 +45,28 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
     // Fallback polling in case WebSocket server is dead/blocked
     useEffect(() => {
         if (!meetingId) {
-return;
-}
+            return;
+        }
         
         const interval = setInterval(() => {
             router.reload({ only: ['meeting', 'meetings'] });
         }, 5000); // 5 seconds polling
         
-        return () => clearInterval(interval);
+        // When tab becomes active again, immediately fetch fresh data
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                router.reload({ only: ['meeting', 'meetings'] });
+            }
+        };
+        
+        window.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('focus', handleVisibilityChange);
+        
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('focus', handleVisibilityChange);
+        };
     }, [meetingId]);
 
     useEffect(() => {

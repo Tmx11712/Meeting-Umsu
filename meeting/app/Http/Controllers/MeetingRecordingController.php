@@ -71,6 +71,8 @@ class MeetingRecordingController extends Controller
         }
 
         $recording->delete();
+        
+        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'recording_deleted'));
 
         return redirect()->back()->with('success', 'Rekaman berhasil dihapus.');
     }
