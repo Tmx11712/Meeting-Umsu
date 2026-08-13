@@ -21,23 +21,7 @@ export default function CreateMeeting({ users }: { users: any[] }) {
         auto_record: true,
     });
 
-    const [searchUser, setSearchUser] = useState('');
     const [newAgenda, setNewAgenda] = useState('');
-
-    const filteredUsers = users.filter(u => 
-        (u.name.toLowerCase().includes(searchUser.toLowerCase()) || 
-        (u.department && u.department.toLowerCase().includes(searchUser.toLowerCase()))) &&
-        !data.participants.includes(u.id)
-    );
-
-    const toggleParticipant = (userId: string) => {
-        if (data.participants.includes(userId)) {
-            setData('participants', data.participants.filter(id => id !== userId));
-        } else {
-            setData('participants', [...data.participants, userId]);
-            setSearchUser('');
-        }
-    };
 
     const addAgenda = () => {
         if (newAgenda.trim() !== '') {
@@ -151,51 +135,9 @@ export default function CreateMeeting({ users }: { users: any[] }) {
                                 className="h-10 border-slate-200 bg-white rounded-lg text-sm"
                             />
                         </div>
-                        
-                        <div className="flex flex-col gap-1.5 relative">
-                            <label htmlFor="participants" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Cari peserta</label>
-                            <Input 
-                                id="participants" 
-                                value={searchUser}
-                                onChange={e => setSearchUser(e.target.value)}
-                                placeholder="Ketik nama atau departemen..."
-                                className="h-10 border-slate-200 bg-white rounded-lg text-sm"
-                            />
-                            {searchUser && filteredUsers.length > 0 && (
-                                <div className="absolute top-[68px] left-0 right-0 bg-white border border-slate-200 rounded-lg shadow-lg z-10 max-h-48 overflow-y-auto">
-                                    {filteredUsers.map(u => (
-                                        <div 
-                                            key={u.id} 
-                                            className="px-3 py-2 hover:bg-slate-50 cursor-pointer flex items-center gap-2"
-                                            onClick={() => toggleParticipant(u.id)}
-                                        >
-                                            <div className="w-6 h-6 rounded bg-[#f3faf7] text-[#057a55] flex items-center justify-center text-[10px] font-bold shrink-0">{u.initials}</div>
-                                            <div className="flex-1 truncate text-[13px]">{u.name}</div>
-                                            <div className="text-[11px] text-slate-500">{u.department}</div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Peserta terpilih ({data.participants.length} orang)</label>
-                        <div className="flex flex-wrap gap-2 min-h-[42px] p-2 bg-slate-50 border border-slate-100 rounded-lg">
-                            {data.participants.map(id => {
-                                const user = users.find(u => u.id === id);
-                                return user ? (
-                                    <div key={id} className="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-2 py-1 rounded-[6px] text-[13px] shadow-sm">
-                                        <span>{user.name}</span>
-                                        <button type="button" onClick={() => toggleParticipant(id)} className="text-slate-400 hover:text-red-500 flex items-center justify-center">
-                                            <X className="w-3.5 h-3.5" />
-                                        </button>
-                                    </div>
-                                ) : null;
-                            })}
-                            {data.participants.length === 0 && <span className="text-[13px] text-slate-400 p-1">Belum ada peserta</span>}
-                        </div>
-                    </div>
+
 
                     <div className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Agenda rapat</label>
@@ -224,17 +166,7 @@ export default function CreateMeeting({ users }: { users: any[] }) {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 mt-2 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                        <Checkbox 
-                            id="auto_record" 
-                            checked={data.auto_record}
-                            onCheckedChange={(checked) => setData('auto_record', checked as boolean)}
-                            className="border-slate-300 text-blue-600 rounded-sm"
-                        />
-                        <label htmlFor="auto_record" className="text-[13px] text-slate-700 cursor-pointer">
-                            Aktifkan rekaman & transkripsi otomatis saat rapat dimulai
-                        </label>
-                    </div>
+
 
                 </div>
 
@@ -242,13 +174,6 @@ export default function CreateMeeting({ users }: { users: any[] }) {
                     <Link href="/meetings">
                         <Button variant="ghost" type="button" className="text-[13px] font-medium text-slate-600 hover:bg-slate-100 h-9 px-4 rounded-lg">Batal</Button>
                     </Link>
-                    <Button 
-                        type="submit" 
-                        disabled={processing}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-[13px] h-9 px-5 rounded-lg shadow-sm"
-                    >
-                        Simpan draft
-                    </Button>
                     <Button 
                         type="submit" 
                         disabled={processing}

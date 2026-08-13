@@ -2,7 +2,7 @@ import { Head, usePage, router } from '@inertiajs/react';
 // @ts-ignore
 import ysFixWebmDuration from 'fix-webm-duration';
 import axios from 'axios';
-import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play } from 'lucide-react';
+import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
@@ -22,7 +22,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const isServerRecording = serverStartedAt !== null;
 
     // Fallback polling now handled globally by useMeetingWebSocket hook
-    const [activeTab, setActiveTab] = useState<'upload' | 'record'>('record');
+    const [activeTab, setActiveTab] = useState<'upload' | 'record' | 'record_mic'>('record');
     const [isRecording, setIsRecording] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -166,7 +166,7 @@ fileInputRef.current.value = '';
         }
     };
 
-    const startRecordingSession = async () => {
+    const startRecordingSession = async (mode: 'system' | 'mic' = 'system') => {
         try {
             setErrorMsg('');
             setRecordingDuration(0);
@@ -174,23 +174,46 @@ fileInputRef.current.value = '';
             setRecordedBlob(null);
             setIsPaused(false);
 
-            const stream = await navigator.mediaDevices.getDisplayMedia({
-                video: true,
-                audio: true // Meminta sistem audio
-            });
+            let stream: MediaStream;
             
-            // Check jika audio track ada
-            if (stream.getAudioTracks().length === 0) {
-                stream.getTracks().forEach(track => track.stop());
-                setErrorMsg('Anda tidak membagikan Audio Sistem. Harap ulangi dan centang "Share system audio".');
-
-                return;
+            if (mode === 'system') {
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: true
+                });
+                
+                if (stream.getAudioTracks().length === 0) {
+                    stream.getTracks().forEach(track => track.stop());
+                    setErrorMsg('Anda tidak membagikan Audio Sistem. Harap ulangi dan centang "Share system audio".');
+                    return;
+                }
+                
+                // Berhenti rekam otomatis jika user menekan "Stop sharing" pada browser UI
+                if (stream.getVideoTracks().length > 0) {
+                    stream.getVideoTracks()[0].onended = () => {
+                        stopRecordingSession();
+                    };
+                }
+            } else {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+                
+                if (stream.getAudioTracks().length === 0) {
+                    stream.getTracks().forEach(track => track.stop());
+                    setErrorMsg('Mikrofon tidak terdeteksi atau izin ditolak.');
+                    return;
+                }
             }
 
             streamRef.current = stream;
             setIsRecording(true);
 
-            // Extract ONLY the audio tracks to ensure the file size is very small (no video recorded)
+            // Extract ONLY the audio tracks to ensure the file size is very small
             const audioTracks = stream.getAudioTracks();
             const audioOnlyStream = new MediaStream(audioTracks);
 
@@ -215,11 +238,6 @@ fileInputRef.current.value = '';
                 });
             };
 
-            // Berhenti rekam otomatis jika user menekan "Stop sharing" pada browser UI
-            stream.getVideoTracks()[0].onended = () => {
-                stopRecordingSession();
-            };
-
             mediaRecorder.start(1000);
 
             // Tembakkan sinyal ke backend bahwa rekaman dimulai
@@ -227,7 +245,11 @@ fileInputRef.current.value = '';
 
         } catch (err: any) {
             console.error(err);
-            setErrorMsg(`Gagal memulai rekaman: ${err.message}`);
+            if (err.name === 'NotAllowedError') {
+                setErrorMsg(`Izin akses ditolak. Harap izinkan browser untuk mengakses ${mode === 'system' ? 'layar/audio' : 'mikrofon'}.`);
+            } else {
+                setErrorMsg(`Gagal memulai rekaman: ${err.message}`);
+            }
         }
     };
 
@@ -305,6 +327,8 @@ return;
         }
     };
 
+    const hasRecordings = meeting?.recordings && meeting.recordings.length > 0;
+
     return (
         <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Operator Rekaman" />
@@ -318,7 +342,7 @@ return;
                 <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${isServerRecording ? 'bg-rose-500 animate-pulse' : 'bg-slate-400'}`}></div>
                     <span className={`text-[12px] font-bold ${isServerRecording ? 'text-rose-600' : 'text-slate-500'}`}>
-                        {isServerRecording ? '🔴 LIVE: Sedang Merekam' : 'Menunggu'}
+                        {isServerRecording ? 'LIVE: Sedang Merekam' : 'Menunggu'}
                     </span>
                 </div>
             </div>
@@ -342,7 +366,7 @@ return;
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
                 
                 {/* KOLOM KIRI (Upload & Rekam) - Visible to everyone so Pimpinan can record */}
-                <div className="lg:col-span-5 flex flex-col gap-6">
+                <div className={`${hasRecordings ? 'lg:col-span-5' : 'lg:col-span-12'} flex flex-col gap-6 transition-all duration-500`}>
                     {/* Recording Controls */}
                     <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm">
                         <div className="flex p-1 gap-1 border-b border-slate-100">
@@ -358,15 +382,21 @@ return;
                             >
                                 <Monitor className={`w-4 h-4 ${activeTab === 'record' ? 'text-blue-500' : 'text-slate-400'}`} /> Rekam (Sistem)
                             </button>
+                            <button 
+                                onClick={() => setActiveTab('record_mic')}
+                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'record_mic' ? 'bg-blue-50/50 text-blue-600 border border-blue-100/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                            >
+                                <Mic className={`w-4 h-4 ${activeTab === 'record_mic' ? 'text-blue-500' : 'text-slate-400'}`} /> Rekam (Mikrofon)
+                            </button>
                         </div>
                         
                         <div className="p-4">
-                            {activeTab === 'record' ? (
+                            {activeTab === 'record' || activeTab === 'record_mic' ? (
                                 <>
                                     <div className="flex items-center gap-3 mb-4">
                                         <Button 
                                             variant="outline" 
-                                            onClick={startRecordingSession}
+                                            onClick={() => startRecordingSession(activeTab === 'record' ? 'system' : 'mic')}
                                             disabled={isRecording || !canRecord}
                                             className={`font-semibold h-9 px-3 text-[12px] flex items-center gap-2 ${isRecording ? 'bg-slate-50 text-slate-400 border-slate-200' : 'text-slate-700'}`}
                                         >
@@ -398,7 +428,9 @@ return;
                                     )}
                                     <p className="text-[11px] text-slate-500 flex items-start gap-2 leading-relaxed">
                                         <Info className="w-3.5 h-3.5 shrink-0 text-slate-400 mt-0.5" />
-                                        Browser akan menampilkan dialog "Choose what to share" - pilih tab/jendela rapat (Zoom/Teams/dll) dan pastikan centang "Share system audio". 
+                                        {activeTab === 'record' 
+                                            ? 'Browser akan menampilkan dialog "Choose what to share" - pilih tab/jendela rapat (Zoom/Teams/dll) dan pastikan centang "Share system audio".' 
+                                            : 'Pastikan untuk memberikan izin (Allow) pada browser untuk mengakses Mikrofon saat popup muncul.'}
                                     </p>
                                 </>
                             ) : (
@@ -440,7 +472,7 @@ return;
                             </div>
                         )}
 
-                        {(!isRecording && !isServerRecording && recordingDuration > 0 && !recordedBlob && activeTab === 'record') && (
+                        {(!isRecording && !isServerRecording && recordingDuration > 0 && !recordedBlob && (activeTab === 'record' || activeTab === 'record_mic')) && (
                             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12 animate-in fade-in duration-500">
                                 <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
                                 <p className="text-sm font-bold text-emerald-700 mb-2">Operator sedang mengunggah file rekaman...</p>
@@ -486,14 +518,14 @@ return;
                 </div>
 
                 {/* KOLOM KANAN (Hasil Audio & Transkripsi) */}
-                <div className="lg:col-span-7 flex flex-col gap-6">
-                    {/* Hasil Audio Tersimpan */}
-                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-6">
-                        <h3 className="text-[15px] font-bold text-slate-900 mb-4 flex items-center gap-2">
-                            <Database className="w-4 h-4 text-slate-500" /> Hasil Audio Tersimpan
-                        </h3>
-                        
-                        {meeting?.recordings && meeting.recordings.length > 0 ? (
+                {hasRecordings && (
+                    <div className="lg:col-span-7 flex flex-col gap-6">
+                        {/* Hasil Audio Tersimpan */}
+                        <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-6">
+                            <h3 className="text-[15px] font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <Database className="w-4 h-4 text-slate-500" /> Hasil Audio Tersimpan
+                            </h3>
+                            
                             <div className="flex flex-col gap-4">
                                 {meeting.recordings.map((rec: any, index: number) => (
                                     <div key={rec.id} className="border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50/30">
@@ -512,7 +544,7 @@ return;
                                             <audio controls src={`/meetings/${meeting.id}/recording/${rec.id}/stream`} className="h-9 w-full max-w-sm rounded-lg border border-slate-200/60" />
                                         </div>
                                         <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                                            {(rec.status === 'uploaded' || rec.status === 'failed') && (
+                                            {rec.status !== 'transcribing' && (
                                                 <>
                                                     {canRecord && (
                                                         <Button 
@@ -532,7 +564,7 @@ return;
                                                             disabled={!canTranscribe || isTranscribing === rec.id}
                                                         >
                                                             {isTranscribing === rec.id ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
-                                                            {isTranscribing === rec.id ? 'Memproses...' : 'Mulai Transkripsi AI'}
+                                                            {isTranscribing === rec.id ? 'Memproses...' : (rec.status === 'completed' ? 'Ulangi Transkripsi AI' : 'Mulai Transkripsi AI')}
                                                         </Button>
                                                     )}
                                                 </>
@@ -541,27 +573,21 @@ return;
                                     </div>
                                 ))}
                             </div>
-                        ) : (
-                            <div className="text-center py-10 bg-slate-50/50 rounded-lg border border-slate-100 border-dashed">
-                                <Database className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                                <p className="text-sm font-medium text-slate-500">Belum ada rekaman yang tersimpan</p>
-                                <p className="text-xs text-slate-400 mt-1">Lakukan proses rekam atau unggah berkas terlebih dahulu.</p>
+                        </div>
+
+                        {/* Selesai Rekaman Action */}
+                        {canTranscribe && (
+                            <div className="flex justify-end">
+                                <Button 
+                                    onClick={finishRecording}
+                                    className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-sm h-11 px-6 text-sm"
+                                >
+                                    Selesai & Lanjut Koreksi
+                                </Button>
                             </div>
                         )}
                     </div>
-
-                    {/* Selesai Rekaman Action */}
-                    {meeting?.recordings && meeting.recordings.length > 0 && canTranscribe && (
-                        <div className="flex justify-end">
-                            <Button 
-                                onClick={finishRecording}
-                                className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-sm h-11 px-6 text-sm"
-                            >
-                                Selesai & Lanjut Koreksi
-                            </Button>
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
         </div>
     );

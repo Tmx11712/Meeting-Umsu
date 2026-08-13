@@ -50,7 +50,7 @@ export default function MeetingShow({ meeting }: any) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400">
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                             Informasi Rapat
                         </h1>
                         <Badge variant={meeting.status === 'selesai' ? 'default' : 'secondary'} className="text-sm px-3 py-1 bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">

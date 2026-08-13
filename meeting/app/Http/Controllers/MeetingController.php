@@ -87,6 +87,8 @@ class MeetingController extends Controller
             MeetingParticipant::insert($participants);
         }
 
+        safe_broadcast(new MeetingsListUpdated('Rapat baru "'.$meeting->title.'" telah dijadwalkan'));
+
         return redirect()->route('meetings.index')->with('success', 'Rapat berhasil dibuat dan dijadwalkan.');
     }
 

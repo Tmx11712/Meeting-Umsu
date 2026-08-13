@@ -81,7 +81,7 @@ return;
             channel.listen('MeetingUpdated', (e: any) => {
                 console.log(`Meeting ${meetingId} updated via WS:`, e);
                 
-                if (e.meeting && e.meeting.current_stage) {
+                if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
                     const redirected = checkAndRedirect(e.meeting.current_stage);
 
                     if (!redirected) {

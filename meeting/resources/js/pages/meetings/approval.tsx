@@ -132,7 +132,7 @@ return '-';
                 {/* Header & Breadcrumb */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                             Persetujuan Pimpinan
                         </h1>
                         <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
@@ -166,7 +166,7 @@ return '-';
             {/* Header & Breadcrumb */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-sky-600 dark:from-blue-400 dark:to-sky-400 mb-2">
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                         Persetujuan Pimpinan
                     </h1>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">

@@ -96,7 +96,7 @@ return '';
         }
 
         if (stage <= 4) {
-return { text: 'Koreksi', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
+return { text: 'Review', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
 }
 
         if (stage === 5) {
