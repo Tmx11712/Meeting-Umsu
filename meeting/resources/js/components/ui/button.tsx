@@ -4,6 +4,13 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * [EDUKASI ARSITEKTUR: KOMPONEN UI & DESIGN SYSTEM]
+ * Ini adalah contoh dari arsitektur komponen menggunakan pendekatan Radix UI + TailwindCSS (seperti pada shadcn/ui).
+ * Kita menggunakan pustaka `cva` (Class Variance Authority) untuk mengelola
+ * berbagai macam bentuk (variant) tombol seperti: outline, destructive, ghost, dsb.
+ * Pendekatan ini membuat komponen sangat "Reusable" dan menjaga agar styling konsisten.
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
