@@ -315,9 +315,9 @@ return;
                                     <div className="flex items-center gap-3">
                                         <div className="flex gap-1.5">
                                             {[
-                                                { value: 'hadir', label: 'Hadir', active: 'bg-emerald-500 text-white', inactive: 'bg-emerald-100 text-emerald-600' },
-                                                { value: 'terlambat', label: 'Terlambat', active: 'bg-amber-500 text-white', inactive: 'bg-amber-100 text-amber-600' },
-                                                { value: 'tidak_hadir', label: 'Tidak Hadir', active: 'bg-red-500 text-white', inactive: 'bg-red-100 text-red-600' },
+                                                { value: 'hadir', label: 'Hadir', active: 'bg-emerald-500 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
+                                                { value: 'terlambat', label: 'Terlambat', active: 'bg-amber-500 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
+                                                { value: 'tidak_hadir', label: 'Tidak Hadir', active: 'bg-red-500 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
                                             ].map(s => (
                                                 <button
                                                     key={s.value}
@@ -368,9 +368,9 @@ return;
                                         const subtitle = att.subtitle;
                                         const status = att.status;
                                         const statuses = [
-                                            { value: 'hadir', label: 'Hadir', color: 'bg-emerald-500 hover:bg-emerald-600 text-white', inactive: 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400' },
-                                            { value: 'terlambat', label: 'Terlambat', color: 'bg-amber-500 hover:bg-amber-600 text-white', inactive: 'bg-amber-100 text-amber-600 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400' },
-                                            { value: 'tidak_hadir', label: 'Absen', color: 'bg-red-500 hover:bg-red-600 text-white', inactive: 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400' },
+                                            { value: 'hadir', label: 'Hadir', color: 'bg-emerald-500 hover:bg-emerald-600 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
+                                            { value: 'terlambat', label: 'Terlambat', color: 'bg-amber-500 hover:bg-amber-600 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
+                                            { value: 'tidak_hadir', label: 'Absen', color: 'bg-red-500 hover:bg-red-600 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
                                         ];
                                         return (
                                             <div key={att.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
