@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { CalendarDays, FileText, Users, Clock } from 'lucide-react';
+import { CalendarDays, FileText, Users, Clock, ArrowLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
@@ -261,7 +261,11 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                                     const colorIdx = idx < 3 ? idx : 2;
 
                                     return (
-                                        <div key={item.id} className={`rounded-xl border p-4 flex items-start gap-3 ${bgColors[colorIdx]}`}>
+                                        <Link 
+                                            href={`/meetings/${item.meeting_id}`} 
+                                            key={item.id} 
+                                            className={`rounded-xl border p-4 flex items-start gap-3 transition-transform hover:scale-[1.01] hover:shadow-sm cursor-pointer ${bgColors[colorIdx]}`}
+                                        >
                                             <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${dotColors[colorIdx]}`}></div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between items-start gap-4">
@@ -272,11 +276,8 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                                                         {item.deadline ? formatDateShort(item.deadline) : 'Tidak ada'}
                                                     </span>
                                                 </div>
-                                                <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1">
-                                                    PIC: {item.pic || '-'}
-                                                </p>
                                             </div>
-                                        </div>
+                                        </Link>
                                     );
                                 })
                             ) : (

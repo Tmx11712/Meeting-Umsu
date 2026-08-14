@@ -32,7 +32,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
     };
 
     const removeAgenda = (index: number) => {
-        setData('agenda', data.agenda.filter((_, i) => i !== index));
+        setData('agenda', data.agenda.filter((_: any, i: number) => i !== index));
     };
 
     const submit = (e: React.FormEvent) => {
@@ -160,7 +160,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                     <div className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Agenda rapat</label>
                         <div className="flex flex-col gap-2">
-                            {data.agenda.map((item, index) => (
+                            {data.agenda.map((item: string, index: number) => (
                                 <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 border border-slate-100 rounded-lg">
                                     <GripVertical className="w-4 h-4 text-slate-400 cursor-move shrink-0 ml-1" />
                                     <span className="flex-1 text-[13px] text-slate-700">{item}</span>

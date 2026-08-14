@@ -77,17 +77,30 @@ class DashboardController extends Controller
         $upcomingMeetings = Meeting::withCount('participants')
             ->where('date', '>=', $now->toDateString())
             ->whereIn('current_stage', [1, 2]) // Still scheduled or Humas Rekam
+            ->where(function($query) {
+                $query->where('category', '!=', 'action_item_mendesak')
+                      ->orWhereNull('category');
+            })
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->take(3)
             ->get();
 
-        // Action Items Mendesak
-        $actionItems = MeetingActionItem::with('meeting')
-            ->where('status', 'open')
-            ->orderBy('deadline', 'asc')
+        // Action Items Mendesak (Dikustomisasi untuk hanya menampilkan Rapat Mendesak)
+        $actionItems = Meeting::where('category', 'action_item_mendesak')
+            ->where('date', '>=', $now->toDateString())
+            ->orderBy('date', 'asc')
             ->take(3)
-            ->get();
+            ->get()
+            ->map(function ($m) {
+                return [
+                    'id' => 'm_' . $m->id,
+                    'meeting_id' => $m->id,
+                    'description' => $m->title,
+                    'deadline' => $m->date,
+                    'pic' => '-', // Tidak ada PIC spesifik karena ini adalah Rapat
+                ];
+            });
 
         return Inertia::render('dashboard', [
             'stats' => $stats,
