@@ -30,6 +30,7 @@ class UpdateMeetingRequest extends FormRequest
             'end_time' => 'required|date_format:H:i|after:start_time',
             'location' => 'required|string|max:255',
             'type' => 'required|string',
+            'category' => 'nullable|string|max:50',
             'notes' => 'nullable|string',
             'participants' => 'nullable|array',
             'participants.*' => 'exists:users,id',

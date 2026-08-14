@@ -26,6 +26,7 @@ class StoreMeetingRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'type' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:50',
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',

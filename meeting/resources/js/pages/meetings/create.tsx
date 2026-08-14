@@ -12,6 +12,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
     const { data, setData, post, put, processing, errors } = useForm({
         title: meeting?.title || '',
         type: meeting?.type || 'Rapat internal',
+        category: meeting?.category || 'biasa',
         date: meeting?.date || new Date().toISOString().split('T')[0],
         start_time: meeting?.start_time ? meeting.start_time.substring(0, 5) : '09:00',
         end_time: meeting?.end_time ? meeting.end_time.substring(0, 5) : '11:00',
@@ -138,10 +139,23 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                                 onChange={e => setData('location', e.target.value)}
                                 className="h-10 border-slate-200 bg-white rounded-lg text-sm"
                             />
+                            {errors.location && <div className="text-red-500 text-xs">{errors.location}</div>}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="category" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Kategori rapat</label>
+                            <Select value={data.category} onValueChange={(value) => setData('category', value)}>
+                                <SelectTrigger className="h-10 border-slate-200 bg-white rounded-lg text-sm">
+                                    <SelectValue placeholder="Pilih kategori (Opsional)" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="biasa">Biasa</SelectItem>
+                                    <SelectItem value="jadwal_mendatang">Jadwal Mendatang</SelectItem>
+                                    <SelectItem value="action_item_mendesak">Action Items Mendesak</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {errors.category && <div className="text-red-500 text-xs">{errors.category}</div>}
                         </div>
                     </div>
-
-
 
                     <div className="flex flex-col gap-1.5">
                         <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Agenda rapat</label>

@@ -27,6 +27,7 @@ class Meeting extends Model
         'duration',
         'location',
         'type',
+        'category',
         'notes',
         'status',
         'source',
