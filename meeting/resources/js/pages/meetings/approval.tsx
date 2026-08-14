@@ -61,6 +61,22 @@ return '-';
         setEditModalOpen(true);
     };
 
+    const totalSeconds = meeting.recordings?.reduce((sum: number, r: any) => sum + (r.duration_seconds || 0), 0) || 0;
+    const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+    const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
+    const recordingDuration = totalSeconds > 0 ? `${h}:${m}:${s}` : "00:00:00";
+
+    const submitCorrection = () => {
+        setSavingEdit(true);
+        router.put(`/meetings/${meeting.id}/review`, { content: editData }, {
+            onSuccess: () => {
+                setEditModalOpen(false);
+            },
+            onFinish: () => setSavingEdit(false)
+        });
+    };
+
     const saveEdit = () => {
         setSavingEdit(true);
         router.put(`/meetings/${meeting.id}/review`, { content: editData }, {
@@ -238,7 +254,7 @@ return '-';
                             </div>
                             <div className="w-28 h-28 shrink-0 bg-sky-50/50 rounded-xl p-2 text-center border border-sky-100 flex flex-col justify-center items-center">
                                 <p className="text-[10px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
-                                <p className="text-xl font-bold text-sky-600 mt-1 leading-none">{meeting.duration_formatted || "00:00:00"}</p>
+                                <p className="text-xl font-bold text-sky-600 mt-1 leading-none">{recordingDuration}</p>
                                 <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
                             </div>
                         </div>

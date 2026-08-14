@@ -17,7 +17,7 @@ class MeetingApprovalController extends Controller
 {
     public function show(Meeting $meeting)
     {
-        $meeting->load('minutes.actionItems', 'participants.user', 'documents');
+        $meeting->load('minutes.actionItems', 'participants.user', 'documents', 'recordings');
 
         return Inertia::render('meetings/approval', [
             'meeting' => $meeting,
