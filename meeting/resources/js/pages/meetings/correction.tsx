@@ -13,6 +13,7 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
 
     // Combine all transcripts into a single initial text
     const recordings = meeting.recordings || [];
+    const firstRecording = recordings[0];
     const allTranscripts = recordings.flatMap((r: any) => r.transcripts || []);
     const firstTranscript = allTranscripts[0];
     
@@ -116,6 +117,20 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
                 </Alert>
             )}
 
+            {/* Audio Player */}
+            {firstRecording && firstRecording.file_path && (
+                <Card className="rounded-2xl border border-slate-200 shadow-sm bg-white overflow-hidden p-4">
+                    <h2 className="text-sm font-bold text-slate-800 mb-2">Rekaman Audio</h2>
+                    <audio 
+                        controls 
+                        className="w-full h-10" 
+                        src={`/storage/${firstRecording.file_path}`}
+                    >
+                        Browser Anda tidak mendukung elemen audio.
+                    </audio>
+                </Card>
+            )}
+
             {/* Main Prototype UI */}
             <Card className="rounded-2xl border border-slate-200 shadow-sm bg-white overflow-hidden">
                 <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -165,19 +180,10 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
             {canCorrect && (
                 <div className="flex justify-end pt-2">
                     <Button 
-                        onClick={handleSaveTranscript}
-                        disabled={isSaving || text === initialText || !firstTranscript}
-                        variant="outline"
-                        className="mr-3 rounded-xl h-11 px-6 font-bold shadow-sm"
-                    >
-                        {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                        Simpan Perubahan
-                    </Button>
-                    <Button 
                         onClick={handleFinish} 
                         className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-8 font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
                     >
-                        Selesai & Lanjut ke Absensi
+                        Selesai & Lanjut ke Review
                     </Button>
                 </div>
             )}

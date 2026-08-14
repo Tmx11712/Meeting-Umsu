@@ -1,8 +1,8 @@
-import { Head, usePage, router } from '@inertiajs/react';
+import { Head, usePage, router, Link } from '@inertiajs/react';
 // @ts-ignore
 import ysFixWebmDuration from 'fix-webm-duration';
 import axios from 'axios';
-import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic } from 'lucide-react';
+import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
@@ -334,16 +334,22 @@ return;
             <Head title="Operator Rekaman" />
 
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-[22px] font-semibold text-slate-900 leading-tight">Operator rekaman</h1>
-                    <p className="text-[13px] text-slate-500 mt-1">Tekan Play untuk mulai merekam rapat</p>
-                </div>
+            <div className="flex flex-col gap-4">
+                <Link href={`/meetings/${meeting.id}`} className="flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-slate-700 transition-colors w-fit">
+                    <ArrowLeft className="w-4 h-4" />
+                    Kembali ke Detail Rapat
+                </Link>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-[22px] font-semibold text-slate-900 leading-tight">Operator rekaman</h1>
+                        <p className="text-[13px] text-slate-500 mt-1">Tekan Play untuk mulai merekam rapat</p>
+                    </div>
                 <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${isServerRecording ? 'bg-rose-500 animate-pulse' : 'bg-slate-400'}`}></div>
                     <span className={`text-[12px] font-bold ${isServerRecording ? 'text-rose-600' : 'text-slate-500'}`}>
                         {isServerRecording ? 'LIVE: Sedang Merekam' : 'Menunggu'}
                     </span>
+                </div>
                 </div>
             </div>
 

@@ -8,17 +8,17 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 
-export default function CreateMeeting({ users }: { users: any[] }) {
-    const { data, setData, post, processing, errors } = useForm({
-        title: '',
-        type: 'Rapat internal',
-        date: new Date().toISOString().split('T')[0],
-        start_time: '09:00',
-        end_time: '11:00',
-        location: 'Ruang Rapat A',
-        participants: [] as string[],
-        agenda: [] as string[],
-        auto_record: true,
+export default function CreateMeeting({ users, meeting }: { users: any[], meeting?: any }) {
+    const { data, setData, post, put, processing, errors } = useForm({
+        title: meeting?.title || '',
+        type: meeting?.type || 'Rapat internal',
+        date: meeting?.date || new Date().toISOString().split('T')[0],
+        start_time: meeting?.start_time ? meeting.start_time.substring(0, 5) : '09:00',
+        end_time: meeting?.end_time ? meeting.end_time.substring(0, 5) : '11:00',
+        location: meeting?.location || 'Ruang Rapat A',
+        participants: meeting?.participants?.map((p: any) => p.user_id) || [] as string[],
+        agenda: meeting?.agenda || [] as string[],
+        auto_record: meeting?.auto_record ?? true,
     });
 
     const [newAgenda, setNewAgenda] = useState('');
@@ -36,22 +36,26 @@ export default function CreateMeeting({ users }: { users: any[] }) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/meetings');
+        if (meeting) {
+            put(`/meetings/${meeting.id}`);
+        } else {
+            post('/meetings');
+        }
     };
 
     return (
         <div className="flex h-full flex-1 flex-col gap-6 py-6 px-4 w-full max-w-5xl mx-auto">
-            <Head title="Buat Jadwal Rapat Baru" />
+            <Head title={meeting ? "Edit Jadwal Rapat" : "Buat Jadwal Rapat Baru"} />
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-[22px] font-semibold text-slate-900 dark:text-white mb-1">
-                        Buat jadwal rapat baru
+                        {meeting ? "Edit jadwal rapat" : "Buat jadwal rapat baru"}
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">Lengkapi detail rapat dan undang peserta</p>
                 </div>
                 <div>
-                    <Link href="/meetings">
+                    <Link href={meeting ? `/meetings/${meeting.id}` : "/meetings"}>
                         <Button variant="outline" className="rounded-lg border-slate-200 bg-white hover:bg-slate-50 text-slate-700 h-9 px-4 font-medium text-[13px]">
                             <ArrowLeft className="w-4 h-4 mr-2" /> Kembali
                         </Button>
@@ -171,7 +175,7 @@ export default function CreateMeeting({ users }: { users: any[] }) {
                 </div>
 
                 <div className="flex justify-end gap-3 mt-6">
-                    <Link href="/meetings">
+                    <Link href={meeting ? `/meetings/${meeting.id}` : "/meetings"}>
                         <Button variant="ghost" type="button" className="text-[13px] font-medium text-slate-600 hover:bg-slate-100 h-9 px-4 rounded-lg">Batal</Button>
                     </Link>
                     <Button 
@@ -180,7 +184,7 @@ export default function CreateMeeting({ users }: { users: any[] }) {
                         className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-[13px] h-9 px-5 rounded-lg shadow-sm flex items-center gap-2"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-                        Simpan & kirim undangan
+                        {meeting ? "Simpan Perubahan" : "Simpan & kirim undangan"}
                     </Button>
                 </div>
             </form>

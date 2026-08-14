@@ -69,10 +69,10 @@ class TranscriptCorrectionController extends Controller
             'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.'
         );
 
-        $meeting->update(['current_stage' => 4]); // Move to Absensi
+        $meeting->update(['current_stage' => 5]); // Move to Review (skip Absensi)
 
         safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'), false);
 
-        return redirect()->route('meetings.attendance', $meeting->id);
+        return redirect()->route('meetings.review', $meeting->id);
     }
 }

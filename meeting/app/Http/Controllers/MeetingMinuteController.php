@@ -22,7 +22,7 @@ class MeetingMinuteController extends Controller
     public function index(Request $request)
     {
         // Stage 5, 6, 7 = Review / Notulen, Persetujuan, Selesai
-        $query = Meeting::whereIn('current_stage', [5, 6, 7]);
+        $query = Meeting::whereIn('current_stage', [4, 5, 6, 7]);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');

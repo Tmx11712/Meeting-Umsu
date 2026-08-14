@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Sun, Moon } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -12,6 +13,9 @@ export default function AuthSimpleLayout({
     description,
 }: AuthLayoutProps) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => setMounted(true), []);
 
     const toggleTheme = () => {
         updateAppearance(resolvedAppearance === 'dark' ? 'light' : 'dark');
@@ -32,8 +36,12 @@ export default function AuthSimpleLayout({
                 </Link>
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={toggleTheme}>
-                        {resolvedAppearance === 'dark' ? (
-                            <Moon className="size-5" />
+                        {mounted ? (
+                            resolvedAppearance === 'dark' ? (
+                                <Moon className="size-5" />
+                            ) : (
+                                <Sun className="size-5" />
+                            )
                         ) : (
                             <Sun className="size-5" />
                         )}

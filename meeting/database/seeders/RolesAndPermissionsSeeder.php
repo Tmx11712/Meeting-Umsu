@@ -76,7 +76,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $bagHumas->syncPermissions([
             'recording.read', 'recording.create', 'recording.update', 'recording.delete',
             'transcript.read',
-            'attendance.read', 'attendance.create', 'attendance.update', 'attendance.delete',
+            'attendance.read',
         ]);
 
         $pimpinan = Role::firstOrCreate(['name' => 'Pimpinan', 'guard_name' => 'web']);

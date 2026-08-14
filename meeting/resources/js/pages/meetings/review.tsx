@@ -33,6 +33,8 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     useMeetingWebSocket(meeting?.id);
 
     const [sending, setSending] = useState(false);
+    const [regenerateModalOpen, setRegenerateModalOpen] = useState(false);
+    const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
     
     // Edit Modal States
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -105,11 +107,7 @@ return;
     };
 
     const handleDeleteDocument = (id: string) => {
-        if (!confirm('Hapus dokumen ini?')) {
-return;
-}
-
-        router.delete(`/meetings/${meeting.id}/documents/${id}`);
+        setDocumentToDelete(id);
     };
 
     // Dummy Attendance Logic
@@ -141,15 +139,15 @@ return;
                         </div>
                     </div>
                     <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
-                        <Link href="/meetings">
-                            Kembali ke Jadwal
+                        <Link href={`/meetings/${meeting.id}/correction`}>
+                            Kembali ke Koreksi
                         </Link>
                     </Button>
                 </div>
 
 
                 <div className="grid lg:grid-cols-3 gap-4">
-                    {/* Left side: Transcripts reference */}
+                    {/* Left side: Transcripts reference + Attendance */}
                     <div className="lg:col-span-2 space-y-4">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                             <FileText className="w-5 h-5 text-blue-500" />
@@ -195,6 +193,82 @@ return;
                                 })}
                             </div>
                         )}
+
+                        {/* Attendance Summary */}
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6 mb-2 flex items-center gap-2">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                            Data Absensi ({hadir + terlambat}/{total} Hadir)
+                        </h3>
+                        <Card className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
+                            <CardContent className="p-4">
+                                {/* Stats Row */}
+                                <div className="grid grid-cols-3 gap-3 mb-4">
+                                    <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3 text-center">
+                                        <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{hadir}</div>
+                                        <div className="text-xs font-medium text-emerald-600/70 dark:text-emerald-400/70">Hadir</div>
+                                    </div>
+                                    <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 text-center">
+                                        <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{terlambat}</div>
+                                        <div className="text-xs font-medium text-amber-600/70 dark:text-amber-400/70">Terlambat</div>
+                                    </div>
+                                    <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-3 text-center">
+                                        <div className="text-2xl font-bold text-red-600 dark:text-red-400">{tidakHadir}</div>
+                                        <div className="text-xs font-medium text-red-600/70 dark:text-red-400/70">Tidak Hadir</div>
+                                    </div>
+                                </div>
+                                {/* Participant List with interactive status */}
+                                <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                    {participants.map((p: any) => {
+                                        const att = attendances.find((a: any) => a.user_id === p.user_id);
+                                        const status = att?.status || 'tidak_hadir';
+                                        const statuses = [
+                                            { value: 'hadir', label: 'Hadir', color: 'bg-emerald-500 hover:bg-emerald-600 text-white', inactive: 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400' },
+                                            { value: 'terlambat', label: 'Terlambat', color: 'bg-amber-500 hover:bg-amber-600 text-white', inactive: 'bg-amber-100 text-amber-600 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400' },
+                                            { value: 'tidak_hadir', label: 'Absen', color: 'bg-red-500 hover:bg-red-600 text-white', inactive: 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400' },
+                                        ];
+                                        return (
+                                            <div key={p.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
+                                                        {(p.user?.name || 'U').charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{p.user?.name || 'Unknown'}</div>
+                                                        <div className="text-xs text-slate-500 dark:text-slate-400">{p.role_in_meeting || 'Peserta'}</div>
+                                                    </div>
+                                                </div>
+                                                {canManageReview ? (
+                                                    <div className="flex gap-1">
+                                                        {statuses.map((s) => (
+                                                            <button
+                                                                key={s.value}
+                                                                onClick={() => {
+                                                                    router.post(`/meetings/${meeting.id}/attendance/manual`, {
+                                                                        user_id: p.user_id,
+                                                                        status: s.value
+                                                                    }, { preserveScroll: true });
+                                                                }}
+                                                                className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer ${status === s.value ? s.color : s.inactive}`}
+                                                            >
+                                                                {s.label}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <Badge className={`text-[10px] font-semibold border-0 ${
+                                                        status === 'hadir' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
+                                                        status === 'terlambat' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400' :
+                                                        'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400'
+                                                    }`}>
+                                                        {status === 'hadir' ? 'Hadir' : status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir'}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     {/* Right side: Action card */}
@@ -249,8 +323,8 @@ return;
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
-                        <Link href="/meetings">
-                            Kembali ke Jadwal
+                        <Link href={`/meetings/${meeting.id}/correction`}>
+                            Kembali ke Koreksi
                         </Link>
                     </Button>
                     {canManageReview && meeting.current_stage === 5 && !isPimpinan && (
@@ -335,15 +409,7 @@ return;
                                             variant="outline" 
                                             size="sm" 
                                             className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
-                                            onClick={() => {
-                                                if (confirm('Anda yakin ingin men-generate ulang notulen? Ini akan menimpa notulen yang ada saat ini dengan versi AI terbaru dari transkrip.')) {
-                                                    setSending(true);
-                                                    router.post(`/meetings/${meeting.id}/review/ai`, {}, {
-                                                        onFinish: () => setSending(false),
-                                                        onSuccess: () => window.location.reload()
-                                                    });
-                                                }
-                                            }}
+                                            onClick={() => setRegenerateModalOpen(true)}
                                             disabled={sending}
                                         >
                                             {sending ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
@@ -527,7 +593,7 @@ return;
                                         </div>
                                     </div>
                                     {canManageReview && (
-                                        <Button variant="ghost" size="icon" className="text-rose-500 hover:bg-rose-50 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
+                                        <Button variant="ghost" size="icon" className="text-rose-500 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
                                             <Trash2 className="w-4 h-4" />
                                         </Button>
                                     )}
@@ -644,7 +710,7 @@ return;
                                 </div>
                                 {editData.pembahasan?.map((bahas: any, idx: number) => (
                                     <Card key={idx} className="p-4 relative">
-                                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-rose-500 hover:bg-rose-50 hover:text-rose-600" onClick={() => {
+                                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 text-rose-500 hover:text-rose-600" onClick={() => {
                                             const newBahas = [...editData.pembahasan];
                                             newBahas.splice(idx, 1);
                                             setEditData({...editData, pembahasan: newBahas});
@@ -714,6 +780,80 @@ return;
                         <Button variant="outline" onClick={() => setEditModalOpen(false)}>Batal</Button>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={saveEdit} disabled={sending}>
                             {sending ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={regenerateModalOpen} onOpenChange={setRegenerateModalOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-bold text-slate-900">Regenerate Notulen?</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4 text-slate-600">
+                        <p>Anda yakin ingin men-generate ulang notulen?</p>
+                        <p className="mt-2 text-sm text-amber-600 font-medium">
+                            <AlertCircle className="w-4 h-4 inline mr-1" />
+                            Ini akan menimpa notulen yang ada saat ini dengan versi AI terbaru dari transkrip dan dokumen yang baru di-upload.
+                        </p>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setRegenerateModalOpen(false)}>
+                            Batal
+                        </Button>
+                        <Button 
+                            className="bg-blue-600 hover:bg-blue-700 text-white" 
+                            onClick={() => {
+                                setSending(true);
+                                router.post(`/meetings/${meeting.id}/review/ai`, {}, {
+                                    onFinish: () => {
+                                        setSending(false);
+                                        setRegenerateModalOpen(false);
+                                    },
+                                    onSuccess: () => window.location.reload()
+                                });
+                            }} 
+                            disabled={sending}
+                        >
+                            {sending ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                            {sending ? 'Memproses...' : 'Ya, Regenerate'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={documentToDelete !== null} onOpenChange={(open) => !open && setDocumentToDelete(null)}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-bold text-slate-900">Hapus Dokumen</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4 text-slate-600">
+                        <p>Apakah Anda yakin ingin menghapus dokumen ini?</p>
+                        <p className="mt-2 text-sm text-rose-600 font-medium">
+                            <AlertCircle className="w-4 h-4 inline mr-1" />
+                            Tindakan ini tidak dapat dibatalkan.
+                        </p>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDocumentToDelete(null)} disabled={sending}>
+                            Batal
+                        </Button>
+                        <Button 
+                            className="bg-rose-600 hover:bg-rose-700 text-white" 
+                            onClick={() => {
+                                if (!documentToDelete) return;
+                                setSending(true);
+                                router.delete(`/meetings/${meeting.id}/documents/${documentToDelete}`, {
+                                    onFinish: () => {
+                                        setSending(false);
+                                        setDocumentToDelete(null);
+                                    }
+                                });
+                            }} 
+                            disabled={sending}
+                        >
+                            {sending ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Trash2 className="w-4 h-4 mr-2" />}
+                            {sending ? 'Menghapus...' : 'Ya, Hapus'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

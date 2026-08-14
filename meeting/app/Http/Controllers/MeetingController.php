@@ -123,6 +123,11 @@ class MeetingController extends Controller
     {
         $meeting->load('participants.user', 'recordings', 'minutes', 'attendances');
 
+        // Jika rapat sudah selesai (stage >= 7), arahkan semua user langsung ke halaman hasil (approval)
+        if ($meeting->current_stage >= 7) {
+            return redirect()->route('meetings.approval', $meeting->id);
+        }
+
         // redirect to the current stage page
         // 1=Buat Rapat, 2=Humas Rekam, 3=Koreksi, 4=Absensi, 5=Review, 6=Pimpinan
         // For simplicity, we just render a view or redirect based on stage

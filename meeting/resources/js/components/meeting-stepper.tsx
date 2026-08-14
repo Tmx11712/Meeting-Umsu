@@ -8,9 +8,8 @@ export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeS
         { id: 2, name: 'Buat Rapat', desc: '', route: 'meetings.show' },
         { id: 3, name: 'Humas Rekam', desc: '', route: 'meetings.recording' },
         { id: 4, name: 'Koreksi Transkrip', desc: '', route: 'meetings.correction' },
-        { id: 5, name: 'Absensi', desc: '', route: 'meetings.attendance' },
-        { id: 6, name: 'Review', desc: '', route: 'meetings.review' },
-        { id: 7, name: 'Pimpinan', desc: '', route: 'meetings.approval' },
+        { id: 5, name: 'Review', desc: '', route: 'meetings.review' },
+        { id: 6, name: 'Pimpinan', desc: '', route: 'meetings.approval' },
     ];
 
     const currentStage = meeting.current_stage || 1;
@@ -24,7 +23,6 @@ return '#';
             case 'meetings.show': return `/meetings/${id}`;
             case 'meetings.recording': return `/meetings/${id}/recording`;
             case 'meetings.correction': return `/meetings/${id}/correction`;
-            case 'meetings.attendance': return `/meetings/${id}/attendance`;
             case 'meetings.review': return `/meetings/${id}/review`;
             case 'meetings.approval': return `/meetings/${id}/approval`;
             default: return '#';

@@ -73,6 +73,11 @@ return '';
 
     // Smart Routing for meetings
     const getMeetingUrl = (m: any) => {
+        // Jika rapat sudah selesai (stage >= 7), arahkan semua viewer ke halaman hasil rapat (approval)
+        if (m.current_stage >= 7) {
+            return `/meetings/${m.id}/approval`;
+        }
+
         // Jika Pimpinan dan rapat sudah masuk tahap review/persetujuan (stage >= 5)
         // Langsung arahkan ke halaman persetujuan agar tidak perlu lewat meeting hub
         if (isPimpinan && m.current_stage >= 5) {

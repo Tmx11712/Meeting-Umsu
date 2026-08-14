@@ -89,6 +89,10 @@ class AttendanceController extends Controller
             abort(403, 'Silakan login terlebih dahulu untuk melakukan absensi.');
         }
 
+        $now = now();
+        $meetingStartTime = \Carbon\Carbon::parse($meeting->date . ' ' . $meeting->start_time);
+        $status = $now->greaterThan($meetingStartTime) ? 'terlambat' : 'hadir';
+
         // Auto record attendance via QR scan
         MeetingAttendance::updateOrCreate(
             [
@@ -96,8 +100,8 @@ class AttendanceController extends Controller
                 'user_id' => $user->id,
             ],
             [
-                'status' => 'hadir',
-                'check_in_time' => now(),
+                'status' => $status,
+                'check_in_time' => $now,
                 'method' => 'qr_code',
                 'recorded_by' => $user->id,
             ]

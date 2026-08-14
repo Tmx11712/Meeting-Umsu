@@ -1,4 +1,4 @@
-﻿import { Head, Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { CheckCircle2, Calendar, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,7 +40,7 @@ export default function AttendanceScan({ meeting, message }: { meeting: any; mes
                     </div>
 
                     <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-                        <Link href="/dashboard">Kembali ke Dashboard</Link>
+                        <Link href={`/meetings/${meeting.id}`}>Masuk ke Detail Rapat</Link>
                     </Button>
                 </CardContent>
             </Card>

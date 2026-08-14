@@ -122,17 +122,17 @@ export default function MeetingShow({ meeting }: any) {
                                 <CardTitle className="text-lg text-blue-800">Tindakan Operasional</CardTitle>
                             </CardHeader>
                             <CardContent className="flex flex-wrap gap-3">
+                                {canEnterRecordingRoom && !isHumas && (
+                                    <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
+                                        <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
+                                    </Button>
+                                )}
                                 {canEnterRecordingRoom && (
-                                    <>
-                                        <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
-                                            <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
-                                        </Button>
-                                        <Button asChild variant="default" className="bg-blue-600 hover:bg-blue-700">
-                                            <Link href={`/meetings/${meeting.id}/recording`}>
-                                                <Mic className="mr-2 h-4 w-4" /> Buka Ruang Rekaman
-                                            </Link>
-                                        </Button>
-                                    </>
+                                    <Button asChild variant="default" className="bg-blue-600 hover:bg-blue-700">
+                                        <Link href={`/meetings/${meeting.id}/recording`}>
+                                            <Mic className="mr-2 h-4 w-4" /> Buka Ruang Rekaman
+                                        </Link>
+                                    </Button>
                                 )}
                                 {canCorrect && (
                                     <Button asChild variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
@@ -141,7 +141,7 @@ export default function MeetingShow({ meeting }: any) {
                                         </Link>
                                     </Button>
                                 )}
-                                {canAttend && (
+                                {canAttend && !isHumas && (
                                     <Button asChild variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
                                         <Link href={`/meetings/${meeting.id}/attendance`}>
                                             <Users className="mr-2 h-4 w-4" /> Kelola Absensi

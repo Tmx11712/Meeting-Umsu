@@ -13,7 +13,7 @@ class MeetingDocumentController extends Controller
 {
     public function store(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('review.update') || auth()->user()->hasRole(['Humas', 'Umum']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
+        abort_unless(auth()->user()->can('review.update') || auth()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
 
         $request->validate([
             'document' => 'required|file|mimes:pdf,txt|max:10240', // 10MB max, PDF & TXT only
@@ -29,7 +29,7 @@ class MeetingDocumentController extends Controller
 
         // Generate unique name
         $uuidName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('public/documents', $uuidName);
+        $path = $file->storeAs('documents', $uuidName, 'public');
 
         try {
             $document = MeetingDocument::create([
