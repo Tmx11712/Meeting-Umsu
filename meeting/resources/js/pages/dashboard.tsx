@@ -316,14 +316,6 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                         </div>
                     </div>
                 )}
-                
-                {canEdit('meeting') && (
-                    <div className="flex justify-end mt-2">
-                        <Link href="/meetings/create" className="inline-flex items-center text-sm font-medium text-slate-700 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 hover:bg-slate-50 transition-colors">
-                            Lanjut demo: Buat Rapat <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
-                        </Link>
-                    </div>
-                )}
             </div>
         </>
     );
