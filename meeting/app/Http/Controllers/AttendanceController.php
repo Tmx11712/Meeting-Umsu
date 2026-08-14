@@ -52,6 +52,12 @@ class AttendanceController extends Controller
 
     public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting)
     {
+        /**
+         * [EDUKASI ARSITEKTUR: ELOQUENT UPDATE OR CREATE]
+         * Daripada melakukan query `if (exists) update else create`,
+         * metode `updateOrCreate` menggabungkan dua operasi tersebut menjadi satu (lebih efisien).
+         * Parameter pertama adalah kondisi pencarian, parameter kedua adalah data yang akan diisi.
+         */
         if ($request->user_id) {
             // Absensi untuk user terdaftar (karyawan UMSU)
             MeetingAttendance::updateOrCreate(

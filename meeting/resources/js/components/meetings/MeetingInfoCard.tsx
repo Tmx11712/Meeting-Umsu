@@ -19,6 +19,12 @@ interface MeetingInfoCardProps {
 }
 
 export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton = false, className = '' }: MeetingInfoCardProps) {
+    /**
+     * [EDUKASI ARSITEKTUR: REUSABLE UI COMPONENT]
+     * Komponen ini merender kotak informasi rapat (Judul, Waktu, Tempat).
+     * Dengan menjadikannya komponen terpisah (`MeetingInfoCard`), kita bisa menggunakannya kembali di halaman 
+     * Recording, Correction, Review, maupun Approval tanpa menulis ulang kode HTML yang sama.
+     */
     const participantCount = totalParticipants !== undefined ? totalParticipants : (meeting.participants?.length || 0);
 
     return (

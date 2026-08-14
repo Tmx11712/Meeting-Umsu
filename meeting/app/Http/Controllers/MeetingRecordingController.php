@@ -37,6 +37,13 @@ class MeetingRecordingController extends Controller
         $path = $file->store('recordings/'.$meeting->id, 'local');
 
         try {
+            /**
+             * [EDUKASI ARSITEKTUR: DATABASE TRANSACTIONS]
+             * DB::transaction digunakan untuk memastikan data aman.
+             * Jika proses insert `recordings` berhasil, tetapi update `meetings` gagal karena error,
+             * seluruh operasi database di dalam blok ini akan dibatalkan (ROLLBACK).
+             * Ini mencegah adanya rekaman "yatim piatu" tanpa merubah status rapat.
+             */
             $recording = DB::transaction(function () use ($meeting, $request, $path, $file) {
                 $recording = $meeting->recordings()->create([
                     'file_path' => $path,
