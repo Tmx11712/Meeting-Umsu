@@ -7,10 +7,10 @@ return [
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | This file is for storing the credentials for third party services such
-    | as Resend, Postmark, AWS, and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
+    | [EDUKASI ARSITEKTUR: ENVIRONMENT CONFIGURATION]
+    | File ini mengatur kredensial (API Key, Secret) untuk layanan pihak ketiga.
+    | Sangat penting untuk MENGAMBIL nilainya dari file `.env` menggunakan fungsi `env()`.
+    | JANGAN PERNAH menuliskan API Key langsung di file ini, agar rahasia tidak bocor ke Git/GitHub.
     |
     */
 

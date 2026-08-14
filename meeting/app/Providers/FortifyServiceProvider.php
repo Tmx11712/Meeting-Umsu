@@ -59,6 +59,11 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Configure Fortify views.
+     * 
+     * [EDUKASI ARSITEKTUR: FRONTEND-AGNOSTIC AUTHENTICATION]
+     * Fortify adalah backend autentikasi dari Laravel yang "Headless" (tidak peduli frontend-nya apa).
+     * Di bagian inilah kita mengaitkan (binding) fitur-fitur autentikasi Fortify agar merender
+     * halaman-halaman Inertia/React (seperti `auth/login`, `auth/register`) yang kita miliki.
      */
     private function configureViews(): void
     {
