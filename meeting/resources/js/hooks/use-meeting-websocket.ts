@@ -10,6 +10,10 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
     const isOperator = isAdmin || isUmum || isHumas;
 
     // Logic for routing based on stage (only used for realtime advancement, not on mount)
+    // Humas tetap di ruang rekaman, hanya Admin & Bag. Umum yang maju ke koreksi/absensi/review.
+    // Humas baru diarahkan saat stage 6+ (approval) untuk melihat hasil akhir.
+    const isAdminOrUmum = isAdmin || isUmum;
+
     const checkAndRedirect = useCallback((stage: number): boolean => {
         if (!meetingId) {
             return false;
@@ -17,36 +21,30 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
 
         const currentPath = window.location.pathname;
         
-        // We no longer aggressively redirect on mount, so users can navigate freely.
-        // The redirects below are only triggered by realtime WS events to pull users forward.
+        // Stage 3-5: Hanya Admin & Bag. Umum yang diarahkan. Humas tetap di ruang rekaman.
         if (stage === 3 && !currentPath.includes('/correction')) {
-            if (isOperator) {
+            if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/correction`);
                 return true; 
             }
         } else if (stage === 4 && !currentPath.includes('/attendance')) {
-            if (isOperator) {
+            if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/attendance`);
                 return true; 
             }
         } else if (stage === 5 && !currentPath.includes('/review')) {
-            if (isOperator) {
+            if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/review`);
                 return true; 
             }
-        } else if (stage === 6 && !currentPath.includes('/approval')) {
+        } else if (stage >= 6 && !currentPath.includes('/approval')) {
+            // Stage 6+: Semua role (termasuk Humas) diarahkan ke halaman approval
             router.visit(`/meetings/${meetingId}/approval`);
-
             return true; 
-        } else if (stage >= 7 && !currentPath.includes(`/meetings/${meetingId}/approval`)) {
-            // Jika rapat sudah selesai (tahap 7), arahkan semua partisipan ke halaman Approval
-            router.visit(`/meetings/${meetingId}/approval`);
-
-            return true;
         }
         
         return false;
-    }, [meetingId]);
+    }, [meetingId, isAdminOrUmum]);
 
     // Removed the aggressive mount-time redirect useEffect so users can click older tabs.
 
@@ -57,14 +55,22 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
             return;
         }
         
-        const interval = setInterval(() => {
-            router.reload({ only: ['meeting', 'meetings'] });
-        }, 5000); // 5 seconds polling
+        const safeReload = () => {
+            router.reload({
+                only: ['meeting', 'meetings'],
+                onError: () => {
+                    // Meeting sudah dihapus (404), arahkan ke dashboard
+                    router.visit('/dashboard', { replace: true });
+                },
+            });
+        };
+
+        const interval = setInterval(safeReload, 5000); // 5 seconds polling
         
         // When tab becomes active again, immediately fetch fresh data
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
-                router.reload({ only: ['meeting', 'meetings'] });
+                safeReload();
             }
         };
         
@@ -96,6 +102,14 @@ return;
                     if (!redirected) {
                         router.reload({ only: ['meeting', 'meetings'] });
                     }
+                } else if (e.type === 'approval' && e.meeting?.current_stage) {
+                    // Pimpinan sudah approve → arahkan semua ke halaman approval
+                    const redirected = checkAndRedirect(e.meeting.current_stage);
+                    if (!redirected) {
+                        router.reload({ only: ['meeting', 'meetings'] });
+                    }
+                } else if (e.type === 'deleted') {
+                    router.visit('/dashboard', { replace: true });
                 } else {
                     router.reload({ only: ['meeting', 'meetings'] });
                 }

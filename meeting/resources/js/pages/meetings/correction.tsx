@@ -5,11 +5,13 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader2, Upload } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import type { Meeting } from '@/types/meeting';
 
 export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
     const { canEdit } = usePermissions();
     const canCorrect = canEdit('transcript');
+    useMeetingWebSocket(meeting?.id);
 
     // Combine all transcripts into a single initial text
     const recordings = meeting.recordings || [];
@@ -124,7 +126,7 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
                     <audio 
                         controls 
                         className="w-full h-10" 
-                        src={`/storage/${firstRecording.file_path}`}
+                        src={`/meetings/${meeting.id}/recording/${firstRecording.id}/stream`}
                     >
                         Browser Anda tidak mendukung elemen audio.
                     </audio>

@@ -110,14 +110,94 @@ return;
         setDocumentToDelete(id);
     };
 
-    // Dummy Attendance Logic
+    // Real Attendance Data (gabungan peserta terdaftar & tamu tambahan)
     const attendances = meeting.attendances || [];
-    const total = participants.length > 0 ? participants.length : 12;
-    const hadir = attendances.length > 0 ? attendances.filter((a: any) => a.status === 'hadir').length : (participants.length > 0 ? 0 : 10);
-    const terlambat = attendances.length > 0 ? attendances.filter((a: any) => a.status === 'terlambat').length : (participants.length > 0 ? 0 : 1);
-    const tidakHadir = total - hadir - terlambat;
+    
+    const displayList: any[] = [];
+    
+    // 1. Masukkan semua peserta yang diundang (dari tabel meeting_participants)
+    participants.forEach((p: any) => {
+        const att = attendances.find((a: any) => a.user_id === p.user_id);
+        displayList.push({
+            id: `p-${p.id}`,
+            user_id: p.user_id,
+            name: p.user?.name || 'Unknown',
+            subtitle: p.role_in_meeting || p.user?.department || 'Peserta',
+            status: att?.status || 'tidak_hadir',
+            isGuest: false,
+        });
+    });
+    
+    // 2. Masukkan absensi yang tidak ada di daftar peserta (misal: tamu manual)
+    attendances.forEach((a: any) => {
+        if (a.user_id) {
+            const isParticipant = participants.some((p: any) => p.user_id === a.user_id);
+            if (!isParticipant) {
+                displayList.push({
+                    id: `a-${a.id}`,
+                    user_id: a.user_id,
+                    name: a.user?.name || 'Unknown',
+                    subtitle: a.user?.department || (a.method === 'qr_code' ? 'Scan QR' : 'Hadir Tambahan'),
+                    status: a.status,
+                    isGuest: false,
+                });
+            }
+        } else {
+            // Tamu tanpa user_id
+            displayList.push({
+                id: `g-${a.id}`,
+                user_id: null,
+                name: a.guest_name || 'Tamu',
+                subtitle: a.guest_institution || 'Input Manual',
+                status: a.status,
+                isGuest: true,
+            });
+        }
+    });
 
-    const getPct = (num: number) => total > 0 ? ((num / total) * 100).toFixed(2) : '0.00';
+    const total = displayList.length;
+    const hadir = displayList.filter(i => i.status === 'hadir').length;
+    const terlambat = displayList.filter(i => i.status === 'terlambat').length;
+    const tidakHadir = displayList.filter(i => i.status === 'tidak_hadir').length;
+
+    const getPct = (num: number) => total > 0 ? ((num / total) * 100).toFixed(0) : '0';
+
+    const changeStatus = (item: any, newStatus: string) => {
+        const payload: any = { status: newStatus };
+        if (item.user_id) {
+            payload.user_id = item.user_id;
+        } else {
+            payload.guest_name = item.name;
+            payload.guest_institution = item.subtitle === 'Input Manual' ? null : item.subtitle;
+        }
+        router.post(`/meetings/${meeting.id}/attendance/manual`, payload, { preserveScroll: true });
+    };
+
+    // Manual attendance form state
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [guestName, setGuestName] = useState('');
+    const [guestInstitution, setGuestInstitution] = useState('');
+    const [guestStatus, setGuestStatus] = useState('hadir');
+    const [addingAttendance, setAddingAttendance] = useState(false);
+
+    const addGuestAttendance = () => {
+        if (!guestName.trim()) return;
+        setAddingAttendance(true);
+        router.post(`/meetings/${meeting.id}/attendance/manual`, {
+            guest_name: guestName,
+            guest_institution: guestInstitution,
+            status: guestStatus,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setGuestName('');
+                setGuestInstitution('');
+                setGuestStatus('hadir');
+                setShowAddForm(false);
+            },
+            onFinish: () => setAddingAttendance(false),
+        });
+    };
 
     if (!minutes) {
         return (
@@ -195,10 +275,71 @@ return;
                         )}
 
                         {/* Attendance Summary */}
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6 mb-2 flex items-center gap-2">
-                            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                            Data Absensi ({hadir + terlambat}/{total} Hadir)
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-6 mb-2 flex items-center justify-between">
+                            <span className="flex items-center gap-2">
+                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                                Data Absensi ({hadir + terlambat}/{total} Hadir)
+                            </span>
+                            {canManageReview && (
+                                <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setShowAddForm(!showAddForm)}>
+                                    <Plus className="w-3.5 h-3.5 mr-1.5" /> Tambah Absensi
+                                </Button>
+                            )}
                         </h3>
+
+                        {/* Form Tambah Absensi Manual */}
+                        {showAddForm && canManageReview && (
+                            <Card className="border-blue-200 bg-blue-50/30 mb-3">
+                                <CardContent className="p-4 space-y-3">
+                                    <p className="text-sm font-semibold text-slate-800">Input Absensi Manual</p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div>
+                                            <Label className="text-xs text-slate-600 mb-1">Nama Peserta *</Label>
+                                            <Input
+                                                value={guestName}
+                                                onChange={e => setGuestName(e.target.value)}
+                                                placeholder="Masukkan nama..."
+                                                className="h-9 text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className="text-xs text-slate-600 mb-1">Instansi / Asal</Label>
+                                            <Input
+                                                value={guestInstitution}
+                                                onChange={e => setGuestInstitution(e.target.value)}
+                                                placeholder="Contoh: Dinas Pendidikan"
+                                                className="h-9 text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex gap-1.5">
+                                            {[
+                                                { value: 'hadir', label: 'Hadir', active: 'bg-emerald-500 text-white', inactive: 'bg-emerald-100 text-emerald-600' },
+                                                { value: 'terlambat', label: 'Terlambat', active: 'bg-amber-500 text-white', inactive: 'bg-amber-100 text-amber-600' },
+                                                { value: 'tidak_hadir', label: 'Tidak Hadir', active: 'bg-red-500 text-white', inactive: 'bg-red-100 text-red-600' },
+                                            ].map(s => (
+                                                <button
+                                                    key={s.value}
+                                                    type="button"
+                                                    onClick={() => setGuestStatus(s.value)}
+                                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${guestStatus === s.value ? s.active : s.inactive}`}
+                                                >
+                                                    {s.label}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="flex gap-2 ml-auto">
+                                            <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setShowAddForm(false)}>Batal</Button>
+                                            <Button size="sm" className="h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white" onClick={addGuestAttendance} disabled={addingAttendance || !guestName.trim()}>
+                                                {addingAttendance ? 'Menyimpan...' : 'Simpan'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
                         <Card className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-sm bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm">
                             <CardContent className="p-4">
                                 {/* Stats Row */}
@@ -216,25 +357,30 @@ return;
                                         <div className="text-xs font-medium text-red-600/70 dark:text-red-400/70">Tidak Hadir</div>
                                     </div>
                                 </div>
-                                {/* Participant List with interactive status */}
+                                {/* Daftar Kehadiran (dari data gabungan) */}
                                 <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
-                                    {participants.map((p: any) => {
-                                        const att = attendances.find((a: any) => a.user_id === p.user_id);
-                                        const status = att?.status || 'tidak_hadir';
+                                    {displayList.length === 0 ? (
+                                        <div className="text-center py-6 text-slate-400 text-sm italic">
+                                            Belum ada data absensi. Gunakan QR Code atau input manual.
+                                        </div>
+                                    ) : displayList.map((att: any) => {
+                                        const name = att.name;
+                                        const subtitle = att.subtitle;
+                                        const status = att.status;
                                         const statuses = [
                                             { value: 'hadir', label: 'Hadir', color: 'bg-emerald-500 hover:bg-emerald-600 text-white', inactive: 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400' },
                                             { value: 'terlambat', label: 'Terlambat', color: 'bg-amber-500 hover:bg-amber-600 text-white', inactive: 'bg-amber-100 text-amber-600 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400' },
                                             { value: 'tidak_hadir', label: 'Absen', color: 'bg-red-500 hover:bg-red-600 text-white', inactive: 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400' },
                                         ];
                                         return (
-                                            <div key={p.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                            <div key={att.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                                                        {(p.user?.name || 'U').charAt(0).toUpperCase()}
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${att.isGuest ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                        {name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
-                                                        <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{p.user?.name || 'Unknown'}</div>
-                                                        <div className="text-xs text-slate-500 dark:text-slate-400">{p.role_in_meeting || 'Peserta'}</div>
+                                                        <div className="text-sm font-semibold text-slate-800 dark:text-slate-200">{name}</div>
+                                                        <div className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</div>
                                                     </div>
                                                 </div>
                                                 {canManageReview ? (
@@ -242,12 +388,7 @@ return;
                                                         {statuses.map((s) => (
                                                             <button
                                                                 key={s.value}
-                                                                onClick={() => {
-                                                                    router.post(`/meetings/${meeting.id}/attendance/manual`, {
-                                                                        user_id: p.user_id,
-                                                                        status: s.value
-                                                                    }, { preserveScroll: true });
-                                                                }}
+                                                                onClick={() => changeStatus(att, s.value)}
                                                                 className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer ${status === s.value ? s.color : s.inactive}`}
                                                             >
                                                                 {s.label}
@@ -547,7 +688,7 @@ return;
                                         <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
                                         <span className="text-slate-700 font-bold">Total Peserta</span>
                                     </div>
-                                    <span className="font-bold text-slate-900">{participants.length} Orang</span>
+                                    <span className="font-bold text-slate-900">{total} Orang</span>
                                 </div>
                             </div>
                         </CardContent>

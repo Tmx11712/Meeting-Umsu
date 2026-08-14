@@ -18,7 +18,9 @@ class StoreManualAttendanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'nullable|exists:users,id',
+            'guest_name' => 'nullable|string|max:255',
+            'guest_institution' => 'nullable|string|max:255',
             'status' => 'required|in:hadir,terlambat,tidak_hadir',
             'notes' => 'nullable|string',
         ];

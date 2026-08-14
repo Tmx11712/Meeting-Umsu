@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\IrvanCloud\SyncMeetingsAction;
 use App\Events\MeetingsListUpdated;
+use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreMeetingRequest;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
@@ -155,6 +156,10 @@ class MeetingController extends Controller
         $end = Carbon::parse($validated['end_time']);
         $validated['duration'] = $end->diffInSeconds($start);
 
+        if (isset($validated['agenda'])) {
+            $validated['notes'] = json_encode(['agenda' => $validated['agenda']]);
+        }
+
         $meeting->update($validated);
 
         $existingIds = $meeting->participants()->pluck('user_id')->toArray();
@@ -176,12 +181,14 @@ class MeetingController extends Controller
 
         safe_broadcast(new MeetingsListUpdated('Rapat '.$meeting->title.' telah diperbarui'));
 
-        return redirect()->route('meetings.index')->with('success', 'Rapat berhasil diperbarui.');
+        return redirect()->route('meetings.show', $meeting->id)->with('success', 'Rapat berhasil diperbarui.');
     }
 
     public function destroy(Meeting $meeting)
     {
         abort_unless(auth()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
+
+        safe_broadcast(new MeetingUpdated($meeting, 'deleted'));
 
         $meeting->forceDelete();
 

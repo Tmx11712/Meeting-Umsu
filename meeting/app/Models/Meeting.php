@@ -33,6 +33,22 @@ class Meeting extends Model
         'recording_started_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'agenda',
+    ];
+
+    public function getAgendaAttribute()
+    {
+        if ($this->notes) {
+            $decoded = json_decode($this->notes, true);
+            if (is_array($decoded) && isset($decoded['agenda'])) {
+                return $decoded['agenda'];
+            }
+        }
+
+        return [];
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');

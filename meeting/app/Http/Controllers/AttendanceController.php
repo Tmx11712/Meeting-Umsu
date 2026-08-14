@@ -7,6 +7,7 @@ use App\Http\Requests\Meeting\StoreManualAttendanceRequest;
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
 use App\Services\IrvanCloudSyncService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -51,19 +52,38 @@ class AttendanceController extends Controller
 
     public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting)
     {
-        MeetingAttendance::updateOrCreate(
-            [
-                'meeting_id' => $meeting->id,
-                'user_id' => $request->user_id,
-            ],
-            [
-                'status' => $request->status,
-                'check_in_time' => now(),
-                'method' => 'manual',
-                'recorded_by' => $request->user()->id,
-                'notes' => $request->notes,
-            ]
-        );
+        if ($request->user_id) {
+            // Absensi untuk user terdaftar (karyawan UMSU)
+            MeetingAttendance::updateOrCreate(
+                [
+                    'meeting_id' => $meeting->id,
+                    'user_id' => $request->user_id,
+                ],
+                [
+                    'status' => $request->status,
+                    'check_in_time' => now(),
+                    'method' => 'manual',
+                    'recorded_by' => $request->user()->id,
+                    'notes' => $request->notes,
+                ]
+            );
+        } else {
+            // Absensi untuk tamu eksternal (bukan karyawan UMSU)
+            MeetingAttendance::updateOrCreate(
+                [
+                    'meeting_id' => $meeting->id,
+                    'guest_name' => $request->guest_name,
+                    'guest_institution' => $request->guest_institution,
+                ],
+                [
+                    'status' => $request->status,
+                    'check_in_time' => now(),
+                    'method' => 'manual',
+                    'recorded_by' => $request->user()->id,
+                    'notes' => $request->notes,
+                ]
+            );
+        }
 
         safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
@@ -90,7 +110,7 @@ class AttendanceController extends Controller
         }
 
         $now = now();
-        $meetingStartTime = \Carbon\Carbon::parse($meeting->date . ' ' . $meeting->start_time);
+        $meetingStartTime = Carbon::parse($meeting->date.' '.$meeting->start_time);
         $status = $now->greaterThan($meetingStartTime) ? 'terlambat' : 'hadir';
 
         // Auto record attendance via QR scan

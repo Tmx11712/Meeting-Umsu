@@ -42,7 +42,7 @@ class MeetingMinuteController extends Controller
             'participants.user',
             'minutes.actionItems',
             'documents',
-            'attendances',
+            'attendances.user',
             'recordings' => function ($q) {
                 $q->orderBy('created_at', 'asc');
             },

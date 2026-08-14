@@ -31,8 +31,10 @@ class UpdateMeetingRequest extends FormRequest
             'location' => 'required|string|max:255',
             'type' => 'required|string',
             'notes' => 'nullable|string',
-            'participants' => 'required|array',
+            'participants' => 'nullable|array',
             'participants.*' => 'exists:users,id',
+            'agenda' => 'nullable|array',
+            'agenda.*' => 'string|max:255',
         ];
     }
 

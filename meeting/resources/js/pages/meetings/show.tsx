@@ -35,11 +35,11 @@ export default function MeetingShow({ meeting }: any) {
     const isViewer = roles.includes('Viewer');
 
     const canRecord = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum || isPimpinan || isViewer) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canCorrect = (isAdmin || isUmum || isViewer) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
-    const canAttend = (isAdmin || isUmum || isHumas || isViewer) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canReview = (isAdmin || isUmum || isViewer) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canApprove = (isAdmin || isPimpinan || isViewer) && meeting.status === 'reviewed';
+    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
+    const canCorrect = (isAdmin || isUmum) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
+    const canAttend = (isAdmin || isUmum || isHumas) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
+    const canReview = (isAdmin || isUmum) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);
+    const canApprove = (isAdmin || isPimpinan) && meeting.status === 'reviewed';
     const hasOperationalActions = canEnterRecordingRoom || canCorrect || canAttend || canReview || canApprove;
 
     return (
@@ -109,8 +109,16 @@ export default function MeetingShow({ meeting }: any) {
                                 <span className="font-medium uppercase">{meeting.type}</span>
                             </div>
                             <div className="pt-2">
-                                <span className="text-muted-foreground block mb-1">Deskripsi</span>
-                                <p className="font-medium">{meeting.description || '-'}</p>
+                                <span className="text-muted-foreground block mb-2">Agenda Rapat</span>
+                                {meeting.agenda && meeting.agenda.length > 0 ? (
+                                    <ul className="list-disc pl-5 font-medium space-y-1">
+                                        {meeting.agenda.map((item: string, index: number) => (
+                                            <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="font-medium text-slate-500 italic">Tidak ada agenda</p>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
