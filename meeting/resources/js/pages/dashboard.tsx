@@ -16,6 +16,7 @@ type Props = {
     };
     latestMeetings: any[];
     upcomingMeetings: any[];
+    actionItems?: any[];
 };
 /**
  * [EDUKASI ARSITEKTUR: INERTIA PROPS]
@@ -23,7 +24,7 @@ type Props = {
  * Data ini datang langsung dari Backend (Controller) tanpa perlu Fetch API, Axios, atau Loading State!
  * Inertia.js yang menjahitnya di belakang layar. Ini menghemat ratusan baris kode.
  */
-export default function Dashboard({ stats, latestMeetings, upcomingMeetings }: Props) {
+export default function Dashboard({ stats, latestMeetings, upcomingMeetings, actionItems = [] }: Props) {
     const { guardAction, hasRole, canEdit, isAdmin } = usePermissions();
 
     const page = usePage<any>();
@@ -185,8 +186,9 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                     </Card>
                 </div>
 
-                {/* Rapat terbaru */}
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Rapat terbaru */}
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
                     <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
                         <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
@@ -244,23 +246,65 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                     </div>
                 </div>
 
+                    {/* Action items mendesak */}
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
+                        <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Action items mendesak</h2>
+                        </div>
+                        <div className="flex-1 overflow-y-auto max-h-[400px] p-4 flex flex-col gap-3">
+                            {actionItems && actionItems.length > 0 ? (
+                                actionItems.map((item: any, idx: number) => {
+                                    const bgColors = ['bg-red-50/50 dark:bg-red-900/20 border-red-100/50 dark:border-red-900/50', 'bg-amber-50/50 dark:bg-amber-900/20 border-amber-100/50 dark:border-amber-900/50', 'bg-slate-50/50 dark:bg-slate-800/50 border-slate-100/50 dark:border-slate-800/50'];
+                                    const dotColors = ['bg-red-500', 'bg-amber-500', 'bg-slate-400'];
+                                    const dateColors = ['text-red-600 dark:text-red-400', 'text-amber-600 dark:text-amber-400', 'text-slate-500 dark:text-slate-400'];
+                                    
+                                    const colorIdx = idx < 3 ? idx : 2;
+
+                                    return (
+                                        <div key={item.id} className={`rounded-xl border p-4 flex items-start gap-3 ${bgColors[colorIdx]}`}>
+                                            <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${dotColors[colorIdx]}`}></div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-start gap-4">
+                                                    <h3 className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+                                                        {item.description}
+                                                    </h3>
+                                                    <span className={`text-[12px] whitespace-nowrap shrink-0 ${dateColors[colorIdx]}`}>
+                                                        {item.deadline ? formatDateShort(item.deadline) : 'Tidak ada'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1">
+                                                    PIC: {item.pic || '-'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="p-8 text-center text-slate-400 text-sm">Tidak ada action items mendesak.</div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
                 {/* Jadwal mendatang */}
                 {upcomingMeetings && upcomingMeetings.length > 0 && (
                     <div>
-                        <h2 className="text-base font-semibold text-slate-900 dark:text-white mb-3">Jadwal mendatang</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Jadwal mendatang</h2>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {upcomingMeetings.map((m, idx) => (
                                 <Link key={m.id} href={getMeetingUrl(m)}>
-                                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
-                                        <CardContent className="p-5 flex flex-col gap-3">
-                                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${idx === 0 ? 'bg-blue-50' : idx === 1 ? 'bg-emerald-50' : 'bg-violet-50'}`}>
-                                                {upcomingIcons[idx % 3]}
+                                    <Card className="rounded-xl border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
+                                        <CardContent className="p-5 flex flex-col gap-4">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${idx === 0 ? 'bg-blue-50 text-blue-500' : idx === 1 ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}`}>
+                                                {idx === 0 ? <Users className="w-5 h-5" /> : idx === 1 ? <Clock className="w-5 h-5" /> : <CalendarDays className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                                                <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug mb-1.5">
                                                     {m.title}
                                                 </h4>
-                                                <p className="text-xs text-slate-500 mt-1.5">
+                                                <p className="text-[13px] text-slate-500">
                                                     {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''} · {m.participants_count || 0} peserta
                                                 </p>
                                             </div>
@@ -269,6 +313,14 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                                 </Link>
                             ))}
                         </div>
+                    </div>
+                )}
+                
+                {canEdit('meeting') && (
+                    <div className="flex justify-end mt-2">
+                        <Link href="/meetings/create" className="inline-flex items-center text-sm font-medium text-slate-700 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 hover:bg-slate-50 transition-colors">
+                            Lanjut demo: Buat Rapat <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                        </Link>
                     </div>
                 )}
             </div>

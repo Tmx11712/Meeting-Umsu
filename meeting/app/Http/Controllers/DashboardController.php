@@ -82,10 +82,18 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
+        // Action Items Mendesak
+        $actionItems = MeetingActionItem::with('meeting')
+            ->where('status', 'open')
+            ->orderBy('deadline', 'asc')
+            ->take(3)
+            ->get();
+
         return Inertia::render('dashboard', [
             'stats' => $stats,
             'latestMeetings' => $latestMeetings,
             'upcomingMeetings' => $upcomingMeetings,
+            'actionItems' => $actionItems,
         ]);
     }
 }
