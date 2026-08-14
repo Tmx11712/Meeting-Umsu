@@ -55,7 +55,7 @@ return '-';
         if (minutes?.content) {
             setEditData(JSON.parse(JSON.stringify(minutes.content)));
         } else {
-            setEditData({ pembukaan: '', pembahasan: [], keputusan: [] });
+            setEditData({ latar_belakang: '', peserta_rapat: [], pembahasan: [], keputusan: [] });
         }
 
         setEditModalOpen(true);
@@ -266,11 +266,23 @@ return '-';
                     <CardContent className="p-4 flex-1 text-sm text-slate-800 space-y-6">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
                                 <div className="space-y-8">
-                                    {/* Pembukaan */}
-                                    {minutes.content.pembukaan && (
+                                    {/* Latar Belakang */}
+                                    {minutes.content.latar_belakang && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Pembukaan</h3>
-                                            <p className="leading-relaxed text-slate-700">{minutes.content.pembukaan}</p>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Latar Belakang</h3>
+                                            <p className="leading-relaxed text-slate-700">{minutes.content.latar_belakang}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Peserta Rapat */}
+                                    {minutes.content.peserta_rapat && Array.isArray(minutes.content.peserta_rapat) && minutes.content.peserta_rapat.length > 0 && (
+                                        <div>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Peserta Rapat</h3>
+                                            <ul className="list-disc pl-5 space-y-1.5">
+                                                {minutes.content.peserta_rapat.map((peserta: string, idx: number) => (
+                                                    <li key={idx} className="leading-relaxed text-slate-700">{peserta}</li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     )}
 
@@ -434,12 +446,41 @@ return '-';
                     {editData && (
                         <div className="space-y-6 py-4">
                             <div className="space-y-2">
-                                <Label className="font-bold">Pembukaan</Label>
+                                <Label className="font-bold">Latar Belakang</Label>
                                 <Textarea 
-                                    value={editData.pembukaan || ''} 
-                                    onChange={e => setEditData({...editData, pembukaan: e.target.value})}
+                                    value={editData.latar_belakang || ''} 
+                                    onChange={e => setEditData({...editData, latar_belakang: e.target.value})}
                                     rows={3}
                                 />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <Label className="font-bold">Peserta Rapat</Label>
+                                    <Button variant="outline" size="sm" onClick={() => setEditData({...editData, peserta_rapat: [...(editData.peserta_rapat || []), '']})}>
+                                        <Plus className="w-4 h-4 mr-2" /> Tambah Peserta
+                                    </Button>
+                                </div>
+                                {editData.peserta_rapat?.map((peserta: string, idx: number) => (
+                                    <div key={idx} className="flex gap-2">
+                                        <Input 
+                                            value={peserta} 
+                                            onChange={e => {
+                                                const newData = [...editData.peserta_rapat];
+                                                newData[idx] = e.target.value;
+                                                setEditData({...editData, peserta_rapat: newData});
+                                            }}
+                                            placeholder="Nama Peserta"
+                                        />
+                                        <Button variant="ghost" size="icon" className="shrink-0 text-rose-500" onClick={() => {
+                                            const newData = [...editData.peserta_rapat];
+                                            newData.splice(idx, 1);
+                                            setEditData({...editData, peserta_rapat: newData});
+                                        }}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="space-y-4">
