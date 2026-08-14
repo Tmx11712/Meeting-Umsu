@@ -1,3 +1,7 @@
+# [EDUKASI ARSITEKTUR: INFRASTRUKTUR / DOCKER]
+# File ini mendefinisikan seluruh "layanan" tambahan yang dibutuhkan aplikasi kita agar bisa berjalan lokal,
+# tanpa Anda harus repot menginstal PostgreSQL, Redis, atau MinIO secara manual.
+# Semua berjalan terisolasi di dalam container!
 services:
   pgsql:
     image: postgres:16-alpine

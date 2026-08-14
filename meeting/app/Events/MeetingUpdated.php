@@ -9,6 +9,13 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * [EDUKASI ARSITEKTUR: EVENT BROADCASTING]
+ * Event ini di-trigger (dipicu) dari backend kapanpun ada perubahan data rapat (tahapan berganti, rekam dimulai, absensi masuk).
+ * Karena class ini mengimplementasikan `ShouldBroadcastNow`, Laravel akan langsung mengirim notifikasi
+ * ke server WebSockets (Pusher/Reverb) sehingga semua halaman web milik peserta rapat akan ter-update seketika
+ * tanpa perlu di-refresh.
+ */
 class MeetingUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
