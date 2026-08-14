@@ -524,22 +524,22 @@ return;
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-blue-50/50 rounded-lg p-3 text-center border border-blue-100">
+                                <div className="bg-blue-50/50 rounded-lg p-3 text-center border border-blue-100 aspect-square flex flex-col justify-center">
                                     <p className="text-[11px] text-blue-700 font-medium mb-1">Topik Dibahas</p>
                                     <p className="text-2xl font-bold text-blue-600">{minutes.ai_topics_count || 0}</p>
                                     <p className="text-[10px] text-blue-500 mt-1">Topik utama</p>
                                 </div>
-                                <div className="bg-green-50/50 rounded-lg p-3 text-center border border-green-100">
+                                <div className="bg-green-50/50 rounded-lg p-3 text-center border border-green-100 aspect-square flex flex-col justify-center">
                                     <p className="text-[11px] text-green-700 font-medium mb-1">Keputusan</p>
                                     <p className="text-2xl font-bold text-green-600">{minutes.ai_decisions_count || 0}</p>
                                     <p className="text-[10px] text-green-500 mt-1">Keputusan penting</p>
                                 </div>
-                                <div className="bg-yellow-50/50 rounded-lg p-3 text-center border border-yellow-100">
+                                <div className="bg-yellow-50/50 rounded-lg p-3 text-center border border-yellow-100 aspect-square flex flex-col justify-center">
                                     <p className="text-[11px] text-yellow-700 font-medium mb-1">Tindak Lanjut</p>
                                     <p className="text-2xl font-bold text-yellow-600">{minutes.action_items?.length || 0}</p>
                                     <p className="text-[10px] text-yellow-500 mt-1">Action items</p>
                                 </div>
-                                <div className="bg-sky-50/50 rounded-lg p-3 text-center border border-sky-100">
+                                <div className="bg-sky-50/50 rounded-lg p-3 text-center border border-sky-100 aspect-square flex flex-col justify-center">
                                     <p className="text-[11px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
                                     <p className="text-xl font-bold text-sky-600 mt-1">{meeting.duration_formatted || "00:00:00"}</p>
                                     <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
