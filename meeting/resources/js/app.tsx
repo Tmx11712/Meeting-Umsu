@@ -9,6 +9,13 @@ import './echo';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+/**
+ * [EDUKASI ARSITEKTUR: INERTIA CLIENT SETUP]
+ * Inilah file pintu gerbang pertama untuk sisi Frontend aplikasi kita (React).
+ * Di sinilah Inertia dideklarasikan. Inertia bertugas menjembatani backend Laravel dan frontend React
+ * sehingga aplikasi terasa cepat seperti Single Page Application (SPA),
+ * namun kita tidak perlu pusing memikirkan pembuatan API secara terpisah.
+ */
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {

@@ -40,7 +40,15 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
-    /** @use HasFactory<UserFactory> */
+    /**
+     * [EDUKASI ARSITEKTUR: ELOQUENT TRAITS]
+     * Traits (seperti `HasRoles`, `HasUuids`) adalah cara PHP mendaur ulang fungsi yang sering digunakan 
+     * di banyak tempat tanpa harus melakukan "Pewarisan/Inheritance" berlapis.
+     * Kode `HasTeams::teams insteadof HasRoles` adalah cara Laravel mengatasi "konflik" jika ada dua trait
+     * yang kebetulan memiliki nama fungsi yang persis sama.
+     * 
+     * @use HasFactory<UserFactory> 
+     */
     use HasFactory, HasRoles, HasTeams, HasUuids, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable {
         HasTeams::teams insteadof HasRoles;
     }
