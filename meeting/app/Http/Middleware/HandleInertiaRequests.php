@@ -31,6 +31,12 @@ class HandleInertiaRequests extends Middleware
     /**
      * Define the props that are shared by default.
      *
+     * [EDUKASI ARSITEKTUR: INERTIA SHARED DATA]
+     * Apapun yang Anda "return" di dalam method `share` ini akan otomatis tersedia
+     * secara global di seluruh komponen React Anda (bisa diakses via `usePage().props`).
+     * Sangat berguna untuk mengirim data yang selalu dibutuhkan tiap halaman, seperti
+     * informasi user yang sedang login, hak akses (roles), atau list menu navigasi.
+     *
      * @see https://inertiajs.com/shared-data
      *
      * @return array<string, mixed>

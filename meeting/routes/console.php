@@ -5,6 +5,13 @@ use App\Services\IrvanCloudSyncService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
+/**
+ * [EDUKASI ARSITEKTUR: TASK SCHEDULING]
+ * File ini mengatur semua tugas yang harus berjalan secara otomatis (seperti cron job).
+ * Dengan Laravel, Anda tidak perlu mengedit file `crontab` di server berulang kali;
+ * cukup daftarkan perintahnya di sini (contoh: `daily()`, `hourly()`),
+ * lalu biarkan satu cron worker Laravel mengeksekusinya secara rutin.
+ */
 Schedule::call(function () {
     TeamInvitation::query()
         ->whereNotNull('expires_at')

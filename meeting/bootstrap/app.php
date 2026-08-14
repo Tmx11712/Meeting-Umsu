@@ -12,6 +12,13 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
+/**
+ * [EDUKASI ARSITEKTUR: BOOTSTRAP / KERNEL BARU]
+ * Mulai dari Laravel 11, struktur aplikasi disederhanakan.
+ * File `bootstrap/app.php` ini menggantikan peran dari `App\Http\Kernel.php` dan `App\Exceptions\Handler.php`
+ * yang ada di versi Laravel sebelumnya.
+ * Di sinilah kita mendaftarkan routing utama, middleware global/alias, dan penanganan exception.
+ */
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
