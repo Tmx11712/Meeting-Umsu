@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\URL;
 trait HasTeams
 {
     /**
+     * [EDUKASI ARSITEKTUR: BAGAIMANA TRAIT BEKERJA]
+     * Trait di PHP memungkinkan kita untuk "menyuntikkan" fungsi-fungsi (seperti relasi `teams()`)
+     * ke dalam sebuah Class (misalnya Class `User`).
+     * Ini membuat Class `User` tidak terlalu panjang dan rumit, karena logika khusus tentang "Tim/Teams"
+     * sudah dipisahkan rapi ke dalam Trait `HasTeams` ini.
+     *
      * Get all of the teams the user belongs to.
      *
      * @return BelongsToMany<Team, $this>

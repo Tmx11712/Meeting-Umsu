@@ -19,6 +19,12 @@ use Illuminate\Support\Facades\Storage;
 
 class TranscribeAudioJob implements ShouldQueue
 {
+    /**
+     * [EDUKASI ARSITEKTUR: BACKGROUND JOBS (QUEUE)]
+     * Implementasi `ShouldQueue` menandakan bahwa perintah dalam file ini (transkripsi AI yang memakan waktu lama)
+     * tidak akan dieksekusi secara sinkron yang membuat browser "hang" menunggu.
+     * Alih-alih, ia akan dimasukkan ke "Antrean" (Queue), dan dieksekusi di belakang layar (background) oleh worker.
+     */
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 3;

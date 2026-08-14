@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
+     * 
+     * [EDUKASI ARSITEKTUR: SERVICE PROVIDER]
+     * Method `boot` dipanggil sesaat sebelum aplikasi benar-benar mulai menangani request HTTP.
+     * Tempat ini cocok untuk mengatur konfigurasi global (seperti aturan kata sandi default di bawah),
+     * mendefinisikan *macro*, atau mendaftarkan *event listener*.
      */
     public function boot(): void
     {
