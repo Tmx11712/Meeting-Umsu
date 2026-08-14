@@ -48,8 +48,26 @@ class MeetingController extends Controller
     {
         $users = User::where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
+        $now = Carbon::now();
+        
+        $upcomingMeetings = Meeting::withCount('participants')
+            ->where('date', '>=', $now->toDateString())
+            ->whereIn('current_stage', [1, 2])
+            ->orderBy('date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->take(3)
+            ->get();
+            
+        $actionItems = \App\Models\MeetingActionItem::with(['meeting'])
+            ->where('status', 'open')
+            ->orderBy('deadline', 'asc')
+            ->take(3)
+            ->get();
+
         return Inertia::render('meetings/create', [
             'users' => $users,
+            'upcomingMeetings' => $upcomingMeetings,
+            'actionItems' => $actionItems,
         ]);
     }
 

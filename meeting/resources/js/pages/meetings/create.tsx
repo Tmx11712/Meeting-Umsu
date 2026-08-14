@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save, Plus, X, GripVertical, Check } from 'lucide-react';
+import { ArrowLeft, Save, Plus, X, GripVertical, Check, CalendarDays, Clock, Users } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 
-export default function CreateMeeting({ users, meeting }: { users: any[], meeting?: any }) {
+export default function CreateMeeting({ users, meeting, upcomingMeetings = [], actionItems = [] }: { users: any[], meeting?: any, upcomingMeetings?: any[], actionItems?: any[] }) {
     const { data, setData, post, put, processing, errors } = useForm({
         title: meeting?.title || '',
         type: meeting?.type || 'Rapat internal',
@@ -44,7 +44,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
     };
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-6 py-6 px-4 w-full max-w-5xl mx-auto">
+        <div className="flex h-full flex-1 flex-col gap-6 py-6 px-4 w-full max-w-7xl mx-auto">
             <Head title={meeting ? "Edit Jadwal Rapat" : "Buat Jadwal Rapat Baru"} />
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -63,10 +63,14 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                 </div>
             </div>
 
-            <form onSubmit={submit}>
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5 shadow-sm">
-                        
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {/* Bagian Kiri: Form Input (Memakan 2 Kolom) */}
+                <div className="lg:col-span-2">
+                    <form onSubmit={submit}>
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 flex flex-col gap-5 shadow-sm">
+                                
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="flex flex-col gap-1.5">
                             <label htmlFor="title" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Judul rapat <span className="text-red-500">*</span></label>
                             <Input 
@@ -186,8 +190,100 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                         {meeting ? "Simpan Perubahan" : "Simpan & kirim undangan"}
                     </Button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+
+                {/* Bagian Kanan: Sidebar Informasi (Memakan 1 Kolom) */}
+                <div className="flex flex-col gap-6">
+                    
+                    {/* Action Items Mendesak */}
+                    <Card className="rounded-xl border-slate-200 shadow-sm overflow-hidden bg-white dark:bg-slate-900">
+                        <div className="bg-amber-50/50 dark:bg-amber-900/20 border-b border-amber-100/50 dark:border-amber-800/30 px-5 py-4">
+                            <h3 className="font-semibold text-amber-900 dark:text-amber-100 flex items-center text-[14px]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-amber-500"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                Action items mendesak
+                            </h3>
+                        </div>
+                        <CardContent className="p-0">
+                            {actionItems.length > 0 ? (
+                                <div className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    {actionItems.map((item: any) => {
+                                        const isUrgent = item.deadline ? new Date(item.deadline) <= new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000) : false;
+                                        
+                                        return (
+                                            <div key={item.id} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                                <div className="flex justify-between items-start gap-4">
+                                                    <div className="flex gap-2.5 items-start">
+                                                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${isUrgent ? 'bg-red-500' : 'bg-amber-400'}`}></div>
+                                                        <div>
+                                                            <p className="text-[13px] font-medium text-slate-900 dark:text-slate-100 leading-snug">{item.description}</p>
+                                                            <p className="text-[11px] text-slate-500 mt-1 flex items-center">
+                                                                PIC: <span className="font-medium text-slate-700 dark:text-slate-300 ml-1">{item.pic || '-'}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className={`text-[11px] font-medium shrink-0 ${isUrgent ? 'text-red-600 bg-red-50 dark:bg-red-900/30 dark:text-red-400 px-2 py-0.5 rounded-md' : 'text-slate-500'}`}>
+                                                        {item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'Tidak ada'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="p-6 text-center text-slate-500 text-sm">
+                                    Tidak ada action items mendesak.
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Jadwal Mendatang */}
+                    <Card className="rounded-xl border-slate-200 shadow-sm overflow-hidden bg-white dark:bg-slate-900">
+                        <div className="bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-100/50 dark:border-blue-800/30 px-5 py-4">
+                            <h3 className="font-semibold text-blue-900 dark:text-blue-100 flex items-center text-[14px]">
+                                <CalendarDays className="w-4 h-4 mr-2 text-blue-500" />
+                                Jadwal Mendatang
+                            </h3>
+                        </div>
+                        <CardContent className="p-0">
+                            {upcomingMeetings.length > 0 ? (
+                                <div className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    {upcomingMeetings.map((m: any) => (
+                                        <Link key={m.id} href={`/meetings/${m.id}`} className="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                            <div className="flex justify-between items-center mb-1.5">
+                                                <h4 className="font-semibold text-[13px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate pr-3">
+                                                    {m.title}
+                                                </h4>
+                                            </div>
+                                            <div className="flex items-center text-[11px] text-slate-500 dark:text-slate-400 gap-3">
+                                                <span className="flex items-center">
+                                                    <CalendarDays className="w-3 h-3 mr-1 text-slate-400" />
+                                                    {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                                                </span>
+                                                <span className="flex items-center">
+                                                    <Clock className="w-3 h-3 mr-1 text-slate-400" />
+                                                    {m.start_time ? m.start_time.substring(0, 5) : ''}
+                                                </span>
+                                                <span className="flex items-center">
+                                                    <Users className="w-3 h-3 mr-1 text-slate-400" />
+                                                    {m.participants_count || 0}
+                                                </span>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-6 text-center text-slate-500 text-sm">
+                                    Tidak ada jadwal mendatang.
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                </div>
+            </div>
         </div>
     );
 }
