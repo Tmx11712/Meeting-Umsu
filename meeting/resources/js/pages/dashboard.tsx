@@ -39,7 +39,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
         if (channel) {
             channel.listen('MeetingsListUpdated', (e: any) => {
                 console.log('Dashboard real-time update:', e);
-                router.reload({ only: ['stats', 'latestMeetings', 'upcomingMeetings'] });
+                router.reload({ only: ['stats', 'latestMeetings', 'upcomingMeetings', 'actionItems'] });
             });
         }
 
