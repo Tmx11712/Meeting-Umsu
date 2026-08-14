@@ -215,31 +215,31 @@ return '-';
                 />
 
                 {/* Ringkasan Otomatis AI */}
-                <Card className="rounded-xl border-slate-200 shadow-sm h-fit">
+                <Card className="rounded-xl border-slate-200 shadow-sm h-fit w-fit ml-auto">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-base font-semibold text-slate-900">Ringkasan Otomatis (AI)</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-4">
-                            <div className="bg-blue-50/50 rounded-xl p-3 text-center border border-blue-100 aspect-square flex flex-col justify-center items-center">
-                                <p className="text-[11px] text-blue-700 font-medium mb-1">Topik Utama</p>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            <div className="w-28 h-28 shrink-0 bg-blue-50/50 rounded-xl p-2 text-center border border-blue-100 flex flex-col justify-center items-center">
+                                <p className="text-[10px] text-blue-700 font-medium mb-1">Topik Utama</p>
                                 <p className="text-2xl font-bold text-blue-600 leading-none">{minutes.ai_topics_count || 0}</p>
-                                <p className="text-[10px] text-blue-500 mt-2">Topik</p>
+                                <p className="text-[10px] text-blue-500 mt-1">Topik</p>
                             </div>
-                            <div className="bg-green-50/50 rounded-xl p-3 text-center border border-green-100 aspect-square flex flex-col justify-center items-center">
-                                <p className="text-[11px] text-green-700 font-medium mb-1">Keputusan</p>
+                            <div className="w-28 h-28 shrink-0 bg-green-50/50 rounded-xl p-2 text-center border border-green-100 flex flex-col justify-center items-center">
+                                <p className="text-[10px] text-green-700 font-medium mb-1">Keputusan</p>
                                 <p className="text-2xl font-bold text-green-600 leading-none">{minutes.ai_decisions_count || 0}</p>
-                                <p className="text-[10px] text-green-500 mt-2">Keputusan Penting</p>
+                                <p className="text-[10px] text-green-500 mt-1">Keputusan Penting</p>
                             </div>
-                            <div className="bg-yellow-50/50 rounded-xl p-3 text-center border border-yellow-100 aspect-square flex flex-col justify-center items-center">
-                                <p className="text-[11px] text-yellow-700 font-medium mb-1">Tindak Lanjut</p>
+                            <div className="w-28 h-28 shrink-0 bg-yellow-50/50 rounded-xl p-2 text-center border border-yellow-100 flex flex-col justify-center items-center">
+                                <p className="text-[10px] text-yellow-700 font-medium mb-1">Tindak Lanjut</p>
                                 <p className="text-2xl font-bold text-yellow-600 leading-none">{minutes.action_items?.length || 0}</p>
-                                <p className="text-[10px] text-yellow-500 mt-2">Action Items</p>
+                                <p className="text-[10px] text-yellow-500 mt-1">Action Items</p>
                             </div>
-                            <div className="bg-sky-50/50 rounded-xl p-3 text-center border border-sky-100 aspect-square flex flex-col justify-center items-center">
-                                <p className="text-[11px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
+                            <div className="w-28 h-28 shrink-0 bg-sky-50/50 rounded-xl p-2 text-center border border-sky-100 flex flex-col justify-center items-center">
+                                <p className="text-[10px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
                                 <p className="text-xl font-bold text-sky-600 mt-1 leading-none">{meeting.duration_formatted || "00:00:00"}</p>
-                                <p className="text-[10px] text-sky-500 mt-2">Jam:Menit:Detik</p>
+                                <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
                             </div>
                         </div>
                     </CardContent>
