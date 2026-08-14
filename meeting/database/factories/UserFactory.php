@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * [EDUKASI ARSITEKTUR: MODEL FACTORY]
+ * Factory digunakan untuk membuat data palsu (dummy data) dengan cepat dan rapi.
+ * Ini sangat berguna saat proses Testing (Pengujian) atau Seeding (Mengisi database awal).
+ * Menggunakan library Faker (`fake()`), kita bisa menghasilkan nama, email, dsb yang tampak nyata secara acak.
+ *
  * @extends Factory<User>
  */
 class UserFactory extends Factory
