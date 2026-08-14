@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -384,17 +385,29 @@ return;
                                                     </div>
                                                 </div>
                                                 {canManageReview ? (
-                                                    <div className="flex gap-1">
-                                                        {statuses.map((s) => (
-                                                            <button
-                                                                key={s.value}
-                                                                onClick={() => changeStatus(att, s.value)}
-                                                                className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer ${status === s.value ? s.color : s.inactive}`}
-                                                            >
-                                                                {s.label}
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <button className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-all cursor-pointer flex items-center gap-1 shadow-sm ${
+                                                                status === 'hadir' ? 'bg-emerald-500 text-white hover:bg-emerald-600' :
+                                                                status === 'terlambat' ? 'bg-amber-500 text-white hover:bg-amber-600' :
+                                                                'bg-red-500 text-white hover:bg-red-600'
+                                                            }`}>
+                                                                {status === 'hadir' ? 'Hadir' : status === 'terlambat' ? 'Terlambat' : 'Absen'}
+                                                                <ChevronDown className="w-3 h-3 opacity-70" />
                                                             </button>
-                                                        ))}
-                                                    </div>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end" className="w-32">
+                                                            {statuses.map((s) => (
+                                                                <DropdownMenuItem 
+                                                                    key={s.value} 
+                                                                    onClick={() => changeStatus(att, s.value)}
+                                                                    className="text-xs cursor-pointer font-medium"
+                                                                >
+                                                                    {s.label}
+                                                                </DropdownMenuItem>
+                                                            ))}
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                 ) : (
                                                     <Badge className={`text-[10px] font-semibold border-0 ${
                                                         status === 'hadir' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' :
