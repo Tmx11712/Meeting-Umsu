@@ -29,6 +29,13 @@ Route::get('/', function () {
 Route::get('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'show'])->name('attend.form');
 Route::post('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'store'])->name('attend.submit');
 
+/**
+ * [EDUKASI ARSITEKTUR: ROUTE GROUPING & MIDDLEWARE]
+ * Di Laravel, `Route::middleware([...])->group(...)` digunakan untuk menerapkan filter
+ * kepada banyak URL sekaligus. Middleware `auth` memastikan pengguna harus login terlebih dahulu,
+ * sedangkan `verified` memastikan email mereka sudah dikonfirmasi.
+ * Jika pengguna yang belum login mencoba mengakses halaman `/dashboard`, mereka akan langsung ditendang ke halaman login.
+ */
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 

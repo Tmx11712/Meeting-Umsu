@@ -2,6 +2,13 @@ import { router, usePage } from '@inertiajs/react';
 import { useEffect, useCallback } from 'react';
 
 export function useMeetingWebSocket(meetingId: number | undefined) {
+    /**
+     * [EDUKASI ARSITEKTUR: WEB SOCKETS & EVENT BROADCASTING]
+     * Komponen ini (Custom Hook) bertugas membangun jembatan real-time antara Laravel Backend dan React Frontend.
+     * Menggunakan Laravel Reverb/Pusher (Echo), setiap kali Backend menjalankan `safe_broadcast(new MeetingUpdated(...))`,
+     * Hook ini akan mendengarnya dalam hitungan milidetik dan secara otomatis memicu Inertia (router.reload())
+     * untuk mengambil data terbaru tanpa perlu me-refresh halaman (Seamless SPA experience).
+     */
     const { auth } = usePage<any>().props;
     const roles = auth?.roles || [];
     const isAdmin = roles.includes('Super Admin') || roles.includes('Administrator');

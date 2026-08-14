@@ -55,6 +55,13 @@ class MeetingController extends Controller
 
     public function store(StoreMeetingRequest $request)
     {
+        /**
+         * [EDUKASI ARSITEKTUR: FORM REQUEST VALIDATION]
+         * Daripada melakukan validasi yang panjang di dalam Controller (seperti $request->validate([...])),
+         * Laravel menggunakan "Form Request" (StoreMeetingRequest) untuk memisahkan logika validasi.
+         * Jika input tidak valid, Laravel akan otomatis menghentikan eksekusi dan mengembalikan pesan error.
+         * Dengan memanggil `validated()`, kita mendapatkan array data yang sudah pasti aman.
+         */
         $validated = $request->validated();
 
         $start = Carbon::parse($validated['start_time']);

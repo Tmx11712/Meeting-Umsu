@@ -3,6 +3,13 @@ import { Check } from 'lucide-react';
 import { Fragment } from 'react';
 
 export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeStage: number }) {
+    /**
+     * [EDUKASI ARSITEKTUR: COMPONENT COMPOSITION & PROPS]
+     * Komponen ini adalah contoh Reusable Component di React.
+     * Alih-alih menulis ulang kode stepper ini di 6 halaman berbeda,
+     * kita membuatnya di satu file dan melempar "Props" (`meeting` dan `activeStage`) dari halaman induknya.
+     * Ini membuat UI kita konsisten dan kode jauh lebih rapi (DRY: Don't Repeat Yourself).
+     */
     const steps = [
         { id: 1, name: 'Login', desc: '', route: null }, // Dummy step as per UI
         { id: 2, name: 'Buat Rapat', desc: '', route: 'meetings.show' },

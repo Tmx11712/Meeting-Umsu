@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Meeting extends Model
 {
+    /**
+     * [EDUKASI ARSITEKTUR: ELOQUENT ORM & RELATIONSHIPS]
+     * Kelas Model ini adalah representasi dari tabel `meetings` di database.
+     * Fungsi-fungsi di bawah seperti `participants()`, `recordings()`, dll adalah definisi Relasi (Relationships).
+     * Dengan mendefinisikan relasi ini, kita bisa mengambil data peserta rapat dengan sangat mudah:
+     * `$meeting->participants` (tanpa perlu menulis query SQL JOIN manual secara panjang lebar).
+     */
     use HasFactory, HasUuids, SoftDeletes;
 
     protected $fillable = [

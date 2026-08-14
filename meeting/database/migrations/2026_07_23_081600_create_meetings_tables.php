@@ -8,6 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        /**
+         * [EDUKASI ARSITEKTUR: DATABASE MIGRATION]
+         * Daripada membuat tabel secara manual di phpMyAdmin atau DBeaver, Laravel menggunakan file Migration.
+         * Ini berfungsi sebagai "Version Control" untuk database.
+         * Jika ada tim baru yang bergabung, mereka cukup menjalankan `php artisan migrate` dan skema database akan
+         * otomatis terbuat persis sama, lengkap dengan Foreign Key dan Relasinya (`->references('id')->on('users')`).
+         */
         Schema::create('meetings', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('title');
