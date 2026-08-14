@@ -30,6 +30,12 @@ class TranscriptCorrectionController extends Controller
 
     public function show(Meeting $meeting)
     {
+        /**
+         * [EDUKASI ARSITEKTUR: EAGER LOADING DENGAN CLOSURE]
+         * Daripada melakukan `load('recordings')` secara polos, kita bisa menyisipkan fungsi Closure
+         * untuk menambahkan filter atau pengurutan (ORDER BY) khusus pada data relasi tersebut.
+         * Di sini kita memastikan transkrip yang dimuat sudah urut berdasarkan `sequence_order`.
+         */
         $meeting->load([
             'recordings' => function ($q) {
                 $q->orderBy('created_at', 'asc');

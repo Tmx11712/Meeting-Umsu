@@ -6,6 +6,13 @@ import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig } from 'vite';
 
+/**
+ * [EDUKASI ARSITEKTUR: VITE BUNDLER & HMR]
+ * Vite adalah alat "Build Tool" yang digunakan Laravel modern.
+ * Fungsi utamanya adalah mengompilasi file TypeScript/React (`.tsx`) dan CSS Anda menjadi kode Javascript standar 
+ * yang dimengerti browser. Selain itu, fitur HMR (Hot Module Replacement) memungkinkan perubahan 
+ * pada kodingan UI langsung ter-update di layar tanpa perlu me-refresh browser.
+ */
 export default defineConfig({
     server: {
         host: '0.0.0.0',

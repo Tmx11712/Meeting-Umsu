@@ -13,6 +13,12 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
     const canCorrect = canEdit('transcript');
     useMeetingWebSocket(meeting?.id);
 
+    /**
+     * [EDUKASI ARSITEKTUR: DATA TRANSFORMATION (FRONTEND)]
+     * Daripada memaksa Backend untuk memformat data yang spesifik untuk UI ini,
+     * kita melakukan transformasi data di Frontend (menggabungkan semua teks transkrip dari array).
+     * Ini membuat Backend API kita tetap "bersih", modular, dan bisa dipakai ulang oleh platform lain (misal aplikasi Mobile).
+     */
     // Combine all transcripts into a single initial text
     const recordings = meeting.recordings || [];
     const firstRecording = recordings[0];
