@@ -83,7 +83,7 @@ class GenerateMeetingMinuteAction
             ->with('user')
             ->get();
 
-        $names = $attendees->map(fn ($att) => $att->user?->name ?? 'Peserta Tidak Dikenal')->toArray();
+        $names = $attendees->map(fn ($att) => $att->user?->name ?? $att->guest_name ?? 'Peserta Tidak Dikenal')->toArray();
 
         return empty($names) ? 'Tidak ada data absensi.' : implode(', ', $names);
     }

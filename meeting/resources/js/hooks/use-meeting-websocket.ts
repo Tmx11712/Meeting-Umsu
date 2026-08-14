@@ -102,12 +102,9 @@ return;
                     if (!redirected) {
                         router.reload({ only: ['meeting', 'meetings'] });
                     }
-                } else if (e.type === 'approval' && e.meeting?.current_stage) {
-                    // Pimpinan sudah approve → arahkan semua ke halaman approval
-                    const redirected = checkAndRedirect(e.meeting.current_stage);
-                    if (!redirected) {
-                        router.reload({ only: ['meeting', 'meetings'] });
-                    }
+                } else if (e.type === 'approval') {
+                    // Pimpinan sudah approve → arahkan semua ke dashboard
+                    router.visit('/dashboard');
                 } else if (e.type === 'deleted') {
                     router.visit('/dashboard', { replace: true });
                 } else {
