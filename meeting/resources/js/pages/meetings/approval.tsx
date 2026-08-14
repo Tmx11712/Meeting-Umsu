@@ -220,18 +220,16 @@ return '-';
             )}
 
             {/* Top Row: 2 columns */}
-            <div className="grid md:grid-cols-[1fr_2fr] gap-4">
+            <div className="flex flex-col xl:flex-row justify-center gap-6 mb-6">
                 
-                {/* Informasi Rapat */}
+                {/* Info Rapat */}
                 <MeetingInfoCard 
                     meeting={meeting} 
-                    totalParticipants={participants.length} 
-                    showDetailButton={true} 
-                    className="rounded-xl border-slate-200 shadow-sm"
+                    className="shadow-sm rounded-xl border-slate-200 w-full xl:w-[600px]" 
                 />
 
                 {/* Ringkasan Otomatis AI */}
-                <Card className="rounded-xl border-slate-200 shadow-sm h-fit w-fit ml-auto">
+                <Card className="rounded-xl border-slate-200 shadow-sm h-fit w-fit mx-auto xl:mx-0">
                     <CardHeader className="pb-4">
                         <CardTitle className="text-base font-semibold text-slate-900">Ringkasan Otomatis (AI)</CardTitle>
                     </CardHeader>

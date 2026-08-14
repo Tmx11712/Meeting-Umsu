@@ -50,12 +50,12 @@ export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton =
                             {meeting.date || '-'}
                         </p>
                     </div>
-                    <div>
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Waktu</p>
-                        <p className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <Clock className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
-                            {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)}` : '-'} WIB
-                        </p>
+                    <div className="min-w-0">
+                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Ruangan</p>
+                        <div className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
+                            <MapPin className="w-3.5 h-3.5 mr-1.5 text-blue-400 shrink-0" />
+                            <span className="truncate" title={meeting.location || '-'}>{meeting.location || '-'}</span>
+                        </div>
                     </div>
                     <div>
                         <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Peserta</p>
@@ -64,12 +64,12 @@ export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton =
                             <span className="truncate">{participantCount} Orang</span>
                         </div>
                     </div>
-                    <div className="col-span-2 min-w-0">
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Ruangan</p>
-                        <div className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <MapPin className="w-3.5 h-3.5 mr-1.5 text-blue-400 shrink-0" />
-                            <span className="truncate" title={meeting.location || '-'}>{meeting.location || '-'}</span>
-                        </div>
+                    <div>
+                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Waktu</p>
+                        <p className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
+                            <Clock className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
+                            {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)}` : '-'} WIB
+                        </p>
                     </div>
                 </div>
 
