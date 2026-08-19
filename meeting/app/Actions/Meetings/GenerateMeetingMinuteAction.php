@@ -83,7 +83,14 @@ class GenerateMeetingMinuteAction
             ->with('user')
             ->get();
 
-        $names = $attendees->map(fn ($att) => $att->user?->name ?? $att->guest_name ?? 'Peserta Tidak Dikenal')->toArray();
+        $names = $attendees->map(function ($att) {
+            if ($att->user) {
+                $dept = $att->user->department ? " (Bagian/Dept: {$att->user->department})" : "";
+                return $att->user->name . $dept;
+            }
+            $inst = $att->guest_institution ? " (Instansi: {$att->guest_institution})" : "";
+            return ($att->guest_name ?? 'Peserta Tidak Dikenal') . $inst;
+        })->toArray();
 
         return empty($names) ? 'Tidak ada data absensi.' : implode(', ', $names);
     }
@@ -129,12 +136,21 @@ class GenerateMeetingMinuteAction
      */
     protected function persistMinute(Meeting $meeting, array $summaryJson): MeetingMinute
     {
+        if (empty($summaryJson) || !isset($summaryJson['sections']) && !isset($summaryJson['pembahasan'])) {
+            \Illuminate\Support\Facades\Log::warning('AI menghasilkan JSON tidak sesuai skema untuk meeting_id: '.$meeting->id, [
+                'raw_summary' => $summaryJson,
+            ]);
+        }
+
+        // Support backward compatibility for topics counting
+        $topicsCount = count($summaryJson['sections'] ?? $summaryJson['pembahasan'] ?? []);
+
         return MeetingMinute::updateOrCreate(
             ['meeting_id' => $meeting->id],
             [
-                'content' => collect($summaryJson)->except(['topik_count', 'keputusan_count'])->toArray(),
-                'ai_topics_count' => $summaryJson['topik_count'] ?? 0,
-                'ai_decisions_count' => $summaryJson['keputusan_count'] ?? 0,
+                'content' => collect($summaryJson)->toArray(),
+                'ai_topics_count' => $topicsCount,
+                'ai_decisions_count' => count($summaryJson['keputusan'] ?? []),
                 'ai_summary_generated_at' => now(),
                 'status' => MeetingMinuteStatus::REVIEW->value,
             ]
@@ -146,23 +162,50 @@ class GenerateMeetingMinuteAction
      */
     protected function persistActionItems(Meeting $meeting, MeetingMinute $minute, array $summaryJson): void
     {
-        if (empty($summaryJson['tindak_lanjut'])) {
+        $tindakLanjut = $summaryJson['tindak_lanjut'] ?? [];
+        if (!is_array($tindakLanjut) || empty($tindakLanjut)) {
             return;
         }
 
         $minute->actionItems()->delete();
 
-        foreach ($summaryJson['tindak_lanjut'] as $actionItem) {
+        foreach ($tindakLanjut as $actionItem) {
+            if (!is_array($actionItem)) {
+                continue;
+            }
+
             $deadlineStr = $actionItem['deadline'] ?? null;
-            $deadlineTimestamp = $deadlineStr ? strtotime($deadlineStr) : false;
+            $parsedDeadline = $this->parseDeadline($deadlineStr);
 
             MeetingActionItem::create([
                 'meeting_id' => $meeting->id,
                 'minute_id' => $minute->id,
                 'description' => $actionItem['description'] ?? '-',
                 'pic' => $actionItem['pic'] ?? '-',
-                'deadline' => $deadlineTimestamp ? date('Y-m-d', $deadlineTimestamp) : null,
+                'deadline' => $parsedDeadline,
             ]);
         }
+    }
+
+    /**
+     * Parse deadline strictly to YYYY-MM-DD. Reject hallucinations like "besok" or invalid dates.
+     */
+    protected function parseDeadline(?string $deadlineStr): ?string
+    {
+        if (empty($deadlineStr)) {
+            return null;
+        }
+
+        $deadlineStr = trim($deadlineStr);
+
+        // Hanya menerima format YYYY-MM-DD yang ketat
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $deadlineStr, $matches)) {
+            // Validasi apakah tanggal tersebut masuk akal (misal bulan 1-12, hari 1-31)
+            if (checkdate((int)$matches[2], (int)$matches[3], (int)$matches[1])) {
+                return $deadlineStr;
+            }
+        }
+
+        return null;
     }
 }

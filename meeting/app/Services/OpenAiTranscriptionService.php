@@ -116,40 +116,54 @@ class OpenAiTranscriptionService
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
 
+        $meetingDate = $meeting->date ?? date('Y-m-d'); // fallback jika null
+
         $systemPrompt = <<<PROMPT
 Anda adalah asisten notulis rapat yang ahli. Tugas Anda adalah merangkum transkrip rapat menjadi notulen berstruktur JSON yang sangat resmi.
-Aturan ketat:
-1. Heading/Topik ditentukan secara dinamis dari isi transkrip.
-2. Gunakan paragraf naratif yang profesional untuk pembahasan.
-3. JANGAN PERNAH mengarang nama peserta. Gunakan HANYA nama yang diberikan di 'Daftar Hadir Asli' untuk mengisi field "peserta_rapat". Jika tidak disebutkan, sertakan yang ada di Daftar Hadir Asli.
-4. "latar_belakang" berisi teks naratif pembukaan/tujuan rapat secara formal. Jika ada dokumen pendukung, Anda BISA menggunakan isi dokumen tersebut untuk memperkaya konteks latar belakang dan pembahasan.
-5. Hasilkan daftar tindak lanjut secara akurat.
+
+ATURAN PALING KRITIS — TIDAK BOLEH DILANGGAR:
+JANGAN PERNAH mengarang atau menambahkan nama peserta yang tidak ada di 'Daftar Hadir Asli' di bawah. Field "peserta_rapat" HANYA boleh berisi nama dari daftar tersebut. Jika seseorang berbicara di transkrip tapi tidak ada di Daftar Hadir Asli, sebutkan perannya secara umum di narasi (mis. "salah satu peserta" atau jabatan jika disebutkan) tanpa menambahkan namanya ke field "peserta_rapat". Jika ada tamu/pihak eksternal yang seharusnya tercatat, itu adalah tanggung jawab sistem untuk memasukkannya ke Daftar Hadir Asli sebelum proses ini — jangan menebak dari transkrip.
+
+ATURAN ANTI-HALUSINASI:
+- Setiap detail faktual (angka, tanggal, keputusan, deadline, siapa mengatakan apa) HARUS bisa ditelusuri langsung ke kalimat di transkrip. Jika tidak ada di transkrip, JANGAN tuliskan — lebih baik kosong daripada mengarang.
+- Tanggal rapat ini adalah: {$meetingDate}. Jika ada penyebutan relatif seperti "besok", "minggu depan", atau "lusa" di transkrip, hitung tanggal aktualnya berdasarkan tanggal rapat ini dan tuliskan dengan format YYYY-MM-DD.
+- Jika ada dokumen pendukung, Anda HANYA boleh menggunakannya sebagai konteks untuk melengkapi istilah yang tidak jelas di transkrip, BUKAN sebagai sumber poin keputusan atau diskusi yang tidak pernah diucapkan.
+
+Aturan Tambahan:
+1. "sections" berisi array objek bagian utama laporan. Judul setiap bagian (title) ditentukan secara dinamis berdasarkan substansi (misal: "LATAR BELAKANG", "VISI DAN ROADMAP", "USULAN STRUKTUR", "ARAHAN BPH", "PEMBAHASAN", dll).
+2. "keputusan" tetap wajib diisi (berisi array teks ringkas keputusan-keputusan yang diambil) sebagai data statistik database, meskipun mungkin sudah tergabung dalam narasi di "sections".
+3. Gunakan paragraf naratif yang profesional, dalam Bahasa Indonesia formal.
+4. Hasilkan daftar tindak lanjut secara akurat sesuai dengan keputusan di transkrip.
+5. Kelompokkan "peserta_rapat" berdasarkan nama departemen/bagian/instansi jika informasi tersebut tersedia di Daftar Hadir Asli.
 
 Daftar Hadir Asli: {$pesertaText}
 Dokumen Pendukung: {$dokumenText}
 
 Format Output JSON HARUS SEPERTI INI:
 {
-    "latar_belakang": "Teks naratif latar belakang/pembukaan rapat...",
-    "peserta_rapat": ["Nama 1", "Nama 2"],
-    "pembahasan": [
+    "peserta_rapat": ["Grup/Departemen 1: Nama 1, Nama 2", "Instansi 2: Nama 3"],
+    "sections": [
         {
-            "topik": "Judul Topik",
-            "narasi": "Paragraf naratif penjelasan...",
-            "tabel": "Tabel markdown opsional jika ada",
-            "list": "List markdown opsional"
+            "title": "LATAR BELAKANG",
+            "content": "Teks naratif penjelasan latar belakang...",
+            "list": "List markdown opsional jika ada enumerasi",
+            "table": "Tabel markdown opsional jika ada data tabular"
+        },
+        {
+            "title": "NAMA BAGIAN DINAMIS LAINNYA",
+            "content": "Paragraf penjelasan...",
+            "list": "",
+            "table": ""
         }
     ],
     "keputusan": ["Keputusan 1", "Keputusan 2"],
     "tindak_lanjut": [
         {
-            "description": "Lakukan X",
-            "pic": "Nama/PIC",
-            "deadline": "2026-10-12 atau string"
+            "description": "Uraian tugas...",
+            "pic": "Nama/Jabatan (kosongkan jika tidak disebut)",
+            "deadline": "YYYY-MM-DD (kosongkan jika tidak disebut)"
         }
-    ],
-    "topik_count": 1,
-    "keputusan_count": 2
+    ]
 }
 PROMPT;
 

@@ -120,10 +120,27 @@ class MeetingMinuteController extends Controller
     public function downloadPdf(Meeting $meeting)
     {
         $meeting->load('minutes.actionItems', 'participants.user');
+        
+        $minute = $meeting->minutes()->latest()->first();
+        abort_if(!$minute, 404, 'Notulen belum tersedia.');
+
+        if ($minute->status !== MeetingMinuteStatus::DISETUJUI->value) {
+            abort_unless(
+                auth()->user()->can('minute.update'),
+                403,
+                'Notulen ini belum disetujui dan belum dapat diunduh oleh publik.'
+            );
+        }
+
+        $isDraft = $minute->status !== MeetingMinuteStatus::DISETUJUI->value;
 
         // Very basic PDF view render, we would need a resources/views/pdf/notulen.blade.php
-        $pdf = Pdf::loadView('pdf.notulen', compact('meeting'));
+        $pdf = Pdf::loadView('pdf.notulen', compact('meeting', 'isDraft'));
 
-        return $pdf->download('Notulen_'.$meeting->title.'.pdf');
+        $filename = $isDraft
+            ? 'DRAFT_Notulen_'.$meeting->title.'.pdf'
+            : 'Notulen_'.$meeting->title.'.pdf';
+
+        return $pdf->download($filename);
     }
 }

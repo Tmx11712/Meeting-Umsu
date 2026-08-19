@@ -28,6 +28,12 @@ class MeetingApprovalController extends Controller
     {
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
+        abort_unless(
+            $minute->status === MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
+            403,
+            'Notulen belum siap untuk disetujui. Status saat ini: '.$minute->status
+        );
+
         DB::transaction(function () use ($request, $meeting, $minute) {
             MeetingApproval::create([
                 'meeting_id' => $meeting->id,
