@@ -14,13 +14,7 @@ import { defineConfig } from 'vite';
  * pada kodingan UI langsung ter-update di layar tanpa perlu me-refresh browser.
  */
 export default defineConfig({
-    server: {
-        host: '0.0.0.0',
-        port: 3000,
-        hmr: {
-            host: '192.168.211.19',
-        },
-    },
+
     plugins: [
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
