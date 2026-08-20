@@ -6,6 +6,7 @@ use App\Actions\Meetings\GenerateMeetingMinuteAction;
 use App\Enums\MeetingMinuteStatus;
 use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\UpdateMinuteRequest;
+use App\Jobs\GenerateMeetingMinuteJob;
 use App\Models\Meeting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class MeetingMinuteController extends Controller
     public function index(Request $request)
     {
         // Stage 5, 6, 7 = Review / Notulen, Persetujuan, Selesai
-        $query = Meeting::whereIn('current_stage', [4, 5, 6, 7]);
+        $query = Meeting::query()->whereIn('current_stage', [4, 5, 6, 7], 'and', false);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -65,10 +66,10 @@ class MeetingMinuteController extends Controller
      */
     public function generateAiSummary(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
+        abort_unless($request->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
         try {
-            \App\Jobs\GenerateMeetingMinuteJob::dispatch($meeting);
+            GenerateMeetingMinuteJob::dispatch($meeting);
 
             return back()->with('success', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Silakan muat ulang halaman ini dalam beberapa menit.');
         } catch (\Exception $e) {
@@ -92,7 +93,7 @@ class MeetingMinuteController extends Controller
 
     public function sendToPimpinan(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengirim ke pimpinan.');
+        abort_unless(request()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengirim ke pimpinan.');
 
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
@@ -103,9 +104,8 @@ class MeetingMinuteController extends Controller
                     'reviewed_at' => now(),
                 ]);
 
-                $meeting->update([
-                    'current_stage' => 6,
-                ]);
+                $meeting->current_stage = 6;
+                $meeting->save();
             });
 
             try {
@@ -120,13 +120,13 @@ class MeetingMinuteController extends Controller
     public function downloadPdf(Meeting $meeting)
     {
         $meeting->load('minutes.actionItems', 'participants.user');
-        
+
         $minute = $meeting->minutes()->latest()->first();
-        abort_if(!$minute, 404, 'Notulen belum tersedia.');
+        abort_if(! $minute, 404, 'Notulen belum tersedia.');
 
         if ($minute->status !== MeetingMinuteStatus::DISETUJUI->value) {
             abort_unless(
-                auth()->user()->can('minute.update'),
+                request()->user()->can('minute.update'),
                 403,
                 'Notulen ini belum disetujui dan belum dapat diunduh oleh publik.'
             );

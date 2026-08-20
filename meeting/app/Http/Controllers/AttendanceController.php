@@ -8,16 +8,21 @@ use App\Models\Meeting;
 use App\Models\MeetingAttendance;
 use App\Services\IrvanCloudSyncService;
 use Carbon\Carbon;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\Writer\SvgWriter;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Inertia\Response;
 
 class AttendanceController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         // Stage >= 4 (Sedang atau sudah lewat tahap absensi)
-        $query = Meeting::where('current_stage', '>=', 4);
+        $query = Meeting::query()->where('current_stage', '>=', 4);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -31,7 +36,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function show(Meeting $meeting)
+    public function show(Meeting $meeting): Response
     {
         $meeting->load('participants.user', 'attendances.user');
 
@@ -40,17 +45,27 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function generateQrCode(Meeting $meeting)
+    public function generateQrCode(Meeting $meeting): JsonResponse
     {
-        abort_unless(auth()->user()->can('attendance.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola absensi.');
+        abort_unless(request()->user()->can('attendance.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola absensi.');
 
         $url = route('meetings.attendance.scan', ['meeting' => $meeting->id]);
-        $qrCode = QrCode::size(300)->generate($url);
 
-        return response()->json(['qr_code' => base64_encode($qrCode)]);
+        $builder = new Builder(
+            writer: new SvgWriter,
+            writerOptions: [],
+            data: $url,
+            encoding: new Encoding('UTF-8'),
+            size: 300,
+            margin: 0
+        );
+
+        $result = $builder->build();
+
+        return response()->json(['qr_code' => base64_encode($result->getString())]);
     }
 
-    public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting)
+    public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting): RedirectResponse
     {
         /**
          * [EDUKASI ARSITEKTUR: ELOQUENT UPDATE OR CREATE]
@@ -96,20 +111,20 @@ class AttendanceController extends Controller
         return back();
     }
 
-    public function finish(Request $request, Meeting $meeting)
+    public function finish(Request $request, Meeting $meeting): RedirectResponse
     {
-        abort_unless(auth()->user()->can('attendance.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan tahapan absensi.');
+        abort_unless(request()->user()->can('attendance.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan tahapan absensi.');
 
-        $meeting->update(['current_stage' => 5]); // Move to Review
+        $meeting->fill(['current_stage' => 5])->save(); // Move to Review
 
         safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'), false);
 
         return redirect()->route('meetings.review', $meeting->id);
     }
 
-    public function scan(Meeting $meeting)
+    public function scan(Request $request, Meeting $meeting): Response
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if (! $user) {
             abort(403, 'Silakan login terlebih dahulu untuk melakukan absensi.');
@@ -141,9 +156,9 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function syncIrvanCloud(Meeting $meeting, IrvanCloudSyncService $syncService)
+    public function syncIrvanCloud(Meeting $meeting, IrvanCloudSyncService $syncService): JsonResponse
     {
-        abort_unless(auth()->user()->can('attendance.create') || auth()->user()->can('attendance.update'), 403);
+        abort_unless(request()->user()->can('attendance.create') || request()->user()->can('attendance.update'), 403);
 
         if ($meeting->source === 'irvan_cloud' && $meeting->external_id) {
             $syncService->syncEventDetails($meeting->external_id, $meeting);

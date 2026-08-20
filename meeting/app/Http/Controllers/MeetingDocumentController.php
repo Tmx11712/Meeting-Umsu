@@ -11,9 +11,9 @@ use Illuminate\Support\Str;
 
 class MeetingDocumentController extends Controller
 {
-    public function store(Request $request, Meeting $meeting)
+    public function store(Request $request, Meeting $meeting): \Illuminate\Http\RedirectResponse
     {
-        abort_unless(auth()->user()->can('review.update') || auth()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
+        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
 
         $request->validate([
             'document' => 'required|file|mimes:pdf,txt|max:10240', // 10MB max, PDF & TXT only
@@ -39,19 +39,21 @@ class MeetingDocumentController extends Controller
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
                 'category' => 'Lainnya',
-                'uploaded_by' => auth()->id() ?? User::first()->id,
+                'uploaded_by' => $request->user()?->id ?? User::query()->first()?->id,
             ]);
         } catch (\Exception $e) {
-            Storage::delete($path);
+            if ($path) {
+                Storage::delete($path);
+            }
             throw $e;
         }
 
         return redirect()->back()->with('success', 'Dokumen berhasil diunggah.');
     }
 
-    public function destroy(Meeting $meeting, MeetingDocument $document)
+    public function destroy(Meeting $meeting, MeetingDocument $document): \Illuminate\Http\RedirectResponse
     {
-        abort_unless(auth()->user()->can('review.update') || auth()->user()->hasRole(['Humas', 'Umum']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.');
+        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Humas', 'Umum']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.');
 
         if ($document->meeting_id !== $meeting->id) {
             abort(403);
@@ -61,7 +63,7 @@ class MeetingDocumentController extends Controller
             Storage::delete($document->file_path);
         }
 
-        $document->delete();
+        $document->deleteOrFail();
 
         return redirect()->back()->with('success', 'Dokumen berhasil dihapus.');
     }

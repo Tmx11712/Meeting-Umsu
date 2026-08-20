@@ -55,9 +55,8 @@ class MeetingRecordingController extends Controller
                     'recorded_by' => $request->user()->id,
                 ]);
 
-                $meeting->update([
-                    'status' => MeetingStatus::BERLANGSUNG->value,
-                ]);
+                $meeting->status = MeetingStatus::BERLANGSUNG->value;
+                $meeting->save();
 
                 return $recording;
             });
@@ -71,9 +70,9 @@ class MeetingRecordingController extends Controller
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
 
-    public function destroy(Meeting $meeting, $recordingId)
+    public function destroy(Meeting $meeting, string $recordingId)
     {
-        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
+        abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
 
         $recording = MeetingRecording::findOrFail($recordingId);
 
@@ -108,9 +107,8 @@ class MeetingRecordingController extends Controller
         // Dispatch job for transcription
         TranscribeAudioJob::dispatch($recording->id);
 
-        $meeting->update([
-            'current_stage' => max($meeting->current_stage, 3),
-        ]);
+        $meeting->current_stage = max($meeting->current_stage, 3);
+        $meeting->save();
 
         safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
 
@@ -119,26 +117,26 @@ class MeetingRecordingController extends Controller
 
     public function finishRecording(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
+        abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
         // Otomatis jalankan transkripsi untuk semua rekaman yang masih berstatus 'uploaded'
         $untranscribedRecordings = $meeting->recordings()->where('status', 'uploaded')->get();
         $transcriptionStarted = false;
 
         foreach ($untranscribedRecordings as $recording) {
-            $recording->update([
+            $recording->fill([
                 'status' => 'transcribing',
                 'openai_model_used' => config('services.openai.transcribe_model'),
-            ]);
+            ])->save();
 
             TranscribeAudioJob::dispatch($recording->id);
             $transcriptionStarted = true;
         }
 
-        $meeting->update([
+        $meeting->fill([
             'current_stage' => 3,
             'status' => 'berlangsung',
-        ]);
+        ])->save();
 
         if ($transcriptionStarted) {
             safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
@@ -179,12 +177,11 @@ class MeetingRecordingController extends Controller
 
     public function startSession(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas');
+        abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas');
 
-        $meeting->update([
-            'recording_started_at' => now(),
-            'status' => 'berlangsung',
-        ]);
+        $meeting->recording_started_at = now();
+        $meeting->status = 'berlangsung';
+        $meeting->save();
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_started'));
 
@@ -193,11 +190,10 @@ class MeetingRecordingController extends Controller
 
     public function stopSession(Request $request, Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('recording.create'), 403, 'Akses Terbatas');
+        abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas');
 
-        $meeting->update([
-            'recording_started_at' => null,
-        ]);
+        $meeting->recording_started_at = null;
+        $meeting->save();
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_stopped'));
 

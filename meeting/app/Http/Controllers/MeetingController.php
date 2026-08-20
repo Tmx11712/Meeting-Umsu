@@ -8,6 +8,7 @@ use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreMeetingRequest;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
+use App\Models\MeetingActionItem;
 use App\Models\MeetingParticipant;
 use App\Models\User;
 use Carbon\Carbon;
@@ -46,10 +47,10 @@ class MeetingController extends Controller
 
     public function create()
     {
-        $users = User::where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
+        $users = User::query()->where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
         $now = Carbon::now();
-        
+
         $upcomingMeetings = Meeting::withCount('participants')
             ->where('date', '>=', $now->toDateString())
             ->whereIn('current_stage', [1, 2])
@@ -57,8 +58,8 @@ class MeetingController extends Controller
             ->orderBy('start_time', 'asc')
             ->take(3)
             ->get();
-            
-        $actionItems = \App\Models\MeetingActionItem::with(['meeting'])
+
+        $actionItems = MeetingActionItem::with(['meeting'])
             ->where('status', 'open')
             ->orderBy('deadline', 'asc')
             ->take(3)
@@ -86,7 +87,7 @@ class MeetingController extends Controller
         $end = Carbon::parse($validated['end_time']);
         $validated['duration'] = $end->diffInSeconds($start);
 
-        $validated['created_by'] = auth()->id();
+        $validated['created_by'] = $request->user()->id;
         $validated['status'] = 'terjadwal';
         $validated['current_stage'] = 1;
         $validated['source'] = 'manual';
@@ -106,11 +107,11 @@ class MeetingController extends Controller
                     'meeting_id' => $meeting->id,
                     'user_id' => $userId,
                     'is_invited' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => now()->toDateTimeString(),
+                    'updated_at' => now()->toDateTimeString(),
                 ];
             }
-            MeetingParticipant::insert($participants);
+            \Illuminate\Support\Facades\DB::table('meeting_participants')->insert($participants);
         }
 
         safe_broadcast(new MeetingsListUpdated('Rapat baru "'.$meeting->title.'" telah dijadwalkan'));
@@ -165,7 +166,7 @@ class MeetingController extends Controller
     public function edit(Meeting $meeting)
     {
         $meeting->load('participants');
-        $users = User::where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
+        $users = User::query()->where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
         return Inertia::render('meetings/create', [
             'meeting' => $meeting,
@@ -185,7 +186,8 @@ class MeetingController extends Controller
             $validated['notes'] = json_encode(['agenda' => $validated['agenda']]);
         }
 
-        $meeting->update($validated);
+        $meeting->fill($validated);
+        $meeting->save();
 
         $existingIds = $meeting->participants()->pluck('user_id')->toArray();
         $newIds = $validated['participants'] ?? [];
@@ -211,7 +213,7 @@ class MeetingController extends Controller
 
     public function destroy(Meeting $meeting)
     {
-        abort_unless(auth()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
+        abort_unless(request()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
 
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'));
 
