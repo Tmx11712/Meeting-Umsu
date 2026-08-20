@@ -63,14 +63,14 @@ class MeetingMinuteController extends Controller
      * Laravel secara otomatis membuatkan (instantiate) class Action tersebut untuk kita.
      * Kita tinggal memanggil `$action->execute($meeting)`. Sangat rapi dan profesional!
      */
-    public function generateAiSummary(Request $request, Meeting $meeting, GenerateMeetingMinuteAction $action)
+    public function generateAiSummary(Request $request, Meeting $meeting)
     {
         abort_unless(auth()->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
         try {
-            $action->execute($meeting);
+            \App\Jobs\GenerateMeetingMinuteJob::dispatch($meeting);
 
-            return back()->with('success', 'Ringkasan berhasil digenerate oleh AI.');
+            return back()->with('success', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Silakan muat ulang halaman ini dalam beberapa menit.');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
