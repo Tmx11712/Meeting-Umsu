@@ -37,8 +37,8 @@ return '#';
     };
 
     return (
-        <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="flex items-center justify-between min-w-[800px]">
+        <div className="w-full overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+            <div className="flex items-center justify-between min-w-200">
                 {steps.map((step, index) => {
                     const isActive = step.id === activeStage;
                     const isCompleted = step.id < activeStage;
@@ -70,7 +70,7 @@ return '#';
 
                             {/* Connector Line */}
                             {index < steps.length - 1 && (
-                                <div className={`h-[2px] flex-1 mx-4 min-w-[20px] rounded-full
+                                <div className={`h-0.5 flex-1 mx-4 min-w-5 rounded-full
                                     ${isCompleted ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}
                                 `}></div>
                             )}
