@@ -130,11 +130,12 @@ ATURAN ANTI-HALUSINASI:
 - Jika ada dokumen pendukung, Anda HANYA boleh menggunakannya sebagai konteks untuk melengkapi istilah yang tidak jelas di transkrip, BUKAN sebagai sumber poin keputusan atau diskusi yang tidak pernah diucapkan.
 
 Aturan Tambahan:
-1. "sections" berisi array objek bagian utama laporan. Judul setiap bagian (title) ditentukan secara dinamis berdasarkan substansi (misal: "LATAR BELAKANG", "VISI DAN ROADMAP", "USULAN STRUKTUR", "ARAHAN BPH", "PEMBAHASAN", dll).
-2. "keputusan" tetap wajib diisi (berisi array teks ringkas keputusan-keputusan yang diambil) sebagai data statistik database, meskipun mungkin sudah tergabung dalam narasi di "sections".
-3. Gunakan paragraf naratif yang profesional, dalam Bahasa Indonesia formal.
-4. Hasilkan daftar tindak lanjut secara akurat sesuai dengan keputusan di transkrip.
-5. Kelompokkan "peserta_rapat" berdasarkan nama departemen/bagian/instansi jika informasi tersebut tersedia di Daftar Hadir Asli.
+1. "latar_belakang" berisi teks naratif penjelasan latar belakang rapat. Jika ada sesi pembukaan, gabungkan di sini atau taruh di "pembukaan".
+2. "pembahasan" berisi array objek dari topik-topik yang dibahas. Setiap elemen pembahasan harus memiliki "topik", "narasi", dan opsional "list" atau "tabel" (gunakan tag HTML seperti <ul> atau <table> jika ada).
+3. "keputusan" tetap wajib diisi (berisi array teks ringkas keputusan-keputusan yang diambil).
+4. Gunakan paragraf naratif yang profesional, dalam Bahasa Indonesia formal.
+5. Hasilkan daftar tindak lanjut secara akurat sesuai dengan keputusan di transkrip.
+6. Kelompokkan "peserta_rapat" berdasarkan nama departemen/bagian/instansi jika informasi tersebut tersedia di Daftar Hadir Asli.
 
 Daftar Hadir Asli: {$pesertaText}
 Dokumen Pendukung: {$dokumenText}
@@ -142,18 +143,14 @@ Dokumen Pendukung: {$dokumenText}
 Format Output JSON HARUS SEPERTI INI:
 {
     "peserta_rapat": ["Grup/Departemen 1: Nama 1, Nama 2", "Instansi 2: Nama 3"],
-    "sections": [
+    "latar_belakang": "Teks naratif penjelasan latar belakang...",
+    "pembukaan": "Teks naratif pembukaan rapat...",
+    "pembahasan": [
         {
-            "title": "LATAR BELAKANG",
-            "content": "Teks naratif penjelasan latar belakang...",
-            "list": "List markdown opsional jika ada enumerasi",
-            "table": "Tabel markdown opsional jika ada data tabular"
-        },
-        {
-            "title": "NAMA BAGIAN DINAMIS LAINNYA",
-            "content": "Paragraf penjelasan...",
-            "list": "",
-            "table": ""
+            "topik": "NAMA TOPIK 1",
+            "narasi": "Paragraf penjelasan...",
+            "list": "<ul><li>List opsional</li></ul>",
+            "tabel": "<table><tr><td>Tabel opsional</td></tr></table>"
         }
     ],
     "keputusan": ["Keputusan 1", "Keputusan 2"],

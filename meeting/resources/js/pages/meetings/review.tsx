@@ -270,7 +270,7 @@ return;
                                                     {transcripts.length} SEGMEN
                                                 </Badge>
                                             </CardHeader>
-                                            <CardContent className="p-5 bg-white/40 dark:bg-slate-900/40 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                            <CardContent className="p-5 bg-white/40 dark:bg-slate-900/40 max-h-100 overflow-y-auto custom-scrollbar">
                                                 <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-medium">
                                                     {combinedText || <span className="text-slate-400 italic">Transkrip kosong atau belum diproses.</span>}
                                                 </p>
@@ -365,7 +365,7 @@ return;
                                     </div>
                                 </div>
                                 {/* Daftar Kehadiran (dari data gabungan) */}
-                                <div className="space-y-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                <div className="space-y-2 max-h-100 overflow-y-auto custom-scrollbar">
                                     {displayList.length === 0 ? (
                                         <div className="text-center py-6 text-slate-400 text-sm italic">
                                             Belum ada data absensi. Gunakan QR Code atau input manual.
@@ -442,7 +442,7 @@ return;
                                 AI akan membaca semua transkrip dari rekaman yang ada dan merangkumnya menjadi notulen resmi lengkap dengan keputusan dan tindak lanjut.
                             </p>
                             <Button 
-                                className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
+                                className="w-full bg-linear-to- from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
                                 onClick={() => {
                                     setSending(true);
                                     router.post(`/meetings/${meeting.id}/review/ai`, {}, {

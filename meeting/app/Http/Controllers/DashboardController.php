@@ -28,29 +28,29 @@ class DashboardController extends Controller
          */
         $stats = Cache::remember('dashboard_stats', 300, function () use ($now, $startOfMonth, $startOfLastMonth, $endOfLastMonth) {
             // 1. Rapat bulan ini
-            $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $now->endOfMonth()])->count();
-            $meetingsLastMonth = Meeting::whereBetween('date', [$startOfLastMonth, $endOfLastMonth])->count();
+            $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $now->endOfMonth()], 'and')->count('*');
+            $meetingsLastMonth = Meeting::whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
             $meetingsDelta = $meetingsLastMonth > 0
                 ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100)
                 : 100;
 
             // 2. Notulen selesai
-            $minutesCompletedThisMonth = MeetingMinute::where('status', 'disetujui')
-                ->whereBetween('created_at', [$startOfMonth, $now->endOfMonth()])
-                ->count();
-            $minutesCompletedLastMonth = MeetingMinute::where('status', 'disetujui')
-                ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
-                ->count();
+            $minutesCompletedThisMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
+                ->whereBetween('created_at', [$startOfMonth, $now->endOfMonth()], 'and')
+                ->count('*');
+            $minutesCompletedLastMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
+                ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth], 'and')
+                ->count('*');
             $minutesDelta = $minutesCompletedLastMonth > 0
                 ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100)
                 : 100;
 
             // 3. Action item terbuka
-            $openActionItems = MeetingActionItem::where('status', 'open')->count();
+            $openActionItems = MeetingActionItem::where('status', '=', 'open', 'and')->count('*');
 
             // 4. Rata-rata kehadiran
             $avgAttendance = 0; // Simplified for now, calculate from finished meetings
-            $finishedMeetings = Meeting::with('attendances')->where('status', 'selesai')->get();
+            $finishedMeetings = Meeting::with('attendances')->where('status', '=', 'selesai', 'and')->get();
             if ($finishedMeetings->count() > 0) {
                 $totalRates = $finishedMeetings->map->attendance_rate->sum();
                 $avgAttendance = round($totalRates / $finishedMeetings->count());
@@ -87,7 +87,7 @@ class DashboardController extends Controller
             ->get();
 
         // Action Items Mendesak (Dikustomisasi untuk hanya menampilkan Rapat Mendesak)
-        $actionItems = Meeting::where('category', 'action_item_mendesak')
+        $actionItems = Meeting::where('category', '=', 'action_item_mendesak', 'and')
             ->where('date', '>=', $now->toDateString())
             ->orderBy('date', 'asc')
             ->take(3)

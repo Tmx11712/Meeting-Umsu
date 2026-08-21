@@ -31,7 +31,7 @@ class TranscribeAudioJob implements ShouldQueue
 
     public $backoff = [10, 30, 60];
 
-    protected $recordingId;
+    protected string $recordingId;
 
     public function __construct(string $recordingId)
     {
@@ -40,13 +40,15 @@ class TranscribeAudioJob implements ShouldQueue
 
     public function handle(OpenAiTranscriptionService $transcriptionService): void
     {
-        $recording = MeetingRecording::find($this->recordingId);
+        /** @var MeetingRecording|null $recording */
+        $recording = MeetingRecording::find($this->recordingId, ['*']);
         if (! $recording) {
             return;
         }
 
         try {
-            $recording->update(['status' => MeetingRecordingStatus::TRANSCRIBING->value]);
+            $recording->status = MeetingRecordingStatus::TRANSCRIBING->value;
+            $recording->save();
 
             // Assuming the file is on local storage
             // But Whisper API needs the actual file content/path.
@@ -56,7 +58,7 @@ class TranscribeAudioJob implements ShouldQueue
                 throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
 
-            $tempPath = sys_get_temp_dir().'/'.basename($recording->file_path);
+            $tempPath = sys_get_temp_dir() . '/' . basename($recording->file_path);
             file_put_contents($tempPath, $fileContent);
 
             $result = $transcriptionService->transcribeChunk($tempPath);
@@ -78,32 +80,33 @@ class TranscribeAudioJob implements ShouldQueue
             }
 
             // Update recording with duration info
-            $recording->update([
-                'status' => MeetingRecordingStatus::COMPLETED->value,
-                'duration_seconds' => (int) round($result['duration'] ?? 0),
-            ]);
+            $recording->status = MeetingRecordingStatus::COMPLETED->value;
+            $recording->duration_seconds = (int) round($result['duration'] ?? 0);
+            $recording->save();
 
             // Update meeting stage to Koreksi (stage 3) — it stays here until manual advance
-            $meeting = Meeting::find($recording->meeting_id);
+            /** @var Meeting|null $meeting */
+            $meeting = Meeting::find($recording->meeting_id, ['*']);
             if ($meeting && $meeting->current_stage < 3) {
-                $meeting->update(['current_stage' => 3]);
+                $meeting->current_stage = 3;
+                $meeting->save();
             }
 
             if ($meeting) {
                 try {
                     event(new MeetingUpdated($meeting, 'transcript_ready'));
                 } catch (\Exception $broadcastEx) {
-                    Log::error('Broadcast failed: '.$broadcastEx->getMessage());
+                    Log::error('Broadcast failed: ' . $broadcastEx->getMessage());
                 }
             }
         } catch (RequestException $e) {
-            Log::error('Transcribe API Network Error: '.$e->getMessage());
+            Log::error('Transcribe API Network Error: ' . $e->getMessage());
             $this->failJob($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
         } catch (\RuntimeException $e) {
-            Log::error('Transcribe Runtime Error: '.$e->getMessage());
+            Log::error('Transcribe Runtime Error: ' . $e->getMessage());
             $this->failJob($recording, $e->getMessage());
         } catch (\Throwable $e) {
-            Log::error('Transcribe System Error: '.$e->getMessage());
+            Log::error('Transcribe System Error: ' . $e->getMessage());
             $this->failJob($recording, 'Terjadi kesalahan sistem internal.');
             throw $e; // Re-throw critical system errors (like syntax errors) to be caught by the queue worker properly
         }
@@ -111,14 +114,16 @@ class TranscribeAudioJob implements ShouldQueue
 
     protected function failJob(MeetingRecording $recording, string $reason)
     {
-        $recording->update(['status' => MeetingRecordingStatus::FAILED->value]);
+        $recording->status = MeetingRecordingStatus::FAILED->value;
+        $recording->save();
 
-        $meeting = Meeting::find($recording->meeting_id);
+        /** @var Meeting|null $meeting */
+        $meeting = Meeting::find($recording->meeting_id, ['*']);
         if ($meeting) {
             try {
                 event(new MeetingUpdated($meeting, 'transcript_failed'));
             } catch (\Exception $broadcastEx) {
-                Log::error('Broadcast failed: '.$broadcastEx->getMessage());
+                Log::error('Broadcast failed: ' . $broadcastEx->getMessage());
             }
         }
     }

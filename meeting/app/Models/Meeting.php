@@ -7,6 +7,74 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $title
+ * @property string|null $description
+ * @property string $date
+ * @property string $start_time
+ * @property string $end_time
+ * @property int $duration
+ * @property string $location
+ * @property string $type
+ * @property string|null $notes
+ * @property string $status
+ * @property string $created_by
+ * @property int $current_stage
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $deleted_at
+ * @property string $source
+ * @property string|null $external_id
+ * @property \Carbon\CarbonImmutable|null $recording_started_at
+ * @property string $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingActionItem> $actionItems
+ * @property-read int|null $action_items_count
+ * @property-read \App\Models\MeetingApproval|null $approval
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingAttendance> $attendances
+ * @property-read int|null $attendances_count
+ * @property-read \App\Models\User $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingDocument> $documents
+ * @property-read int|null $documents_count
+ * @property-read mixed $agenda
+ * @property-read mixed $attendance_rate
+ * @property-read mixed $duration_formatted
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingMinute> $minutes
+ * @property-read int|null $minutes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingParticipant> $participants
+ * @property-read int|null $participants_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingRecording> $recordings
+ * @property-read int|null $recordings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingTranscript> $transcripts
+ * @property-read int|null $transcripts_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereCurrentStage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereEndTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereExternalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereRecordingStartedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Meeting extends Model
 {
     /**

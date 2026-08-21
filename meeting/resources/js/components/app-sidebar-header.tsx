@@ -79,9 +79,9 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
                     aria-label="Toggle theme"
                 >
                     {isDark ? (
-                        <Sun className="h-[18px] w-[18px]" />
+                        <Sun className="h-4.5 w-4.5" />
                     ) : (
-                        <Moon className="h-[18px] w-[18px]" />
+                        <Moon className="h-4.5 w-4.5" />
                     )}
                 </Button>
 
