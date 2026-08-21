@@ -14,7 +14,7 @@ class TranscriptCorrectionController extends Controller
     public function index(Request $request)
     {
         // Stage >= 3 (Sedang atau sudah lewat tahap koreksi)
-        $query = Meeting::where('current_stage', '>=', 3);
+        $query = Meeting::query()->where('current_stage', '>=', 3);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -68,14 +68,14 @@ class TranscriptCorrectionController extends Controller
 
     public function finish(Request $request, Meeting $meeting)
     {
-        $user = auth()->user();
+        $user = $request->user();
         abort_unless(
             $user->can('transcript.update') || $user->can('recording.update') || $user->hasRole('Pimpinan'),
             403,
             'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.'
         );
-
-        $meeting->update(['current_stage' => 5]); // Move to Review (skip Absensi)
+        $meeting->current_stage = 5; // Move to Review (skip Absensi)
+        $meeting->save();
 
         safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'), false);
 

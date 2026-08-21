@@ -33,7 +33,7 @@ class PublicAttendanceController extends Controller
         ]);
 
         // Check if this guest already submitted attendance based on name and institution
-        $existing = MeetingAttendance::where('meeting_id', $meeting->id)
+        $existing = MeetingAttendance::query()->where('meeting_id', $meeting->id)
             ->where('guest_name', $request->guest_name)
             ->where('guest_institution', $request->guest_institution)
             ->first();
