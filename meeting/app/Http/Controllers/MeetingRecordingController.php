@@ -154,6 +154,10 @@ class MeetingRecordingController extends Controller
     {
         abort_unless($recording->meeting_id === $meeting->id, 404, 'Rekaman tidak ditemukan untuk rapat ini.');
 
+        $isParticipant = $meeting->participants()->where('user_id', request()->user()->id)->exists();
+        $isAuthorized = $isParticipant || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
+        abort_unless($isAuthorized, 403, 'Akses Terbatas: Anda tidak berhak memutar rekaman rapat ini.');
+
         $path = Storage::disk('local')->path($recording->file_path);
 
         abort_unless(file_exists($path), 404, 'File audio tidak ditemukan.');

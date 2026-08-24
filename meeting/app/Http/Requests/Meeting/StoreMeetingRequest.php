@@ -12,8 +12,7 @@ class StoreMeetingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Set to true assuming middleware or policy already handled it.
-        return true;
+        return $this->user()->can('meeting.create');
     }
 
     /**
@@ -37,5 +36,10 @@ class StoreMeetingRequest extends FormRequest
             'agenda.*' => 'string|max:255',
             'auto_record' => 'nullable|boolean',
         ];
+    }
+
+    protected function failedAuthorization(): void
+    {
+        abort(403, 'Akses Terbatas: Anda tidak memiliki izin untuk membuat rapat.');
     }
 }

@@ -1,7 +1,9 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
+import { Transition } from '@headlessui/react';
+import DOMPurify from 'dompurify';
+import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, Info } from 'lucide-react';
-import { useState } from 'react';
 
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -624,8 +626,8 @@ return;
                                                     <div key={idx} className="border-l-2 border-blue-200 pl-4">
                                                         <h4 className="font-semibold text-sm text-slate-800 mb-2">{bahas.topik}</h4>
                                                         <p className="leading-relaxed text-slate-700 mb-2">{bahas.narasi}</p>
-                                                        {bahas.tabel && <div className="mt-2 text-xs overflow-x-auto bg-slate-50 p-2 rounded" dangerouslySetInnerHTML={{__html: bahas.tabel}} />}
-                                                        {bahas.list && <div className="mt-2 pl-4 list-disc text-sm text-slate-700" dangerouslySetInnerHTML={{__html: bahas.list}} />}
+                                                        {bahas.tabel && <div className="mt-2 text-xs overflow-x-auto bg-slate-50 p-2 rounded" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.tabel)}} />}
+                                                        {bahas.list && <div className="mt-2 pl-4 list-disc text-sm text-slate-700" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.list)}} />}
                                                     </div>
                                                 ))}
                                             </div>
