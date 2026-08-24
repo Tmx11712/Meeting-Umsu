@@ -1,6 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
-import { Transition } from '@headlessui/react';
+
 import DOMPurify from 'dompurify';
 import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, Info } from 'lucide-react';
