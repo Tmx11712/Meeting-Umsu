@@ -225,7 +225,7 @@ return '-';
                 {/* Info Rapat */}
                 <MeetingInfoCard 
                     meeting={meeting} 
-                    className="shadow-sm rounded-xl border-slate-200 w-full xl:w-[600px]" 
+                    className="shadow-sm rounded-xl border-slate-200 w-full xl:w-150" 
                 />
 
                 {/* Ringkasan Otomatis AI */}

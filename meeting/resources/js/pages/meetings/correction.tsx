@@ -179,7 +179,7 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
                         onChange={(e) => setText(e.target.value)}
                         readOnly={!canCorrect}
                         placeholder="Belum ada transkrip. Kirim audio dari halaman Operator Rekaman, atau muat dari file .txt yang sudah disimpan sebelumnya."
-                        className="w-full min-h-[400px] bg-white rounded-xl border border-slate-200 p-5 text-sm text-slate-600 font-mono leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-300 resize-y shadow-sm"
+                        className="w-full min-h-100 bg-white rounded-xl border border-slate-200 p-5 text-sm text-slate-600 font-mono leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-300 resize-y shadow-sm"
                     />
                 </div>
             </Card>

@@ -146,7 +146,7 @@ clearTimeout(searchTimeout.current);
                 <div className="flex gap-2">
                     {canEdit('meeting') && (
                         <Link href="/meetings/create">
-                            <Button className="rounded-xl shadow-sm bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 border-0 h-11 px-5 text-white font-medium">
+                            <Button className="rounded-xl shadow-sm bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 border-0 h-11 px-5 text-white font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
                                 Buat Rapat
                             </Button>
@@ -182,7 +182,7 @@ clearTimeout(searchTimeout.current);
                         <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
                             <div className="relative shrink-0">
                                 <select 
-                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-[160px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
+                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-40 cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
                                     value={filters?.status || 'all'}
                                     onChange={(e) => applyFilter('status', e.target.value)}
                                 >
@@ -202,7 +202,7 @@ clearTimeout(searchTimeout.current);
                                     <Calendar className="h-4 w-4 text-slate-400" />
                                 </div>
                                 <select 
-                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-9 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-[180px] cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
+                                    className="h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 pl-9 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-300 w-45 cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-colors"
                                     value={filters?.month || ''}
                                     onChange={(e) => applyFilter('month', e.target.value)}
                                 >
@@ -255,7 +255,7 @@ clearTimeout(searchTimeout.current);
                                             </td>
                                             <td className="px-4 py-5 text-slate-600 dark:text-slate-300 font-medium">{meeting.date}</td>
                                             <td className="px-4 py-5 text-slate-600 dark:text-slate-300 font-medium bg-slate-50/50 dark:bg-slate-800/20">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-4 py-5 text-slate-600 dark:text-slate-300 max-w-[200px]">
+                                            <td className="px-4 py-5 text-slate-600 dark:text-slate-300 max-w-50">
                                                 <span className="block truncate" title={meeting.location}>{meeting.location}</span>
                                             </td>
                                             <td className="px-4 py-5 text-center text-slate-600 dark:text-slate-300 font-medium">

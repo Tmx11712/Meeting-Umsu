@@ -491,11 +491,11 @@ return;
 
                         
                         <div className="flex items-center gap-1.5 mb-6">
-                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`}></div>
-                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '150ms'}}></div>
-                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '300ms'}}></div>
-                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '450ms'}}></div>
-                            <div className={`w-[3px] h-[3px] rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '600ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '150ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '300ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '450ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '600ms'}}></div>
                         </div>
                         
                         <div className={`font-mono text-5xl font-black tracking-widest mb-3 text-slate-900`}>

@@ -130,7 +130,7 @@ export default function UsersEdit({ user, roles }: Props) {
                     </Card>
 
                     {/* Right Column - Role Selection */}
-                    <div className="flex flex-col gap-6 w-full lg:w-[400px]">
+                    <div className="flex flex-col gap-6 w-full lg:w-100">
                         <Card className="rounded-xl border-slate-200 shadow-sm">
                             <CardHeader className="border-b border-slate-100 pb-4">
                                 <CardTitle className="text-lg font-bold text-slate-900">Role</CardTitle>

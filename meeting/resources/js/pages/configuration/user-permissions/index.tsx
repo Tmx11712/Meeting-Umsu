@@ -205,7 +205,7 @@ return;
                     {/* Permissions Matrix */}
                     <div className="md:col-span-3 flex flex-col gap-4">
                         {!selectedUser ? (
-                            <Card className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col items-center justify-center p-12 text-center flex-1 min-h-[400px]">
+                            <Card className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col items-center justify-center p-12 text-center flex-1 min-h-100">
                                 <ShieldBan className="size-12 text-slate-300 mb-4" />
                                 <h3 className="text-lg font-semibold text-slate-900">Pilih Pengguna</h3>
                                 <p className="text-slate-500 mt-2 max-w-sm">

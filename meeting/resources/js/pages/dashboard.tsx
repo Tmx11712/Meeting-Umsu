@@ -127,7 +127,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
         <>
             <Head title={`Dashboard Rapat`} />
             
-            <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-[1200px] mx-auto bg-background dark:bg-slate-950">
+            <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-300 mx-auto bg-background dark:bg-slate-950">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
@@ -160,25 +160,25 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
 
                 {/* 4 Stat Cards — single horizontal row */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-px hover:border-slate-300 transition-all duration-200">
                         <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
                             <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Rapat bulan ini</div>
                             <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white leading-none">{stats?.meetingsThisMonth || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-px hover:border-slate-300 transition-all duration-200">
                         <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
                             <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Notulen selesai</div>
                             <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white leading-none">{stats?.minutesCompleted || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-px hover:border-slate-300 transition-all duration-200">
                         <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
                             <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Action item terbuka</div>
                             <div className="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-500 leading-none">{stats?.openActionItems || 0}</div>
                         </CardContent>
                     </Card>
-                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-[1px] hover:border-slate-300 transition-all duration-200">
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-px hover:border-slate-300 transition-all duration-200">
                         <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
                             <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Rata-rata kehadiran</div>
                             <div className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-500 leading-none">{stats?.avgAttendance || 0}%</div>
@@ -193,7 +193,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
                         <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
                     </div>
-                    <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-[400px]">
+                    <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
                         {latestMeetings && latestMeetings.length > 0 ? (
                             latestMeetings.map((m, idx) => {
                                 const status = getStatusInfo(m.current_stage, m.date);
@@ -251,7 +251,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                         <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Action items mendesak</h2>
                         </div>
-                        <div className="flex-1 overflow-y-auto max-h-[400px] p-4 flex flex-col gap-3">
+                        <div className="flex-1 overflow-y-auto max-h-100 p-4 flex flex-col gap-3">
                             {actionItems && actionItems.length > 0 ? (
                                 actionItems.map((item: any, idx: number) => {
                                     const bgColors = ['bg-red-50/50 dark:bg-red-900/20 border-red-100/50 dark:border-red-900/50', 'bg-amber-50/50 dark:bg-amber-900/20 border-amber-100/50 dark:border-amber-900/50', 'bg-slate-50/50 dark:bg-slate-800/50 border-slate-100/50 dark:border-slate-800/50'];

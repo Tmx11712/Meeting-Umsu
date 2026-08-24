@@ -69,7 +69,7 @@ export default function RolesCreate() {
                             </div>
 
                             {/* Right Column - Summary */}
-                            <div className="w-full lg:w-[400px] p-8 space-y-6">
+                            <div className="w-full lg:w-100 p-8 space-y-6">
                                 <h3 className="text-lg font-semibold text-slate-900 mb-6">Ringkasan</h3>
                                 
                                 <div className="flex justify-between items-center py-3">
