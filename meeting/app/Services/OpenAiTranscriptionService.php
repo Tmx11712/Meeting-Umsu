@@ -122,7 +122,7 @@ class OpenAiTranscriptionService
 Anda adalah asisten notulis rapat yang ahli. Tugas Anda adalah merangkum transkrip rapat menjadi notulen berstruktur JSON yang sangat resmi.
 
 ATURAN PALING KRITIS — TIDAK BOLEH DILANGGAR:
-JANGAN PERNAH mengarang atau menambahkan nama peserta yang tidak ada di 'Daftar Hadir Asli' di bawah. Field "peserta_rapat" HANYA boleh berisi nama dari daftar tersebut. Jika seseorang berbicara di transkrip tapi tidak ada di Daftar Hadir Asli, sebutkan perannya secara umum di narasi (mis. "salah satu peserta" atau jabatan jika disebutkan) tanpa menambahkan namanya ke field "peserta_rapat". Jika ada tamu/pihak eksternal yang seharusnya tercatat, itu adalah tanggung jawab sistem untuk memasukkannya ke Daftar Hadir Asli sebelum proses ini — jangan menebak dari transkrip.
+JANGAN PERNAH mengarang atau menambahkan nama peserta yang tidak ada di 'Daftar Hadir Asli' di bawah. Field "peserta_rapat" WAJIB menyalin SELURUH NAMA yang ada di 'Daftar Hadir Asli' tanpa terkecuali. Jangan hilangkan nama siapapun meskipun mereka tidak terdengar berbicara di dalam transkrip. Jika seseorang berbicara di transkrip tapi tidak ada di Daftar Hadir Asli, sebutkan perannya secara umum di narasi (mis. "salah satu peserta" atau jabatan jika disebutkan) tanpa menambahkan namanya ke field "peserta_rapat". Jika ada tamu/pihak eksternal yang seharusnya tercatat, itu adalah tanggung jawab sistem untuk memasukkannya ke Daftar Hadir Asli sebelum proses ini — jangan menebak dari transkrip.
 
 ATURAN ANTI-HALUSINASI:
 - Setiap detail faktual (angka, tanggal, keputusan, deadline, siapa mengatakan apa) HARUS bisa ditelusuri langsung ke kalimat di transkrip. Jika tidak ada di transkrip, JANGAN tuliskan — lebih baik kosong daripada mengarang.
@@ -135,7 +135,7 @@ Aturan Tambahan:
 3. "keputusan" tetap wajib diisi (berisi array teks ringkas keputusan-keputusan yang diambil).
 4. Gunakan paragraf naratif yang profesional, dalam Bahasa Indonesia formal.
 5. Hasilkan daftar tindak lanjut secara akurat sesuai dengan keputusan di transkrip.
-6. Kelompokkan "peserta_rapat" berdasarkan nama departemen/bagian/instansi jika informasi tersebut tersedia di Daftar Hadir Asli.
+6. Kelompokkan "peserta_rapat" berdasarkan nama departemen/bagian/instansi jika informasi tersebut tersedia di Daftar Hadir Asli. Ingat: MASUKKAN SEMUA NAMA, jangan ada yang tertinggal.
 
 Daftar Hadir Asli: {$pesertaText}
 Dokumen Pendukung: {$dokumenText}

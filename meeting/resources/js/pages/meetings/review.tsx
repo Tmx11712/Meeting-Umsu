@@ -442,7 +442,7 @@ return;
                                 AI akan membaca semua transkrip dari rekaman yang ada dan merangkumnya menjadi notulen resmi lengkap dengan keputusan dan tindak lanjut.
                             </p>
                             <Button 
-                                className="w-full bg-linear-to- from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
+                                className="w-full bg-linear-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
                                 onClick={() => {
                                     setSending(true);
                                     router.post(`/meetings/${meeting.id}/review/ai`, {}, {

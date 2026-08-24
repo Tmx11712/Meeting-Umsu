@@ -207,7 +207,7 @@ return;
             )}
 
             {/* Top Cards Row */}
-            <div className={isIrvanCloud ? "grid md:grid-cols-[1.2fr_1.5fr] gap-4" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-4"}>
+            <div className={isIrvanCloud || !canManageAttendance ? "grid md:grid-cols-[1.2fr_1.5fr] gap-4" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-4"}>
 
                 {/* Informasi Rapat */}
                 <MeetingInfoCard
@@ -282,7 +282,7 @@ return;
                 </Card>
 
                 {/* Metode Absensi */}
-                {!isIrvanCloud && (
+                {!isIrvanCloud && canManageAttendance && (
                     <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl">
                         <CardHeader className="pb-4">
                             <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">Metode Absensi</CardTitle>
@@ -400,7 +400,7 @@ return;
                                         <th className="py-4 px-4 font-medium">Keluar</th>
                                         <th className="py-4 px-4 font-medium">Status</th>
                                         <th className="py-4 px-4 font-medium">Metode</th>
-                                        {!isIrvanCloud && <th className="py-4 px-4 font-medium text-right">Aksi</th>}
+                                        {!isIrvanCloud && canManageAttendance && <th className="py-4 px-4 font-medium text-right">Aksi</th>}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/20">
@@ -422,7 +422,7 @@ return;
                                                 </Badge>
                                             </td>
                                             <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.method}</td>
-                                            {!isIrvanCloud && (
+                                            {!isIrvanCloud && canManageAttendance && (
                                                 <td className="py-3 px-4 text-right">
                                                     <div className="flex justify-end gap-2">
                                                         <Button

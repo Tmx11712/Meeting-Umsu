@@ -53,7 +53,7 @@ export default function MeetingShow({ meeting }: any) {
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                             Informasi Rapat
                         </h1>
-                        <Badge variant={meeting.status === 'selesai' ? 'default' : 'secondary'} className="text-sm px-3 py-1 bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                        <Badge variant={meeting.status === 'selesai' ? 'default' : 'secondary'} className="text-sm px-3 py-1 bg-card/60 border-border text-foreground">
                             {meeting.status.toUpperCase()}
                         </Badge>
                     </div>
@@ -66,7 +66,7 @@ export default function MeetingShow({ meeting }: any) {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
+                    <Button variant="outline" asChild className="rounded-xl border-border bg-card/60 hover:bg-card shadow-sm h-11">
                         <Link href="/meetings">
                             Kembali ke Jadwal
                         </Link>
