@@ -45,7 +45,7 @@ export default function MeetingShow({ meeting }: any) {
     return (
         <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title={`Rapat: ${meeting.title}`} />
-            
+
             {/* Header & Breadcrumb */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
                 <div>
@@ -59,9 +59,9 @@ export default function MeetingShow({ meeting }: any) {
                     </div>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
                         <span>Dashboard</span>
-                        <span>›</span>
+                        <span></span>
                         <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
-                        <span>›</span>
+                        <span></span>
                         <span className="text-blue-900 dark:text-blue-300 font-bold">{meeting.title}</span>
                     </div>
                 </div>
@@ -95,12 +95,12 @@ export default function MeetingShow({ meeting }: any) {
                             </div>
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b">
                                 <span className="text-muted-foreground">Waktu</span>
-                                <span className="font-medium flex items-center"><Clock className="h-4 w-4 mr-2" /> {meeting.start_time ? meeting.start_time.substring(0,5) : ''} - {meeting.end_time ? meeting.end_time.substring(0,5) : ''}</span>
+                                <span className="font-medium flex items-center"><Clock className="h-4 w-4 mr-2" /> {meeting.start_time ? meeting.start_time.substring(0, 5) : ''} - {meeting.end_time ? meeting.end_time.substring(0, 5) : ''}</span>
                             </div>
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between py-2 border-b gap-4">
                                 <span className="text-muted-foreground shrink-0">Lokasi</span>
                                 <span className="font-medium flex items-center min-w-0 justify-end sm:text-right">
-                                    <MapPin className="h-4 w-4 mr-2 shrink-0" /> 
+                                    <MapPin className="h-4 w-4 mr-2 shrink-0" />
                                     <span className="truncate" title={meeting.location}>{meeting.location}</span>
                                 </span>
                             </div>
@@ -174,7 +174,7 @@ export default function MeetingShow({ meeting }: any) {
                         </Card>
                     )}
                 </div>
-                
+
                 <div>
                     <Card>
                         <CardHeader>
@@ -193,7 +193,7 @@ export default function MeetingShow({ meeting }: any) {
                                         </div>
                                     </li>
                                 ))}
-                                
+
                                 {meeting.attendances?.filter((a: any) => !a.user_id).map((guest: any) => (
                                     <li key={`external-${guest.id}`} className="flex items-center space-x-3">
                                         <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-700">
@@ -220,9 +220,9 @@ export default function MeetingShow({ meeting }: any) {
                     </DialogHeader>
                     <div className="flex flex-col items-center justify-center py-6 gap-4">
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                            <QRCodeCanvas 
+                            <QRCodeCanvas
                                 id="qr-code-canvas"
-                                value={`http://192.168.100.98:8000/attend/${meeting.id}`} 
+                                value={`http://192.168.100.98:8000/attend/${meeting.id}`}
                                 size={250}
                                 level="H"
                                 includeMargin={false}
@@ -231,7 +231,7 @@ export default function MeetingShow({ meeting }: any) {
                         <div className="text-center space-y-1">
                             <h4 className="font-semibold text-slate-900 dark:text-slate-100">{meeting.title}</h4>
                             <p className="text-sm text-slate-500 dark:text-slate-400">
-                                {meeting.date} • {meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}
+                                {meeting.date} • {meeting.start_time?.substring(0, 5)} - {meeting.end_time?.substring(0, 5)}
                             </p>
                         </div>
                         <Button onClick={handleDownloadQR} className="mt-2" variant="outline">
