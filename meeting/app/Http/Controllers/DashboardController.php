@@ -66,15 +66,37 @@ class DashboardController extends Controller
             ];
         });
 
+        // Fungsi helper untuk menghitung jumlah peserta manual
+        $adjustParticipants = function ($meetings) {
+            return $meetings->map(function ($meeting) {
+                $manualCount = 0;
+                if ($meeting->minutes && $meeting->minutes->count() > 0) {
+                    $content = $meeting->minutes->first()->content;
+                    if (is_string($content)) {
+                        $content = json_decode($content, true);
+                    }
+                    if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
+                        $manualCount = count($content['peserta_rapat']);
+                    }
+                }
+                $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
+                unset($meeting->minutes); // Hapus agar payload Inertia tidak membengkak
+                return $meeting;
+            });
+        };
+
         // Latest Meetings (Rapat terbaru)
-        $latestMeetings = Meeting::withCount('participants')
+        $latestMeetingsRaw = Meeting::withCount('participants')
+            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'desc')
             ->take(5)
             ->get();
+        $latestMeetings = $adjustParticipants($latestMeetingsRaw);
 
         // Upcoming Meetings (Jadwal mendatang)
-        $upcomingMeetings = Meeting::withCount('participants')
+        $upcomingMeetingsRaw = Meeting::withCount('participants')
+            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
             ->where('date', '>=', $now->toDateString())
             ->whereIn('current_stage', [1, 2]) // Still scheduled or Humas Rekam
             ->where(function($query) {
@@ -85,6 +107,7 @@ class DashboardController extends Controller
             ->orderBy('start_time', 'asc')
             ->take(3)
             ->get();
+        $upcomingMeetings = $adjustParticipants($upcomingMeetingsRaw);
 
         // Action Items Mendesak (Dikustomisasi untuk hanya menampilkan Rapat Mendesak)
         $actionItems = Meeting::where('category', '=', 'action_item_mendesak', 'and')

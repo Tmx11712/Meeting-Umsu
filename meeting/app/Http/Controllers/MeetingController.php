@@ -28,7 +28,9 @@ class MeetingController extends Controller
          * kita memerintahkan database (SQL) untuk hanya menghitung angkanya saja (`SELECT COUNT()`).
          * Jauh lebih ringan dan cepat!
          */
-        $query = Meeting::query()->withCount('participants');
+        $query = Meeting::query()
+            ->withCount('participants')
+            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }]);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
@@ -38,6 +40,21 @@ class MeetingController extends Controller
         }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
+        $meetings->getCollection()->transform(function ($meeting) {
+            $manualCount = 0;
+            if ($meeting->minutes && $meeting->minutes->count() > 0) {
+                $content = $meeting->minutes->first()->content;
+                if (is_string($content)) {
+                    $content = json_decode($content, true);
+                }
+                if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
+                    $manualCount = count($content['peserta_rapat']);
+                }
+            }
+            $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
+            unset($meeting->minutes);
+            return $meeting;
+        });
 
         return Inertia::render('meetings/index', [
             'meetings' => $meetings,
@@ -51,13 +68,30 @@ class MeetingController extends Controller
 
         $now = Carbon::now();
 
-        $upcomingMeetings = Meeting::withCount('participants')
+        $upcomingMeetingsRaw = Meeting::withCount('participants')
+            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
             ->where('date', '>=', $now->toDateString())
             ->whereIn('current_stage', [1, 2])
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->take(3)
             ->get();
+            
+        $upcomingMeetings = $upcomingMeetingsRaw->map(function ($meeting) {
+            $manualCount = 0;
+            if ($meeting->minutes && $meeting->minutes->count() > 0) {
+                $content = $meeting->minutes->first()->content;
+                if (is_string($content)) {
+                    $content = json_decode($content, true);
+                }
+                if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
+                    $manualCount = count($content['peserta_rapat']);
+                }
+            }
+            $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
+            unset($meeting->minutes);
+            return $meeting;
+        });
 
         $actionItems = MeetingActionItem::with(['meeting'])
             ->where('status', 'open')
