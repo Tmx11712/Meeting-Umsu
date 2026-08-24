@@ -9,6 +9,8 @@ interface Meeting {
     end_time?: string;
     location: string;
     participants?: any[];
+    attendances?: any[];
+    minutes?: any[];
 }
 
 interface MeetingInfoCardProps {
@@ -25,7 +27,17 @@ export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton =
      * Dengan menjadikannya komponen terpisah (`MeetingInfoCard`), kita bisa menggunakannya kembali di halaman 
      * Recording, Correction, Review, maupun Approval tanpa menulis ulang kode HTML yang sama.
      */
-    const participantCount = totalParticipants !== undefined ? totalParticipants : (meeting.participants?.length || 0);
+    
+    // Hitung peserta dari DB (internal + eksternal)
+    const dbParticipantCount = (meeting.participants?.length || 0) + (meeting.attendances?.filter((a: any) => !a.user_id).length || 0);
+    
+    // Hitung peserta dari input manual di notulen (jika ada)
+    const manualParticipantCount = meeting.minutes?.[0]?.content?.peserta_rapat?.length || 0;
+    
+    // Gunakan nilai terbesar antara DB dan manual (karena rapat manual mungkin DB pesertanya kosong)
+    const defaultParticipantCount = Math.max(dbParticipantCount, manualParticipantCount);
+    
+    const participantCount = totalParticipants !== undefined ? totalParticipants : defaultParticipantCount;
 
     return (
         <Card className={`rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden ${className}`}>

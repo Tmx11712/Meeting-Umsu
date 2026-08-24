@@ -518,7 +518,6 @@ return;
                     {/* Informasi Rapat */}
                     <MeetingInfoCard 
                         meeting={meeting} 
-                        totalParticipants={participants.length} 
                         showDetailButton={true} 
                         className="rounded-xl border-slate-200 shadow-sm"
                     />
