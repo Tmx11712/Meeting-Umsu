@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class MeetingApproval extends Model
 {
+    /**
+     * [EDUKASI ARSITEKTUR: ELOQUENT MODEL & FOREIGN KEYS]
+     * Kelas ini mengelola persetujuan notulensi rapat (Approval).
+     * Field seperti 'meeting_id', 'minute_id', dan 'approved_by' adalah Foreign Keys (Kunci Asing) 
+     * yang menghubungkan tabel ini dengan tabel lain di database.
+     * Penggunaan model ini memastikan konsistensi data saat pimpinan menyetujui atau menolak notulensi.
+     */
     use HasFactory, HasUuids;
 
     protected $fillable = [

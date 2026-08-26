@@ -62,6 +62,12 @@ class MeetingController extends Controller
         ]);
     }
 
+    /**
+     * [EDUKASI ARSITEKTUR: MVC & INERTIA.JS]
+     * Method `create()` ini adalah bagian dari Controller. Tugasnya adalah mengambil data yang diperlukan dari database (Model),
+     * memprosesnya, lalu mengirimkannya ke tampilan (View) menggunakan Inertia::render().
+     * Ini membuat aplikasi kita terasa seperti Single Page Application (SPA) tanpa perlu menulis API khusus.
+     */
     public function create()
     {
         $users = User::query()->where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);

@@ -9,6 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 
 export default function CreateMeeting({ users, meeting }: { users: any[], meeting?: any }) {
+    /**
+     * [EDUKASI ARSITEKTUR: REACT & INERTIA.JS FORMS]
+     * Komponen ini menggunakan `useForm` dari Inertia.js untuk mengelola state form (data, errors, processing).
+     * Dengan Inertia.js, kita tidak perlu membuat fetch/axios request secara manual.
+     * Fungsi `post('/meetings')` atau `put(...)` akan otomatis mengirim data ke Laravel, 
+     * dan merender ulang halaman jika berhasil atau menampilkan error validasi tanpa refresh!
+     */
     const { data, setData, post, put, processing, errors } = useForm({
         title: meeting?.title || '',
         type: meeting?.type || 'Rapat internal',

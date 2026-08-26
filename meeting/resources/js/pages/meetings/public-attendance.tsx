@@ -10,7 +10,6 @@ import { submit as submitRoute } from '@/routes/attend';
 export default function PublicAttendance({ meeting, flash }: any) {
     const { data, setData, post, processing, errors } = useForm({
         guest_name: '',
-        guest_email: '',
         guest_institution: '',
     });
 
@@ -71,12 +70,12 @@ export default function PublicAttendance({ meeting, flash }: any) {
 
                                 <form onSubmit={submit} className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="guest_name" className="text-slate-900 font-semibold">Nama Lengkap</Label>
+                                        <Label htmlFor="guest_name" className="text-slate-900 font-semibold">Nama (Lengkap dengan gelar)</Label>
                                         <Input
                                             id="guest_name"
                                             type="text"
                                             className="text-slate-900 bg-white border-slate-300 placeholder:text-slate-400"
-                                            placeholder="Contoh: Budi Santoso"
+                                            placeholder="Contoh: Dr. Budi Santoso, S.Kom., M.Kom."
                                             value={data.guest_name}
                                             onChange={(e) => setData('guest_name', e.target.value)}
                                             required
@@ -85,25 +84,12 @@ export default function PublicAttendance({ meeting, flash }: any) {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="guest_email" className="text-slate-900 font-semibold">Email <span className="text-slate-400 font-normal">(Opsional)</span></Label>
-                                        <Input
-                                            id="guest_email"
-                                            type="email"
-                                            className="text-slate-900 bg-white border-slate-300 placeholder:text-slate-400"
-                                            placeholder="contoh@email.com"
-                                            value={data.guest_email}
-                                            onChange={(e) => setData('guest_email', e.target.value)}
-                                        />
-                                        {errors.guest_email && <p className="text-sm text-red-500">{errors.guest_email}</p>}
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="guest_institution" className="text-slate-900 font-semibold">Instansi / Departemen</Label>
+                                        <Label htmlFor="guest_institution" className="text-slate-900 font-semibold">Jabatan</Label>
                                         <Input
                                             id="guest_institution"
                                             type="text"
                                             className="text-slate-900 bg-white border-slate-300 placeholder:text-slate-400"
-                                            placeholder="Contoh: Universitas A / Divisi B"
+                                            placeholder="Contoh: Dosen / Staff IT"
                                             value={data.guest_institution}
                                             onChange={(e) => setData('guest_institution', e.target.value)}
                                             required
