@@ -61,8 +61,8 @@ export default function AuthSimpleLayout({
 
                             {/* eNotulen Logo & Text */}
                             <div className="flex items-center justify-center gap-4">
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
-                                    <AppLogoIcon className="size-7 text-white" />
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
+                                    <AppLogoIcon className="size-5 text-white" />
                                 </div>
                                 <div className="space-y-1 text-left">
                                     <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
