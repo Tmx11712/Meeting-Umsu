@@ -60,16 +60,16 @@ export default function AuthSimpleLayout({
                             <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-24 w-auto object-contain" />
 
                             {/* eNotulen Logo & Text */}
-                            <div className="flex items-center justify-center gap-4">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
-                                    <AppLogoIcon className="size-5 text-white" />
+                            <div className="flex flex-col items-center justify-center gap-3 text-center">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
+                                    <AppLogoIcon className="size-6 text-white" />
                                 </div>
-                                <div className="space-y-1 text-left">
+                                <div className="space-y-1">
                                     <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
                                     {title !== 'eNotulen' && (
                                         <h2 className="text-lg font-semibold">{title}</h2>
                                     )}
-                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">
                                         {description}
                                     </p>
                                 </div>
