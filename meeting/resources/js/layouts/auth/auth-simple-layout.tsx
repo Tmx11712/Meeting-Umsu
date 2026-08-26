@@ -29,9 +29,9 @@ export default function AuthSimpleLayout({
                     href={home()}
                     className="flex items-center gap-3 font-semibold text-lg"
                 >
-                    <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-8 w-8 object-contain" />
-                    <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600">
-                        <AppLogoIcon className="size-5 text-white" />
+                    <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-10 w-10 object-contain" />
+                    <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600">
+                        <AppLogoIcon className="size-4 text-white" />
                     </div>
                     eNotulen
                 </Link>
