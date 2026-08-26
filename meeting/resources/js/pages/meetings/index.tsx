@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { QRCodeCanvas } from 'qrcode.react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { confirmDelete } from '@/lib/sweetalert';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
@@ -23,17 +24,6 @@ export default function MeetingIndex({ meetings, filters }: any) {
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
-    };
-
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'berlangsung': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
-            case 'selesai': return 'bg-emerald-100/50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800 font-semibold';
-            case 'terjadwal': return 'bg-blue-100/50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 font-semibold';
-            case 'review': return 'bg-orange-100/50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800 font-semibold';
-            case 'dibatalkan': return 'bg-rose-100/50 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800 font-semibold';
-            default: return 'bg-slate-100/50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-semibold';
-        }
     };
 
     const handleSync = useCallback(() => {
@@ -263,11 +253,7 @@ clearTimeout(searchTimeout.current);
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants_count ?? 0}</span>
                                             </td>
                                             <td className="px-4 py-5 text-center">
-                                                <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs border ${getStatusColor(meeting.status || 'terjadwal')} shadow-sm whitespace-nowrap`}>
-                                                    {meeting.status === 'dibatalkan' 
-                                                        ? 'Rapat Dibatalkan' 
-                                                        : (meeting.status || 'Terjadwal').charAt(0).toUpperCase() + (meeting.status || 'terjadwal').slice(1)}
-                                                </span>
+                                                <MeetingStatusBadge status={meeting.status} />
                                             </td>
                                             <td className="px-4 py-5 text-center">
                                                 <div className="flex items-center justify-center gap-2 opacity-70 group-hover:opacity-100 transition-opacity">

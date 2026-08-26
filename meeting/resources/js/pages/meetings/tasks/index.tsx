@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 // Map icon string to actual Lucide component
 const IconMap: Record<string, React.ElementType> = {
@@ -15,15 +16,6 @@ const IconMap: Record<string, React.ElementType> = {
 };
 
 export default function TaskDashboard({ meetings, task }: any) {
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'berlangsung': return 'bg-red-50 text-red-600 border-red-200';
-            case 'selesai': return 'bg-green-50 text-green-600 border-green-200';
-            case 'terjadwal': return 'bg-blue-50 text-blue-600 border-blue-200';
-            default: return 'bg-slate-50 text-slate-600 border-slate-200';
-        }
-    };
-
     const { auth } = usePage().props as any;
     const userRole = auth?.user?.roles?.[0]?.name;
     const dept = auth?.user?.department?.toLowerCase() || '';
@@ -93,10 +85,7 @@ export default function TaskDashboard({ meetings, task }: any) {
                                         <Link href={`/meetings/${meeting.id}/${task.actionRoute.split('.').pop()}`} className="font-semibold text-lg text-slate-900 hover:text-primary transition-colors">
                                             {meeting.title}
                                         </Link>
-                                        <Badge variant="outline" className={`rounded-full px-2.5 font-medium ${getStatusColor(meeting.status)}`}>
-                                            {meeting.status === 'berlangsung' && <div className="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 animate-pulse" />}
-                                            {meeting.status.toUpperCase()}
-                                        </Badge>
+                                        <MeetingStatusBadge status={meeting.status} />
                                     </div>
                                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
                                         <div className="flex items-center">

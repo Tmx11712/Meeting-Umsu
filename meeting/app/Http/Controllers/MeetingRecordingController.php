@@ -19,6 +19,13 @@ class MeetingRecordingController extends Controller
 {
     public function show(Meeting $meeting)
     {
+        if ($meeting->status === 'terjadwal') {
+            $meeting->status = 'berlangsung';
+            $meeting->save();
+            // trigger event agar UI lain ikut update (seperti dashboard admin/umum)
+            safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
+        }
+
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
         }, 'recordings.transcripts' => function ($q) {

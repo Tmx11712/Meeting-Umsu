@@ -5,25 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { auth } = usePage().props as any;
     const [syncing, setSyncing] = useState(false);
     const { guardAction, canEdit } = usePermissions();
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'berlangsung': return 'bg-green-50 text-green-600 border-green-100 font-medium';
-            case 'selesai': return 'bg-green-50 text-green-600 border-green-100 font-medium';
-            case 'terjadwal': return 'bg-blue-50 text-blue-600 border-blue-100 font-medium';
-            case 'review': return 'bg-orange-50 text-orange-600 border-orange-100 font-medium';
-            default: return 'bg-slate-50 text-slate-600 border-slate-100 font-medium';
-        }
-    };
 
     const handleSync = () => {
         if (!guardAction('meeting')) {
-return;
-}
+            return;
+        }
 
         setSyncing(true);
         router.post('/meetings/sync', {}, {
@@ -126,10 +118,8 @@ return;
                                             <td className="px-4 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
                                             <td className="px-4 py-4 text-slate-600 max-w-[200px]"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
                                             <td className="px-4 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
-                                            <td className="px-4 py-4 text-center">
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs border ${getStatusColor(meeting.status || 'Terjadwal')}`}>
-                                                    {(meeting.status || 'Terjadwal').charAt(0).toUpperCase() + (meeting.status || 'terjadwal').slice(1)}
-                                                </span>
+                                            <td className="px-6 py-4 whitespace-nowrap text-center">
+                                                <MeetingStatusBadge status={meeting.status} />
                                             </td>
                                             <td className="px-4 py-4 text-center">
                                                 {canEdit('attendance') ? (
