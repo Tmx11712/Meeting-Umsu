@@ -3,6 +3,7 @@ import { CalendarDays, FileText, Users, Clock, ArrowLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
+import { dashboard } from '@/routes';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { PageProps } from '@/types';
 
