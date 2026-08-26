@@ -27,8 +27,9 @@ export default function AuthSimpleLayout({
             <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:bg-slate-900 dark:border-slate-800">
                 <Link
                     href={home()}
-                    className="flex items-center gap-2 font-semibold text-lg"
+                    className="flex items-center gap-3 font-semibold text-lg"
                 >
+                    <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-8 w-8 object-contain" />
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600">
                         <AppLogoIcon className="size-5 text-white" />
                     </div>
@@ -55,12 +56,15 @@ export default function AuthSimpleLayout({
                 <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col items-center gap-4">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
-                                <AppLogoIcon className="size-8 text-white" />
+                            <div className="flex gap-4 items-center">
+                                <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-16 w-16 object-contain" />
+                                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
+                                    <AppLogoIcon className="size-8 text-white" />
+                                </div>
                             </div>
 
                             <div className="space-y-2 text-center">
-                                <h1 className="text-2xl font-bold tracking-tight">eNotulen</h1>
+                                <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
                                 {title !== 'eNotulen' && (
                                     <h2 className="text-lg font-semibold">{title}</h2>
                                 )}
