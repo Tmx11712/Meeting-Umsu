@@ -131,7 +131,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
 
     return (
         <>
-            <Head title={`Dashboard Rapat`} />
+            <Head title={`eNotulen`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-300 mx-auto bg-background dark:bg-slate-950">
                 {/* Header Section */}
@@ -343,7 +343,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
 Dashboard.layout = (props: { currentTeam?: { slug: string } | null }) => ({
     breadcrumbs: [
         {
-            title: 'Dashboard Rapat',
+            title: 'eNotulen',
             href: dashboard().url,
         },
     ],
