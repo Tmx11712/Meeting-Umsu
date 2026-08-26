@@ -61,11 +61,13 @@ export default function AuthSimpleLayout({
 
                             {/* eNotulen Logo & Text */}
                             <div className="flex flex-col items-center justify-center gap-3 text-center">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
-                                    <AppLogoIcon className="size-6 text-white" />
-                                </div>
-                                <div className="space-y-1">
+                                <div className="flex items-center justify-center gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
+                                        <AppLogoIcon className="size-5 text-white" />
+                                    </div>
                                     <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
+                                </div>
+                                <div className="space-y-1 mt-1">
                                     {title !== 'eNotulen' && (
                                         <h2 className="text-lg font-semibold">{title}</h2>
                                     )}
