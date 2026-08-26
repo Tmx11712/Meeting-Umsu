@@ -89,7 +89,13 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
     };
 
     // Status helpers
-    const getStatusInfo = (stage: number, meetingDate?: string) => {
+    const getStatusInfo = (m: any) => {
+        if (m.status === 'dibatalkan') {
+            return { text: 'Rapat Dibatalkan', badgeClass: 'text-slate-500 bg-slate-100 border-slate-200', isLive: false };
+        }
+
+        const stage = m.current_stage;
+        const meetingDate = m.date;
         const today = new Date().toISOString().slice(0, 10);
         const isPast = meetingDate ? meetingDate < today : false;
 
@@ -196,7 +202,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                         <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
                             {latestMeetings && latestMeetings.length > 0 ? (
                                 latestMeetings.map((m, idx) => {
-                                    const status = getStatusInfo(m.current_stage, m.date);
+                                    const status = getStatusInfo(m);
                                     const today = new Date().toISOString().slice(0, 10);
                                     const isToday = m.date === today;
 
@@ -271,9 +277,16 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                                                     <h3 className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 leading-snug">
                                                         {item.description}
                                                     </h3>
-                                                    <span className={`text-[12px] whitespace-nowrap shrink-0 ${dateColors[colorIdx]}`}>
-                                                        {item.deadline ? formatDateShort(item.deadline) : 'Tidak ada'}
-                                                    </span>
+                                                    <div className="flex flex-col items-end gap-1 shrink-0">
+                                                        <span className={`text-[12px] whitespace-nowrap ${dateColors[colorIdx]}`}>
+                                                            {item.deadline ? formatDateShort(item.deadline) : 'Tidak ada'}
+                                                        </span>
+                                                        {item.status === 'dibatalkan' && (
+                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
+                                                                Rapat Dibatalkan
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </Link>
@@ -301,9 +314,16 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                                                 {idx === 0 ? <Users className="w-5 h-5" /> : idx === 1 ? <Clock className="w-5 h-5" /> : <CalendarDays className="w-5 h-5" />}
                                             </div>
                                             <div>
-                                                <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug mb-1.5">
-                                                    {m.title}
-                                                </h4>
+                                                <div className="flex justify-between items-start gap-2 mb-1.5">
+                                                    <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                                                        {m.title}
+                                                    </h4>
+                                                    {m.status === 'dibatalkan' && (
+                                                        <span className="inline-flex shrink-0 items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
+                                                            Rapat Dibatalkan
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <p className="text-[13px] text-slate-500">
                                                     {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
                                                 </p>

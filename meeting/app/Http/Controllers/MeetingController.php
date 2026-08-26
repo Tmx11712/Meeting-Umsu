@@ -245,6 +245,19 @@ class MeetingController extends Controller
         return redirect()->route('meetings.show', $meeting->id)->with('success', 'Rapat berhasil diperbarui.');
     }
 
+    public function cancel(Meeting $meeting)
+    {
+        abort_unless(request()->user()->can('meeting.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk membatalkan rapat.');
+
+        $meeting->status = 'dibatalkan';
+        $meeting->save();
+
+        safe_broadcast(new MeetingUpdated($meeting, 'cancelled'));
+        safe_broadcast(new MeetingsListUpdated('Rapat '.$meeting->title.' telah dibatalkan'));
+
+        return redirect()->route('dashboard')->with('success', 'Rapat berhasil dibatalkan.');
+    }
+
     public function destroy(Meeting $meeting)
     {
         abort_unless(request()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');

@@ -2,11 +2,13 @@ import { Head, usePage, router, Link } from '@inertiajs/react';
 // @ts-ignore
 import ysFixWebmDuration from 'fix-webm-duration';
 import axios from 'axios';
-import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft } from 'lucide-react';
+import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { QRCodeCanvas } from 'qrcode.react';
 import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
 import type { Meeting } from '@/types/meeting';
 
@@ -30,7 +32,20 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
+    const [isQrOpen, setIsQrOpen] = useState(false);
     const [isTranscribing, setIsTranscribing] = useState<number | null>(null);
+
+    const handleDownloadQR = () => {
+        const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
+        if (!canvas) return;
+        const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngUrl;
+        downloadLink.download = `QR_Absensi_${meeting?.title?.replace(/\s+/g, '_') || 'Meeting'}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
@@ -355,7 +370,7 @@ return;
 
             {/* Meeting Info Card (Top Section) */}
             <div className="w-full">
-                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex items-center justify-between">
+                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
                             <Megaphone className="w-5 h-5" />
@@ -365,6 +380,9 @@ return;
                             <p className="text-[12px] text-slate-500 mt-0.5">{meeting?.location || 'Ruang Rapat'} - {meeting?.date}</p>
                         </div>
                     </div>
+                    <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100 whitespace-nowrap">
+                        <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
+                    </Button>
                 </div>
             </div>
 
@@ -595,6 +613,39 @@ return;
                     </div>
                 )}
             </div>
+
+            {/* QR Absensi Modal */}
+            <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-center">QR Code Absensi</DialogTitle>
+                        <DialogDescription className="text-center">
+                            Scan QR Code ini menggunakan aplikasi UMSU Employee untuk mencatat kehadiran pada rapat.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex flex-col items-center justify-center py-6 gap-4">
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <QRCodeCanvas
+                                id="qr-code-canvas"
+                                value={`http://192.168.100.98:8000/attend/${meeting.id}`}
+                                size={250}
+                                level="H"
+                                includeMargin={false}
+                            />
+                        </div>
+                        <div className="text-center space-y-1">
+                            <h4 className="font-semibold text-slate-900 dark:text-slate-100">{meeting.title}</h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                                {meeting.date} • {meeting.start_time?.substring(0, 5)} - {meeting.end_time?.substring(0, 5)}
+                            </p>
+                        </div>
+                        <Button onClick={handleDownloadQR} className="mt-2" variant="outline">
+                            <Download className="w-4 h-4 mr-2" />
+                            Download QR Code
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

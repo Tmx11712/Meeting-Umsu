@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('meetings/sync', [MeetingController::class, 'syncFromIrvanCloud'])->name('meetings.sync');
     Route::post('meetings/auto-sync', [MeetingController::class, 'autoSync'])->name('meetings.auto-sync');
+    Route::post('meetings/{meeting}/cancel', [MeetingController::class, 'cancel'])->name('meetings.cancel');
     Route::resource('meetings', MeetingController::class);
 
     // Recording & Transcripts

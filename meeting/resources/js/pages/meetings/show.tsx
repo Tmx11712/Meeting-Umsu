@@ -1,5 +1,5 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle, QrCode, Download } from 'lucide-react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle, QrCode, Download, Ban } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { QRCodeCanvas } from 'qrcode.react';
 import { useInitials } from '@/hooks/use-initials';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { confirmDelete } from '@/lib/sweetalert';
 
 export default function MeetingShow({ meeting }: any) {
     useMeetingWebSocket(meeting?.id);
@@ -54,7 +55,7 @@ export default function MeetingShow({ meeting }: any) {
                             Informasi Rapat
                         </h1>
                         <Badge variant={meeting.status === 'selesai' ? 'default' : 'secondary'} className="text-sm px-3 py-1 bg-card/60 border-border text-foreground">
-                            {meeting.status.toUpperCase()}
+                            {meeting.status === 'dibatalkan' ? 'RAPAT DIBATALKAN' : meeting.status.toUpperCase()}
                         </Badge>
                     </div>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
@@ -72,11 +73,26 @@ export default function MeetingShow({ meeting }: any) {
                         </Link>
                     </Button>
                     {(isAdmin || isUmum) && (
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-5 font-semibold" asChild>
-                            <Link href={`/meetings/${meeting.id}/edit`}>
-                                <Edit className="mr-2 h-4 w-4" /> Edit Rapat
-                            </Link>
-                        </Button>
+                        <>
+                            {['terjadwal'].includes(meeting.status) && (
+                                <Button 
+                                    variant="destructive" 
+                                    className="rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-5 font-semibold" 
+                                    onClick={async () => {
+                                        if (await confirmDelete('Batalkan Rapat?', 'Rapat yang dibatalkan tidak dapat dikembalikan.', 'Ya, Batalkan!')) {
+                                            router.post(`/meetings/${meeting.id}/cancel`);
+                                        }
+                                    }}
+                                >
+                                    <Ban className="mr-2 h-4 w-4" /> Batalkan Rapat
+                                </Button>
+                            )}
+                            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-5 font-semibold" asChild>
+                                <Link href={`/meetings/${meeting.id}/edit`}>
+                                    <Edit className="mr-2 h-4 w-4" /> Edit Rapat
+                                </Link>
+                            </Button>
+                        </>
                     )}
                 </div>
             </div>
@@ -130,7 +146,7 @@ export default function MeetingShow({ meeting }: any) {
                                 <CardTitle className="text-lg text-blue-800">Tindakan Operasional</CardTitle>
                             </CardHeader>
                             <CardContent className="flex flex-wrap gap-3">
-                                {canEnterRecordingRoom && !isHumas && (
+                                {canEnterRecordingRoom && (
                                     <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100">
                                         <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
                                     </Button>

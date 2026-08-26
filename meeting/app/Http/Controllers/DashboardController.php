@@ -122,6 +122,7 @@ class DashboardController extends Controller
                     'description' => $m->title,
                     'deadline' => $m->date,
                     'pic' => '-', // Tidak ada PIC spesifik karena ini adalah Rapat
+                    'status' => $m->status,
                 ];
             });
 
