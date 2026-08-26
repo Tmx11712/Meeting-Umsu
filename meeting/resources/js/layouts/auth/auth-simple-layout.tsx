@@ -55,22 +55,24 @@ export default function AuthSimpleLayout({
             <main className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
                 <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
                     <div className="flex flex-col gap-8">
-                        <div className="flex flex-row items-center justify-center gap-6">
-                            <div className="flex gap-3 items-center">
-                                <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-14 w-14 object-contain" />
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
+                        <div className="flex flex-col items-center gap-6">
+                            {/* UMSU Logo */}
+                            <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-24 w-auto object-contain" />
+
+                            {/* eNotulen Logo & Text */}
+                            <div className="flex items-center justify-center gap-4">
+                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-600 shadow-md">
                                     <AppLogoIcon className="size-7 text-white" />
                                 </div>
-                            </div>
-
-                            <div className="space-y-1 text-left">
-                                <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
-                                {title !== 'eNotulen' && (
-                                    <h2 className="text-lg font-semibold">{title}</h2>
-                                )}
-                                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                    {description}
-                                </p>
+                                <div className="space-y-1 text-left">
+                                    <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
+                                    {title !== 'eNotulen' && (
+                                        <h2 className="text-lg font-semibold">{title}</h2>
+                                    )}
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {description}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         {children}
