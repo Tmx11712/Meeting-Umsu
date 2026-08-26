@@ -3,7 +3,8 @@ import { CalendarDays, FileText, Users, Clock, ArrowLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
-import { dashboard } from '@/routes';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
+import { PageProps } from '@/types';
 
 type Props = {
     stats: {
@@ -88,39 +89,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
         return `/meetings/${m.id}`;
     };
 
-    // Status helpers
-    const getStatusInfo = (m: any) => {
-        if (m.status === 'dibatalkan') {
-            return { text: 'Rapat Dibatalkan', badgeClass: 'text-slate-500 bg-slate-100 border-slate-200', isLive: false };
-        }
-
-        const stage = m.current_stage;
-        const meetingDate = m.date;
-        const today = new Date().toISOString().slice(0, 10);
-        const isPast = meetingDate ? meetingDate < today : false;
-
-        if (stage <= 2) {
-            if (isPast) {
-                return { text: 'Belum Diproses', badgeClass: 'text-slate-600 bg-slate-50 border-slate-200', isLive: false };
-            }
-
-            return { text: 'Live', badgeClass: 'text-red-600 bg-red-50 border-red-200', isLive: true };
-        }
-
-        if (stage <= 4) {
-            return { text: 'Review', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
-        }
-
-        if (stage === 5) {
-            return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
-        }
-
-        if (stage === 6) {
-            return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
-        }
-
-        return { text: 'Selesai', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-200', isLive: false };
-    };
+    // Removed getStatusInfo because we now use MeetingStatusBadge
 
     // Upcoming meeting icons (rotating)
     const upcomingIcons = [
@@ -202,7 +171,6 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                         <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
                             {latestMeetings && latestMeetings.length > 0 ? (
                                 latestMeetings.map((m, idx) => {
-                                    const status = getStatusInfo(m);
                                     const today = new Date().toISOString().slice(0, 10);
                                     const isToday = m.date === today;
 
@@ -228,19 +196,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                                             </div>
 
                                             <div className="shrink-0 pt-1">
-                                                {status.isLive ? (
-                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
-                                                        <span className="relative flex h-1.5 w-1.5">
-                                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-600"></span>
-                                                        </span>
-                                                        {status.text}
-                                                    </span>
-                                                ) : (
-                                                    <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
-                                                        {status.text}
-                                                    </span>
-                                                )}
+                                                <MeetingStatusBadge status={m.status} />
                                             </div>
                                         </Link>
                                     );
