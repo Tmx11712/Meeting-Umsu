@@ -14,24 +14,20 @@ export function MeetingStatusBadge({ status, className = '' }: MeetingStatusBadg
 
     switch (s) {
         case 'terjadwal':
-            colorClass = 'bg-blue-100/50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 font-semibold';
+            colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
             text = 'Terjadwal';
-            emoji = '🟡';
             break;
         case 'berlangsung':
-            colorClass = 'bg-green-100/50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800 font-semibold animate-pulse';
+            colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';
             text = 'Berlangsung';
-            emoji = '🔴';
             break;
         case 'selesai':
-            colorClass = 'bg-purple-100/50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800 font-semibold';
+            colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800';
             text = 'Selesai';
-            emoji = '🟢';
             break;
         case 'dibatalkan':
-            colorClass = 'bg-red-100/50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 font-semibold';
+            colorClass = 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:border-slate-700';
             text = 'Rapat Dibatalkan';
-            emoji = '⚫';
             break;
         case 'recording':
             colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';
@@ -49,8 +45,8 @@ export function MeetingStatusBadge({ status, className = '' }: MeetingStatusBadg
     }
 
     return (
-        <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs border shadow-sm whitespace-nowrap ${colorClass} ${className}`}>
-            <span className="mr-1.5">{emoji}</span> {text}
+        <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border shadow-sm whitespace-nowrap ${colorClass} ${className}`}>
+            {text}
         </span>
     );
 }
