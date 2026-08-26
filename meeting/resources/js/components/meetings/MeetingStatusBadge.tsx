@@ -14,7 +14,7 @@ export function MeetingStatusBadge({ status, className = '' }: MeetingStatusBadg
 
     switch (s) {
         case 'terjadwal':
-            colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
+            colorClass = 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800';
             text = 'Terjadwal';
             break;
         case 'berlangsung':
