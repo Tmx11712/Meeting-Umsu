@@ -35,7 +35,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
     // Real-time: listen for global meetings updates via WebSocket
     useEffect(() => {
         const channel = (window as any).Echo?.channel('meetings');
-        
+
         if (channel) {
             channel.listen('MeetingsListUpdated', (e: any) => {
                 console.log('Dashboard real-time update:', e);
@@ -54,8 +54,8 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
     // Helper to format date
     const formatDate = (dateStr: string) => {
         if (!dateStr) {
-return '';
-}
+            return '';
+        }
 
         const d = new Date(dateStr);
 
@@ -64,8 +64,8 @@ return '';
 
     const formatDateShort = (dateStr: string) => {
         if (!dateStr) {
-return '';
-}
+            return '';
+        }
 
         const d = new Date(dateStr);
 
@@ -102,16 +102,16 @@ return '';
         }
 
         if (stage <= 4) {
-return { text: 'Review', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
-}
+            return { text: 'Review', badgeClass: 'text-orange-600 bg-orange-50 border-orange-200', isLive: false };
+        }
 
         if (stage === 5) {
-return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
-}
+            return { text: 'Review', badgeClass: 'text-amber-600 bg-amber-50 border-amber-200', isLive: false };
+        }
 
         if (stage === 6) {
-return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
-}
+            return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200', isLive: false };
+        }
 
         return { text: 'Selesai', badgeClass: 'text-emerald-600 bg-emerald-50 border-emerald-200', isLive: false };
     };
@@ -126,7 +126,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
     return (
         <>
             <Head title={`Dashboard Rapat`} />
-            
+
             <div className="flex h-full flex-1 flex-col gap-6 p-6 lg:p-8 w-full max-w-300 mx-auto bg-background dark:bg-slate-950">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -189,62 +189,61 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Rapat terbaru */}
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
-                    <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-                        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
-                        <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
-                    </div>
-                    <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
-                        {latestMeetings && latestMeetings.length > 0 ? (
-                            latestMeetings.map((m, idx) => {
-                                const status = getStatusInfo(m.current_stage, m.date);
-                                const today = new Date().toISOString().slice(0, 10);
-                                const isToday = m.date === today;
+                        <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
+                            <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
+                        </div>
+                        <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
+                            {latestMeetings && latestMeetings.length > 0 ? (
+                                latestMeetings.map((m, idx) => {
+                                    const status = getStatusInfo(m.current_stage, m.date);
+                                    const today = new Date().toISOString().slice(0, 10);
+                                    const isToday = m.date === today;
 
-                                return (
-                                    <Link
-                                        key={m.id}
-                                        href={getMeetingUrl(m)}
-                                        className="p-4 sm:p-5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group flex justify-between items-start"
-                                    >
-                                        <div className="flex-1 min-w-0 pr-4">
-                                            <h3 className="text-[15px] sm:text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors mb-2 truncate">
-                                                {m.title}
-                                            </h3>
-                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-slate-500 dark:text-slate-400 font-mono tracking-tight">
-                                                <span className="flex items-center gap-1.5 whitespace-nowrap">
-                                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                    {isToday ? 'Hari ini' : formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0,5) : ''}
-                                                </span>
-                                                <span className="flex items-center gap-1.5 whitespace-nowrap">
-                                                    <Users className="w-3.5 h-3.5 text-slate-400" />
-                                                    {m.participants_count || 0} Peserta
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="shrink-0 pt-1">
-                                            {status.isLive ? (
-                                                <span className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
-                                                    <span className="relative flex h-1.5 w-1.5">
-                                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-600"></span>
+                                    return (
+                                        <Link
+                                            key={m.id}
+                                            href={getMeetingUrl(m)}
+                                            className="p-4 sm:p-5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group flex justify-between items-start">
+                                            <div className="flex-1 min-w-0 pr-4">
+                                                <h3 className="text-[15px] sm:text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors mb-2 truncate">
+                                                    {m.title}
+                                                </h3>
+                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-slate-500 dark:text-slate-400 font-mono tracking-tight">
+                                                    <span className="flex items-center gap-1.5 whitespace-nowrap">
+                                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                                        {isToday ? 'Hari ini' : formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0, 5) : ''}
                                                     </span>
-                                                    {status.text}
-                                                </span>
-                                            ) : (
-                                                <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
-                                                    {status.text}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </Link>
-                                );
-                            })
-                        ) : (
-                            <div className="p-8 text-center text-slate-400 text-sm">Belum ada rapat terbaru.</div>
-                        )}
+                                                    <span className="flex items-center gap-1.5 whitespace-nowrap">
+                                                        <Users className="w-3.5 h-3.5 text-slate-400" />
+                                                        {m.participants_count || 0} Peserta
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="shrink-0 pt-1">
+                                                {status.isLive ? (
+                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
+                                                        <span className="relative flex h-1.5 w-1.5">
+                                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-600"></span>
+                                                        </span>
+                                                        {status.text}
+                                                    </span>
+                                                ) : (
+                                                    <span className={`inline-flex items-center px-2.5 sm:px-3 py-1 rounded-full border text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ${status.badgeClass}`}>
+                                                        {status.text}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </Link>
+                                    );
+                                })
+                            ) : (
+                                <div className="p-8 text-center text-slate-400 text-sm">Belum ada rapat terbaru.</div>
+                            )}
+                        </div>
                     </div>
-                </div>
 
                     {/* Action items mendesak */}
                     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
@@ -257,13 +256,13 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                                     const bgColors = ['bg-red-50/50 dark:bg-red-900/20 border-red-100/50 dark:border-red-900/50', 'bg-amber-50/50 dark:bg-amber-900/20 border-amber-100/50 dark:border-amber-900/50', 'bg-slate-50/50 dark:bg-slate-800/50 border-slate-100/50 dark:border-slate-800/50'];
                                     const dotColors = ['bg-red-500', 'bg-amber-500', 'bg-slate-400'];
                                     const dateColors = ['text-red-600 dark:text-red-400', 'text-amber-600 dark:text-amber-400', 'text-slate-500 dark:text-slate-400'];
-                                    
+
                                     const colorIdx = idx < 3 ? idx : 2;
 
                                     return (
-                                        <Link 
-                                            href={`/meetings/${item.meeting_id}`} 
-                                            key={item.id} 
+                                        <Link
+                                            href={`/meetings/${item.meeting_id}`}
+                                            key={item.id}
                                             className={`rounded-xl border p-4 flex items-start gap-3 transition-transform hover:scale-[1.01] hover:shadow-sm cursor-pointer ${bgColors[colorIdx]}`}
                                         >
                                             <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${dotColors[colorIdx]}`}></div>
@@ -306,7 +305,7 @@ return { text: 'Persetujuan', badgeClass: 'text-sky-600 bg-sky-50 border-sky-200
                                                     {m.title}
                                                 </h4>
                                                 <p className="text-[13px] text-slate-500">
-                                                    {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0,5) : ''} · {m.participants_count || 0} peserta
+                                                    {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
                                                 </p>
                                             </div>
                                         </CardContent>
