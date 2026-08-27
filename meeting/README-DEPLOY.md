@@ -45,7 +45,7 @@ APP_NAME=enotulen
 APP_ENV=production
 APP_KEY=base64:duT5VTKp+gwtjhiMVlYRb3kXqjP8AmRmNfTu+vQOUdQ=
 APP_DEBUG=false
-APP_URL=http://10.10.10.3
+APP_URL=http://100.107.175.84
 
 # DB POSTGRES (LXC 100)
 DB_CONNECTION=pgsql
@@ -78,7 +78,7 @@ BROADCAST_CONNECTION=reverb
 REVERB_APP_ID=800000
 REVERB_APP_KEY=my_reverb_key
 REVERB_APP_SECRET=my_reverb_secret
-REVERB_HOST="10.10.10.3"
+REVERB_HOST="100.107.175.84"
 REVERB_PORT=8080
 REVERB_SCHEME=http
 
@@ -101,4 +101,5 @@ docker compose -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-Jika sudah selesai, aplikasi E-Notulen dapat diakses melalui web browser dengan mengunjungi IP kontainer aplikasi: `http://10.10.10.3`.
+Jika sudah selesai, aplikasi E-Notulen dapat diakses melalui web browser dari komputer Anda dengan mengunjungi IP Server: `http://100.107.175.84`.
+*(Catatan: Pastikan Anda sudah mengatur NAT / Port Forwarding di Proxmox dari host 100.107.175.84 ke LXC 10.10.10.3 untuk port 80 dan 8080)*
