@@ -21,7 +21,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                 </CardHeader>
                 <CardContent>
                     <form className="flex flex-wrap gap-4 items-end" action="/reports" method="GET">
-                        <div className="space-y-2 flex-1 min-w-[200px]">
+                        <div className="space-y-2 flex-1 min-w-50">
                             <label className="text-sm font-medium">Tanggal Mulai</label>
                             <input 
                                 type="date" 
@@ -30,7 +30,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 defaultValue={filters.start_date || ''}
                             />
                         </div>
-                        <div className="space-y-2 flex-1 min-w-[200px]">
+                        <div className="space-y-2 flex-1 min-w-50">
                             <label className="text-sm font-medium">Tanggal Selesai</label>
                             <input 
                                 type="date" 
