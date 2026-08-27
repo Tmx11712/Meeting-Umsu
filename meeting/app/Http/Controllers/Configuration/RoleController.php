@@ -108,6 +108,7 @@ class RoleController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
+        /** @var \Illuminate\Database\Eloquent\Model $role */
         $role->update([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
@@ -129,6 +130,7 @@ class RoleController extends Controller
             'Role ini tidak dapat dihapus.'
         );
 
+        /** @var \Illuminate\Database\Eloquent\Model $role */
         $role->delete();
 
         return redirect('/configuration/roles')->with('flash', [

@@ -47,7 +47,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                             <Input 
                                 type="search" 
                                 placeholder="Cari judul rapat..." 
-                                className="pl-9 w-[300px] bg-white border-slate-200 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg h-10"
+                                className="pl-9 w-75 bg-white border-slate-200 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg h-10"
                                 defaultValue={filters?.search || ''}
                             />
                         </div>
@@ -55,7 +55,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                         <div className="flex items-center gap-3">
                             <div className="relative">
                                 <select 
-                                    className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-[160px] cursor-pointer hover:bg-slate-50 transition-colors"
+                                    className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-40 cursor-pointer hover:bg-slate-50 transition-colors"
                                     defaultValue={filters?.status || 'all'}
                                 >
                                     <option value="all">Semua Status</option>
@@ -74,7 +74,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                     <Calendar className="h-4 w-4 text-slate-400" />
                                 </div>
                                 <select 
-                                    className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-[160px] cursor-pointer hover:bg-slate-50 transition-colors"
+                                    className="h-10 rounded-lg border border-slate-200 bg-white pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 w-40 cursor-pointer hover:bg-slate-50 transition-colors"
                                     defaultValue="juni"
                                 >
                                     <option value="juni">Juni 2026</option>
@@ -116,7 +116,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                             </td>
                                             <td className="px-4 py-4 text-slate-600">{meeting.date || '4 Jun 2026'}</td>
                                             <td className="px-4 py-4 text-slate-600">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-4 py-4 text-slate-600 max-w-[200px]"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
+                                            <td className="px-4 py-4 text-slate-600 max-w-50"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
                                             <td className="px-4 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center">
                                                 <MeetingStatusBadge status={meeting.status} />
