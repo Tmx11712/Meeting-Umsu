@@ -1,41 +1,44 @@
-# Panduan Deployment ke Server Proxmox
+# Panduan Deployment E-Notulen ke Server Proxmox
 
-Karena sistem keamanan terminal Windows tidak mengizinkan saya (AI) untuk memasukkan *password* SSH secara otomatis, Anda harus menjalankan perintah ini langsung di terminal laptop Anda (PowerShell / Command Prompt).
+Panduan ini berisi langkah-langkah untuk melakukan _deployment_ aplikasi E-Notulen ke dalam server Proxmox yang sudah dipecah menjadi beberapa kontainer (LXC).
 
-## Langkah 1: Copy Project ke Server Proxmox (via SCP)
-Buka terminal baru di laptop Anda, lalu jalankan perintah ini untuk menyalin seluruh folder project ke root server Proxmox:
+## Arsitektur Infrastruktur
+- **LXC 100 (Database)**: PostgreSQL (10.10.10.2)
+- **LXC 101 (Aplikasi)**: Docker App Server (10.10.10.3)
+- **LXC 102 (Cache/Queue)**: Redis (10.10.10.4)
+- **LXC 103 (Storage)**: MinIO (10.10.10.5)
 
-```bash
-# Buka PowerShell baru lalu jalankan ini (masukkan password Allahuakbar1213* saat diminta)
-scp -r e:\notulen\meeting root@100.107.175.84:/root/
-```
-*(Catatan: Proses ini mungkin memakan waktu beberapa saat karena akan menyalin semua file termasuk vendor/node_modules. Jika gagal, kita bisa menggunakan git clone).*
+## Langkah 1: Login ke Server Proxmox
+Buka terminal (Command Prompt / PowerShell) di komputer lokal Anda, lalu masuk menggunakan SSH ke server Proxmox:
 
-## Langkah 2: Masuk ke Proxmox & Pindahkan File ke Container 101
-Masuk ke server Proxmox Anda:
 ```bash
 ssh root@100.107.175.84
 # Masukkan password: Allahuakbar1213*
 ```
 
-Setelah berhasil masuk ke Proxmox, dorong folder tersebut ke dalam Container 101:
-```bash
-# Pindahkan folder dari host Proxmox ke dalam LXC 101
-pct push 101 /root/meeting /var/www/enotulen
-```
+## Langkah 2: Masuk ke Kontainer Docker (LXC 101) & Unduh Kode
+Setelah berada di terminal Proxmox, pindah ke dalam kontainer yang dikhususkan untuk menjalankan aplikasi Docker:
 
-## Langkah 3: Masuk ke Container Docker (101) & Setup
-Masuk ke dalam container 101:
 ```bash
+# Masuk ke dalam LXC 101
 pct enter 101
+
+# Buat direktori web (jika belum ada) dan masuk ke dalamnya
+mkdir -p /var/www
+cd /var/www
+
+# Unduh source code terbaru dari Github
+git clone https://github.com/Tmx11712/Meeting-Umsu.git enotulen
+
+# Masuk ke direktori aplikasi
+cd enotulen
 ```
 
-Di dalam container 101, masuk ke folder aplikasi:
-```bash
-cd /var/www/enotulen
-```
+## Langkah 3: Konfigurasi Environment (`.env`)
+Aplikasi membutuhkan konfigurasi environment agar dapat terhubung dengan LXC lainnya (PostgreSQL, Redis, MinIO). 
 
-Edit konfigurasi `.env` production Anda (jalankan perintah ini untuk menimpa `.env` dengan kredensial baru):
+Di dalam `/var/www/enotulen`, jalankan perintah ini untuk membuat file `.env` production secara otomatis:
+
 ```bash
 cat << 'EOF' > .env
 APP_NAME=enotulen
@@ -87,12 +90,15 @@ VITE_REVERB_SCHEME="${REVERB_SCHEME}"
 EOF
 ```
 
-## Langkah 4: Build & Jalankan Docker Compose Production
-Terakhir, masih di dalam LXC 101 (di folder `/var/www/enotulen`), jalankan:
+## Langkah 4: Build & Jalankan Docker Compose
+Langkah terakhir adalah melakukan *build* image Docker dan menjalankannya sebagai *background service*:
 
 ```bash
+# Melakukan build docker image
 docker compose -f docker-compose.prod.yml build
+
+# Menjalankan kontainer docker
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-Jika sudah selesai, aplikasi akan berjalan dan bisa diakses melalui web browser Anda dengan mengunjungi IP container Docker tersebut (misalnya `http://10.10.10.3` atau Port Forwarding yang Anda atur).
+Jika sudah selesai, aplikasi E-Notulen dapat diakses melalui web browser dengan mengunjungi IP kontainer aplikasi: `http://10.10.10.3`.
