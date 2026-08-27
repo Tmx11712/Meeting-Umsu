@@ -17,9 +17,6 @@ services:
     volumes:
       # Keep storage persistent (if not using S3 for everything)
       - enotulen-storage:/var/www/html/storage
-    depends_on:
-      - pgsql
-      - redis
 
   # ==========================================
   # 2. Nginx Web Server
@@ -50,7 +47,6 @@ services:
       - enotulen-storage:/var/www/html/storage
     depends_on:
       - app
-      - redis
 
   # ==========================================
   # 4. Reverb WebSocket Server
@@ -66,30 +62,7 @@ services:
       - .env
     depends_on:
       - app
-      - redis
-
-  # ==========================================
-  # Infrastructure Dependencies (from your dev setup)
-  # In a real production, you might use managed services (RDS, ElastiCache, S3)
-  # ==========================================
-  pgsql:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - "enotulen-pgsql:/var/lib/postgresql/data"
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    volumes:
-      - "enotulen-redis:/data"
 
 volumes:
   enotulen-storage:
   enotulen-public:
-  enotulen-pgsql:
-  enotulen-redis:

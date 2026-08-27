@@ -270,10 +270,26 @@ class MeetingController extends Controller
 
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'));
 
+        // Hapus file fisik rekaman audio dari storage lokal maupun s3
+        $meeting->load('recordings');
+        foreach ($meeting->recordings as $recording) {
+            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($recording->file_path)) {
+                \Illuminate\Support\Facades\Storage::disk('local')->delete($recording->file_path);
+            }
+            if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
+                \Illuminate\Support\Facades\Storage::delete($recording->file_path);
+            }
+        }
+        
+        // Hapus direktori rekaman rapat ini agar bersih
+        \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('recordings/' . $meeting->id);
+        \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
+
+        // Hapus permanen rapat (termasuk relasinya jika diset cascade di DB)
         $meeting->forceDelete();
 
         safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'));
 
-        return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen.');
+        return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen beserta file rekamannya.');
     }
 }
