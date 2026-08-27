@@ -44,7 +44,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 <Search className="mr-2 h-4 w-4" /> Tampilkan
                             </Button>
                             <Button asChild>
-                                <a href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}`}>
+                                <a href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}`} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" /> Download PDF Rekap
                                 </a>
                             </Button>
@@ -84,7 +84,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                                         <td className="p-4 text-right">
                                             {minute ? (
                                                 <Button variant="outline" size="sm" asChild>
-                                                    <a href={`/meetings/${meeting.id}/review/pdf`}>
+                                                    <a href={`/meetings/${meeting.id}/review/pdf`} target="_blank" rel="noopener noreferrer">
                                                         <FileText className="mr-2 h-4 w-4" /> PDF Notulen
                                                     </a>
                                                 </Button>

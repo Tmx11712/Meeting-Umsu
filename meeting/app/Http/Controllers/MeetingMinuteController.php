@@ -141,6 +141,6 @@ class MeetingMinuteController extends Controller
             ? 'DRAFT_Notulen_'.$meeting->title.'.pdf'
             : 'Notulen_'.$meeting->title.'.pdf';
 
-        return $pdf->download($filename);
+        return $pdf->stream($filename);
     }
 }

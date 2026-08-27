@@ -38,6 +38,6 @@ class ReportController extends Controller
 
         $pdf = Pdf::loadView('pdf.report', compact('meetings', 'request'));
 
-        return $pdf->download('Laporan_Notulen.pdf');
+        return $pdf->stream('Laporan_Notulen.pdf');
     }
 }

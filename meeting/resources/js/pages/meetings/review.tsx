@@ -90,7 +90,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     };
 
     const downloadPdf = () => {
-        window.location.href = `/meetings/${meeting.id}/review/pdf`;
+        window.open(`/meetings/${meeting.id}/review/pdf`, '_blank');
     };
 
     // Document Handlers
