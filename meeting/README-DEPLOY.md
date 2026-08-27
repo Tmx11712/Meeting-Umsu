@@ -1,23 +1,47 @@
-# Panduan Deployment E-Notulen ke Server Proxmox
+# Panduan Lengkap Deployment E-Notulen ke Server Proxmox
 
-Panduan ini berisi langkah-langkah untuk melakukan _deployment_ aplikasi E-Notulen ke dalam server Proxmox yang sudah dipecah menjadi beberapa kontainer (LXC).
+Panduan ini adalah dokumentasi komprehensif dari awal (mengatur jaringan/port forwarding) hingga aplikasi menyala, menggunakan metode `git clone` untuk proses instalasi yang cepat dan bersih.
 
 ## Arsitektur Infrastruktur
-- **LXC 100 (Database)**: PostgreSQL (10.10.10.2)
-- **LXC 101 (Aplikasi)**: Docker App Server (10.10.10.3)
-- **LXC 102 (Cache/Queue)**: Redis (10.10.10.4)
-- **LXC 103 (Storage)**: MinIO (10.10.10.5)
+- **Host Proxmox**: `100.107.175.84` (IP Publik / Akses dari Luar)
+- **LXC 100 (Database)**: PostgreSQL (`10.10.10.2`)
+- **LXC 101 (Aplikasi)**: Docker App Server (`10.10.10.3`)
+- **LXC 102 (Cache/Queue)**: Redis (`10.10.10.4`)
+- **LXC 103 (Storage)**: MinIO (`10.10.10.5`)
 
-## Langkah 1: Login ke Server Proxmox
-Buka terminal (Command Prompt / PowerShell) di komputer lokal Anda, lalu masuk menggunakan SSH ke server Proxmox:
+---
+
+## Langkah 1: Login ke Server Proxmox (Host)
+Buka terminal (Command Prompt / PowerShell) di komputer lokal Anda, lalu masuk menggunakan SSH ke server utama Proxmox:
 
 ```bash
 ssh root@100.107.175.84
 # Masukkan password: Allahuakbar1213*
 ```
 
-## Langkah 2: Masuk ke Kontainer Docker (LXC 101) & Unduh Kode
-Setelah berada di terminal Proxmox, pindah ke dalam kontainer yang dikhususkan untuk menjalankan aplikasi Docker:
+---
+
+## Langkah 2: Mengatur Port Forwarding (NAT) di Host Proxmox
+Agar aplikasi yang ada di dalam kontainer `10.10.10.3` (LXC 101) bisa diakses dari luar menggunakan IP Proxmox (`100.107.175.84`), kita harus mengatur lalu lintas jaringannya.
+
+Masih di terminal Proxmox (sebagai `root`), jalankan dua perintah `iptables` berikut untuk meneruskan Port 80 (Web) dan Port 8080 (WebSockets/Reverb):
+
+```bash
+# 1. Forwarding Port 80 (HTTP / Website) ke LXC 101
+iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 80 -j DNAT --to-destination 10.10.10.3:80
+
+# 2. Forwarding Port 8080 (Realtime WebSockets) ke LXC 101
+iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 8080 -j DNAT --to-destination 10.10.10.3:8080
+
+# 3. (Opsional) Mengaktifkan IP Masquerade jika belum aktif
+iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
+```
+*(Perintah ini akan langsung aktif, namun akan hilang jika Proxmox di-restart. Untuk menjadikannya permanen, biasanya disimpan di file `/etc/network/interfaces` bagian `post-up`).*
+
+---
+
+## Langkah 3: Masuk ke Kontainer Aplikasi (LXC 101) & Unduh Kode
+Setelah port forwarding aktif, sekarang pindah ke dalam kontainer yang dikhususkan untuk menjalankan aplikasi Docker:
 
 ```bash
 # Masuk ke dalam LXC 101
@@ -34,10 +58,12 @@ git clone https://github.com/Tmx11712/Meeting-Umsu.git enotulen
 cd enotulen
 ```
 
-## Langkah 3: Konfigurasi Environment (`.env`)
-Aplikasi membutuhkan konfigurasi environment agar dapat terhubung dengan LXC lainnya (PostgreSQL, Redis, MinIO). 
+---
 
-Di dalam `/var/www/enotulen`, jalankan perintah ini untuk membuat file `.env` production secara otomatis:
+## Langkah 4: Konfigurasi Environment (`.env`)
+Aplikasi membutuhkan konfigurasi `.env`. Karena kita sudah melakukan port forwarding, pengaturan `APP_URL` dan `REVERB_HOST` wajib menggunakan IP Publik Proxmox (`100.107.175.84`).
+
+Di dalam `/var/www/enotulen` (di LXC 101), jalankan perintah blok (copy-paste semua sekaligus) ini untuk membuat file `.env` secara otomatis:
 
 ```bash
 cat << 'EOF' > .env
@@ -73,7 +99,7 @@ AWS_BUCKET=enotulen-recordings
 AWS_ENDPOINT=http://10.10.10.5:9000
 AWS_USE_PATH_STYLE_ENDPOINT=true
 
-# REVERB
+# REVERB (WebSockets)
 BROADCAST_CONNECTION=reverb
 REVERB_APP_ID=800000
 REVERB_APP_KEY=my_reverb_key
@@ -90,16 +116,20 @@ VITE_REVERB_SCHEME="${REVERB_SCHEME}"
 EOF
 ```
 
-## Langkah 4: Build & Jalankan Docker Compose
-Langkah terakhir adalah melakukan *build* image Docker dan menjalankannya sebagai *background service*:
+---
+
+## Langkah 5: Build & Jalankan Docker Compose
+Langkah terakhir adalah melakukan *build* image Docker dan menjalankannya sebagai *background service*. Masih di dalam folder `/var/www/enotulen` (di LXC 101):
 
 ```bash
-# Melakukan build docker image
+# Melakukan build docker image (Proses ini makan waktu beberapa menit karena akan install dependensi)
 docker compose -f docker-compose.prod.yml build
 
-# Menjalankan kontainer docker
+# Menjalankan kontainer docker di background
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-Jika sudah selesai, aplikasi E-Notulen dapat diakses melalui web browser dari komputer Anda dengan mengunjungi IP Server: `http://100.107.175.84`.
-*(Catatan: Pastikan Anda sudah mengatur NAT / Port Forwarding di Proxmox dari host 100.107.175.84 ke LXC 10.10.10.3 untuk port 80 dan 8080)*
+### 🎉 Selesai!
+Aplikasi E-Notulen Anda sekarang berjalan dengan sempurna. 
+Anda dapat langsung membukanya melalui browser di komputer Anda dengan mengunjungi:
+**http://100.107.175.84**
