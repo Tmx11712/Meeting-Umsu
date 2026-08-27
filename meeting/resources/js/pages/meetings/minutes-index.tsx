@@ -161,3 +161,11 @@ export default function MeetingIndex({ meetings, filters }: any) {
         </div>
     );
 }
+MeetingIndex.layout = () => ({
+    breadcrumbs: [
+        {
+            title: 'eNotulen',
+            href: '/dashboard',
+        },
+    ],
+});

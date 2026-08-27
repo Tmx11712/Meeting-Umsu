@@ -385,3 +385,11 @@ return;
         </div>
     );
 }
+MeetingIndex.layout = () => ({
+    breadcrumbs: [
+        {
+            title: 'eNotulen',
+            href: '/dashboard',
+        },
+    ],
+});

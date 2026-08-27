@@ -107,3 +107,11 @@ export default function ReportIndex({ meetings, filters }: any) {
         </div>
     );
 }
+ReportIndex.layout = () => ({
+    breadcrumbs: [
+        {
+            title: 'eNotulen',
+            href: '/dashboard',
+        },
+    ],
+});
