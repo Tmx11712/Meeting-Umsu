@@ -42,8 +42,12 @@ class MeetingDocumentController extends Controller
                 'uploaded_by' => $request->user()?->id ?? User::query()->first()?->id,
             ]);
         } catch (\Exception $e) {
-            if ($path) {
-                Storage::delete($path);
+            try {
+                if ($path) {
+                    Storage::delete($path);
+                }
+            } catch (\Throwable $e2) {
+                \Illuminate\Support\Facades\Log::warning("Gagal rollback hapus dokumen: " . $e2->getMessage());
             }
             throw $e;
         }
@@ -59,8 +63,12 @@ class MeetingDocumentController extends Controller
             abort(403);
         }
 
-        if (Storage::exists($document->file_path)) {
-            Storage::delete($document->file_path);
+        try {
+            if (Storage::exists($document->file_path)) {
+                Storage::delete($document->file_path);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Gagal menghapus file dokumen di Storage: " . $e->getMessage());
         }
 
         $document->deleteOrFail();
