@@ -22,7 +22,7 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
 > **LOKASI TERMINAL: PROXMOX HOST (SERVER UTAMA)**
 > 
 > Buka terminal di laptop Anda dan masuk ke Proxmox Host:
-> ```bash
+> ```powershell
 > ssh root@100.107.175.84
 > # Masukkan password: Allahuakbar1213*
 > ```
@@ -44,18 +44,18 @@ Setelah jaringan siap, kita masuk ke dalam "kamar" aplikasi (LXC 101) dan mengin
 > **LOKASI TERMINAL: DI DALAM LXC 101**
 > 
 > 1. Masuk ke dalam LXC 101 dari Proxmox Host Anda:
-> ```bash
+> ```powershell
 > pct enter 101
 > ```
 > 
 > 2. Lakukan *update* sistem operasi dan pasang Git:
-> ```bash
+> ```powershell
 > apt update && apt upgrade -y
 > apt install git curl wget nano -y
 > ```
 > 
 > 3. Pasang Docker & Docker Compose (Jika belum terpasang di LXC 101):
-> ```bash
+> ```powershell
 > curl -fsSL https://get.docker.com -o get-docker.sh
 > sh get-docker.sh
 > ```
@@ -70,13 +70,13 @@ Setelah Git dan Docker siap, mari kita unduh kode aplikasi dari Github.
 > **LOKASI TERMINAL: DI DALAM LXC 101**
 > 
 > 1. Buat folder `/var/www` dan masuk ke dalamnya:
-> ```bash
+> ```powershell
 > mkdir -p /var/www
 > cd /var/www
 > ```
 > 
 > 2. Unduh *source code* lalu masuk ke folder proyek:
-> ```bash
+> ```powershell
 > git clone https://github.com/Tmx11712/Meeting-Umsu.git enotulen
 > cd enotulen
 > ```
@@ -91,7 +91,7 @@ Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungka
 > **LOKASI TERMINAL: DI DALAM LXC 101 (`/var/www/enotulen`)**
 > 
 > Jalankan perintah *copy-paste* blok ini secara utuh (tekan Enter):
-> ```bash
+> ```powershell
 > cat << 'EOF' > .env
 > APP_NAME=enotulen
 > APP_ENV=production
@@ -152,12 +152,12 @@ Sekarang waktunya merakit (*build*) aplikasi menjadi *Docker Image* dan menjalan
 > **LOKASI TERMINAL: DI DALAM LXC 101 (`/var/www/enotulen`)**
 > 
 > 1. Lakukan Build (Ini akan menginstal ekstensi PHP, Composer, Node.js):
-> ```bash
+> ```powershell
 > docker compose -f docker-compose.prod.yml build
 > ```
 > 
 > 2. Nyalakan aplikasi di belakang layar (*background*):
-> ```bash
+> ```powershell
 > docker compose -f docker-compose.prod.yml up -d
 > ```
 
@@ -171,12 +171,12 @@ Aplikasi sudah menyala, tapi *database* masih kosong. Kita harus menjalankan *Mi
 > **LOKASI TERMINAL: MASUK KE DALAM CONTAINER DOCKER `app`**
 > 
 > 1. Masuk sementara ke dalam kontainer PHP aplikasi kita:
-> ```bash
+> ```powershell
 > docker compose -f docker-compose.prod.yml exec app bash
 > ```
 > 
 > 2. Di dalam kontainer tersebut (layar akan berubah menjadi `/var/www/html#`), jalankan perintah Laravel berikut:
-> ```bash
+> ```powershell
 > php artisan migrate --force
 > php artisan storage:link
 > php artisan optimize
