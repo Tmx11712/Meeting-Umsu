@@ -129,7 +129,7 @@ class MeetingRecordingController extends Controller
 
         safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
 
-        return redirect()->back()->with('success', 'Transkripsi AI sedang diproses. Harap tunggu beberapa saat.');
+        return redirect()->back()->with('info', 'Permintaan transkripsi AI telah dikirim ke latar belakang. Harap tunggu 1-3 menit...');
     }
 
     public function finishRecording(Request $request, Meeting $meeting)

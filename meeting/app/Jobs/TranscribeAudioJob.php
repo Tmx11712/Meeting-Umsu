@@ -93,11 +93,7 @@ class TranscribeAudioJob implements ShouldQueue
             }
 
             if ($meeting) {
-                try {
-                    event(new MeetingUpdated($meeting, 'transcript_ready'));
-                } catch (\Exception $broadcastEx) {
-                    Log::error('Broadcast failed: ' . $broadcastEx->getMessage());
-                }
+                safe_broadcast(new MeetingUpdated($meeting, 'transcript_ready'));
             }
         } catch (RequestException $e) {
             Log::error('Transcribe API Network Error: ' . $e->getMessage());
@@ -120,11 +116,7 @@ class TranscribeAudioJob implements ShouldQueue
         /** @var Meeting|null $meeting */
         $meeting = Meeting::find($recording->meeting_id, ['*']);
         if ($meeting) {
-            try {
-                event(new MeetingUpdated($meeting, 'transcript_failed'));
-            } catch (\Exception $broadcastEx) {
-                Log::error('Broadcast failed: ' . $broadcastEx->getMessage());
-            }
+            safe_broadcast(new MeetingUpdated($meeting, 'transcript_failed'));
         }
     }
 }

@@ -57,8 +57,9 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         router.post(`/meetings/${meeting.id}/recording/transcribe`, {
             recording_id: recordingId
         }, {
+            preserveScroll: true,
             onSuccess: () => {
-                showSuccess('Diproses', 'Audio sedang ditranskripsi oleh AI.');
+                // Jangan panggil showSuccess di sini karena akan bertabrakan dengan flash message dari backend
                 setIsTranscribing(null);
             },
             onError: () => {
@@ -582,16 +583,25 @@ return;
                                                         </Button>
                                                     )}
                                                     {canTranscribe && (
-                                                        <Button 
-                                                            onClick={() => triggerTranscription(rec.id)}
-                                                            className="bg-indigo-600 hover:bg-indigo-700 text-xs h-9 flex-1 sm:flex-none shadow-sm"
-                                                            disabled={!canTranscribe || isTranscribing === rec.id}
-                                                        >
-                                                            {isTranscribing === rec.id ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
-                                                            {isTranscribing === rec.id ? 'Memproses...' : (rec.status === 'completed' ? 'Ulangi Transkripsi AI' : 'Mulai Transkripsi AI')}
-                                                        </Button>
+                                                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                                            <Button 
+                                                                onClick={() => triggerTranscription(rec.id)}
+                                                                className={`text-xs h-9 flex-1 sm:flex-none shadow-sm ${rec.status === 'transcribing' ? 'bg-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                                                                disabled={!canTranscribe || isTranscribing === rec.id || rec.status === 'transcribing'}
+                                                            >
+                                                                {isTranscribing === rec.id || rec.status === 'transcribing' ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
+                                                                {isTranscribing === rec.id || rec.status === 'transcribing' ? 'Memproses AI (Harap Tunggu)...' : (rec.status === 'completed' ? 'Ulangi Transkripsi AI' : 'Mulai Transkripsi AI')}
+                                                            </Button>
+                                                        </div>
                                                     )}
                                                 </>
+                                            )}
+                                            
+                                            {rec.status === 'transcribing' && (
+                                                <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 sm:mt-0">
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                    <span className="text-xs font-semibold">AI sedang bekerja di latar belakang (bisa memakan waktu 1-3 menit)</span>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
