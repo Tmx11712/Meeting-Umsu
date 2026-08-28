@@ -47,9 +47,6 @@ export default function PublicAttendance({ meeting, flash }: any) {
                                     <h3 className="text-lg font-semibold text-slate-900">Absensi Berhasil!</h3>
                                     <p className="text-slate-500 mt-1">Terima kasih sudah mengisi formulir absensi.</p>
                                 </div>
-                                <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
-                                    Isi Absen Lagi
-                                </Button>
                             </div>
                         ) : (
                             <>
