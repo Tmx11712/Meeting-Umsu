@@ -280,7 +280,7 @@ class MeetingController extends Controller
                 if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
                     \Illuminate\Support\Facades\Storage::delete($recording->file_path);
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::warning("Gagal menghapus file rekaman: " . $e->getMessage());
             }
         }
@@ -289,7 +289,7 @@ class MeetingController extends Controller
         try {
             \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('recordings/' . $meeting->id);
             \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning("Gagal menghapus direktori rekaman: " . $e->getMessage());
         }
 
