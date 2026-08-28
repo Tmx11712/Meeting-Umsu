@@ -41,7 +41,8 @@ class MeetingRecordingController extends Controller
     public function store(StoreRecordingRequest $request, Meeting $meeting)
     {
         $file = $request->file('file');
-        $path = $file->store('recordings/'.$meeting->id, 'local');
+        // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
+        $path = $file->store('recordings/'.$meeting->id);
 
         try {
             /**
@@ -68,7 +69,7 @@ class MeetingRecordingController extends Controller
                 return $recording;
             });
         } catch (\Exception $e) {
-            Storage::disk('local')->delete($path);
+            Storage::delete($path);
             throw $e;
         }
 
@@ -84,12 +85,6 @@ class MeetingRecordingController extends Controller
         $recording = MeetingRecording::findOrFail($recordingId);
 
         try {
-            // Coba hapus dari disk lokal (jika terlanjur disimpan di lokal)
-            if (Storage::disk('local')->exists($recording->file_path)) {
-                Storage::disk('local')->delete($recording->file_path);
-            }
-            
-            // Coba hapus dari disk default (MinIO / S3)
             if (Storage::exists($recording->file_path)) {
                 Storage::delete($recording->file_path);
             }
@@ -175,9 +170,7 @@ class MeetingRecordingController extends Controller
         $isAuthorized = $isParticipant || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
         abort_unless($isAuthorized, 403, 'Akses Terbatas: Anda tidak berhak memutar rekaman rapat ini.');
 
-        $path = Storage::disk('local')->path($recording->file_path);
-
-        abort_unless(file_exists($path), 404, 'File audio tidak ditemukan.');
+        abort_unless(Storage::exists($recording->file_path), 404, 'File audio tidak ditemukan.');
 
         $mimeTypes = [
             'mp3' => 'audio/mpeg',
@@ -187,10 +180,11 @@ class MeetingRecordingController extends Controller
             'ogg' => 'audio/ogg',
         ];
 
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $extension = pathinfo($recording->file_path, PATHINFO_EXTENSION);
         $mimeType = $mimeTypes[$extension] ?? 'application/octet-stream';
 
-        return response()->file($path, [
+        // Menggunakan stream proxy dari Laravel Storage
+        return Storage::response($recording->file_path, null, [
             'Content-Type' => $mimeType,
             'Accept-Ranges' => 'bytes',
         ]);

@@ -270,13 +270,10 @@ class MeetingController extends Controller
 
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'));
 
-        // Hapus file fisik rekaman audio dari storage lokal maupun s3
+        // Hapus file fisik rekaman audio dari storage
         $meeting->load('recordings');
         foreach ($meeting->recordings as $recording) {
             try {
-                if (\Illuminate\Support\Facades\Storage::disk('local')->exists($recording->file_path)) {
-                    \Illuminate\Support\Facades\Storage::disk('local')->delete($recording->file_path);
-                }
                 if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
                     \Illuminate\Support\Facades\Storage::delete($recording->file_path);
                 }
@@ -287,7 +284,6 @@ class MeetingController extends Controller
         
         // Hapus direktori rekaman rapat ini agar bersih
         try {
-            \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('recordings/' . $meeting->id);
             \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning("Gagal menghapus direktori rekaman: " . $e->getMessage());

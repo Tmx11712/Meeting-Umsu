@@ -379,7 +379,7 @@ return '-';
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-slate-600" asChild>
-                                            <a href={`/storage/${doc.file_path.replace(/^public\//, '')}`} download><Download className="w-3.5 h-3.5" /></a>
+                                            <a href={`/meetings/${meeting.id}/documents/${doc.id}/download`} download><Download className="w-3.5 h-3.5" /></a>
                                         </Button>
                                     </div>
                                 </div>

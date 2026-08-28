@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Documents
     Route::post('meetings/{meeting}/documents', [MeetingDocumentController::class, 'store'])->name('meetings.documents.store');
     Route::delete('meetings/{meeting}/documents/{document}', [MeetingDocumentController::class, 'destroy'])->name('meetings.documents.destroy');
+    Route::get('meetings/{meeting}/documents/{document}/download', [MeetingDocumentController::class, 'download'])->name('meetings.documents.download');
 
     // Approval
     Route::get('meetings/{meeting}/approval', [MeetingApprovalController::class, 'show'])->name('meetings.approval');

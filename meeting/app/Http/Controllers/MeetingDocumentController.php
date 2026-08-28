@@ -29,7 +29,7 @@ class MeetingDocumentController extends Controller
 
         // Generate unique name
         $uuidName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('documents', $uuidName, 'public');
+        $path = $file->storeAs('documents', $uuidName);
 
         try {
             $document = MeetingDocument::create([
@@ -74,5 +74,17 @@ class MeetingDocumentController extends Controller
         $document->deleteOrFail();
 
         return redirect()->back()->with('success', 'Dokumen berhasil dihapus.');
+    }
+
+    public function download(Meeting $meeting, MeetingDocument $document)
+    {
+        abort_unless(request()->user()->can('review.read') || request()->user()->hasRole(['Pimpinan', 'Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+
+        abort_if($document->meeting_id !== $meeting->id, 404);
+        abort_unless(Storage::exists($document->file_path), 404, 'File dokumen tidak ditemukan.');
+
+        return Storage::download($document->file_path, $document->file_name, [
+            'Content-Type' => $document->mime_type,
+        ]);
     }
 }

@@ -50,10 +50,9 @@ class TranscribeAudioJob implements ShouldQueue
             $recording->status = MeetingRecordingStatus::TRANSCRIBING->value;
             $recording->save();
 
-            // Assuming the file is on local storage
-            // But Whisper API needs the actual file content/path.
-            // We can download it to a temporary local file.
-            $fileContent = Storage::disk('local')->get($recording->file_path);
+            // We download the file content from the default disk (e.g. S3) 
+            // into a temporary local file because Whisper API needs the actual file path.
+            $fileContent = Storage::get($recording->file_path);
             if (! $fileContent) {
                 throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
