@@ -71,7 +71,7 @@ class MeetingMinuteController extends Controller
         try {
             GenerateMeetingMinuteJob::dispatch($meeting);
 
-            return back()->with('success', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Silakan muat ulang halaman ini dalam beberapa menit.');
+            return back()->with('info', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Harap tunggu sekitar 1-2 menit...');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }

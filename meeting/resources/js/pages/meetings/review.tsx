@@ -42,6 +42,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     useMeetingWebSocket(meeting?.id);
 
     const [sending, setSending] = useState(false);
+    const [isGeneratingAi, setIsGeneratingAi] = useState(false);
     const [regenerateModalOpen, setRegenerateModalOpen] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
     
@@ -446,17 +447,15 @@ return;
                             <Button 
                                 className="w-full bg-linear-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
                                 onClick={() => {
-                                    setSending(true);
+                                    setIsGeneratingAi(true);
                                     router.post(`/meetings/${meeting.id}/review/ai`, {}, {
-                                        onFinish: () => setSending(false),
-                                        onSuccess: () => {
-                                            window.location.reload();
-                                        }
+                                        preserveScroll: true,
                                     });
                                 }}
-                                disabled={sending || !canManageReview}
+                                disabled={isGeneratingAi || !canManageReview}
                             >
-                                {sending ? 'Sedang Memproses...' : '✨ Generate Notulen dengan AI'}
+                                {isGeneratingAi ? <Loader2 className="w-5 h-5 mr-2 animate-spin inline-block" /> : null}
+                                {isGeneratingAi ? '⏳ AI Sedang Merangkum (1-2 Menit)...' : '✨ Generate Notulen dengan AI'}
                             </Button>
                         </div>
                     </div>
@@ -571,10 +570,10 @@ return;
                                             size="sm" 
                                             className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
                                             onClick={() => setRegenerateModalOpen(true)}
-                                            disabled={sending}
+                                            disabled={sending || isGeneratingAi}
                                         >
-                                            {sending ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
-                                            {sending ? 'Memproses...' : 'Regenerate AI'}
+                                            {isGeneratingAi ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
+                                            {isGeneratingAi ? 'Memproses...' : 'Regenerate AI'}
                                         </Button>
                                         <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
                                             <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
@@ -965,19 +964,16 @@ return;
                         <Button 
                             className="bg-blue-600 hover:bg-blue-700 text-white" 
                             onClick={() => {
-                                setSending(true);
+                                setIsGeneratingAi(true);
+                                setRegenerateModalOpen(false);
                                 router.post(`/meetings/${meeting.id}/review/ai`, {}, {
-                                    onFinish: () => {
-                                        setSending(false);
-                                        setRegenerateModalOpen(false);
-                                    },
-                                    onSuccess: () => window.location.reload()
+                                    preserveScroll: true
                                 });
                             }} 
-                            disabled={sending}
+                            disabled={isGeneratingAi}
                         >
-                            {sending ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                            {sending ? 'Memproses...' : 'Ya, Regenerate'}
+                            {isGeneratingAi ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                            {isGeneratingAi ? 'Memproses...' : 'Ya, Regenerate'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
