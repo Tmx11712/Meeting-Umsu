@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -49,16 +50,16 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $menusData = Cache::remember("user_menus_{$user->id}", 300, function () use ($user) {
                 if ($user->hasRole('Super Admin') || $user->hasRole('Administrator')) {
-                    return Menu::where('status', true)->orderBy('order')->get()->toArray();
+                    return Menu::query()->where('status', true)->orderBy('order', 'asc')->get()->toArray();
                 }
 
-                return Menu::whereHas('roles', function ($q) use ($user) {
+                return Menu::query()->whereHas('roles', function ($q) use ($user) {
                     $q->whereIn('role_id', $user->roles->pluck('id'));
-                })->where('status', true)->orderBy('order')->get()->toArray();
+                })->where('status', true)->orderBy('order', 'asc')->get()->toArray();
             });
 
             $menus = collect($menusData)->map(function ($menu) {
-                $menu['url'] = ! empty($menu['route']) && \Route::has($menu['route']) ? route($menu['route']) : '#';
+                $menu['url'] = ! empty($menu['route']) && Route::has($menu['route']) ? route($menu['route']) : '#';
 
                 return $menu;
             })->toArray();
@@ -74,6 +75,8 @@ class HandleInertiaRequests extends Middleware
                 'can_manage_configuration' => $user ? ($user->hasRole('Super Admin') || $user->hasRole('Administrator')) : false,
             ],
             'flash' => [
+                'success' => $request->session()->get('success'),
+                'error' => $request->session()->get('error'),
                 'toast' => $request->session()->get('flash'),
             ],
             'menus' => $menus,
