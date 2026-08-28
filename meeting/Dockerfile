@@ -38,6 +38,7 @@ RUN apk add --no-cache \
     libpq-dev \
     postgresql-dev \
     linux-headers \
+    ffmpeg \
     $PHPIZE_DEPS
 
 # Install PHP extensions
