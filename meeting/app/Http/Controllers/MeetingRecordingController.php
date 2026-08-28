@@ -83,14 +83,18 @@ class MeetingRecordingController extends Controller
 
         $recording = MeetingRecording::findOrFail($recordingId);
 
-        // Coba hapus dari disk lokal (jika terlanjur disimpan di lokal)
-        if (Storage::disk('local')->exists($recording->file_path)) {
-            Storage::disk('local')->delete($recording->file_path);
-        }
-        
-        // Coba hapus dari disk default (MinIO / S3)
-        if (Storage::exists($recording->file_path)) {
-            Storage::delete($recording->file_path);
+        try {
+            // Coba hapus dari disk lokal (jika terlanjur disimpan di lokal)
+            if (Storage::disk('local')->exists($recording->file_path)) {
+                Storage::disk('local')->delete($recording->file_path);
+            }
+            
+            // Coba hapus dari disk default (MinIO / S3)
+            if (Storage::exists($recording->file_path)) {
+                Storage::delete($recording->file_path);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Gagal menghapus file rekaman di Storage: " . $e->getMessage());
         }
 
         $recording->delete(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
