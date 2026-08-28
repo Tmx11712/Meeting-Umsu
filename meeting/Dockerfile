@@ -11,6 +11,9 @@ RUN npm ci
 # Copy the rest of the application
 COPY . .
 
+# Bypass wayfinder plugin needing PHP during Vite build
+RUN printf '#!/bin/sh\nexit 0' > /usr/local/bin/php && chmod +x /usr/local/bin/php
+
 # Build the Vite assets
 RUN npm run build
 
