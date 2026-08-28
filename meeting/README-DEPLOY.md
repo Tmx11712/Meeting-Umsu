@@ -28,7 +28,7 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
 > ```
 > 
 > Jalankan perintah `iptables` ini untuk meneruskan trafik Port 80 (Web) dan 8080 (WebSockets):
-> ```bash
+> ```powershell
 > iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 80 -j DNAT --to-destination 10.10.10.3:80
 > iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 8080 -j DNAT --to-destination 10.10.10.3:8080
 > iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
