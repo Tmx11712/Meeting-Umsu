@@ -15,6 +15,11 @@ Sebelum mulai, pastikan Anda memahami IP dari masing-masing komponen:
 ---
 
 ## 2. Mengatur Jaringan (Port Forwarding) di Host Proxmox
+
+> [!WARNING]
+> **LOKASI TERMINAL: PROXMOX HOST (SERVER UTAMA)**
+> Pastikan Anda menjalankan perintah di langkah ini di terminal utama Proxmox (biasanya berakhiran `root@...:~#`), **BUKAN** di dalam kontainer.
+
 Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmox (`100.107.175.84`), kita harus mengatur *Port Forwarding*.
 
 1. Buka terminal di laptop Anda dan masuk ke Proxmox Host:
@@ -32,9 +37,14 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
 ---
 
 ## 3. Persiapan LXC 101 (Install Git & Docker)
+
+> [!NOTE]
+> **LOKASI TERMINAL: DI DALAM LXC 101**
+> Mulai dari langkah ini hingga ke bawah, semua perintah **WAJIB** dijalankan di dalam kontainer aplikasi Anda (LXC 101).
+
 Setelah jaringan siap, kita masuk ke dalam "kamar" aplikasi (LXC 101) dan menginstal alat yang wajib ada.
 
-1. Masuk ke dalam LXC 101:
+1. Masuk ke dalam LXC 101 dari Proxmox Host Anda:
    ```bash
    pct enter 101
    ```
@@ -54,6 +64,10 @@ Setelah jaringan siap, kita masuk ke dalam "kamar" aplikasi (LXC 101) dan mengin
 ---
 
 ## 4. Mengunduh Aplikasi (Git Clone)
+
+> [!NOTE]
+> **LOKASI TERMINAL: DI DALAM LXC 101**
+
 Setelah Git dan Docker siap, mari kita unduh kode aplikasi dari Github.
 
 1. Buat folder `/var/www` dan masuk ke dalamnya:
@@ -73,63 +87,71 @@ Setelah Git dan Docker siap, mari kita unduh kode aplikasi dari Github.
 ---
 
 ## 5. Mengatur Konfigurasi Environment (`.env`)
+
+> [!NOTE]
+> **LOKASI TERMINAL: DI DALAM LXC 101 (`/var/www/enotulen`)**
+
 Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungkan aplikasi ke *Database*, *Redis*, dan *MinIO*.
 
-1. Jalankan perintah *copy-paste* blok ini secara utuh (tekan Enter):
-   ```bash
-   cat << 'EOF' > .env
-   APP_NAME=enotulen
-   APP_ENV=production
-   APP_KEY=base64:duT5VTKp+gwtjhiMVlYRb3kXqjP8AmRmNfTu+vQOUdQ=
-   APP_DEBUG=false
-   APP_URL=http://100.107.175.84
-   
-   # DB POSTGRES (LXC 100)
-   DB_CONNECTION=pgsql
-   DB_HOST=10.10.10.2
-   DB_PORT=5432
-   DB_DATABASE=enotulen
-   DB_USERNAME=umsu
-   DB_PASSWORD=UnggulMendunia2026!
-   
-   # REDIS (LXC 102)
-   REDIS_CLIENT=phpredis
-   REDIS_HOST=10.10.10.4
-   REDIS_PASSWORD=null
-   REDIS_PORT=6379
-   CACHE_STORE=redis
-   SESSION_DRIVER=redis
-   QUEUE_CONNECTION=redis
-   
-   # MINIO (LXC 103)
-   FILESYSTEM_DISK=s3
-   AWS_ACCESS_KEY_ID=enotulenadmin
-   AWS_SECRET_ACCESS_KEY=enotulenadmin123
-   AWS_DEFAULT_REGION=us-east-1
-   AWS_BUCKET=enotulen-recordings
-   AWS_ENDPOINT=http://10.10.10.5:9000
-   AWS_USE_PATH_STYLE_ENDPOINT=true
-   
-   # REVERB (WebSockets)
-   BROADCAST_CONNECTION=reverb
-   REVERB_APP_ID=800000
-   REVERB_APP_KEY=my_reverb_key
-   REVERB_APP_SECRET=my_reverb_secret
-   REVERB_HOST="100.107.175.84"
-   REVERB_PORT=8080
-   REVERB_SCHEME=http
-   
-   VITE_APP_NAME="${APP_NAME}"
-   VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
-   VITE_REVERB_HOST="${REVERB_HOST}"
-   VITE_REVERB_PORT="${REVERB_PORT}"
-   VITE_REVERB_SCHEME="${REVERB_SCHEME}"
-   EOF
-   ```
+Jalankan perintah *copy-paste* blok ini secara utuh (tekan Enter):
+```bash
+cat << 'EOF' > .env
+APP_NAME=enotulen
+APP_ENV=production
+APP_KEY=base64:duT5VTKp+gwtjhiMVlYRb3kXqjP8AmRmNfTu+vQOUdQ=
+APP_DEBUG=false
+APP_URL=http://100.107.175.84
+
+# DB POSTGRES (LXC 100)
+DB_CONNECTION=pgsql
+DB_HOST=10.10.10.2
+DB_PORT=5432
+DB_DATABASE=enotulen
+DB_USERNAME=umsu
+DB_PASSWORD=UnggulMendunia2026!
+
+# REDIS (LXC 102)
+REDIS_CLIENT=phpredis
+REDIS_HOST=10.10.10.4
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+CACHE_STORE=redis
+SESSION_DRIVER=redis
+QUEUE_CONNECTION=redis
+
+# MINIO (LXC 103)
+FILESYSTEM_DISK=s3
+AWS_ACCESS_KEY_ID=enotulenadmin
+AWS_SECRET_ACCESS_KEY=enotulenadmin123
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=enotulen-recordings
+AWS_ENDPOINT=http://10.10.10.5:9000
+AWS_USE_PATH_STYLE_ENDPOINT=true
+
+# REVERB (WebSockets)
+BROADCAST_CONNECTION=reverb
+REVERB_APP_ID=800000
+REVERB_APP_KEY=my_reverb_key
+REVERB_APP_SECRET=my_reverb_secret
+REVERB_HOST="100.107.175.84"
+REVERB_PORT=8080
+REVERB_SCHEME=http
+
+VITE_APP_NAME="${APP_NAME}"
+VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
+VITE_REVERB_HOST="${REVERB_HOST}"
+VITE_REVERB_PORT="${REVERB_PORT}"
+VITE_REVERB_SCHEME="${REVERB_SCHEME}"
+EOF
+```
 
 ---
 
 ## 6. Build dan Jalankan Aplikasi (Docker)
+
+> [!NOTE]
+> **LOKASI TERMINAL: DI DALAM LXC 101 (`/var/www/enotulen`)**
+
 Sekarang waktunya merakit (*build*) aplikasi menjadi *Docker Image* dan menjalankannya.
 
 1. Lakukan Build (Ini akan menginstal ekstensi PHP, Composer, dan Node.js/Vite di dalam kontainer):
@@ -144,13 +166,18 @@ Sekarang waktunya merakit (*build*) aplikasi menjadi *Docker Image* dan menjalan
 ---
 
 ## 7. Inisialisasi Database & Cache (Penting!)
+
+> [!IMPORTANT]
+> **LOKASI TERMINAL: MASUK KE DALAM CONTAINER DOCKER `app`**
+> Kita harus menjalankan perintah instalasi ini **di dalam** Docker PHP (bukan di luar).
+
 Aplikasi sudah menyala, tapi *database* masih kosong. Kita harus menjalankan *Migration* (membuat tabel) dari dalam kontainer Docker PHP (`app`).
 
 1. Masuk sementara ke dalam kontainer PHP aplikasi kita:
    ```bash
    docker compose -f docker-compose.prod.yml exec app bash
    ```
-2. Di dalam kontainer tersebut (`/var/www/html#`), jalankan perintah Laravel berikut:
+2. Di dalam kontainer tersebut (layar akan berubah menjadi `/var/www/html#`), jalankan perintah Laravel berikut:
    ```bash
    # Membuat tabel database
    php artisan migrate --force
@@ -161,14 +188,18 @@ Aplikasi sudah menyala, tapi *database* masih kosong. Kita harus menjalankan *Mi
    # Optimasi aplikasi (Caching rute, view, dan konfigurasi)
    php artisan optimize
    
-   # Keluar dari kontainer
+   # Keluar dari kontainer Docker
    exit
    ```
 
 ---
 
 ### 🎉 Selesai!
-Selamat! Seluruh tahapan dari nol sudah Anda lakukan. 
-Aplikasi E-Notulen kini berjalan sempurna di *production*. Silakan buka browser di laptop/PC Anda dan kunjungi:
+
+> [!TIP]
+> **Aplikasi Anda sudah berhasil di-*deploy*!**
+> Seluruh tahapan dari nol sudah Anda lakukan. Aplikasi E-Notulen kini berjalan sempurna di *production*. 
+
+Silakan buka browser di laptop/PC Anda dan kunjungi:
 
 **http://100.107.175.84**
