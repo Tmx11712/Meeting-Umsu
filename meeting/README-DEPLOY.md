@@ -22,10 +22,9 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
    ssh root@100.107.175.84
    # Masukkan password: Allahuakbar1213*
    ```
-2. Jalankan perintah `iptables` ini untuk meneruskan trafik Port 80 (Web) dan 8080 (WebSockets):
+2. Jalankan perintah `iptables` ini untuk meneruskan trafik Port 80 (Web dan WebSockets):
    ```bash
    iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 80 -j DNAT --to-destination 10.10.10.3:80
-   iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 8080 -j DNAT --to-destination 10.10.10.3:8080
    iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
    ```
 3. **PENTING**: Agar aturan *port forwarding* ini tidak hilang saat Proxmox di-restart, simpan secara permanen dengan menginstal `iptables-persistent`:
@@ -122,7 +121,7 @@ Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungka
    REVERB_APP_KEY=my_reverb_key
    REVERB_APP_SECRET=my_reverb_secret
    REVERB_HOST="100.107.175.84"
-   REVERB_PORT=8080
+   REVERB_PORT=80
    REVERB_SCHEME=http
    
    VITE_APP_NAME="${APP_NAME}"

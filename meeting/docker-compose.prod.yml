@@ -56,10 +56,9 @@ services:
   reverb:
     image: enotulen-app:latest
     restart: unless-stopped
-    # 8080 is the default Reverb port inside the container
+    # 8080 is the default Reverb port inside the container, we don't expose it to host
+    # because Nginx will proxy it.
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
-    ports:
-      - "8080:8080"
     env_file:
       - .env
     depends_on:
