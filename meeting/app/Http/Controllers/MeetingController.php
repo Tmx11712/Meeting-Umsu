@@ -282,6 +282,18 @@ class MeetingController extends Controller
             }
         }
         
+        // Hapus file dokumen dari storage
+        $meeting->load('documents');
+        foreach ($meeting->documents as $document) {
+            try {
+                if (\Illuminate\Support\Facades\Storage::exists($document->file_path)) {
+                    \Illuminate\Support\Facades\Storage::delete($document->file_path);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Gagal menghapus file dokumen: " . $e->getMessage());
+            }
+        }
+        
         // Hapus direktori rekaman rapat ini agar bersih
         try {
             \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
