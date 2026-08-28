@@ -28,6 +28,12 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
    iptables -t nat -A PREROUTING -p tcp -d 100.107.175.84 --dport 8080 -j DNAT --to-destination 10.10.10.3:8080
    iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -j MASQUERADE
    ```
+3. **PENTING**: Agar aturan *port forwarding* ini tidak hilang saat Proxmox di-restart, simpan secara permanen dengan menginstal `iptables-persistent`:
+   ```bash
+   apt update
+   apt install iptables-persistent -y
+   ```
+   *(Saat muncul layar ungu/biru menanyakan "Save current IPv4 rules?", pilih **Yes / Enter**).*
 
 ---
 
