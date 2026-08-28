@@ -273,17 +273,25 @@ class MeetingController extends Controller
         // Hapus file fisik rekaman audio dari storage lokal maupun s3
         $meeting->load('recordings');
         foreach ($meeting->recordings as $recording) {
-            if (\Illuminate\Support\Facades\Storage::disk('local')->exists($recording->file_path)) {
-                \Illuminate\Support\Facades\Storage::disk('local')->delete($recording->file_path);
-            }
-            if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
-                \Illuminate\Support\Facades\Storage::delete($recording->file_path);
+            try {
+                if (\Illuminate\Support\Facades\Storage::disk('local')->exists($recording->file_path)) {
+                    \Illuminate\Support\Facades\Storage::disk('local')->delete($recording->file_path);
+                }
+                if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
+                    \Illuminate\Support\Facades\Storage::delete($recording->file_path);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Gagal menghapus file rekaman: " . $e->getMessage());
             }
         }
         
         // Hapus direktori rekaman rapat ini agar bersih
-        \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('recordings/' . $meeting->id);
-        \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
+        try {
+            \Illuminate\Support\Facades\Storage::disk('local')->deleteDirectory('recordings/' . $meeting->id);
+            \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning("Gagal menghapus direktori rekaman: " . $e->getMessage());
+        }
 
         // Hapus permanen rapat (termasuk relasinya jika diset cascade di DB)
         $meeting->forceDelete();
