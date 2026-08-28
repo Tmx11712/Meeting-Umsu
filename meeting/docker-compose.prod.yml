@@ -17,6 +17,8 @@ services:
     volumes:
       # Keep storage persistent (if not using S3 for everything)
       - enotulen-storage:/var/www/html/storage
+      # Share the public directory with Nginx
+      - enotulen-public:/var/www/html/public
 
   # ==========================================
   # 2. Nginx Web Server
