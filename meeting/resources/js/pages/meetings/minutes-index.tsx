@@ -103,7 +103,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                             <td className="px-4 py-4 text-slate-600 max-w-50"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
                                             <td className="px-4 py-4 text-center text-slate-600">{meeting.participants?.length || 12}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                <MeetingStatusBadge status={meeting.status} />
+                                                <MeetingStatusBadge status={meeting.status} category={meeting.category} />
                                             </td>
                                             <td className="px-4 py-4 text-center">
                                                 {canEdit('minutes') ? (

@@ -196,7 +196,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                                             </div>
 
                                             <div className="shrink-0 pt-1">
-                                                <MeetingStatusBadge status={m.status} />
+                                                <MeetingStatusBadge status={m.status} category={m.category} />
                                             </div>
                                         </Link>
                                     );

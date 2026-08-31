@@ -253,7 +253,7 @@ clearTimeout(searchTimeout.current);
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{meeting.participants_count ?? 0}</span>
                                             </td>
                                             <td className="px-4 py-5 text-center">
-                                                <MeetingStatusBadge status={meeting.status} />
+                                                <MeetingStatusBadge status={meeting.status} category={meeting.category} />
                                             </td>
                                             <td className="px-4 py-5 text-center">
                                                 <div className="flex items-center justify-center gap-2 opacity-70 group-hover:opacity-100 transition-opacity">

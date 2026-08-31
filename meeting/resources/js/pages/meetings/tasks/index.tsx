@@ -85,7 +85,7 @@ export default function TaskDashboard({ meetings, task }: any) {
                                         <Link href={`/meetings/${meeting.id}/${task.actionRoute.split('.').pop()}`} className="font-semibold text-lg text-slate-900 hover:text-primary transition-colors">
                                             {meeting.title}
                                         </Link>
-                                        <MeetingStatusBadge status={meeting.status} />
+                                        <MeetingStatusBadge status={meeting.status} category={meeting.category} />
                                     </div>
                                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
                                         <div className="flex items-center">
