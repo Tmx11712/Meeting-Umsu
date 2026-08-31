@@ -88,7 +88,7 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
                 {/* Role name + Avatar */}
                 <div className="hidden sm:flex items-center gap-2">
                     <span className="text-sm font-medium text-muted-foreground">
-                        {primaryRole}
+                        {auth.user.name}
                     </span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -102,7 +102,7 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
                                         alt={auth.user.name}
                                     />
                                     <AvatarFallback className="rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                                        {getRoleAbbr(primaryRole)}
+                                        {getInitials(auth.user.name)}
                                     </AvatarFallback>
                                 </Avatar>
                             </Button>

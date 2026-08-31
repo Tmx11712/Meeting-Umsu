@@ -108,10 +108,10 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
                         <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                            Dashboard <span className="text-slate-300 dark:text-slate-700">—</span> {primaryRole}
+                            Dashboard <span className="text-slate-300 dark:text-slate-700">—</span> {page.props.auth?.user?.name || primaryRole}
                         </h1>
                         <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · Selamat datang kembali
+                            {primaryRole} · {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · Selamat datang kembali
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
