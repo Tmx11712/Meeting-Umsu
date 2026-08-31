@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Meeting;
 use App\Models\MeetingDocument;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MeetingDocumentController extends Controller
 {
-    public function store(Request $request, Meeting $meeting): \Illuminate\Http\RedirectResponse
+    public function store(Request $request, Meeting $meeting): RedirectResponse
     {
         abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
 
@@ -47,7 +49,7 @@ class MeetingDocumentController extends Controller
                     Storage::delete($path);
                 }
             } catch (\Throwable $e2) {
-                \Illuminate\Support\Facades\Log::warning("Gagal rollback hapus dokumen: " . $e2->getMessage());
+                Log::warning('Gagal rollback hapus dokumen: '.$e2->getMessage());
             }
             throw $e;
         }
@@ -55,9 +57,9 @@ class MeetingDocumentController extends Controller
         return redirect()->back()->with('success', 'Dokumen berhasil diunggah.');
     }
 
-    public function destroy(Meeting $meeting, MeetingDocument $document): \Illuminate\Http\RedirectResponse
+    public function destroy(Meeting $meeting, MeetingDocument $document): RedirectResponse
     {
-        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Humas', 'Umum']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.');
+        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.');
 
         if ($document->meeting_id !== $meeting->id) {
             abort(403);
@@ -68,7 +70,7 @@ class MeetingDocumentController extends Controller
                 Storage::delete($document->file_path);
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal menghapus file dokumen di Storage: " . $e->getMessage());
+            Log::warning('Gagal menghapus file dokumen di Storage: '.$e->getMessage());
         }
 
         $document->deleteOrFail();

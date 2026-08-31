@@ -26,9 +26,11 @@ class DashboardController extends Controller
          * kita menyimpan hasilnya di RAM (Cache) selama 5 menit (300 detik).
          * Trade-off: Data statistik mungkin terlambat maksimal 5 menit, tapi performa server meningkat 99%.
          */
-        $stats = Cache::remember('dashboard_stats', 300, function () use ($now, $startOfMonth, $startOfLastMonth, $endOfLastMonth) {
+        $endOfMonth = $now->copy()->endOfMonth();
+
+        $stats = Cache::remember('dashboard_stats', 300, function () use ($startOfMonth, $endOfMonth, $startOfLastMonth, $endOfLastMonth) {
             // 1. Rapat bulan ini
-            $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $now->endOfMonth()], 'and')->count('*');
+            $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $endOfMonth], 'and')->count('*');
             $meetingsLastMonth = Meeting::whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
             $meetingsDelta = $meetingsLastMonth > 0
                 ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100)
@@ -36,7 +38,7 @@ class DashboardController extends Controller
 
             // 2. Notulen selesai
             $minutesCompletedThisMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
-                ->whereBetween('created_at', [$startOfMonth, $now->endOfMonth()], 'and')
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth], 'and')
                 ->count('*');
             $minutesCompletedLastMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
                 ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth], 'and')
@@ -81,13 +83,16 @@ class DashboardController extends Controller
                 }
                 $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
                 unset($meeting->minutes); // Hapus agar payload Inertia tidak membengkak
+
                 return $meeting;
             });
         };
 
         // Latest Meetings (Rapat terbaru)
         $latestMeetingsRaw = Meeting::withCount('participants')
-            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
+            ->with(['minutes' => function ($q) {
+                $q->select('id', 'meeting_id', 'content');
+            }])
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'desc')
             ->take(5)
@@ -96,12 +101,14 @@ class DashboardController extends Controller
 
         // Upcoming Meetings (Jadwal mendatang)
         $upcomingMeetingsRaw = Meeting::withCount('participants')
-            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
+            ->with(['minutes' => function ($q) {
+                $q->select('id', 'meeting_id', 'content');
+            }])
             ->where('date', '>=', $now->toDateString())
             ->whereIn('current_stage', [1, 2]) // Still scheduled or Humas Rekam
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('category', '!=', 'action_item_mendesak')
-                      ->orWhereNull('category');
+                    ->orWhereNull('category');
             })
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
@@ -117,7 +124,7 @@ class DashboardController extends Controller
             ->get()
             ->map(function ($m) {
                 return [
-                    'id' => 'm_' . $m->id,
+                    'id' => 'm_'.$m->id,
                     'meeting_id' => $m->id,
                     'description' => $m->title,
                     'deadline' => $m->date,

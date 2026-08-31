@@ -18,6 +18,16 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Team $team
  * @property-read User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereUserId($value)
+ * @mixin \Eloquent
  */
 #[Fillable(['team_id', 'user_id', 'role'])]
 class Membership extends Pivot

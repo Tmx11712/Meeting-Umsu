@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { usePermissions } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
-import { PageProps } from '@/types';
 
 type Props = {
     stats: {

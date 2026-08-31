@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Download, Search, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,7 +67,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                             </tr>
                         </thead>
                         <tbody>
-                            {meetings.map((meeting: any) => {
+                            {(meetings.data || []).map((meeting: any) => {
                                 const minute = meeting.minutes?.length > 0 ? meeting.minutes[0] : null;
 
                                 return (
@@ -95,7 +95,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                                     </tr>
                                 );
                             })}
-                            {meetings.length === 0 && (
+                            {(!meetings.data || meetings.data.length === 0) && (
                                 <tr>
                                     <td colSpan={6} className="p-8 text-center text-muted-foreground">Tidak ada data rapat pada rentang tanggal ini.</td>
                                 </tr>
@@ -104,6 +104,27 @@ export default function ReportIndex({ meetings, filters }: any) {
                     </table>
                 </CardContent>
             </Card>
+
+            {/* Pagination */}
+            {meetings.links && meetings.links.length > 3 && (
+                <div className="flex justify-center gap-1">
+                    {meetings.links.map((link: any, i: number) => (
+                        <Link
+                            key={i}
+                            href={link.url || '#'}
+                            className={`px-3 py-1.5 rounded text-sm border transition-colors ${
+                                link.active
+                                    ? 'bg-primary text-primary-foreground border-primary'
+                                    : link.url
+                                        ? 'bg-background hover:bg-muted border-input'
+                                        : 'bg-muted text-muted-foreground border-input cursor-not-allowed'
+                            }`}
+                            preserveScroll
+                            dangerouslySetInnerHTML={{ __html: link.label }}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

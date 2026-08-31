@@ -72,7 +72,7 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
             });
         };
 
-        const interval = setInterval(safeReload, 5000); // 5 seconds polling
+        const interval = setInterval(safeReload, 30000); // 30 seconds fallback polling
         
         // When tab becomes active again, immediately fetch fresh data
         const handleVisibilityChange = () => {

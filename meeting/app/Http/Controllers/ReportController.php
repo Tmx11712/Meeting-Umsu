@@ -17,7 +17,7 @@ class ReportController extends Controller
             $query->whereBetween('date', [$request->start_date, $request->end_date]);
         }
 
-        $meetings = $query->orderBy('date', 'desc')->get();
+        $meetings = $query->orderBy('date', 'desc')->paginate(20);
 
         // Return inertia view
         return Inertia::render('reports/index', [

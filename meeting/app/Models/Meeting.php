@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,31 +23,31 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $status
  * @property string $created_by
  * @property int $current_stage
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property \Carbon\CarbonImmutable|null $deleted_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
  * @property string $source
  * @property string|null $external_id
- * @property \Carbon\CarbonImmutable|null $recording_started_at
+ * @property CarbonImmutable|null $recording_started_at
  * @property string $category
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingActionItem> $actionItems
+ * @property-read Collection<int, MeetingActionItem> $actionItems
  * @property-read int|null $action_items_count
- * @property-read \App\Models\MeetingApproval|null $approval
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingAttendance> $attendances
+ * @property-read MeetingApproval|null $approval
+ * @property-read Collection<int, MeetingAttendance> $attendances
  * @property-read int|null $attendances_count
- * @property-read \App\Models\User $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingDocument> $documents
+ * @property-read User $createdBy
+ * @property-read Collection<int, MeetingDocument> $documents
  * @property-read int|null $documents_count
  * @property-read mixed $agenda
  * @property-read mixed $attendance_rate
  * @property-read mixed $duration_formatted
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingMinute> $minutes
+ * @property-read Collection<int, MeetingMinute> $minutes
  * @property-read int|null $minutes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingParticipant> $participants
+ * @property-read Collection<int, MeetingParticipant> $participants
  * @property-read int|null $participants_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingRecording> $recordings
+ * @property-read Collection<int, MeetingRecording> $recordings
  * @property-read int|null $recordings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MeetingTranscript> $transcripts
+ * @property-read Collection<int, MeetingTranscript> $transcripts
  * @property-read int|null $transcripts_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Meeting newQuery()
@@ -172,12 +174,12 @@ class Meeting extends Model
 
     public function getAttendanceRateAttribute()
     {
-        $total = $this->attendances()->count();
+        $total = $this->attendances->count();
         if ($total === 0) {
             return 0;
         }
 
-        $present = $this->attendances()->whereIn('status', ['hadir', 'terlambat'])->count();
+        $present = $this->attendances->whereIn('status', ['hadir', 'terlambat'])->count();
 
         return round(($present / $total) * 100);
     }
