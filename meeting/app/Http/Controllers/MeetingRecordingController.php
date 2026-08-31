@@ -19,12 +19,6 @@ class MeetingRecordingController extends Controller
 {
     public function show(Meeting $meeting)
     {
-        if ($meeting->status === 'terjadwal') {
-            $meeting->status = 'berlangsung';
-            $meeting->save();
-            // trigger event agar UI lain ikut update (seperti dashboard admin/umum)
-            safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
-        }
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
@@ -82,7 +76,7 @@ class MeetingRecordingController extends Controller
     {
         abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
 
-        $recording = MeetingRecording::findOrFail($recordingId);
+        $recording = $meeting->recordings()->findOrFail($recordingId);
 
         try {
             if (Storage::exists($recording->file_path)) {
@@ -104,7 +98,7 @@ class MeetingRecordingController extends Controller
      */
     public function transcribe(TranscribeRecordingRequest $request, Meeting $meeting)
     {
-        $recording = MeetingRecording::findOrFail($request->recording_id);
+        $recording = $meeting->recordings()->findOrFail($request->recording_id);
 
         // Don't re-transcribe if already done
         if ($recording->status === 'transcribed') {
