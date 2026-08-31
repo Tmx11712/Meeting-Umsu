@@ -156,7 +156,7 @@ class MeetingController extends Controller
 
         safe_broadcast(new MeetingsListUpdated('Rapat baru "'.$meeting->title.'" telah dijadwalkan'));
 
-        return redirect()->route('meetings.index')->with('success', 'Rapat berhasil dibuat dan dijadwalkan.');
+        return redirect()->route('dashboard')->with('success', 'Rapat berhasil dibuat dan dijadwalkan.');
     }
 
     public function syncFromIrvanCloud(Request $request, SyncMeetingsAction $syncAction)
