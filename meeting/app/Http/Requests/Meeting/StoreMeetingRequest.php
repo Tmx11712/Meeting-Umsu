@@ -12,7 +12,7 @@ class StoreMeetingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('meeting.create');
+        return $this->user()->can('create', \App\Models\Meeting::class);
     }
 
     /**

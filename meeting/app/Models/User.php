@@ -95,7 +95,7 @@ class User extends Authenticatable implements PasskeyUser
      * 
      * @use HasFactory<UserFactory> 
      */
-    use HasFactory, HasRoles, HasTeams, HasUuids, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable {
+    use HasFactory, HasRoles, HasTeams, HasUuids, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable, \Illuminate\Database\Eloquent\SoftDeletes {
         HasTeams::teams insteadof HasRoles;
     }
 

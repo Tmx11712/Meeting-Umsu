@@ -5,17 +5,26 @@ namespace App\Concerns;
 use App\Models\Team;
 use Illuminate\Support\Str;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Model
+ * @method static \Illuminate\Database\Eloquent\Builder query()
+ */
 trait GeneratesUniqueTeamSlugs
 {
     /**
      * Generate a unique slug for the team.
      */
-    protected static function generateUniqueTeamSlug(string $name, ?int $excludeId = null): string
+    protected static function generateUniqueTeamSlug(string $name, ?string $excludeId = null): string
     {
         $defaultSlug = Str::slug($name);
 
-        $query = static::withTrashed()
-            ->where(function ($query) use ($defaultSlug) {
+        $query = static::query();
+
+        if (method_exists(static::class, 'withTrashed')) {
+            $query = $query->withTrashed();
+        }
+
+        $query->where(function ($query) use ($defaultSlug) {
                 $query->where('slug', $defaultSlug)
                     ->orWhere('slug', 'like', $defaultSlug.'-%');
             });

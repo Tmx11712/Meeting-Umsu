@@ -7,6 +7,7 @@ use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\TeamInvitation;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -133,11 +134,36 @@ class DashboardController extends Controller
                 ];
             });
 
+        $pendingInvitations = [];
+        if ($request->user()) {
+            $pendingInvitations = TeamInvitation::with(['team', 'inviter'])
+                ->where('email', $request->user()->email)
+                ->whereNull('accepted_at')
+                ->where(function ($query) use ($now) {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>', $now);
+                })
+                ->get()
+                ->map(function ($invitation) {
+                    return [
+                        'id' => $invitation->id,
+                        'code' => $invitation->code,
+                        'team' => [
+                            'name' => $invitation->team->name,
+                            'slug' => $invitation->team->slug,
+                        ],
+                        'inviterName' => $invitation->inviter->name,
+                        'created_at' => $invitation->created_at,
+                    ];
+                });
+        }
+
         return Inertia::render('dashboard', [
             'stats' => $stats,
             'latestMeetings' => $latestMeetings,
             'upcomingMeetings' => $upcomingMeetings,
             'actionItems' => $actionItems,
+            'pendingInvitations' => $pendingInvitations,
         ]);
     }
 }

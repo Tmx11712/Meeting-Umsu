@@ -6,12 +6,19 @@ use App\Models\Meeting;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class EndToEndMeetingFlowTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected $seed = true;
+
     public function test_entire_meeting_flow()
     {
+        $this->seed();
+
         // Find users
         $humasUser = User::whereHas('roles', function ($q) {
             $q->where('name', 'Bag. Humas');
@@ -40,6 +47,7 @@ class EndToEndMeetingFlowTest extends TestCase
             'source' => 'irvan_cloud',
             'external_id' => Str::uuid()->toString(),
             'current_stage' => 1,
+            'created_by' => $umumUser->id,
         ]);
 
         $meeting->participants()->createMany([
@@ -57,6 +65,9 @@ class EndToEndMeetingFlowTest extends TestCase
             'file' => $dummyFile,
         ]);
         $response->assertStatus(200);
+
+        $response = $this->actingAs($humasUser)->post("/meetings/{$meeting->id}/finish-recording");
+        $response->assertRedirect();
 
         $meeting->refresh();
         $this->assertEquals(3, $meeting->current_stage);
@@ -78,10 +89,10 @@ class EndToEndMeetingFlowTest extends TestCase
         $response->assertRedirect(); // should be 302 back
 
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/correction/finish");
-        $response->assertRedirect(); // should be 302 to attendance
+        $response->assertRedirect(); // should be 302 to attendance/review
 
         $meeting->refresh();
-        $this->assertEquals(4, $meeting->current_stage);
+        $this->assertEquals(5, $meeting->current_stage);
 
         // 3. Umum sets Attendance
         $response = $this->actingAs($umumUser)->post("/meetings/{$meeting->id}/attendance/manual", [
@@ -109,8 +120,8 @@ class EndToEndMeetingFlowTest extends TestCase
 
         // 5. Pimpinan Approves
         $response = $this->actingAs($pimpinanUser)->post("/meetings/{$meeting->id}/approval", [
-            'status' => 'disetujui',
-            'feedback' => 'Bagus sekali',
+            'decision' => 'approved',
+            'notes' => 'Bagus sekali',
             'signature_data' => 'dummy_base64_sig',
         ]);
         $response->assertRedirect();
