@@ -23,10 +23,10 @@ class MeetingMinuteController extends Controller
     public function index(Request $request)
     {
         // Stage 5, 6, 7 = Review / Notulen, Persetujuan, Selesai
-        $query = Meeting::query()->whereIn('current_stage', [4, 5, 6, 7]);
+        $query = Meeting::query()->whereIn('current_stage', [4, 5, 6, 7], 'and', false);
 
         if ($request->search) {
-            $query->where('title', 'ilike', '%'.$request->search.'%');
+            $query->where('title', 'ilike', '%' . $request->search . '%');
         }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
@@ -138,8 +138,8 @@ class MeetingMinuteController extends Controller
         $pdf = Pdf::loadView('pdf.notulen', compact('meeting', 'isDraft'));
 
         $filename = $isDraft
-            ? 'DRAFT_Notulen_'.$meeting->title.'.pdf'
-            : 'Notulen_'.$meeting->title.'.pdf';
+            ? 'DRAFT_Notulen_' . $meeting->title . '.pdf'
+            : 'Notulen_' . $meeting->title . '.pdf';
 
         return $pdf->stream($filename);
     }

@@ -42,7 +42,7 @@ class MeetingRecordingController extends Controller
     {
         $file = $request->file('file');
         // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
-        $path = $file->store('recordings/'.$meeting->id);
+        $path = $file->store('recordings/' . $meeting->id);
 
         try {
             /**
