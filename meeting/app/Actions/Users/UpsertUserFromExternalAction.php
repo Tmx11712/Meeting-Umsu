@@ -16,7 +16,7 @@ class UpsertUserFromExternalAction
             return null;
         }
 
-        $user = User::where('email', $participantData['email'])->first();
+        $user = User::query()->where('email', '=', $participantData['email'])->first();
 
         if (! $user) {
             $fullname = $participantData['fullname'] ?? explode('@', $participantData['email'])[0];
@@ -33,7 +33,7 @@ class UpsertUserFromExternalAction
             // Assign Viewer role
             $user->assignRole('Viewer');
         } elseif (! empty($participantData['nip']) && empty($user->nip)) {
-            $user->update(['nip' => $participantData['nip']]);
+            $user->fill(['nip' => $participantData['nip']])->save();
         }
 
         return $user;

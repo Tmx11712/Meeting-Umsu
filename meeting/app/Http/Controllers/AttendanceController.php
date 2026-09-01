@@ -75,7 +75,7 @@ class AttendanceController extends Controller
          */
         if ($request->user_id) {
             // Absensi untuk user terdaftar (karyawan UMSU)
-            MeetingAttendance::updateOrCreate(
+            MeetingAttendance::query()->updateOrCreate(
                 [
                     'meeting_id' => $meeting->id,
                     'user_id' => $request->user_id,
@@ -90,7 +90,7 @@ class AttendanceController extends Controller
             );
         } else {
             // Absensi untuk tamu eksternal (bukan karyawan UMSU)
-            MeetingAttendance::updateOrCreate(
+            MeetingAttendance::query()->updateOrCreate(
                 [
                     'meeting_id' => $meeting->id,
                     'guest_name' => $request->guest_name,
@@ -135,7 +135,7 @@ class AttendanceController extends Controller
         $status = $now->greaterThan($meetingStartTime) ? 'terlambat' : 'hadir';
 
         // Auto record attendance via QR scan
-        MeetingAttendance::updateOrCreate(
+        MeetingAttendance::query()->updateOrCreate(
             [
                 'meeting_id' => $meeting->id,
                 'user_id' => $user->id,

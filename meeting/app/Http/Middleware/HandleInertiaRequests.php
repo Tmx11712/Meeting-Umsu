@@ -50,12 +50,12 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             $menusData = Cache::remember("user_menus_{$user->id}", 300, function () use ($user) {
                 if ($user->hasRole('Super Admin') || $user->hasRole('Administrator')) {
-                    return Menu::query()->where('status', true)->orderBy('order', 'asc')->get()->toArray();
+                    return Menu::query()->where('status', '=', true)->orderBy('order', 'asc')->get()->toArray();
                 }
 
                 return Menu::query()->whereHas('roles', function ($q) use ($user) {
-                    $q->whereIn('role_id', $user->roles->pluck('id'));
-                })->where('status', true)->orderBy('order', 'asc')->get()->toArray();
+                    $q->whereIn('role_id', $user->roles->pluck('id'), 'and', false);
+                }, '>=', 1)->where('status', '=', true)->orderBy('order', 'asc')->get()->toArray();
             });
 
             $menus = collect($menusData)->map(function ($menu) {

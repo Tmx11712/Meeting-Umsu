@@ -21,7 +21,7 @@ class PermissionController extends Controller
             });
         }
 
-        $permissions = $query->orderBy('group')->orderBy('name')
+        $permissions = $query->orderBy('group', 'asc')->orderBy('name', 'asc')
             ->paginate(15)
             ->through(fn (Permission $p) => [
                 'id' => $p->id,
@@ -31,7 +31,7 @@ class PermissionController extends Controller
                 'guard_name' => $p->guard_name,
             ]);
 
-        $groups = Permission::whereNotNull('group')
+        $groups = Permission::query()->whereNotNull('group', 'and')
             ->distinct()
             ->pluck('group')
             ->sort()
@@ -73,11 +73,11 @@ class PermissionController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $permission->update([
+        $permission->fill([
             'name' => $validated['name'],
             'group' => $validated['group'] ?? null,
             'description' => $validated['description'] ?? null,
-        ]);
+        ])->save();
 
         return back()->with('flash', [
             'type' => 'success',
@@ -88,7 +88,7 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         $name = $permission->name;
-        $permission->delete();
+        $permission->deleteOrFail();
 
         return back()->with('flash', [
             'type' => 'success',

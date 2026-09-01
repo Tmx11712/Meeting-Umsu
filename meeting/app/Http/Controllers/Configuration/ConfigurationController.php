@@ -22,7 +22,7 @@ class ConfigurationController extends Controller
                 'permissionsCount' => Permission::count('id'),
                 'menusCount' => Menu::count('id'),
                 'rolePermissionsCount' => Role::count('id'),
-                'userPermissionsCount' => User::whereHas('permissions')->count('id'),
+                'userPermissionsCount' => User::query()->whereHas('permissions')->count('id'),
             ];
         });
 

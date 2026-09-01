@@ -49,7 +49,7 @@ trait HasTeams
             'id',
             'id',
             'team_id',
-        )->where('team_members.role', TeamRole::Owner->value);
+        )->where('team_members.role', '=', TeamRole::Owner->value);
     }
 
     /**
@@ -78,7 +78,7 @@ trait HasTeams
     public function personalTeam(): ?Team
     {
         return $this->teams()
-            ->where('is_personal', true)
+            ->where('is_personal', '=', true)
             ->first();
     }
 
@@ -91,7 +91,7 @@ trait HasTeams
             return false;
         }
 
-        $this->update(['current_team_id' => $team->id]);
+        $this->fill(['current_team_id' => $team->id])->save();
         $this->setRelation('currentTeam', $team);
 
         URL::defaults(['current_team' => $team->slug]);
@@ -104,7 +104,7 @@ trait HasTeams
      */
     public function belongsToTeam(Team $team): bool
     {
-        return $this->teams()->where('teams.id', $team->id)->exists();
+        return $this->teams()->where('teams.id', '=', $team->id)->exists();
     }
 
     /**
@@ -129,7 +129,7 @@ trait HasTeams
     public function teamRole(Team $team): ?TeamRole
     {
         return $this->teamMemberships()
-            ->where('team_id', $team->id)
+            ->where('team_id', '=', $team->id)
             ->first()
             ?->role;
     }

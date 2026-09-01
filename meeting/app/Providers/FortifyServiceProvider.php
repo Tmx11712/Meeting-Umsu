@@ -59,7 +59,7 @@ class FortifyServiceProvider extends ServiceProvider
 
     /**
      * Configure Fortify views.
-     * 
+     *
      * [EDUKASI ARSITEKTUR: FRONTEND-AGNOSTIC AUTHENTICATION]
      * Fortify adalah backend autentikasi dari Laravel yang "Headless" (tidak peduli frontend-nya apa).
      * Di bagian inilah kita mengaitkan (binding) fitur-fitur autentikasi Fortify agar merender
@@ -134,10 +134,10 @@ class FortifyServiceProvider extends ServiceProvider
 
         $invitation = TeamInvitation::query()
             ->with('team')
-            ->where('code', $invitationCode)
-            ->whereNull('accepted_at')
+            ->where('code', '=', $invitationCode)
+            ->whereNull('accepted_at', 'and', false)
             ->where(fn ($query) => $query
-                ->whereNull('expires_at')
+                ->whereNull('expires_at', 'and', false)
                 ->orWhere('expires_at', '>=', now()))
             ->first();
 

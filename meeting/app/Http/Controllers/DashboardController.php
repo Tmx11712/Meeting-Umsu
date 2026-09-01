@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
+use App\Models\TeamInvitation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\TeamInvitation;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,17 +31,17 @@ class DashboardController extends Controller
 
         $stats = Cache::remember('dashboard_stats', 300, function () use ($startOfMonth, $endOfMonth, $startOfLastMonth, $endOfLastMonth) {
             // 1. Rapat bulan ini
-            $meetingsThisMonth = Meeting::whereBetween('date', [$startOfMonth, $endOfMonth], 'and')->count('*');
-            $meetingsLastMonth = Meeting::whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
+            $meetingsThisMonth = Meeting::query()->whereBetween('date', [$startOfMonth, $endOfMonth], 'and')->count('*');
+            $meetingsLastMonth = Meeting::query()->whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
             $meetingsDelta = $meetingsLastMonth > 0
                 ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100)
                 : 100;
 
             // 2. Notulen selesai
-            $minutesCompletedThisMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
+            $minutesCompletedThisMonth = MeetingMinute::query()->where('status', '=', 'disetujui', 'and')
                 ->whereBetween('created_at', [$startOfMonth, $endOfMonth], 'and')
                 ->count('*');
-            $minutesCompletedLastMonth = MeetingMinute::where('status', '=', 'disetujui', 'and')
+            $minutesCompletedLastMonth = MeetingMinute::query()->where('status', '=', 'disetujui', 'and')
                 ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth], 'and')
                 ->count('*');
             $minutesDelta = $minutesCompletedLastMonth > 0
@@ -49,7 +49,7 @@ class DashboardController extends Controller
                 : 100;
 
             // 3. Action item terbuka
-            $openActionItems = MeetingActionItem::where('status', '=', 'open', 'and')->count('*');
+            $openActionItems = MeetingActionItem::query()->where('status', '=', 'open', 'and')->count('*');
 
             // 4. Rata-rata kehadiran
             $avgAttendance = 0; // Simplified for now, calculate from finished meetings
@@ -106,7 +106,7 @@ class DashboardController extends Controller
                 $q->select('id', 'meeting_id', 'content');
             }])
             ->where('date', '>=', $now->toDateString())
-            ->whereIn('current_stage', [1, 2]) // Still scheduled or Humas Rekam
+            ->whereIn('current_stage', [1, 2], 'and', false) // Still scheduled or Humas Rekam
             ->where(function ($query) {
                 $query->where('category', '!=', 'action_item_mendesak')
                     ->orWhereNull('category');
@@ -118,7 +118,7 @@ class DashboardController extends Controller
         $upcomingMeetings = $adjustParticipants($upcomingMeetingsRaw);
 
         // Action Items Mendesak (Dikustomisasi untuk hanya menampilkan Rapat Mendesak)
-        $actionItems = Meeting::where('category', '=', 'action_item_mendesak', 'and')
+        $actionItems = Meeting::query()->where('category', '=', 'action_item_mendesak', 'and')
             ->where('date', '>=', $now->toDateString())
             ->orderBy('date', 'asc')
             ->take(3)
@@ -137,10 +137,10 @@ class DashboardController extends Controller
         $pendingInvitations = [];
         if ($request->user()) {
             $pendingInvitations = TeamInvitation::with(['team', 'inviter'])
-                ->where('email', $request->user()->email)
-                ->whereNull('accepted_at')
+                ->where('email', '=', $request->user()->email)
+                ->whereNull('accepted_at', 'and', false)
                 ->where(function ($query) use ($now) {
-                    $query->whereNull('expires_at')
+                    $query->whereNull('expires_at', 'and', false)
                         ->orWhere('expires_at', '>', $now);
                 })
                 ->get()

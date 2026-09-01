@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Role;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property string $id
@@ -15,13 +17,14 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $order
  * @property bool $status
  * @property string|null $parent_id
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Menu> $children
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property-read Collection<int, Menu> $children
  * @property-read int|null $children_count
  * @property-read Menu|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Role> $roles
+ * @property-read Collection<int, Role> $roles
  * @property-read int|null $roles_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu query()
@@ -34,6 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu whereRoute($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Menu whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Menu extends Model
@@ -56,10 +60,10 @@ class Menu extends Model
 
     public function children()
     {
-        return $this->hasMany(Menu::class, 'parent_id')->orderBy('order');
+        return $this->hasMany(Menu::class, 'parent_id')->orderBy('order', 'asc');
     }
 
-    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_has_menus');
     }

@@ -14,7 +14,7 @@ class UserPermissionController extends Controller
 {
     public function index(Request $request): Response
     {
-        $usersQuery = User::with('roles')->orderBy('name');
+        $usersQuery = User::with('roles')->orderBy('name', 'asc');
 
         if ($search = $request->input('search')) {
             $usersQuery->where(function ($q) use ($search) {
@@ -50,8 +50,8 @@ class UserPermissionController extends Controller
             }
         }
 
-        $permissionsGrouped = Permission::orderBy('group')
-            ->orderBy('name')
+        $permissionsGrouped = Permission::orderBy('group', 'asc')
+            ->orderBy('name', 'asc')
             ->get()
             ->groupBy(fn ($p) => $p->group ?? 'Lainnya')
             ->map(function ($permissions, $group) {

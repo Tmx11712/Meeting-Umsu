@@ -23,9 +23,9 @@ class TeamMemberController extends Controller
         $newRole = TeamRole::from($request->validated('role'));
 
         $team->memberships()
-            ->where('user_id', $user->id)
+            ->where('user_id', '=', $user->id)
             ->firstOrFail()
-            ->update(['role' => $newRole]);
+            ->fill(['role' => $newRole])->save();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Member role updated.')]);
 
@@ -42,7 +42,7 @@ class TeamMemberController extends Controller
         abort_if($team->owner()?->is($user), 403, __('The team owner cannot be removed.'));
 
         $team->memberships()
-            ->where('user_id', $user->id)
+            ->where('user_id', '=', $user->id)
             ->delete();
 
         if ($user->isCurrentTeam($team)) {

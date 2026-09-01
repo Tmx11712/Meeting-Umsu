@@ -15,7 +15,7 @@ class MenuController extends Controller
     public function index(Request $request): Response
     {
         $menus = Menu::with('parent')
-            ->orderBy('order')
+            ->orderBy('order', 'asc')
             ->paginate(15)
             ->through(fn (Menu $m) => [
                 'id' => $m->id,
@@ -57,7 +57,7 @@ class MenuController extends Controller
             ];
 
             foreach ($actions as $action => $actionLabel) {
-                Permission::firstOrCreate([
+                Permission::query()->firstOrCreate([
                     'name' => "{$baseName}.{$action}",
                     'guard_name' => 'web',
                 ], [

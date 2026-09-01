@@ -25,10 +25,10 @@ class UserManagementController extends Controller
         }
 
         if ($roleFilter = $request->input('role')) {
-            $query->whereHas('roles', fn ($q) => $q->where('name', $roleFilter));
+            $query->whereHas('roles', fn ($q) => $q->where('name', '=', $roleFilter));
         }
 
-        $users = $query->orderBy('name')->paginate(10)->through(fn (User $user) => [
+        $users = $query->orderBy('name', 'asc')->paginate(10)->through(fn (User $user) => [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,

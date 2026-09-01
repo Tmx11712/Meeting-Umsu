@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Events\MeetingUpdated;
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PublicAttendanceController extends Controller
@@ -20,7 +21,7 @@ class PublicAttendanceController extends Controller
                 'end_time' => $meeting->end_time,
                 'location' => $meeting->location,
                 'status' => $meeting->status,
-            ]
+            ],
         ]);
     }
 
@@ -33,9 +34,9 @@ class PublicAttendanceController extends Controller
         ]);
 
         // Check if this guest already submitted attendance based on name and institution
-        $existing = MeetingAttendance::query()->where('meeting_id', $meeting->id)
-            ->where('guest_name', $request->guest_name)
-            ->where('guest_institution', $request->guest_institution)
+        $existing = MeetingAttendance::query()->where('meeting_id', '=', $meeting->id)
+            ->where('guest_name', '=', $request->guest_name)
+            ->where('guest_institution', '=', $request->guest_institution)
             ->first();
 
         if ($existing) {
@@ -53,7 +54,7 @@ class PublicAttendanceController extends Controller
         ]);
 
         // Broadcast event agar layar admin/notulis langsung ter-update otomatis
-        safe_broadcast(new \App\Events\MeetingUpdated($meeting, 'attendance'), false);
+        safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
         return back()->with('success', 'Absensi berhasil dicatat. Terima kasih!');
     }

@@ -9,11 +9,13 @@ use App\Http\Requests\Meeting\StoreMeetingRequest;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
-use App\Models\MeetingParticipant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -30,13 +32,15 @@ class MeetingController extends Controller
          */
         $query = Meeting::query()
             ->withCount('participants')
-            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }]);
+            ->with(['minutes' => function ($q) {
+                $q->select('id', 'meeting_id', 'content');
+            }]);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
         }
         if ($request->status && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $query->where('status', '=', $request->status);
         }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
@@ -53,6 +57,7 @@ class MeetingController extends Controller
             }
             $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
             unset($meeting->minutes);
+
             return $meeting;
         });
 
@@ -70,19 +75,21 @@ class MeetingController extends Controller
      */
     public function create()
     {
-        $users = User::query()->where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
+        $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
         $now = Carbon::now();
 
         $upcomingMeetingsRaw = Meeting::withCount('participants')
-            ->with(['minutes' => function ($q) { $q->select('id', 'meeting_id', 'content'); }])
+            ->with(['minutes' => function ($q) {
+                $q->select('id', 'meeting_id', 'content');
+            }])
             ->where('date', '>=', $now->toDateString())
-            ->whereIn('current_stage', [1, 2])
+            ->whereIn('current_stage', [1, 2], 'and', false)
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->take(3)
             ->get();
-            
+
         $upcomingMeetings = $upcomingMeetingsRaw->map(function ($meeting) {
             $manualCount = 0;
             if ($meeting->minutes && $meeting->minutes->count() > 0) {
@@ -96,11 +103,12 @@ class MeetingController extends Controller
             }
             $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
             unset($meeting->minutes);
+
             return $meeting;
         });
 
         $actionItems = MeetingActionItem::with(['meeting'])
-            ->where('status', 'open')
+            ->where('status', '=', 'open')
             ->orderBy('deadline', 'asc')
             ->take(3)
             ->get();
@@ -151,7 +159,7 @@ class MeetingController extends Controller
                     'updated_at' => now()->toDateTimeString(),
                 ];
             }
-            \Illuminate\Support\Facades\DB::table('meeting_participants')->insert($participants);
+            DB::table('meeting_participants')->insert($participants);
         }
 
         safe_broadcast(new MeetingsListUpdated('Rapat baru "'.$meeting->title.'" telah dijadwalkan'));
@@ -206,7 +214,7 @@ class MeetingController extends Controller
     public function edit(Meeting $meeting)
     {
         $meeting->load('participants');
-        $users = User::query()->where('status', 'aktif')->get(['id', 'name', 'department', 'initials']);
+        $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
         return Inertia::render('meetings/create', [
             'meeting' => $meeting,
@@ -236,7 +244,7 @@ class MeetingController extends Controller
         $toAdd = array_diff($newIds, $existingIds);
 
         if (! empty($toDelete)) {
-            $meeting->participants()->whereIn('user_id', $toDelete)->delete();
+            $meeting->participants()->whereIn('user_id', $toDelete, 'and', false)->delete();
         }
 
         foreach ($toAdd as $userId) {
@@ -274,31 +282,31 @@ class MeetingController extends Controller
         $meeting->load('recordings');
         foreach ($meeting->recordings as $recording) {
             try {
-                if (\Illuminate\Support\Facades\Storage::exists($recording->file_path)) {
-                    \Illuminate\Support\Facades\Storage::delete($recording->file_path);
+                if (Storage::exists($recording->file_path)) {
+                    Storage::delete($recording->file_path);
                 }
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning("Gagal menghapus file rekaman: " . $e->getMessage());
+                Log::warning('Gagal menghapus file rekaman: '.$e->getMessage());
             }
         }
-        
+
         // Hapus file dokumen dari storage
         $meeting->load('documents');
         foreach ($meeting->documents as $document) {
             try {
-                if (\Illuminate\Support\Facades\Storage::exists($document->file_path)) {
-                    \Illuminate\Support\Facades\Storage::delete($document->file_path);
+                if (Storage::exists($document->file_path)) {
+                    Storage::delete($document->file_path);
                 }
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning("Gagal menghapus file dokumen: " . $e->getMessage());
+                Log::warning('Gagal menghapus file dokumen: '.$e->getMessage());
             }
         }
-        
+
         // Hapus direktori rekaman rapat ini agar bersih
         try {
-            \Illuminate\Support\Facades\Storage::deleteDirectory('recordings/' . $meeting->id);
+            Storage::deleteDirectory('recordings/'.$meeting->id);
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal menghapus direktori rekaman: " . $e->getMessage());
+            Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
         }
 
         // Hapus permanen rapat (termasuk relasinya jika diset cascade di DB)

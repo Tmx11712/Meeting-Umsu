@@ -26,7 +26,7 @@ class SyncMeetingAttendanceAction
          * Metode firstOrCreate sangat tangguh. Ia akan mengecek apakah data sudah ada di database.
          * Jika belum ada, baru ia melakukan INSERT. Ini mencegah duplikasi data (Duplicate Entry Error).
          */
-        MeetingParticipant::firstOrCreate([
+        MeetingParticipant::query()->firstOrCreate([
             'meeting_id' => $meeting->id,
             'user_id' => $user->id,
         ]);
@@ -37,7 +37,7 @@ class SyncMeetingAttendanceAction
             $checkInTime = Carbon::parse($participantData['scanned_at'])->setTimezone(config('app.timezone'));
             $checkOutTime = ! empty($participantData['scanned_out_at']) ? Carbon::parse($participantData['scanned_out_at'])->setTimezone(config('app.timezone')) : null;
 
-            MeetingAttendance::updateOrCreate(
+            MeetingAttendance::query()->updateOrCreate(
                 [
                     'meeting_id' => $meeting->id,
                     'user_id' => $user->id,
@@ -52,7 +52,7 @@ class SyncMeetingAttendanceAction
             );
         } else {
             // Ensure an attendance record exists with status tidak_hadir if they are a participant but haven't scanned yet
-            MeetingAttendance::firstOrCreate(
+            MeetingAttendance::query()->firstOrCreate(
                 [
                     'meeting_id' => $meeting->id,
                     'user_id' => $user->id,

@@ -48,7 +48,7 @@ class TeamInvitationController extends Controller
 
         Gate::authorize('cancelInvitation', $team);
 
-        $invitation->delete();
+        $invitation->deleteOrFail();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Invitation cancelled.')]);
 
@@ -70,7 +70,7 @@ class TeamInvitationController extends Controller
                 ['role' => $invitation->role],
             );
 
-            $invitation->update(['accepted_at' => now()]);
+            $invitation->fill(['accepted_at' => now()])->save();
 
             $user->switchTeam($team);
         });
@@ -85,7 +85,7 @@ class TeamInvitationController extends Controller
      */
     public function decline(RespondToTeamInvitationRequest $request, TeamInvitation $invitation): RedirectResponse
     {
-        $invitation->delete();
+        $invitation->deleteOrFail();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Invitation declined.')]);
 

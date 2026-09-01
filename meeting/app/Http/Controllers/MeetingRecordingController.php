@@ -89,7 +89,7 @@ class MeetingRecordingController extends Controller
             Log::warning('Gagal menghapus file rekaman di Storage: '.$e->getMessage());
         }
 
-        $recording->delete(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
+        $recording->deleteOrFail(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_deleted'));
 
@@ -108,10 +108,10 @@ class MeetingRecordingController extends Controller
             return redirect()->back()->with('info', 'Rekaman ini sudah pernah ditranskripsi.');
         }
 
-        $recording->update([
+        $recording->fill([
             'status' => 'transcribing',
             'openai_model_used' => config('services.openai.transcribe_model'),
-        ]);
+        ])->save();
 
         // Dispatch job for transcription
         TranscribeAudioJob::dispatch($recording->id);
@@ -129,7 +129,7 @@ class MeetingRecordingController extends Controller
         abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
         // Otomatis jalankan transkripsi untuk semua rekaman yang masih berstatus 'uploaded'
-        $untranscribedRecordings = $meeting->recordings()->where('status', 'uploaded')->get();
+        $untranscribedRecordings = $meeting->recordings()->where('status', '=', 'uploaded')->get();
         $transcriptionStarted = false;
 
         foreach ($untranscribedRecordings as $recording) {
@@ -163,7 +163,7 @@ class MeetingRecordingController extends Controller
     {
         abort_unless($recording->meeting_id === $meeting->id, 404, 'Rekaman tidak ditemukan untuk rapat ini.');
 
-        $isParticipant = $meeting->participants()->where('user_id', request()->user()->id)->exists();
+        $isParticipant = $meeting->participants()->where('user_id', '=', request()->user()->id)->exists();
         $isAuthorized = $isParticipant || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
         abort_unless($isAuthorized, 403, 'Akses Terbatas: Anda tidak berhak memutar rekaman rapat ini.');
 

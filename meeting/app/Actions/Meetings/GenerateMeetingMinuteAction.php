@@ -8,6 +8,7 @@ use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Services\OpenAiTranscriptionService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Smalot\PdfParser\Parser;
 
 /**
@@ -57,8 +58,8 @@ class GenerateMeetingMinuteAction
         // Ambil transkrip berdasarkan urutan rekaman (waktu dibuat) agar tidak tercampur (interleaved)
         // jika ada lebih dari 1 file audio.
         $recordings = $meeting->recordings()->with(['transcripts' => function ($q) {
-            $q->orderBy('sequence_order');
-        }, 'transcripts.corrections'])->orderBy('created_at')->get();
+            $q->orderBy('sequence_order', 'asc');
+        }, 'transcripts.corrections'])->orderBy('created_at', 'asc')->get();
 
         $parts = [];
 
@@ -79,17 +80,19 @@ class GenerateMeetingMinuteAction
     protected function buildAttendeesList(Meeting $meeting): string
     {
         $attendees = $meeting->attendances()
-            ->whereIn('status', ['hadir', 'terlambat'])
+            ->whereIn('status', ['hadir', 'terlambat'], 'and', false)
             ->with('user')
             ->get();
 
         $names = $attendees->map(function ($att) {
             if ($att->user) {
-                $dept = $att->user->department ? " (Bagian/Dept: {$att->user->department})" : "";
-                return $att->user->name . $dept;
+                $dept = $att->user->department ? " (Bagian/Dept: {$att->user->department})" : '';
+
+                return $att->user->name.$dept;
             }
-            $inst = $att->guest_institution ? " (Instansi: {$att->guest_institution})" : "";
-            return ($att->guest_name ?? 'Peserta Tidak Dikenal') . $inst;
+            $inst = $att->guest_institution ? " (Instansi: {$att->guest_institution})" : '';
+
+            return ($att->guest_name ?? 'Peserta Tidak Dikenal').$inst;
         })->toArray();
 
         return empty($names) ? 'Tidak ada data absensi.' : implode(', ', $names);
@@ -136,8 +139,8 @@ class GenerateMeetingMinuteAction
      */
     protected function persistMinute(Meeting $meeting, array $summaryJson): MeetingMinute
     {
-        if (empty($summaryJson) || !isset($summaryJson['sections']) && !isset($summaryJson['pembahasan'])) {
-            \Illuminate\Support\Facades\Log::warning('AI menghasilkan JSON tidak sesuai skema untuk meeting_id: '.$meeting->id, [
+        if (empty($summaryJson) || ! isset($summaryJson['sections']) && ! isset($summaryJson['pembahasan'])) {
+            Log::warning('AI menghasilkan JSON tidak sesuai skema untuk meeting_id: '.$meeting->id, [
                 'raw_summary' => $summaryJson,
             ]);
         }
@@ -145,7 +148,7 @@ class GenerateMeetingMinuteAction
         // Support backward compatibility for topics counting
         $topicsCount = count($summaryJson['sections'] ?? $summaryJson['pembahasan'] ?? []);
 
-        return MeetingMinute::updateOrCreate(
+        return MeetingMinute::query()->updateOrCreate(
             ['meeting_id' => $meeting->id],
             [
                 'content' => collect($summaryJson)->toArray(),
@@ -163,14 +166,14 @@ class GenerateMeetingMinuteAction
     protected function persistActionItems(Meeting $meeting, MeetingMinute $minute, array $summaryJson): void
     {
         $tindakLanjut = $summaryJson['tindak_lanjut'] ?? [];
-        if (!is_array($tindakLanjut) || empty($tindakLanjut)) {
+        if (! is_array($tindakLanjut) || empty($tindakLanjut)) {
             return;
         }
 
         $minute->actionItems()->delete();
 
         foreach ($tindakLanjut as $actionItem) {
-            if (!is_array($actionItem)) {
+            if (! is_array($actionItem)) {
                 continue;
             }
 
@@ -201,7 +204,7 @@ class GenerateMeetingMinuteAction
         // Hanya menerima format YYYY-MM-DD yang ketat
         if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $deadlineStr, $matches)) {
             // Validasi apakah tanggal tersebut masuk akal (misal bulan 1-12, hari 1-31)
-            if (checkdate((int)$matches[2], (int)$matches[3], (int)$matches[1])) {
+            if (checkdate((int) $matches[2], (int) $matches[3], (int) $matches[1])) {
                 return $deadlineStr;
             }
         }

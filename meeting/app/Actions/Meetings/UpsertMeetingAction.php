@@ -4,6 +4,7 @@ namespace App\Actions\Meetings;
 
 use App\Models\Meeting;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * [EDUKASI ARSITEKTUR: UPSERT LOGIC]
@@ -21,9 +22,9 @@ class UpsertMeetingAction
     public function execute(array $event): array
     {
         // Get a default super admin ID for created_by fallback
-        $defaultAdminId = auth()->id();
+        $defaultAdminId = Auth::id();
         if (! $defaultAdminId) {
-            $admin = User::whereHas('roles', fn ($q) => $q->where('name', 'Super Admin'))->first();
+            $admin = User::query()->whereHas('roles', fn ($q) => $q->where('name', '=', 'Super Admin'))->first();
             $defaultAdminId = $admin ? $admin->id : null;
         }
 
@@ -32,7 +33,7 @@ class UpsertMeetingAction
          * Kita mencari berdasarkan 'external_id' (UUID dari Irvan Cloud).
          * Jika belum ada, kita `create` (Insert). Jika sudah ada, kita `update`.
          */
-        $meeting = Meeting::where('external_id', $event['uuid'])->first();
+        $meeting = Meeting::query()->where('external_id', '=', $event['uuid'])->first();
         $wasRecentlyCreated = false;
 
         if (! $meeting) {
@@ -53,7 +54,7 @@ class UpsertMeetingAction
             $wasRecentlyCreated = true;
         } else {
             // Update existing meeting details if needed
-            $meeting->update([
+            $meeting->fill([
                 'title' => $event['name'],
                 'description' => $event['description'] ?? $meeting->description,
                 'date' => $event['event_date'],
@@ -61,7 +62,7 @@ class UpsertMeetingAction
                 'end_time' => $event['end_time'] ?? $meeting->end_time,
                 'location' => $event['location'] ?? $meeting->location,
                 'type' => $event['type'] ?? $meeting->type,
-            ]);
+            ])->save();
         }
 
         return [

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Configuration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,7 +19,7 @@ class RoleController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $roles = $query->orderBy('name')->paginate(10)->through(fn (Role $role) => [
+        $roles = $query->orderBy('name', 'asc')->paginate(10)->through(fn (Role $role) => [
             'id' => $role->id,
             'name' => $role->name,
             'description' => $role->description,
@@ -68,7 +69,7 @@ class RoleController extends Controller
             });
         }
 
-        $users = $query->orderBy('name')->paginate(10)->through(fn ($user) => [
+        $users = $query->orderBy('name', 'asc')->paginate(10)->through(fn ($user) => [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
@@ -108,11 +109,11 @@ class RoleController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        /** @var \Illuminate\Database\Eloquent\Model $role */
-        $role->update([
+        /** @var Model $role */
+        $role->fill([
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-        ]);
+        ])->save();
 
         return redirect('/configuration/roles')->with('flash', [
             'type' => 'success',
@@ -130,8 +131,8 @@ class RoleController extends Controller
             'Role ini tidak dapat dihapus.'
         );
 
-        /** @var \Illuminate\Database\Eloquent\Model $role */
-        $role->delete();
+        /** @var Model $role */
+        $role->deleteOrFail();
 
         return redirect('/configuration/roles')->with('flash', [
             'type' => 'success',

@@ -3,10 +3,12 @@
 namespace App\Concerns;
 
 use App\Models\Team;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
+ *
  * @method static \Illuminate\Database\Eloquent\Builder query()
  */
 trait GeneratesUniqueTeamSlugs
@@ -25,9 +27,9 @@ trait GeneratesUniqueTeamSlugs
         }
 
         $query->where(function ($query) use ($defaultSlug) {
-                $query->where('slug', $defaultSlug)
-                    ->orWhere('slug', 'like', $defaultSlug.'-%');
-            });
+            $query->where('slug', '=', $defaultSlug)
+                ->orWhere('slug', 'like', $defaultSlug.'-%');
+        });
 
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);

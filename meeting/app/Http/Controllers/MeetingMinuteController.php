@@ -26,7 +26,7 @@ class MeetingMinuteController extends Controller
         $query = Meeting::query()->whereIn('current_stage', [4, 5, 6, 7], 'and', false);
 
         if ($request->search) {
-            $query->where('title', 'ilike', '%' . $request->search . '%');
+            $query->where('title', 'ilike', '%'.$request->search.'%');
         }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
@@ -81,9 +81,9 @@ class MeetingMinuteController extends Controller
     {
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
-            $minute->update([
+            $minute->fill([
                 'content' => $request->content,
-            ]);
+            ])->save();
 
             return back()->with('success', 'Notulen berhasil diperbarui.');
         }
@@ -98,11 +98,11 @@ class MeetingMinuteController extends Controller
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
             DB::transaction(function () use ($minute, $meeting, $request) {
-                $minute->update([
+                $minute->fill([
                     'status' => MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
                     'reviewed_by' => $request->user()->id,
                     'reviewed_at' => now(),
-                ]);
+                ])->save();
 
                 $meeting->current_stage = 6;
                 $meeting->save();
@@ -138,8 +138,8 @@ class MeetingMinuteController extends Controller
         $pdf = Pdf::loadView('pdf.notulen', compact('meeting', 'isDraft'));
 
         $filename = $isDraft
-            ? 'DRAFT_Notulen_' . $meeting->title . '.pdf'
-            : 'Notulen_' . $meeting->title . '.pdf';
+            ? 'DRAFT_Notulen_'.$meeting->title.'.pdf'
+            : 'Notulen_'.$meeting->title.'.pdf';
 
         return $pdf->stream($filename);
     }

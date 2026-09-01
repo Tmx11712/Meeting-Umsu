@@ -54,7 +54,7 @@ class TranscriptCorrectionController extends Controller
 
     public function store(StoreCorrectionRequest $request, Meeting $meeting)
     {
-        MeetingTranscriptCorrection::updateOrCreate(
+        MeetingTranscriptCorrection::query()->updateOrCreate(
             ['transcript_id' => $request->transcript_id],
             [
                 'original_text' => $request->original_text,

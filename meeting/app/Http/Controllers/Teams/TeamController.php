@@ -71,7 +71,7 @@ class TeamController extends Controller
                 ];
             }),
             'invitations' => $team->invitations()
-                ->whereNull('accepted_at')
+                ->whereNull('accepted_at', 'and', false)
                 ->get()
                 ->map(fn ($invitation) => [
                     'code' => $invitation->code,
@@ -93,9 +93,9 @@ class TeamController extends Controller
         Gate::authorize('update', $team);
 
         $team = DB::transaction(function () use ($request, $team) {
-            $team = Team::whereKey($team->id)->lockForUpdate()->firstOrFail();
+            $team = Team::query()->whereKey($team->id)->lockForUpdate()->firstOrFail();
 
-            $team->update(['name' => $request->validated('name')]);
+            $team->fill(['name' => $request->validated('name')])->save();
 
             return $team;
         });
@@ -131,7 +131,7 @@ class TeamController extends Controller
             : null;
 
         $team->memberships()
-            ->where('user_id', $user->id)
+            ->where('user_id', '=', $user->id)
             ->delete();
 
         if ($fallbackTeam) {
@@ -154,13 +154,13 @@ class TeamController extends Controller
             : null;
 
         DB::transaction(function () use ($user, $team) {
-            User::where('current_team_id', $team->id)
+            User::query()->where('current_team_id', '=', $team->id)
                 ->where('id', '!=', $user->id)
                 ->each(fn (User $affectedUser) => $affectedUser->switchTeam($affectedUser->personalTeam()));
 
             $team->invitations()->delete();
             $team->memberships()->delete();
-            $team->delete();
+            $team->deleteOrFail();
         });
 
         if ($fallbackTeam) {
