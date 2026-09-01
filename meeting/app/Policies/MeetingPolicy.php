@@ -4,14 +4,13 @@ namespace App\Policies;
 
 use App\Models\Meeting;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class MeetingPolicy
 {
     /**
      * Perform pre-authorization checks.
      */
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): ?bool
     {
         // Super Admin selalu bisa melakukan apa saja
         if ($user->hasRole('Super Admin')) {

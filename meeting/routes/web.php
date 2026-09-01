@@ -14,6 +14,7 @@ use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\MeetingDocumentController;
 use App\Http\Controllers\MeetingMinuteController;
 use App\Http\Controllers\MeetingRecordingController;
+use App\Http\Controllers\PublicAttendanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Teams\TeamInvitationController;
 use App\Http\Controllers\TranscriptCorrectionController;
@@ -26,8 +27,8 @@ Route::get('/', function () {
 })->name('home');
 
 // Public Attendance Routes
-Route::get('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'show'])->name('attend.form');
-Route::post('attend/{meeting}', [App\Http\Controllers\PublicAttendanceController::class, 'store'])->name('attend.submit');
+Route::get('attend/{meeting}', [PublicAttendanceController::class, 'show'])->name('attend.form');
+Route::post('attend/{meeting}', [PublicAttendanceController::class, 'store'])->name('attend.submit');
 
 /**
  * [EDUKASI ARSITEKTUR: ROUTE GROUPING & MIDDLEWARE]
@@ -118,4 +119,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
-

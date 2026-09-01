@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Meeting;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class EndToEndMeetingFlowTest extends TestCase

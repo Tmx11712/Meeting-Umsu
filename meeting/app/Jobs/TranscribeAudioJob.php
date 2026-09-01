@@ -50,14 +50,14 @@ class TranscribeAudioJob implements ShouldQueue
             $recording->status = MeetingRecordingStatus::TRANSCRIBING->value;
             $recording->save();
 
-            // We download the file content from the default disk (e.g. S3) 
+            // We download the file content from the default disk (e.g. S3)
             // into a temporary local file because Whisper API needs the actual file path.
             $fileContent = Storage::get($recording->file_path);
             if (! $fileContent) {
                 throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
 
-            $tempPath = sys_get_temp_dir() . '/' . basename($recording->file_path);
+            $tempPath = sys_get_temp_dir().'/'.basename($recording->file_path);
             file_put_contents($tempPath, $fileContent);
 
             $result = $transcriptionService->transcribeChunk($tempPath);
@@ -95,13 +95,13 @@ class TranscribeAudioJob implements ShouldQueue
                 safe_broadcast(new MeetingUpdated($meeting, 'transcript_ready'));
             }
         } catch (RequestException $e) {
-            Log::error('Transcribe API Network Error: ' . $e->getMessage());
+            Log::error('Transcribe API Network Error: '.$e->getMessage());
             $this->failJob($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
         } catch (\RuntimeException $e) {
-            Log::error('Transcribe Runtime Error: ' . $e->getMessage());
+            Log::error('Transcribe Runtime Error: '.$e->getMessage());
             $this->failJob($recording, $e->getMessage());
         } catch (\Throwable $e) {
-            Log::error('Transcribe System Error: ' . $e->getMessage());
+            Log::error('Transcribe System Error: '.$e->getMessage());
             $this->failJob($recording, 'Terjadi kesalahan sistem internal.');
             throw $e; // Re-throw critical system errors (like syntax errors) to be caught by the queue worker properly
         }

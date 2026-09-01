@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\User;
+use Tests\TestCase;
 
 test('profile page is displayed', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
@@ -14,7 +16,8 @@ test('profile page is displayed', function () {
 });
 
 test('profile information can be updated', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
@@ -36,7 +39,8 @@ test('profile information can be updated', function () {
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
@@ -54,7 +58,8 @@ test('email verification status is unchanged when the email address is unchanged
 });
 
 test('user can delete their account', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
@@ -72,7 +77,8 @@ test('user can delete their account', function () {
 });
 
 test('correct password must be provided to delete account', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this

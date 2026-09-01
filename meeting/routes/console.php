@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Schedule;
  */
 Schedule::call(function () {
     TeamInvitation::query()
-        ->whereNotNull('expires_at')
+        ->whereNotNull('expires_at', 'and')
         ->where('expires_at', '<', now())
         ->delete();
-})->daily()->description('Delete expired team invitations');
+})->description('Delete expired team invitations')->daily();
 
 Artisan::command('irvan-cloud:sync', function (IrvanCloudSyncService $syncService) {
     $this->info('Starting sync from Irvan Cloud...');

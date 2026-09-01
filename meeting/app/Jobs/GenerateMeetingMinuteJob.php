@@ -37,7 +37,7 @@ class GenerateMeetingMinuteJob implements ShouldQueue
             $action->execute($this->meeting);
             Log::info("Successfully generated AI summary for meeting ID: {$this->meeting->id}");
         } catch (\Throwable $e) {
-            Log::error("Failed to generate AI summary for meeting ID: {$this->meeting->id}. Error: " . $e->getMessage());
+            Log::error("Failed to generate AI summary for meeting ID: {$this->meeting->id}. Error: ".$e->getMessage());
             throw $e;
         }
     }

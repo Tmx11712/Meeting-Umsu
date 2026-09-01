@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Meeting;
 
+use App\Models\Meeting;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class StoreMeetingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\Meeting::class);
+        return $this->user()->can('create', Meeting::class);
     }
 
     /**
