@@ -17,12 +17,12 @@ class ConfigurationController extends Controller
     {
         $stats = Cache::remember('configuration_dashboard_stats', 3600, function () {
             return [
-                'usersCount' => User::count(),
-                'rolesCount' => Role::count(),
-                'permissionsCount' => Permission::count(),
-                'menusCount' => Menu::count(),
-                'rolePermissionsCount' => Role::count(),
-                'userPermissionsCount' => User::whereHas('permissions')->count(),
+                'usersCount' => User::count('id'),
+                'rolesCount' => Role::count('id'),
+                'permissionsCount' => Permission::count('id'),
+                'menusCount' => Menu::count('id'),
+                'rolePermissionsCount' => Role::count('id'),
+                'userPermissionsCount' => User::whereHas('permissions')->count('id'),
             ];
         });
 

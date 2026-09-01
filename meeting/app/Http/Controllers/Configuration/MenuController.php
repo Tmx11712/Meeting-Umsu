@@ -86,7 +86,7 @@ class MenuController extends Controller
             'parent_id' => 'nullable|exists:menus,id',
         ]);
 
-        $menu->update($validated);
+        $menu->fill($validated)->save();
 
         return back()->with('flash', [
             'type' => 'success',
@@ -97,7 +97,7 @@ class MenuController extends Controller
     public function destroy(Menu $menu)
     {
         $name = $menu->name;
-        $menu->delete();
+        $menu->deleteOrFail();
 
         return back()->with('flash', [
             'type' => 'success',
@@ -110,7 +110,7 @@ class MenuController extends Controller
      */
     public function toggleStatus(Menu $menu)
     {
-        $menu->update(['status' => ! $menu->status]);
+        $menu->fill(['status' => ! $menu->status])->save();
 
         return back()->with('flash', [
             'type' => 'success',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\MeetingRecordingStatus;
 use App\Enums\MeetingStatus;
+use App\Events\MeetingsListUpdated;
 use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreRecordingRequest;
 use App\Http\Requests\Meeting\TranscribeRecordingRequest;
@@ -12,6 +13,7 @@ use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -36,7 +38,7 @@ class MeetingRecordingController extends Controller
     {
         $file = $request->file('file');
         // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
-        $path = $file->store('recordings/' . $meeting->id);
+        $path = $file->store('recordings/'.$meeting->id);
 
         try {
             /**
@@ -68,6 +70,7 @@ class MeetingRecordingController extends Controller
         }
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_started'));
+        safe_broadcast(new MeetingsListUpdated);
 
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
@@ -83,7 +86,7 @@ class MeetingRecordingController extends Controller
                 Storage::delete($recording->file_path);
             }
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning("Gagal menghapus file rekaman di Storage: " . $e->getMessage());
+            Log::warning('Gagal menghapus file rekaman di Storage: '.$e->getMessage());
         }
 
         $recording->delete(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
@@ -193,6 +196,7 @@ class MeetingRecordingController extends Controller
         $meeting->save();
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_started'));
+        safe_broadcast(new MeetingsListUpdated);
 
         return response()->json(['message' => 'Recording session started']);
     }

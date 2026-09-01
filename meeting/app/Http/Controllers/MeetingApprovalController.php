@@ -46,10 +46,11 @@ class MeetingApprovalController extends Controller
 
             $minute->update(['status' => $request->decision === 'approved' ? MeetingMinuteStatus::DISETUJUI->value : MeetingMinuteStatus::DITOLAK->value]);
             if ($request->decision === 'approved') {
-                $meeting->update([
+                $meeting->fill([
                     'status' => MeetingStatus::SELESAI->value,
                     'current_stage' => 7,
                 ]);
+                $meeting->save();
             }
         });
 

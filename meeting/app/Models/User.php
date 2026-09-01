@@ -11,11 +11,14 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Passkeys\Passkey;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -41,17 +44,18 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $department
  * @property string|null $deleted_at
  * @property string|null $nip
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read int|null $owned_teams_count
- * @property-read Collection<int, \Laravel\Passkeys\Passkey> $passkeys
+ * @property-read Collection<int, Passkey> $passkeys
  * @property-read int|null $passkeys_count
- * @property-read Collection<int, \App\Models\Permission> $permissions
+ * @property-read Collection<int, Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read Collection<int, \App\Models\Role> $roles
+ * @property-read Collection<int, Role> $roles
  * @property-read int|null $roles_count
  * @property-read int|null $team_memberships_count
  * @property-read int|null $teams_count
+ *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -80,6 +84,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, ?string $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutTeam($teams)
+ * @method bool|null delete()
+ *
  * @mixin \Eloquent
  */
 #[Fillable(['name', 'email', 'password', 'username', 'initials', 'status', 'department', 'current_team_id'])]
@@ -88,14 +94,14 @@ class User extends Authenticatable implements PasskeyUser
 {
     /**
      * [EDUKASI ARSITEKTUR: ELOQUENT TRAITS]
-     * Traits (seperti `HasRoles`, `HasUuids`) adalah cara PHP mendaur ulang fungsi yang sering digunakan 
+     * Traits (seperti `HasRoles`, `HasUuids`) adalah cara PHP mendaur ulang fungsi yang sering digunakan
      * di banyak tempat tanpa harus melakukan "Pewarisan/Inheritance" berlapis.
      * Kode `HasTeams::teams insteadof HasRoles` adalah cara Laravel mengatasi "konflik" jika ada dua trait
      * yang kebetulan memiliki nama fungsi yang persis sama.
-     * 
-     * @use HasFactory<UserFactory> 
+     *
+     * @use HasFactory<UserFactory>
      */
-    use HasFactory, HasRoles, HasTeams, HasUuids, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable, \Illuminate\Database\Eloquent\SoftDeletes {
+    use HasFactory, HasRoles, HasTeams, HasUuids, \Illuminate\Database\Eloquent\SoftDeletes, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable {
         HasTeams::teams insteadof HasRoles;
     }
 

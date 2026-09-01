@@ -41,7 +41,7 @@ class UserManagementController extends Controller
             ]),
         ]);
 
-        $roles = Role::orderBy('name')->get(['id', 'name']);
+        $roles = Role::orderBy('name', 'asc')->get(['id', 'name']);
 
         return Inertia::render('configuration/users/index', [
             'users' => $users,
@@ -52,7 +52,7 @@ class UserManagementController extends Controller
 
     public function create()
     {
-        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
+        $roles = Role::orderBy('name', 'asc')->get(['id', 'name', 'description']);
 
         return Inertia::render('configuration/users/create', [
             'roles' => $roles,
@@ -82,7 +82,7 @@ class UserManagementController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::orderBy('name')->get(['id', 'name', 'description']);
+        $roles = Role::orderBy('name', 'asc')->get(['id', 'name', 'description']);
 
         return Inertia::render('configuration/users/edit', [
             'user' => [
@@ -100,15 +100,17 @@ class UserManagementController extends Controller
     {
         $validated = $request->validated();
 
-        $user->update([
+        $user->fill([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'status' => $validated['status'],
             'initials' => strtoupper(collect(explode(' ', $validated['name']))->map(fn ($w) => $w[0])->take(2)->join('')),
         ]);
+        $user->save();
 
         if ($request->filled('password')) {
-            $user->update(['password' => bcrypt($validated['password'])]);
+            $user->password = bcrypt($validated['password']);
+            $user->save();
         }
 
         $role = Role::findById($validated['role_id']);
@@ -123,7 +125,10 @@ class UserManagementController extends Controller
     public function destroy(User $user)
     {
         $name = $user->name;
-        $user->delete();
+
+        // Menggunakan deleteOrFail() untuk menghindari error false-positive dari IDE (misal Intelephense)
+        // yang terkadang mengira method delete() membutuhkan argumen.
+        $user->deleteOrFail();
 
         return redirect('/configuration/users')->with('flash', [
             'type' => 'success',

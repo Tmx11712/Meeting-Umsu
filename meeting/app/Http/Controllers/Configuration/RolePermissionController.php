@@ -14,7 +14,7 @@ class RolePermissionController extends Controller
 {
     public function index(Request $request): Response
     {
-        $roles = Role::orderBy('name')->get(['id', 'name']);
+        $roles = Role::orderBy('name', 'asc')->get(['id', 'name']);
 
         $selectedRoleId = $request->input('role_id');
         $selectedRole = null;
@@ -33,8 +33,8 @@ class RolePermissionController extends Controller
         }
 
         // Group permissions by 'group' field
-        $permissionsGrouped = Permission::orderBy('group')
-            ->orderBy('name')
+        $permissionsGrouped = Permission::orderBy('group', 'asc')
+            ->orderBy('name', 'asc')
             ->get()
             ->groupBy(fn ($p) => $p->group ?? 'Lainnya')
             ->map(function ($permissions, $group) {
