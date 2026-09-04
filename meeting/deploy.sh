@@ -24,4 +24,10 @@ echo "Menjalankan aplikasi..."
 docker compose -f docker-compose.prod.yml down
 docker compose -f docker-compose.prod.yml up -d
 
+# 6. Optimasi Laravel dan jalankan migrasi database
+echo "Menjalankan optimasi dan migrasi database..."
+docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
+docker compose -f docker-compose.prod.yml exec -T app php artisan optimize
+docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+
 echo "Deployment selesai! Periksa log jika ada error dengan: docker compose -f docker-compose.prod.yml logs -f"
