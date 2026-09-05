@@ -178,7 +178,7 @@ test('deleting current team switches to alphabetically first remaining team', fu
     $betaTeam = Team::factory()->create(['name' => 'Beta Team']);
     $betaTeam->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $zuluTeam->id]);
+    $user->forceFill(['current_team_id' => $zuluTeam->id])->save();
 
     $response = $this
         ->actingAs($user)
@@ -203,7 +203,7 @@ test('deleting current team falls back to personal team when alphabetically firs
     $team = Team::factory()->create(['name' => 'Zulu Team']);
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $team->id]);
+    $user->forceFill(['current_team_id' => $team->id])->save();
 
     $response = $this
         ->actingAs($user)
@@ -228,7 +228,7 @@ test('deleting non current team leaves current team unchanged', function () {
     $team = Team::factory()->create();
     $team->members()->attach($user, ['role' => TeamRole::Owner->value]);
 
-    $user->update(['current_team_id' => $personalTeam->id]);
+    $user->forceFill(['current_team_id' => $personalTeam->id])->save();
 
     $response = $this
         ->actingAs($user)
@@ -283,7 +283,7 @@ test('leaving current team switches to alphabetically first remaining team', fun
     $betaTeam = Team::factory()->create(['name' => 'Beta Team']);
     $betaTeam->members()->attach($member, ['role' => TeamRole::Member->value]);
 
-    $member->update(['current_team_id' => $zuluTeam->id]);
+    $member->forceFill(['current_team_id' => $zuluTeam->id])->save();
 
     $response = $this
         ->actingAs($member)
@@ -351,8 +351,8 @@ test('deleting team switches other affected users to their personal team', funct
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
     $team->members()->attach($member, ['role' => TeamRole::Member->value]);
 
-    $owner->update(['current_team_id' => $team->id]);
-    $member->update(['current_team_id' => $team->id]);
+    $owner->forceFill(['current_team_id' => $team->id])->save();
+    $member->forceFill(['current_team_id' => $team->id])->save();
 
     $response = $this
         ->actingAs($owner)
