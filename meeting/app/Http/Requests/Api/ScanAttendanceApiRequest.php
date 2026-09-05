@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class ScanAttendanceApiRequest extends FormRequest
 {
@@ -34,9 +35,9 @@ class ScanAttendanceApiRequest extends FormRequest
     /**
      * Pastikan minimal ada 1 identitas peserta yang dikirim.
      */
-    public function withValidator($validator): void
+    public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
+        $validator->after(function (Validator $validator) {
             if (! $this->user() && empty($this->user_id) && empty($this->email) && empty($this->guest_name)) {
                 $validator->errors()->add('identity', 'Identitas peserta (user_id, email, atau guest_name) wajib disertakan.');
             }

@@ -2,8 +2,10 @@
 
 use App\Models\Meeting;
 use App\Models\User;
+use Tests\TestCase;
 
 test('can record attendance for a registered user via scan api', function () {
+    /** @var TestCase $this */
     $creator = User::factory()->create();
     $participant = User::factory()->create(['name' => 'Dr. Budi', 'email' => 'budi@umsu.ac.id']);
 
@@ -39,6 +41,7 @@ test('can record attendance for a registered user via scan api', function () {
 });
 
 test('can record attendance for an external guest via scan api', function () {
+    /** @var TestCase $this */
     $creator = User::factory()->create();
 
     $meeting = Meeting::create([
@@ -72,6 +75,7 @@ test('can record attendance for an external guest via scan api', function () {
 });
 
 test('can retrieve attendance recap and list via api', function () {
+    /** @var TestCase $this */
     $creator = User::factory()->create();
     $participant = User::factory()->create(['name' => 'Dosen Satu']);
 
