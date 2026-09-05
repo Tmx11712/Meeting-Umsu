@@ -20,6 +20,7 @@ Schedule::call(function () {
 })->description('Delete expired team invitations')->daily();
 
 Artisan::command('irvan-cloud:sync', function (IrvanCloudSyncService $syncService) {
+    /** @var IrvanCloudSyncService $syncService */
     $this->info('Starting sync from Irvan Cloud...');
     $result = $syncService->syncMeetings();
     if ($result['success']) {
