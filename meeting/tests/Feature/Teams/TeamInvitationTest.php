@@ -6,10 +6,13 @@ use App\Models\TeamInvitation;
 use App\Models\User;
 use App\Notifications\Teams\TeamInvitation as TeamInvitationNotification;
 use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 test('team invitations can be created', function () {
+    /** @var TestCase $this */
     Notification::fake();
 
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -32,7 +35,10 @@ test('team invitations can be created', function () {
 });
 
 test('invitation email for existing users uses login route', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $invitedUser */
     $invitedUser = User::factory()->create(['email' => 'invited@example.com']);
     $team = Team::factory()->create();
 
@@ -51,6 +57,8 @@ test('invitation email for existing users uses login route', function () {
 });
 
 test('invitation email for unknown users uses login route', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -69,9 +77,12 @@ test('invitation email for unknown users uses login route', function () {
 });
 
 test('team invitations can be created by admins', function () {
+    /** @var TestCase $this */
     Notification::fake();
 
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $admin */
     $admin = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -89,9 +100,12 @@ test('team invitations can be created by admins', function () {
 });
 
 test('existing team members cannot be invited', function () {
+    /** @var TestCase $this */
     Notification::fake();
 
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $member */
     $member = User::factory()->create(['email' => 'member@example.com']);
     $team = Team::factory()->create();
 
@@ -109,8 +123,10 @@ test('existing team members cannot be invited', function () {
 });
 
 test('duplicate invitations cannot be created', function () {
+    /** @var TestCase $this */
     Notification::fake();
 
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create();
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
@@ -132,7 +148,10 @@ test('duplicate invitations cannot be created', function () {
 });
 
 test('team invitations cannot be created by members', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $member */
     $member = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -150,6 +169,8 @@ test('team invitations cannot be created by members', function () {
 });
 
 test('team invitations can be cancelled by owners', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create();
 
@@ -172,7 +193,10 @@ test('team invitations can be cancelled by owners', function () {
 });
 
 test('team invitations can be accepted', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $invitedUser */
     $invitedUser = User::factory()->create(['email' => 'invited@example.com']);
     $team = Team::factory()->create();
 
@@ -197,7 +221,10 @@ test('team invitations can be accepted', function () {
 });
 
 test('team invitations can be declined by the invited user', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $invitedUser */
     $invitedUser = User::factory()->create(['email' => 'invited@example.com']);
     $team = Team::factory()->create();
 
@@ -221,7 +248,10 @@ test('team invitations can be declined by the invited user', function () {
 });
 
 test('team invitations cannot be declined by uninvited user', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $uninvitedUser */
     $uninvitedUser = User::factory()->create(['email' => 'uninvited@example.com']);
     $team = Team::factory()->create();
 
@@ -245,7 +275,10 @@ test('team invitations cannot be declined by uninvited user', function () {
 });
 
 test('accepted team invitations cannot be declined', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $invitedUser */
     $invitedUser = User::factory()->create(['email' => 'invited@example.com']);
     $team = Team::factory()->create();
 
@@ -269,7 +302,10 @@ test('accepted team invitations cannot be declined', function () {
 });
 
 test('team invitations cannot be accepted by uninvited user', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $uninvitedUser */
     $uninvitedUser = User::factory()->create(['email' => 'uninvited@example.com']);
     $team = Team::factory()->create();
 
@@ -291,7 +327,10 @@ test('team invitations cannot be accepted by uninvited user', function () {
 });
 
 test('expired invitations cannot be accepted', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
+    /** @var User $invitedUser */
     $invitedUser = User::factory()->create(['email' => 'invited@example.com']);
     $team = Team::factory()->create();
 
