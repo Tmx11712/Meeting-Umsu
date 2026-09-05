@@ -4,8 +4,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
+use Tests\TestCase;
 
 test('security page is displayed', function () {
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
     Features::twoFactorAuthentication([
@@ -16,6 +18,7 @@ test('security page is displayed', function () {
         'confirmPassword' => true,
     ]);
 
+    /** @var User $user */
     $user = User::factory()->create();
 
     $this->actingAs($user)
@@ -31,8 +34,10 @@ test('security page is displayed', function () {
 });
 
 test('security page requires password confirmation when enabled', function () {
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
+    /** @var User $user */
     $user = User::factory()->create();
 
     Features::twoFactorAuthentication([
@@ -47,10 +52,12 @@ test('security page requires password confirmation when enabled', function () {
 });
 
 test('security page renders without two factor when feature is disabled', function () {
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
     config(['fortify.features' => []]);
 
+    /** @var User $user */
     $user = User::factory()->create();
 
     $this->actingAs($user)
@@ -68,6 +75,8 @@ test('security page renders without two factor when feature is disabled', functi
 });
 
 test('password can be updated', function () {
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
@@ -87,6 +96,8 @@ test('password can be updated', function () {
 });
 
 test('correct password must be provided to update password', function () {
+    /** @var TestCase $this */
+    /** @var User $user */
     $user = User::factory()->create();
 
     $response = $this
