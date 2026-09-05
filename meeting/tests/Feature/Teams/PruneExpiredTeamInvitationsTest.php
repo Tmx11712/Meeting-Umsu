@@ -4,10 +4,13 @@ use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
+use Tests\TestCase;
 
 test('expired invitations are deleted by the scheduled cleanup', function () {
+    /** @var TestCase $this */
     $this->travelTo(now()->startOfDay());
 
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create();
 
