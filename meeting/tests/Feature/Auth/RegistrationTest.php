@@ -5,14 +5,18 @@ use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
 
 test('registration screen can be rendered', function () {
+    /** @var TestCase $this */
     $response = $this->get(route('register'));
 
     $response->assertOk();
 });
 
 test('registration screen includes team invitation context', function () {
+    /** @var TestCase $this */
+    /** @var User $owner */
     $owner = User::factory()->create();
     $team = Team::factory()->create(['name' => 'Laravel Team']);
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
@@ -34,6 +38,7 @@ test('registration screen includes team invitation context', function () {
 });
 
 test('new users can register', function () {
+    /** @var TestCase $this */
     $response = $this->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
