@@ -17,6 +17,7 @@ export function MeetingStatusBadge({ status, category, className = '' }: Meeting
         case 'terjadwal':
             colorClass = 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800';
             text = 'Terjadwal';
+
             if (category === 'jadwal_mendatang') {
                 text = 'Jadwal Mendatang';
                 colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
@@ -24,6 +25,7 @@ export function MeetingStatusBadge({ status, category, className = '' }: Meeting
                 text = 'Action Item Mendesak';
                 colorClass = 'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800';
             }
+
             break;
         case 'berlangsung':
             colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';

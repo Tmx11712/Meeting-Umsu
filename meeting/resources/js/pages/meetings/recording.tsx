@@ -1,14 +1,14 @@
 import { Head, usePage, router, Link } from '@inertiajs/react';
 // @ts-ignore
-import ysFixWebmDuration from 'fix-webm-duration';
 import axios from 'axios';
+import ysFixWebmDuration from 'fix-webm-duration';
 import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { QRCodeCanvas } from 'qrcode.react';
 import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
 import type { Meeting } from '@/types/meeting';
 
@@ -37,7 +37,11 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
-        if (!canvas) return;
+
+        if (!canvas) {
+return;
+}
+
         const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         const downloadLink = document.createElement("a");
         downloadLink.href = pngUrl;
@@ -130,10 +134,14 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
 
     // Reset UI to 00:00:00 when a new recording is successfully saved (e.g. via Websocket sync)
     useEffect(() => {
-        if (!isRecording && !isServerRecording) {
-            setRecordingDuration(0);
-        }
-    }, [meeting.recordings?.length]);
+        const timer = setTimeout(() => {
+            if (!isRecording && !isServerRecording) {
+                setRecordingDuration(0);
+            }
+        }, 0);
+
+        return () => clearTimeout(timer);
+    }, [meeting.recordings?.length, isRecording, isServerRecording]);
 
     const formatDuration = (seconds: number) => {
         const h = Math.floor(seconds / 3600);
@@ -201,6 +209,7 @@ fileInputRef.current.value = '';
                 if (stream.getAudioTracks().length === 0) {
                     stream.getTracks().forEach(track => track.stop());
                     setErrorMsg('Anda tidak membagikan Audio Sistem. Harap ulangi dan centang "Share system audio".');
+
                     return;
                 }
                 
@@ -222,6 +231,7 @@ fileInputRef.current.value = '';
                 if (stream.getAudioTracks().length === 0) {
                     stream.getTracks().forEach(track => track.stop());
                     setErrorMsg('Mikrofon tidak terdeteksi atau izin ditolak.');
+
                     return;
                 }
             }
@@ -250,6 +260,7 @@ fileInputRef.current.value = '';
                     ysFixWebmDuration(fullBlob, currentDuration * 1000, (fixedBlob: Blob) => {
                         setRecordedBlob(fixedBlob);
                     });
+
                     return currentDuration;
                 });
             };
@@ -261,6 +272,7 @@ fileInputRef.current.value = '';
 
         } catch (err: any) {
             console.error(err);
+
             if (err.name === 'NotAllowedError') {
                 setErrorMsg(`Izin akses ditolak. Harap izinkan browser untuk mengakses ${mode === 'system' ? 'layar/audio' : 'mikrofon'}.`);
             } else {

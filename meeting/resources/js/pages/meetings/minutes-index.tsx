@@ -1,6 +1,6 @@
-import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Head, Link } from '@inertiajs/react';
 import { Search, Filter, Calendar } from 'lucide-react';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit } = usePermissions();
+
     return (
         <div className="flex h-full flex-1 flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Head title="Review Notulen" />

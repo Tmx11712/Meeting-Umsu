@@ -1,14 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useCallback, useRef, useState } from 'react';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { QRCodeCanvas } from 'qrcode.react';
+import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
 import { confirmDelete } from '@/lib/sweetalert';
-import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
@@ -16,7 +16,11 @@ export default function MeetingIndex({ meetings, filters }: any) {
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
-        if (!canvas) return;
+
+        if (!canvas) {
+return;
+}
+
         const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         const downloadLink = document.createElement("a");
         downloadLink.href = pngUrl;

@@ -1,11 +1,11 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Search, Filter, Calendar } from 'lucide-react';
 import { useState } from 'react';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
-import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { auth } = usePage().props as any;

@@ -1,12 +1,9 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save, Plus, X, GripVertical, Check } from 'lucide-react';
+import { ArrowLeft, X, GripVertical } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 
 export default function CreateMeeting({ users, meeting }: { users: any[], meeting?: any }) {
     /**
@@ -44,6 +41,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (meeting) {
             put(`/meetings/${meeting.id}`);
         } else {
@@ -180,7 +178,11 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                                 <Input 
                                     value={newAgenda}
                                     onChange={e => setNewAgenda(e.target.value)}
-                                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addAgenda(); } }}
+                                    onKeyDown={e => {
+ if (e.key === 'Enter') {
+ e.preventDefault(); addAgenda(); 
+} 
+}}
                                     placeholder="Ketik agenda lalu tekan Enter..."
                                     className="h-10 border-slate-200 bg-white rounded-lg text-sm flex-1"
                                 />

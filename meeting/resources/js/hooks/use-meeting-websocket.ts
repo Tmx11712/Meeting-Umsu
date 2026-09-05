@@ -32,21 +32,25 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
         if (stage === 3 && !currentPath.includes('/correction')) {
             if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/correction`);
+
                 return true; 
             }
         } else if (stage === 4 && !currentPath.includes('/attendance')) {
             if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/attendance`);
+
                 return true; 
             }
         } else if (stage === 5 && !currentPath.includes('/review')) {
             if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/review`);
+
                 return true; 
             }
         } else if (stage >= 6 && !currentPath.includes('/approval')) {
             // Stage 6+: Semua role (termasuk Humas) diarahkan ke halaman approval
             router.visit(`/meetings/${meetingId}/approval`);
+
             return true; 
         }
         

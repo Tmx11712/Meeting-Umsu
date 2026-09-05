@@ -1,7 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Download, FileText, CheckCircle2, Check, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
-import { AlertCircle } from 'lucide-react';
 import DOMPurify from 'dompurify';
+import { Download, FileText, CheckCircle2, RotateCcw, Info, Edit3, Plus, Trash2 } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';

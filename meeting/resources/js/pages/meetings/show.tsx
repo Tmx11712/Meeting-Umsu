@@ -1,12 +1,12 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle, QrCode, Download, Ban } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { QRCodeCanvas } from 'qrcode.react';
 import { useInitials } from '@/hooks/use-initials';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { confirmDelete } from '@/lib/sweetalert';
@@ -17,7 +17,11 @@ export default function MeetingShow({ meeting }: any) {
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
-        if (!canvas) return;
+
+        if (!canvas) {
+return;
+}
+
         const pngUrl = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
         const downloadLink = document.createElement("a");
         downloadLink.href = pngUrl;

@@ -1,6 +1,6 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
-import { Calendar, MapPin, Clock, Building, User, Mail, CheckCircle, Info } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import { Calendar, MapPin, Clock, Building, CheckCircle } from 'lucide-react';
+import type { FormEventHandler } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

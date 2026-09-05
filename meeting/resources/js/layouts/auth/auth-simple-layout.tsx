@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Sun, Moon } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -13,9 +13,11 @@ export default function AuthSimpleLayout({
     description,
 }: AuthLayoutProps) {
     const { resolvedAppearance, updateAppearance } = useAppearance();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => setMounted(true), []);
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
     const toggleTheme = () => {
         updateAppearance(resolvedAppearance === 'dark' ? 'light' : 'dark');

@@ -1,9 +1,9 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import DOMPurify from 'dompurify';
 import { Send, FileText, Download, Edit3, Lightbulb, CheckCircle2, ChevronDown, RefreshCw, Sparkles, Plus, Trash2, Upload, Loader2 } from 'lucide-react';
 
-import DOMPurify from 'dompurify';
-import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, Info } from 'lucide-react';
+import React, { useState } from 'react';
 
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -142,6 +142,7 @@ return;
     attendances.forEach((a: any) => {
         if (a.user_id) {
             const isParticipant = participants.some((p: any) => p.user_id === a.user_id);
+
             if (!isParticipant) {
                 displayList.push({
                     id: `a-${a.id}`,
@@ -174,12 +175,14 @@ return;
 
     const changeStatus = (item: any, newStatus: string) => {
         const payload: any = { status: newStatus };
+
         if (item.user_id) {
             payload.user_id = item.user_id;
         } else {
             payload.guest_name = item.name;
             payload.guest_institution = item.subtitle === 'Input Manual' ? null : item.subtitle;
         }
+
         router.post(`/meetings/${meeting.id}/attendance/manual`, payload, { preserveScroll: true });
     };
 
@@ -191,7 +194,10 @@ return;
     const [addingAttendance, setAddingAttendance] = useState(false);
 
     const addGuestAttendance = () => {
-        if (!guestName.trim()) return;
+        if (!guestName.trim()) {
+return;
+}
+
         setAddingAttendance(true);
         router.post(`/meetings/${meeting.id}/attendance/manual`, {
             guest_name: guestName,
@@ -382,6 +388,7 @@ return;
                                             { value: 'terlambat', label: 'Terlambat', color: 'bg-amber-500 hover:bg-amber-600 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
                                             { value: 'tidak_hadir', label: 'Absen', color: 'bg-red-500 hover:bg-red-600 text-white', inactive: 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400' },
                                         ];
+
                                         return (
                                             <div key={att.id} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                                 <div className="flex items-center gap-3">
@@ -998,7 +1005,10 @@ return;
                         <Button 
                             className="bg-rose-600 hover:bg-rose-700 text-white" 
                             onClick={() => {
-                                if (!documentToDelete) return;
+                                if (!documentToDelete) {
+return;
+}
+
                                 setSending(true);
                                 router.delete(`/meetings/${meeting.id}/documents/${documentToDelete}`, {
                                     onFinish: () => {

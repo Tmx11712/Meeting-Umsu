@@ -1,11 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { AlertCircle, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Loader2, Upload } from 'lucide-react';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
+import { usePermissions } from '@/hooks/use-permissions';
 import type { Meeting } from '@/types/meeting';
 
 export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
@@ -38,7 +38,10 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
 
     // Save functionality
     const handleSaveTranscript = () => {
-        if (!firstTranscript) return;
+        if (!firstTranscript) {
+return;
+}
+
         setIsSaving(true);
         router.post(`/meetings/${meeting.id}/correction`, {
             transcript_id: firstTranscript.id,
@@ -80,7 +83,11 @@ export default function MeetingCorrection({ meeting }: { meeting: Meeting }) {
 
     const handleImportTxt = (e: any) => {
         const file = e.target.files[0];
-        if (!file) return;
+
+        if (!file) {
+return;
+}
+
         const reader = new FileReader();
         reader.onload = (event) => {
             if (event.target?.result) {

@@ -1,10 +1,9 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Calendar, MapPin, Clock, ArrowRight, Mic, PenTool, Users, FileText, CheckCircle, Lock } from 'lucide-react';
 import React, { useEffect } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 // Map icon string to actual Lucide component
 const IconMap: Record<string, React.ElementType> = {
