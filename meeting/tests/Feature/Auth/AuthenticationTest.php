@@ -4,19 +4,23 @@ use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 use Laravel\Passkeys\Contracts\PasskeyLoginResponse;
+use Tests\TestCase;
 
 test('login screen can be rendered', function () {
+    /** @var TestCase $this */
     $response = $this->get(route('login'));
 
     $response->assertOk();
 });
 
 test('login screen includes team invitation context', function () {
+    /** @var TestCase $this */
     $owner = User::factory()->create();
     $team = Team::factory()->create(['name' => 'Laravel Team']);
     $team->members()->attach($owner, ['role' => TeamRole::Owner->value]);
@@ -38,6 +42,7 @@ test('login screen includes team invitation context', function () {
 });
 
 test('users can authenticate using the login screen', function () {
+    /** @var TestCase $this */
     $user = User::factory()->create();
 
     $response = $this->post(route('login.store'), [
@@ -50,6 +55,7 @@ test('users can authenticate using the login screen', function () {
 });
 
 test('passkey login response redirects to the current team dashboard', function () {
+    /** @var TestCase $this */
     $user = User::factory()->create();
 
     $request = Request::create(route('login', absolute: false), 'GET', server: [
@@ -58,12 +64,14 @@ test('passkey login response redirects to the current team dashboard', function 
     $request->setLaravelSession($this->app['session.store']);
     $request->setUserResolver(fn () => $user);
 
+    /** @var JsonResponse $jsonResponse */
     $jsonResponse = app(PasskeyLoginResponse::class)->toResponse($request);
 
     expect($jsonResponse->getData()->redirect)->toBe(route('dashboard', ['current_team' => $user->personalTeam()->slug]));
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {
+    /** @var TestCase $this */
     if (! Features::canManageTwoFactorAuthentication()) {
         $this->markTestSkipped('Two-factor authentication is not enabled.');
     }
@@ -86,6 +94,7 @@ test('users with two factor enabled are redirected to two factor challenge', fun
 });
 
 test('users can not authenticate with invalid password', function () {
+    /** @var TestCase $this */
     $user = User::factory()->create();
 
     $this->post(route('login.store'), [
@@ -97,6 +106,7 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can logout', function () {
+    /** @var TestCase $this */
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->post(route('logout'));
@@ -106,6 +116,7 @@ test('users can logout', function () {
 });
 
 test('users are rate limited', function () {
+    /** @var TestCase $this */
     $user = User::factory()->create();
 
     RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
