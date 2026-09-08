@@ -159,7 +159,7 @@ clearTimeout(searchTimeout.current);
                             <Input 
                                 type="search" 
                                 placeholder="Cari judul rapat..." 
-                                className="pl-9 w-full md:w-[320px] bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-xl h-11 transition-all"
+                                className="pl-9 w-full md:w-80 bg-white/60 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-xl h-11 transition-all"
                                 defaultValue={filters?.search || ''}
                                 onChange={(e) => handleSearchChange(e.target.value)}
                                 onKeyDown={(e) => {
