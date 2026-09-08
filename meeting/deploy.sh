@@ -29,5 +29,6 @@ echo "Menjalankan optimasi dan migrasi database..."
 docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
 docker compose -f docker-compose.prod.yml exec -T app php artisan optimize
 docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+docker compose -f docker-compose.prod.yml exec -T app php artisan storage:link
 
 echo "Deployment selesai! Periksa log jika ada error dengan: docker compose -f docker-compose.prod.yml logs -f"
