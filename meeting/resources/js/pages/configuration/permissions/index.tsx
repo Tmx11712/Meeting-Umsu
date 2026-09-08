@@ -250,7 +250,7 @@ export default function PermissionsIndex({ permissions, groups, filters }: Props
                 </Card>
 
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="sm:max-w-106.25">
                         <DialogHeader>
                             <DialogTitle>{editingPermission ? 'Edit Permission' : 'Tambah Permission'}</DialogTitle>
                             <DialogDescription>

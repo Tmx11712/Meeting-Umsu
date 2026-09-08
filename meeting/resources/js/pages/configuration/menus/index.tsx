@@ -291,7 +291,7 @@ return null;
                 </Card>
 
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                    <DialogContent className="sm:max-w-[425px]">
+                    <DialogContent className="sm:max-w-106.25">
                         <DialogHeader>
                             <DialogTitle>{editingMenu ? 'Edit Menu' : 'Tambah Menu'}</DialogTitle>
                             <DialogDescription>
