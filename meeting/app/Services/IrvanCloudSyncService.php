@@ -2,8 +2,12 @@
 
 namespace App\Services;
 
+use App\Actions\IrvanCloud\SyncMeetingsAction;
+
 class IrvanCloudSyncService
 {
+    public function __construct(protected SyncMeetingsAction $syncMeetingsAction) {}
+
     /**
      * Sinkronisasi data rapat dari Irvan Cloud.
      *
@@ -11,15 +15,6 @@ class IrvanCloudSyncService
      */
     public function syncMeetings(): array
     {
-        return [
-            'success' => true,
-            'message' => 'Sinkronisasi Irvan Cloud selesai.',
-        ];
-    }
-
-    public function syncEventDetails($externalId, $meeting): bool
-    {
-        // TODO: Implement sync logic
-        return true;
+        return $this->syncMeetingsAction->execute();
     }
 }

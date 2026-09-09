@@ -134,10 +134,8 @@ class MeetingRecordingController extends Controller
     {
         $recording = $meeting->recordings()->findOrFail($request->recording_id);
 
-        // Don't re-transcribe if already done
-        if ($recording->status === 'transcribed') {
-            return redirect()->back()->with('info', 'Rekaman ini sudah pernah ditranskripsi.');
-        }
+        // Bersihkan transkrip lama jika sedang mengulang transkripsi
+        $recording->transcripts()->delete();
 
         $recording->fill([
             'status' => 'transcribing',
@@ -166,11 +164,20 @@ class MeetingRecordingController extends Controller
     {
         abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
-        // Otomatis jalankan transkripsi untuk semua rekaman yang masih berstatus 'uploaded'
-        $untranscribedRecordings = $meeting->recordings()->where('status', '=', 'uploaded')->get();
+        // Otomatis jalankan transkripsi untuk semua rekaman yang belum selesai (uploaded, failed, atau transcribing tanpa transkrip)
+        $untranscribedRecordings = $meeting->recordings()
+            ->where(function ($query) {
+                $query->whereIn('status', ['uploaded', 'failed'])
+                    ->orWhere(function ($sub) {
+                        $sub->where('status', '=', 'transcribing')
+                            ->whereDoesntHave('transcripts');
+                    });
+            })
+            ->get();
         $transcriptionStarted = false;
 
         foreach ($untranscribedRecordings as $recording) {
+            $recording->transcripts()->delete();
             $recording->fill([
                 'status' => 'transcribing',
                 'openai_model_used' => config('services.openai.transcribe_model'),

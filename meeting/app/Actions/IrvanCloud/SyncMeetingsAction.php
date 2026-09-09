@@ -6,6 +6,7 @@ use App\Actions\Meetings\SyncMeetingAttendanceAction;
 use App\Actions\Meetings\UpsertMeetingAction;
 use App\Actions\Users\UpsertUserFromExternalAction;
 use App\Events\MeetingsListUpdated;
+use App\Models\Meeting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -56,6 +57,7 @@ class SyncMeetingsAction
         try {
             $events = $this->fetchEvents->execute($startDate, $endDate);
             $syncedCount = 0;
+            $deletedCount = 0;
 
             // Phase 1: Fetch all data first (Do NOT hold DB locks during HTTP requests)
             $meetingsToProcess = [];
@@ -72,12 +74,18 @@ class SyncMeetingsAction
             }
 
             // Phase 2: Perform all database writes inside a transaction
-            DB::transaction(function () use ($meetingsToProcess, &$syncedCount) {
+            DB::transaction(function () use ($meetingsToProcess, &$syncedCount, &$deletedCount, $startDate, $endDate) {
+                $activeUuids = [];
+
                 foreach ($meetingsToProcess as $data) {
                     $event = $data['event'];
                     $details = $data['details'];
 
-                    // Upsert Meeting
+                    if (! empty($event['uuid'])) {
+                        $activeUuids[] = $event['uuid'];
+                    }
+
+                    // Upsert Meeting (termasuk memulihkan jika sebelumnya terhapus)
                     $upsertResult = $this->upsertMeeting->execute($event);
                     $meeting = $upsertResult['meeting'];
 
@@ -95,15 +103,50 @@ class SyncMeetingsAction
                         }
                     }
                 }
+
+                // Hapus (soft delete) rapat yang sudah dihapus di Irvan Cloud
+                // Hanya jika belum dimulai (masih 'terjadwal') dan belum ada file rekaman
+                $orphanedMeetings = Meeting::query()
+                    ->where('source', '=', 'irvan_cloud')
+                    ->where('status', '=', 'terjadwal')
+                    ->whereDoesntHave('recordings')
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->when(! empty($activeUuids), function ($q) use ($activeUuids) {
+                        $q->whereNotIn('external_id', $activeUuids);
+                    })
+                    ->get();
+
+                foreach ($orphanedMeetings as $orphaned) {
+                    $orphaned->delete();
+                    $deletedCount++;
+                }
             });
 
-            if ($syncedCount > 0) {
-                safe_broadcast(new MeetingsListUpdated('Terdapat '.$syncedCount.' rapat baru dari sinkronisasi Irvan Cloud'));
+            if ($syncedCount > 0 || $deletedCount > 0) {
+                $broadcastMsg = 'Sinkronisasi Irvan Cloud selesai: ';
+                if ($syncedCount > 0) {
+                    $broadcastMsg .= "{$syncedCount} rapat diselaraskan. ";
+                }
+                if ($deletedCount > 0) {
+                    $broadcastMsg .= "{$deletedCount} rapat terhapus diselaraskan.";
+                }
+                safe_broadcast(new MeetingsListUpdated(trim($broadcastMsg)));
             }
+
+            $msgParts = [];
+            if ($syncedCount > 0) {
+                $msgParts[] = "{$syncedCount} rapat baru/aktif diselaraskan";
+            }
+            if ($deletedCount > 0) {
+                $msgParts[] = "{$deletedCount} rapat terhapus diselaraskan";
+            }
+            $finalMsg = empty($msgParts)
+                ? 'Semua data rapat sudah selaras dengan Irvan Cloud.'
+                : 'Berhasil: '.implode(', ', $msgParts).' dari Irvan Cloud.';
 
             return [
                 'success' => true,
-                'message' => "Berhasil sinkronisasi {$syncedCount} rapat baru dari Irvan Cloud.",
+                'message' => $finalMsg,
             ];
 
         } catch (\Exception $e) {

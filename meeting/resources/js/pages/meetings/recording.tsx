@@ -2,7 +2,7 @@ import { Head, usePage, router, Link } from '@inertiajs/react';
 // @ts-ignore
 import axios from 'axios';
 import ysFixWebmDuration from 'fix-webm-duration';
-import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download } from 'lucide-react';
+import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download, RotateCcw } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
@@ -580,40 +580,48 @@ return;
                                             
                                             <audio controls src={`/meetings/${meeting.id}/recording/${rec.id}/stream`} className="h-9 w-full max-w-sm rounded-lg border border-slate-200/60" />
                                         </div>
-                                        <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
-                                            {rec.status !== 'transcribing' && (
-                                                <>
-                                                    {canRecord && (
+                                        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                                            {canRecord && (
+                                                <Button 
+                                                    variant="outline"
+                                                    onClick={() => deleteRecording(rec.id)}
+                                                    className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 text-xs h-9 px-3 shadow-sm flex-none"
+                                                    disabled={isTranscribing === rec.id}
+                                                    title="Hapus Rekaman"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            )}
+
+                                            {rec.status === 'transcribing' ? (
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                        <span className="text-xs font-semibold">AI sedang bekerja di latar belakang (1-3 menit)</span>
+                                                    </div>
+                                                    {canTranscribe && (
                                                         <Button 
+                                                            onClick={() => triggerTranscription(rec.id)}
                                                             variant="outline"
-                                                            onClick={() => deleteRecording(rec.id)}
-                                                            className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 text-xs h-9 px-3 shadow-sm flex-none"
-                                                            disabled={isTranscribing === rec.id}
-                                                            title="Hapus Rekaman"
+                                                            className="text-xs h-9 border-blue-200 text-blue-700 hover:bg-blue-50 shadow-sm"
+                                                            title="Kirim ulang proses transkripsi jika macet"
                                                         >
-                                                            <Trash2 className="w-4 h-4" />
+                                                            <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                                                            Paksa Ulangi
                                                         </Button>
                                                     )}
-                                                    {canTranscribe && (
-                                                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                                                            <Button 
-                                                                onClick={() => triggerTranscription(rec.id)}
-                                                                className={`text-xs h-9 flex-1 sm:flex-none shadow-sm ${rec.status === 'transcribing' ? 'bg-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                                                                disabled={!canTranscribe || isTranscribing === rec.id || rec.status === 'transcribing'}
-                                                            >
-                                                                {isTranscribing === rec.id || rec.status === 'transcribing' ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
-                                                                {isTranscribing === rec.id || rec.status === 'transcribing' ? 'Memproses AI (Harap Tunggu)...' : (rec.status === 'completed' ? 'Ulangi Transkripsi AI' : 'Mulai Transkripsi AI')}
-                                                            </Button>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            )}
-                                            
-                                            {rec.status === 'transcribing' && (
-                                                <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 mt-2 sm:mt-0">
-                                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                                    <span className="text-xs font-semibold">AI sedang bekerja di latar belakang (bisa memakan waktu 1-3 menit)</span>
                                                 </div>
+                                            ) : (
+                                                canTranscribe && (
+                                                    <Button 
+                                                        onClick={() => triggerTranscription(rec.id)}
+                                                        className={`text-xs h-9 flex-1 sm:flex-none shadow-sm ${rec.status === 'failed' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                                                        disabled={isTranscribing === rec.id}
+                                                    >
+                                                        {isTranscribing === rec.id ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Bot className="w-3.5 h-3.5 mr-2" />}
+                                                        {isTranscribing === rec.id ? 'Memproses AI...' : (rec.status === 'completed' ? 'Ulangi Transkripsi AI' : rec.status === 'failed' ? 'Coba Lagi Transkripsi AI' : 'Mulai Transkripsi AI')}
+                                                    </Button>
+                                                )
                                             )}
                                         </div>
                                     </div>

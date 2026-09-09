@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
+import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download, RefreshCw } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
@@ -13,6 +13,16 @@ import { confirmDelete } from '@/lib/sweetalert';
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
     const [qrMeeting, setQrMeeting] = useState<any>(null);
+    const [isSyncing, setIsSyncing] = useState(false);
+
+    const handleManualSync = () => {
+        if (isSyncing) return;
+        setIsSyncing(true);
+        router.post('/meetings/sync', {}, {
+            preserveScroll: true,
+            onFinish: () => setIsSyncing(false),
+        });
+    };
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
@@ -143,7 +153,19 @@ clearTimeout(searchTimeout.current);
                     </h1>
                     <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar dan kelola jadwal rapat instansi</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                    {canEdit('meeting') && (
+                        <Button 
+                            onClick={handleManualSync}
+                            disabled={isSyncing}
+                            variant="outline"
+                            className="rounded-xl shadow-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 h-11 px-4 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium flex items-center gap-2"
+                            title="Sinkronisasi jadwal rapat dari Irvan Cloud"
+                        >
+                            <RefreshCw className={`h-4 w-4 text-blue-600 ${isSyncing ? 'animate-spin' : ''}`} />
+                            <span>{isSyncing ? 'Menyinkronkan...' : 'Sinkron Irvan Cloud'}</span>
+                        </Button>
+                    )}
                     {canEdit('meeting') && (
                         <Link href="/meetings/create">
                             <Button className="rounded-xl shadow-sm bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 border-0 h-11 px-5 text-white font-medium">

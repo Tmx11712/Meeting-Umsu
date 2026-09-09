@@ -182,13 +182,16 @@ class MeetingController extends Controller
 
     public function autoSync(SyncMeetingsAction $syncAction)
     {
-        // Gunakan cache lock selama 5 menit agar tidak membebani server (spam)
-        $lock = Cache::lock('irvan_cloud_auto_sync', 300);
+        // Gunakan cache lock singkat (20 detik) agar auto-sync responsif namun tetap mencegah spam paralel
+        $lock = Cache::lock('irvan_cloud_auto_sync', 20);
 
         if ($lock->get()) {
-            $syncAction->execute();
+            $result = $syncAction->execute();
 
-            return response()->json(['status' => 'synced']);
+            return response()->json([
+                'status' => 'synced',
+                'message' => $result['message'] ?? 'OK',
+            ]);
         }
 
         return response()->json(['status' => 'skipped_throttled']);

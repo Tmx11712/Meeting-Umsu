@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\MeetingRecordingStatus;
+use App\Events\MeetingsListUpdated;
 use App\Events\MeetingUpdated;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
@@ -30,6 +31,8 @@ class TranscribeAudioJob implements ShouldQueue
     public $tries = 3;
 
     public $backoff = [10, 30, 60];
+
+    public int $timeout = 900; // 15 menit agar rekaman audio panjang tidak dibunuh paksa oleh worker
 
     protected string $recordingId;
 
@@ -92,7 +95,14 @@ class TranscribeAudioJob implements ShouldQueue
             }
 
             if ($meeting) {
+                $meeting->load(['recordings' => function ($q) {
+                    $q->orderBy('created_at', 'asc');
+                }, 'recordings.transcripts' => function ($q) {
+                    $q->orderBy('sequence_order', 'asc');
+                }, 'participants.user']);
+
                 safe_broadcast(new MeetingUpdated($meeting, 'transcript_ready'));
+                safe_broadcast(new MeetingsListUpdated('Transkripsi AI rekaman audio telah selesai'));
             }
         } catch (RequestException $e) {
             Log::error('Transcribe API Network Error: '.$e->getMessage());
@@ -102,8 +112,8 @@ class TranscribeAudioJob implements ShouldQueue
             $this->failJob($recording, $e->getMessage());
         } catch (\Throwable $e) {
             Log::error('Transcribe System Error: '.$e->getMessage());
-            $this->failJob($recording, 'Terjadi kesalahan sistem internal.');
-            throw $e; // Re-throw critical system errors (like syntax errors) to be caught by the queue worker properly
+            $this->failJob($recording, 'Terjadi kesalahan sistem internal: '.$e->getMessage());
+            throw $e; // Re-throw critical system errors to be caught by the queue worker properly
         }
     }
 
@@ -115,7 +125,26 @@ class TranscribeAudioJob implements ShouldQueue
         /** @var Meeting|null $meeting */
         $meeting = Meeting::find($recording->meeting_id, ['*']);
         if ($meeting) {
+            $meeting->load(['recordings' => function ($q) {
+                $q->orderBy('created_at', 'asc');
+            }, 'recordings.transcripts' => function ($q) {
+                $q->orderBy('sequence_order', 'asc');
+            }, 'participants.user']);
+
             safe_broadcast(new MeetingUpdated($meeting, 'transcript_failed'));
+            safe_broadcast(new MeetingsListUpdated('Proses transkripsi rekaman audio gagal'));
+        }
+    }
+
+    /**
+     * Dipanggil otomatis oleh Laravel jika Job timeout atau gagal setelah seluruh percobaan habis.
+     */
+    public function failed(?\Throwable $exception = null): void
+    {
+        Log::error('TranscribeAudioJob permanently failed: '.($exception ? $exception->getMessage() : 'Timeout/Unknown error'));
+        $recording = MeetingRecording::find($this->recordingId);
+        if ($recording) {
+            $this->failJob($recording, $exception ? $exception->getMessage() : 'Gagal memproses audio.');
         }
     }
 }

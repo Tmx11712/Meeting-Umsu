@@ -36,12 +36,10 @@ class UpsertMeetingAction
         $meeting = Meeting::withTrashed()->where('external_id', '=', $event['uuid'])->first();
         $wasRecentlyCreated = false;
 
-        // Jika rapat ini sudah pernah dihapus oleh user, jangan bangkitkan kembali dari sync cloud
+        // Jika rapat ini sebelumnya sempat terhapus namun masih aktif di Irvan Cloud, pulihkan!
         if ($meeting && $meeting->trashed()) {
-            return [
-                'meeting' => $meeting,
-                'wasRecentlyCreated' => false,
-            ];
+            $meeting->restore();
+            $wasRecentlyCreated = true;
         }
 
         if (! $meeting) {
