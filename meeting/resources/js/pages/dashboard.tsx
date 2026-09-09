@@ -38,15 +38,19 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
         const channel = (window as any).Echo?.channel('meetings');
 
         if (channel) {
-            channel.listen('MeetingsListUpdated', (e: any) => {
+            const handleUpdate = (e: any) => {
                 console.log('Dashboard real-time update:', e);
                 router.reload({ only: ['stats', 'latestMeetings', 'upcomingMeetings', 'actionItems'] });
-            });
+            };
+
+            channel.listen('MeetingsListUpdated', handleUpdate);
+            channel.listen('.MeetingsListUpdated', handleUpdate);
         }
 
         return () => {
             if (channel) {
                 channel.stopListening('MeetingsListUpdated');
+                channel.stopListening('.MeetingsListUpdated');
                 (window as any).Echo?.leaveChannel('meetings');
             }
         };

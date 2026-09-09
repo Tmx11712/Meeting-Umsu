@@ -104,7 +104,7 @@ return;
         const channel = (window as any).Echo?.channel(channelName);
         
         if (channel) {
-            channel.listen('MeetingUpdated', (e: any) => {
+            const handleMeetingUpdate = (e: any) => {
                 console.log(`Meeting ${meetingId} updated via WS:`, e);
                 
                 if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
@@ -121,12 +121,16 @@ return;
                 } else {
                     router.reload({ only: ['meeting', 'meetings'] });
                 }
-            });
+            };
+
+            channel.listen('MeetingUpdated', handleMeetingUpdate);
+            channel.listen('.MeetingUpdated', handleMeetingUpdate);
         }
 
         return () => {
             if (channel) {
                 channel.stopListening('MeetingUpdated');
+                channel.stopListening('.MeetingUpdated');
                 (window as any).Echo?.leaveChannel(channelName);
             }
         };

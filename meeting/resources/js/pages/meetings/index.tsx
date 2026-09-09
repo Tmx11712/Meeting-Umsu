@@ -67,15 +67,19 @@ return;
         const channel = (window as any).Echo?.channel('meetings');
         
         if (channel) {
-            channel.listen('MeetingsListUpdated', (e: any) => {
+            const handleUpdate = (e: any) => {
                 console.log('Meetings list updated:', e);
                 router.reload({ only: ['meetings'] });
-            });
+            };
+
+            channel.listen('MeetingsListUpdated', handleUpdate);
+            channel.listen('.MeetingsListUpdated', handleUpdate);
         }
 
         return () => {
             if (channel) {
                 channel.stopListening('MeetingsListUpdated');
+                channel.stopListening('.MeetingsListUpdated');
                 (window as any).Echo?.leaveChannel('meetings');
             }
         };
@@ -290,7 +294,7 @@ return;
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
                                                                     onSuccess: () => {
-                                                                        handleSync();
+                                                                        router.reload({ only: ['meetings'] });
                                                                     }
                                                                 });
                                                             }

@@ -25,4 +25,9 @@ class MeetingsListUpdated implements ShouldBroadcastNow
             new Channel('meetings'),
         ];
     }
+
+    public function broadcastAs(): string
+    {
+        return 'MeetingsListUpdated';
+    }
 }

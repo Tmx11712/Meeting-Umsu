@@ -276,7 +276,7 @@ class MeetingController extends Controller
     {
         abort_unless(request()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
 
-        safe_broadcast(new MeetingUpdated($meeting, 'deleted'));
+        safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
 
         // Hapus file fisik rekaman audio dari storage
         $meeting->load('recordings');
@@ -309,11 +309,11 @@ class MeetingController extends Controller
             Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
         }
 
-        // Hapus permanen rapat (termasuk relasinya jika diset cascade di DB)
-        $meeting->forceDelete();
+        // Gunakan soft delete agar meeting tidak otomatis terimpor kembali oleh auto-sync Irvan Cloud
+        $meeting->delete();
 
-        safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'));
+        safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
 
-        return redirect()->back()->with('success', 'Rapat berhasil dihapus permanen beserta file rekamannya.');
+        return redirect()->back()->with('success', 'Rapat berhasil dihapus beserta file rekamannya.');
     }
 }

@@ -33,8 +33,16 @@ class UpsertMeetingAction
          * Kita mencari berdasarkan 'external_id' (UUID dari Irvan Cloud).
          * Jika belum ada, kita `create` (Insert). Jika sudah ada, kita `update`.
          */
-        $meeting = Meeting::query()->where('external_id', '=', $event['uuid'])->first();
+        $meeting = Meeting::withTrashed()->where('external_id', '=', $event['uuid'])->first();
         $wasRecentlyCreated = false;
+
+        // Jika rapat ini sudah pernah dihapus oleh user, jangan bangkitkan kembali dari sync cloud
+        if ($meeting && $meeting->trashed()) {
+            return [
+                'meeting' => $meeting,
+                'wasRecentlyCreated' => false,
+            ];
+        }
 
         if (! $meeting) {
             $meeting = Meeting::create([

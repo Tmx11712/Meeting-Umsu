@@ -21,6 +21,23 @@ class MeetingRecordingController extends Controller
 {
     public function show(Meeting $meeting)
     {
+        if ($meeting->status === MeetingStatus::TERJADWAL->value) {
+            $user = request()->user();
+            $canStartMeeting = $user->can('recording.create')
+                || $user->can('meeting.update')
+                || $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum']);
+
+            if ($canStartMeeting) {
+                $meeting->status = MeetingStatus::BERLANGSUNG->value;
+                if ($meeting->current_stage < 2) {
+                    $meeting->current_stage = 2;
+                }
+                $meeting->save();
+
+                safe_broadcast(new MeetingUpdated($meeting, 'status_changed'), false);
+                safe_broadcast(new MeetingsListUpdated('Rapat "'.$meeting->title.'" sedang berlangsung'), false);
+            }
+        }
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');

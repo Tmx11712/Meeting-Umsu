@@ -58,4 +58,9 @@ class MeetingUpdated implements ShouldBroadcastNow
             'meeting' => $this->meeting->toArray(),
         ];
     }
+
+    public function broadcastAs(): string
+    {
+        return 'MeetingUpdated';
+    }
 }

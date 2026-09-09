@@ -9,7 +9,7 @@ if (! function_exists('safe_broadcast')) {
      * @param  object  $event  The event instance to broadcast.
      * @param  bool  $toOthers  Whether to exclude the current user from receiving the broadcast.
      */
-    function safe_broadcast(object $event, bool $toOthers = true): void
+    function safe_broadcast(object $event, bool $toOthers = false): void
     {
         try {
             $pending = broadcast($event);

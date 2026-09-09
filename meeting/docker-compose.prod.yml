@@ -11,6 +11,11 @@ services:
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
+      - REVERB_HOST=reverb
+      - REVERB_PORT=8080
+      - REVERB_SCHEME=http
+      - REVERB_INTERNAL_HOST=reverb
+      - REVERB_INTERNAL_PORT=8080
       # You should pass all other environment variables via an .env file or CI/CD secrets
     env_file:
       - .env
@@ -43,6 +48,12 @@ services:
     image: enotulen-app:latest
     restart: unless-stopped
     command: php artisan queue:work --queue=default --sleep=3 --tries=3
+    environment:
+      - REVERB_HOST=reverb
+      - REVERB_PORT=8080
+      - REVERB_SCHEME=http
+      - REVERB_INTERNAL_HOST=reverb
+      - REVERB_INTERNAL_PORT=8080
     env_file:
       - .env
     volumes:
@@ -59,6 +70,10 @@ services:
     # 8080 is the default Reverb port inside the container, we don't expose it to host
     # because Nginx will proxy it.
     command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    environment:
+      - REVERB_HOST=0.0.0.0
+      - REVERB_PORT=8080
+      - REVERB_SCHEME=http
     env_file:
       - .env
     depends_on:
