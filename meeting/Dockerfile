@@ -66,6 +66,7 @@ COPY . .
 
 # Copy the built node assets from Stage 1
 COPY --from=node-builder /app/public/build /var/www/html/public/build
+COPY --from=node-builder /app/public/build /var/www/html/public-assets/build
 
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
