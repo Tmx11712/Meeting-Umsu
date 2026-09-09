@@ -294,9 +294,7 @@ return;
                                                             if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
-                                                                    onSuccess: () => {
-                                                                        router.reload({ only: ['meetings'] });
-                                                                    }
+                                                                    preserveState: true,
                                                                 });
                                                             }
                                                         }}
