@@ -11,9 +11,11 @@ echo "Menarik update dari Git..."
 git pull origin main
 
 # 3. Pastikan konfigurasi .env sudah sesuai dengan IP LXC Proxmox:
-# DB_HOST=10.10.10.2
-# REDIS_HOST=10.10.10.4
-# AWS_ENDPOINT=http://10.10.10.5:9000
+# DB_HOST=10.10.10.2 (LXC 100 - Postgres)
+# REDIS_HOST=10.10.10.4 (LXC 102 - Redis)
+# FILESYSTEM_DISK=s3
+# AWS_ENDPOINT=http://10.10.10.5:9000 (LXC 103 - MinIO)
+# AWS_BUCKET=meeting
 
 # 4. Build ulang image aplikasi
 echo "Membangun ulang image Docker..."
