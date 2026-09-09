@@ -25,7 +25,7 @@ class MeetingRecordingController extends Controller
             $user = request()->user();
             $canStartMeeting = $user->can('recording.create')
                 || $user->can('meeting.update')
-                || $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum']);
+                || $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas']);
 
             if ($canStartMeeting) {
                 $meeting->status = MeetingStatus::BERLANGSUNG->value;
