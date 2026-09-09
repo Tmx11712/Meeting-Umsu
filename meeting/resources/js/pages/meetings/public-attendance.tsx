@@ -36,7 +36,9 @@ export default function PublicAttendance({ meeting, flash }: any) {
                 <Card className="border-blue-200/50 shadow-lg bg-white backdrop-blur">
                     <CardHeader className="text-center pb-4 border-b border-slate-200">
                         <CardTitle className="text-xl font-bold text-slate-900">{meeting.title}</CardTitle>
-                        <CardDescription className="text-slate-900 font-semibold">Silakan isi form absensi di bawah ini</CardDescription>
+                        <CardDescription className="text-slate-900 font-semibold">
+                            {isSuccess ? 'Kehadiran Anda telah berhasil dicatat' : 'Silakan isi form absensi di bawah ini'}
+                        </CardDescription>
                     </CardHeader>
                     
                     <CardContent className="pt-6">
