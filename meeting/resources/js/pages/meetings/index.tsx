@@ -42,17 +42,18 @@ return;
             return match ? decodeURIComponent(match[2]) : '';
         };
 
-        // Gunakan native fetch agar request berjalan murni di latar belakang
-        // tanpa membatalkan navigasi pengguna atau menimpa state halaman lain.
-        fetch('/meetings/sync', {
+        // Gunakan /meetings/auto-sync dengan cache-lock 5 menit agar tidak membebani server
+        fetch('/meetings/auto-sync', {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-XSRF-TOKEN': getXsrfToken(),
                 'Content-Type': 'application/json'
             }
-        }).then(() => {
-            router.reload({ only: ['meetings'] });
+        }).then(res => res.json()).then(data => {
+            if (data?.status === 'synced') {
+                router.reload({ only: ['meetings'] });
+            }
         }).catch(() => {});
     }, [guardAction]);
 
