@@ -24,6 +24,9 @@ if (typeof window !== 'undefined') {
 
     const appKey = import.meta.env.VITE_REVERB_APP_KEY || 'my_reverb_key';
 
+    // Log WebSocket events in console so operators/developers can see connection status
+    (Pusher as any).logToConsole = true;
+
     try {
         window.Echo = new Echo({
             broadcaster: 'reverb',
@@ -33,6 +36,13 @@ if (typeof window !== 'undefined') {
             wssPort: wsPort,
             forceTLS: isHttps,
             enabledTransports: ['ws', 'wss'],
+        });
+
+        window.Echo.connector?.pusher?.connection?.bind('connected', () => {
+            console.log('[Echo Reverb] Connected successfully to WebSocket server.');
+        });
+        window.Echo.connector?.pusher?.connection?.bind('error', (err: any) => {
+            console.warn('[Echo Reverb] Connection error:', err);
         });
     } catch (e) {
         console.warn('Echo initialization skipped or failed:', e);

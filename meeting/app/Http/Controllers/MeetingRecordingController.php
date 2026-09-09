@@ -86,8 +86,15 @@ class MeetingRecordingController extends Controller
             throw $e;
         }
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
+        safe_broadcast(new MeetingUpdated($meeting, 'recording_uploaded'));
         safe_broadcast(new MeetingUpdated($meeting, 'recording_started'));
-        safe_broadcast(new MeetingsListUpdated);
+        safe_broadcast(new MeetingsListUpdated('Audio rapat baru telah berhasil diunggah'));
 
         return response()->json(['recording' => $recording, 'message' => 'File audio berhasil disimpan.']);
     }
@@ -108,7 +115,14 @@ class MeetingRecordingController extends Controller
 
         $recording->deleteOrFail(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
         safe_broadcast(new MeetingUpdated($meeting, 'recording_deleted'));
+        safe_broadcast(new MeetingsListUpdated('Rekaman telah dihapus'));
 
         return redirect()->back()->with('success', 'Rekaman dan file fisiknya berhasil dihapus secara permanen.');
     }
@@ -136,7 +150,14 @@ class MeetingRecordingController extends Controller
         $meeting->current_stage = max($meeting->current_stage, 3);
         $meeting->save();
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
         safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
+        safe_broadcast(new MeetingsListUpdated('Transkripsi AI sedang diproses'));
 
         return redirect()->back()->with('info', 'Permintaan transkripsi AI telah dikirim ke latar belakang. Harap tunggu 1-3 menit...');
     }
@@ -164,10 +185,17 @@ class MeetingRecordingController extends Controller
             'status' => 'berlangsung',
         ])->save();
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
         if ($transcriptionStarted) {
             safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
         }
         safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
+        safe_broadcast(new MeetingsListUpdated('Tahap rapat beralih ke koreksi transkrip'));
 
         return redirect()->route('meetings.correction', $meeting->id)
             ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
@@ -212,6 +240,12 @@ class MeetingRecordingController extends Controller
         $meeting->status = 'berlangsung';
         $meeting->save();
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_started'));
         safe_broadcast(new MeetingsListUpdated);
 
@@ -225,7 +259,14 @@ class MeetingRecordingController extends Controller
         $meeting->recording_started_at = null;
         $meeting->save();
 
+        $meeting->load(['recordings' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }, 'recordings.transcripts' => function ($q) {
+            $q->orderBy('sequence_order', 'asc');
+        }, 'participants.user']);
+
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_stopped'));
+        safe_broadcast(new MeetingsListUpdated);
 
         return response()->json(['message' => 'Recording session stopped']);
     }

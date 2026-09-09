@@ -41,7 +41,7 @@ export interface MeetingMinute {
 }
 
 export interface Meeting {
-    id: number;
+    id: string | number;
     title: string;
     date: string;
     start_time: string;

@@ -69,7 +69,7 @@ services:
     restart: unless-stopped
     # 8080 is the default Reverb port inside the container, we don't expose it to host
     # because Nginx will proxy it.
-    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080 --debug
     environment:
       - REVERB_HOST=0.0.0.0
       - REVERB_PORT=8080

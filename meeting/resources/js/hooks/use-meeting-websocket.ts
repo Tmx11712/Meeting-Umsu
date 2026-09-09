@@ -1,7 +1,7 @@
 import { router, usePage } from '@inertiajs/react';
 import { useEffect, useCallback } from 'react';
 
-export function useMeetingWebSocket(meetingId: number | undefined) {
+export function useMeetingWebSocket(meetingId: string | number | undefined) {
     /**
      * [EDUKASI ARSITEKTUR: WEB SOCKETS & EVENT BROADCASTING]
      * Komponen ini (Custom Hook) bertugas membangun jembatan real-time antara Laravel Backend dan React Frontend.
@@ -57,28 +57,30 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
         return false;
     }, [meetingId, isAdminOrUmum]);
 
-    // Removed the aggressive mount-time redirect useEffect so users can click older tabs.
+    const safeReload = useCallback(() => {
+        router.reload({
+            only: ['meeting'],
+            preserveScroll: true,
+            preserveState: true,
+            onError: () => {
+                // Meeting sudah dihapus (404), arahkan ke dashboard
+                router.visit('/dashboard', { replace: true });
+            },
+        });
+    }, []);
 
-
-    // Fallback polling in case WebSocket server is dead/blocked
+    // Fallback polling: 5 detik saat di ruang rekaman agar sangat responsif antar-tab
     useEffect(() => {
         if (!meetingId) {
             return;
         }
-        
-        const safeReload = () => {
-            router.reload({
-                only: ['meeting', 'meetings'],
-                onError: () => {
-                    // Meeting sudah dihapus (404), arahkan ke dashboard
-                    router.visit('/dashboard', { replace: true });
-                },
-            });
-        };
 
-        const interval = setInterval(safeReload, 30000); // 30 seconds fallback polling
+        const isRecordingPage = window.location.pathname.includes('/recording');
+        const pollInterval = isRecordingPage ? 5000 : 15000;
+
+        const interval = setInterval(safeReload, pollInterval);
         
-        // When tab becomes active again, immediately fetch fresh data
+        // Saat tab browser kembali aktif/fokus, langsung ambil data terbaru
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 safeReload();
@@ -93,46 +95,60 @@ export function useMeetingWebSocket(meetingId: number | undefined) {
             window.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('focus', handleVisibilityChange);
         };
-    }, [meetingId]);
+    }, [meetingId, safeReload]);
 
+    // WebSocket Listeners (Echo)
     useEffect(() => {
         if (!meetingId) {
-return;
-}
-
-        const channelName = `meeting.${meetingId}`;
-        const channel = (window as any).Echo?.channel(channelName);
-        
-        if (channel) {
-            const handleMeetingUpdate = (e: any) => {
-                console.log(`Meeting ${meetingId} updated via WS:`, e);
-                
-                if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
-                    const redirected = checkAndRedirect(e.meeting.current_stage);
-
-                    if (!redirected) {
-                        router.reload({ only: ['meeting', 'meetings'] });
-                    }
-                } else if (e.type === 'approval') {
-                    // Pimpinan sudah approve → arahkan semua ke dashboard
-                    router.visit('/dashboard');
-                } else if (e.type === 'deleted') {
-                    router.visit('/dashboard', { replace: true });
-                } else {
-                    router.reload({ only: ['meeting', 'meetings'] });
-                }
-            };
-
-            channel.listen('MeetingUpdated', handleMeetingUpdate);
-            channel.listen('.MeetingUpdated', handleMeetingUpdate);
+            return;
         }
 
-        return () => {
-            if (channel) {
-                channel.stopListening('MeetingUpdated');
-                channel.stopListening('.MeetingUpdated');
-                (window as any).Echo?.leaveChannel(channelName);
+        const channelName = `meeting.${meetingId}`;
+        const echo = (window as any).Echo;
+
+        if (!echo) {
+            return;
+        }
+
+        const meetingChannel = echo.channel(channelName);
+        const globalChannel = echo.channel('meetings');
+
+        const handleMeetingUpdate = (e: any) => {
+            console.log(`[WS] Meeting ${meetingId} updated:`, e);
+            
+            if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
+                const redirected = checkAndRedirect(e.meeting.current_stage);
+
+                if (!redirected) {
+                    safeReload();
+                }
+            } else if (e.type === 'approval') {
+                router.visit('/dashboard');
+            } else if (e.type === 'deleted') {
+                router.visit('/dashboard', { replace: true });
+            } else {
+                safeReload();
             }
         };
-    }, [meetingId, checkAndRedirect]);
+
+        const handleGlobalUpdate = (e: any) => {
+            console.log(`[WS] Global meetings list updated:`, e);
+            safeReload();
+        };
+
+        meetingChannel.listen('MeetingUpdated', handleMeetingUpdate);
+        meetingChannel.listen('.MeetingUpdated', handleMeetingUpdate);
+
+        globalChannel.listen('MeetingsListUpdated', handleGlobalUpdate);
+        globalChannel.listen('.MeetingsListUpdated', handleGlobalUpdate);
+
+        return () => {
+            meetingChannel.stopListening('MeetingUpdated');
+            meetingChannel.stopListening('.MeetingUpdated');
+            echo.leaveChannel(channelName);
+
+            globalChannel.stopListening('MeetingsListUpdated');
+            globalChannel.stopListening('.MeetingsListUpdated');
+        };
+    }, [meetingId, checkAndRedirect, safeReload]);
 }
