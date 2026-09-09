@@ -9,6 +9,7 @@ use App\Events\MeetingsListUpdated;
 use App\Models\Meeting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * [EDUKASI ARSITEKTUR: ORCHESTRATOR PATTERN]
@@ -105,11 +106,10 @@ class SyncMeetingsAction
                 }
 
                 // Hapus (soft delete) rapat yang sudah dihapus di Irvan Cloud
-                // Hanya jika belum dimulai (masih 'terjadwal') dan belum ada file rekaman
+                // Hanya lindungi rapat yang sudah disetujui pimpinan (current_stage >= 7)
                 $orphanedMeetings = Meeting::query()
                     ->where('source', '=', 'irvan_cloud')
-                    ->where('status', '=', 'terjadwal')
-                    ->whereDoesntHave('recordings')
+                    ->where('current_stage', '<', 7)
                     ->whereBetween('date', [$startDate, $endDate])
                     ->when(! empty($activeUuids), function ($q) use ($activeUuids) {
                         $q->whereNotIn('external_id', $activeUuids);
@@ -117,6 +117,23 @@ class SyncMeetingsAction
                     ->get();
 
                 foreach ($orphanedMeetings as $orphaned) {
+                    // Bersihkan file rekaman dari storage
+                    foreach ($orphaned->recordings as $recording) {
+                        try {
+                            if (Storage::exists($recording->file_path)) {
+                                Storage::delete($recording->file_path);
+                            }
+                        } catch (\Throwable $e) {
+                            Log::warning('Gagal menghapus file rekaman orphan: '.$e->getMessage());
+                        }
+                    }
+
+                    try {
+                        Storage::deleteDirectory('recordings/'.$orphaned->id);
+                    } catch (\Throwable $e) {
+                        Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
+                    }
+
                     $orphaned->delete();
                     $deletedCount++;
                 }

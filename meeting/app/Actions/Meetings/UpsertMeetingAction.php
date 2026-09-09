@@ -36,9 +36,26 @@ class UpsertMeetingAction
         $meeting = Meeting::withTrashed()->where('external_id', '=', $event['uuid'])->first();
         $wasRecentlyCreated = false;
 
-        // Jika rapat ini sebelumnya sempat terhapus namun masih aktif di Irvan Cloud, pulihkan!
+        // Jika rapat ini sebelumnya sempat terhapus namun masih aktif di Irvan Cloud, pulihkan dan reset dari awal!
         if ($meeting && $meeting->trashed()) {
             $meeting->restore();
+
+            // Bersihkan data lama agar mulai dari awal
+            $meeting->transcripts()->delete();
+            $meeting->recordings()->delete();
+
+            $meeting->fill([
+                'title' => $event['name'],
+                'description' => $event['description'] ?? '',
+                'date' => $event['event_date'],
+                'start_time' => $event['start_time'] ?? '08:00:00',
+                'end_time' => $event['end_time'] ?? '10:00:00',
+                'location' => $event['location'] ?? ($event['type'] == 'online' ? ($event['link'] ?? 'Online') : 'Ruang Rapat'),
+                'type' => $event['type'] ?? 'offline',
+                'status' => 'terjadwal',
+                'current_stage' => 2,
+            ])->save();
+
             $wasRecentlyCreated = true;
         }
 
