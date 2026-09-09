@@ -58,11 +58,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy composer files
 COPY composer.json composer.lock ./
 
-# Install composer dependencies (optimized for production)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
 # Copy the rest of the application code
 COPY . .
+
+# Install composer dependencies (guaranteed fresh according to composer.lock)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy the built node assets from Stage 1
 COPY --from=node-builder /app/public/build /var/www/html/public/build
