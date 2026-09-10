@@ -31,6 +31,15 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
+        if (app()->environment('production') && config('app.url')) {
+            \Illuminate\Support\Facades\URL::forceRootUrl(config('app.url'));
+            
+            // Also force HTTPS if the APP_URL starts with https
+            if (str_starts_with(config('app.url'), 'https://')) {
+                \Illuminate\Support\Facades\URL::forceScheme('https');
+            }
+        }
+
         Blade::componentNamespace('Inertia\\View\\Components', 'inertia');
     }
 
