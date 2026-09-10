@@ -45,6 +45,17 @@ class Meeting extends Model
         'agenda',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            cache()->forget('dashboard_stats');
+        });
+
+        static::deleted(function ($model) {
+            cache()->forget('dashboard_stats');
+        });
+    }
+
     public function getAgendaAttribute()
     {
         if ($this->notes) {

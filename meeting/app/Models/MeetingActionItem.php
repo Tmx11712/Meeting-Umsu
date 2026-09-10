@@ -23,6 +23,17 @@ class MeetingActionItem extends Model
         'deadline' => 'date',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            cache()->forget('dashboard_stats');
+        });
+
+        static::deleted(function ($model) {
+            cache()->forget('dashboard_stats');
+        });
+    }
+
     public function meeting()
     {
         return $this->belongsTo(Meeting::class);
