@@ -14,6 +14,19 @@ COPY . .
 # Bypass wayfinder plugin needing PHP during Vite build
 RUN printf '#!/bin/sh\nexit 0' > /usr/local/bin/php && chmod +x /usr/local/bin/php
 
+# Pass VITE_* variables at build time so they are baked into the frontend JS bundle.
+# Default values work for production behind Nginx reverse proxy.
+ARG VITE_REVERB_APP_KEY=my_reverb_key
+ARG VITE_REVERB_HOST=localhost
+ARG VITE_REVERB_PORT=8080
+ARG VITE_REVERB_SCHEME=http
+ARG VITE_APP_NAME=enotulen
+ENV VITE_REVERB_APP_KEY=$VITE_REVERB_APP_KEY
+ENV VITE_REVERB_HOST=$VITE_REVERB_HOST
+ENV VITE_REVERB_PORT=$VITE_REVERB_PORT
+ENV VITE_REVERB_SCHEME=$VITE_REVERB_SCHEME
+ENV VITE_APP_NAME=$VITE_APP_NAME
+
 # Build the Vite assets
 RUN npm run build
 
