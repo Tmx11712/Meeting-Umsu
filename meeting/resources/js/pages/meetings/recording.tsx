@@ -599,17 +599,6 @@ return;
                                                         <Loader2 className="w-4 h-4 animate-spin" />
                                                         <span className="text-xs font-semibold">AI sedang bekerja di latar belakang (1-3 menit)</span>
                                                     </div>
-                                                    {canTranscribe && (
-                                                        <Button 
-                                                            onClick={() => triggerTranscription(rec.id)}
-                                                            variant="outline"
-                                                            className="text-xs h-9 border-blue-200 text-blue-700 hover:bg-blue-50 shadow-sm"
-                                                            title="Kirim ulang proses transkripsi jika macet"
-                                                        >
-                                                            <RotateCcw className="w-3.5 h-3.5 mr-1" />
-                                                            Paksa Ulangi
-                                                        </Button>
-                                                    )}
                                                 </div>
                                             ) : (
                                                 canTranscribe && (
