@@ -103,16 +103,20 @@ class MeetingRecordingController extends Controller
         abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
 
         $recording = $meeting->recordings()->findOrFail($recordingId);
-
-        try {
-            if (Storage::exists($recording->file_path)) {
-                Storage::delete($recording->file_path);
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Gagal menghapus file rekaman di Storage: '.$e->getMessage());
-        }
+        $filePath = $recording->file_path;
 
         $recording->deleteOrFail(); // Ini otomatis permanen karena model tidak pakai SoftDeletes
+
+        // Pindahkan proses hapus file fisik ke background agar response instan
+        app()->terminating(function () use ($filePath) {
+            try {
+                if ($filePath && Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menghapus file rekaman di Storage: '.$e->getMessage());
+            }
+        });
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');

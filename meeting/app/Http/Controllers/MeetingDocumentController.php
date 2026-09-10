@@ -65,15 +65,20 @@ class MeetingDocumentController extends Controller
             abort(403);
         }
 
-        try {
-            if (Storage::exists($document->file_path)) {
-                Storage::delete($document->file_path);
-            }
-        } catch (\Throwable $e) {
-            Log::warning('Gagal menghapus file dokumen di Storage: '.$e->getMessage());
-        }
-
+        $filePath = $document->file_path;
+        
         $document->deleteOrFail();
+
+        // Pindahkan proses hapus file fisik ke background agar response instan
+        app()->terminating(function () use ($filePath) {
+            try {
+                if ($filePath && Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menghapus file dokumen di Storage: '.$e->getMessage());
+            }
+        });
 
         return redirect()->back()->with('success', 'Dokumen berhasil dihapus.');
     }
