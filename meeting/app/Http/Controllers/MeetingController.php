@@ -293,32 +293,34 @@ class MeetingController extends Controller
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
         safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
 
-        // 3. Baru bersihkan file-file storage (proses berat, tapi client sudah terupdate)
-        foreach ($recordings as $recording) {
-            try {
-                if (Storage::exists($recording['file_path'])) {
-                    Storage::delete($recording['file_path']);
+        // 3. Eksekusi pembersihan file SETELAH response terkirim ke user (Instan!)
+        app()->terminating(function () use ($recordings, $documents, $meetingId) {
+            foreach ($recordings as $recording) {
+                try {
+                    if (Storage::exists($recording['file_path'])) {
+                        Storage::delete($recording['file_path']);
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Gagal menghapus file rekaman: '.$e->getMessage());
                 }
-            } catch (\Throwable $e) {
-                Log::warning('Gagal menghapus file rekaman: '.$e->getMessage());
             }
-        }
 
-        foreach ($documents as $document) {
-            try {
-                if (Storage::exists($document['file_path'])) {
-                    Storage::delete($document['file_path']);
+            foreach ($documents as $document) {
+                try {
+                    if (Storage::exists($document['file_path'])) {
+                        Storage::delete($document['file_path']);
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Gagal menghapus file dokumen: '.$e->getMessage());
                 }
-            } catch (\Throwable $e) {
-                Log::warning('Gagal menghapus file dokumen: '.$e->getMessage());
             }
-        }
 
-        try {
-            Storage::deleteDirectory('recordings/'.$meetingId);
-        } catch (\Throwable $e) {
-            Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
-        }
+            try {
+                Storage::deleteDirectory('recordings/'.$meetingId);
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
+            }
+        });
 
         return redirect()->back()->with('success', 'Rapat berhasil dihapus beserta file rekamannya.');
     }
