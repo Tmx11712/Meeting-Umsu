@@ -279,43 +279,46 @@ class MeetingController extends Controller
     {
         abort_unless(request()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
 
-        safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
+        // Simpan data yang diperlukan untuk cleanup file SEBELUM soft delete
+        $meeting->load('recordings', 'documents');
+        $meetingId = $meeting->id;
+        $recordings = $meeting->recordings->toArray();
+        $documents = $meeting->documents->toArray();
 
-        // Hapus file fisik rekaman audio dari storage
-        $meeting->load('recordings');
-        foreach ($meeting->recordings as $recording) {
+        // 1. Soft delete DULU agar meeting hilang dari query database seketika
+        $meeting->delete();
+
+        // 2. Broadcast sinyal ke semua client SEGERA setelah delete
+        //    Humas di ruang rekaman akan langsung di-redirect ke dashboard
+        safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
+        safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
+
+        // 3. Baru bersihkan file-file storage (proses berat, tapi client sudah terupdate)
+        foreach ($recordings as $recording) {
             try {
-                if (Storage::exists($recording->file_path)) {
-                    Storage::delete($recording->file_path);
+                if (Storage::exists($recording['file_path'])) {
+                    Storage::delete($recording['file_path']);
                 }
             } catch (\Throwable $e) {
                 Log::warning('Gagal menghapus file rekaman: '.$e->getMessage());
             }
         }
 
-        // Hapus file dokumen dari storage
-        $meeting->load('documents');
-        foreach ($meeting->documents as $document) {
+        foreach ($documents as $document) {
             try {
-                if (Storage::exists($document->file_path)) {
-                    Storage::delete($document->file_path);
+                if (Storage::exists($document['file_path'])) {
+                    Storage::delete($document['file_path']);
                 }
             } catch (\Throwable $e) {
                 Log::warning('Gagal menghapus file dokumen: '.$e->getMessage());
             }
         }
 
-        // Hapus direktori rekaman rapat ini agar bersih
         try {
-            Storage::deleteDirectory('recordings/'.$meeting->id);
+            Storage::deleteDirectory('recordings/'.$meetingId);
         } catch (\Throwable $e) {
             Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
         }
-
-        // Gunakan soft delete agar meeting tidak otomatis terimpor kembali oleh auto-sync Irvan Cloud
-        $meeting->delete();
-
-        safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
 
         return redirect()->back()->with('success', 'Rapat berhasil dihapus beserta file rekamannya.');
     }
