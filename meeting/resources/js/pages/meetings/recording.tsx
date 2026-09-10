@@ -629,8 +629,8 @@ return;
                             </div>
                         </div>
 
-                        {/* Selesai Rekaman Action */}
-                        {(canTranscribe || canRecord) && (
+                        {/* Selesai Rekaman Action - Hanya untuk yang bisa transkrip (Bag. Umum / Admin) */}
+                        {canTranscribe && (
                             <div className="flex justify-end">
                                 <Button 
                                     onClick={finishRecording}

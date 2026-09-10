@@ -42,11 +42,10 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
                 return true; 
             }
         } else if (stage === 5 && !currentPath.includes('/review')) {
-            if (isAdminOrUmum) {
-                router.visit(`/meetings/${meetingId}/review`);
+            // Stage 5 (Review): SEMUA role diarahkan ke review agar bisa melihat hasil notulen AI
+            router.visit(`/meetings/${meetingId}/review`);
 
-                return true; 
-            }
+            return true;
         } else if (stage >= 6 && !currentPath.includes('/approval')) {
             // Stage 6+: Semua role (termasuk Humas) diarahkan ke halaman approval
             router.visit(`/meetings/${meetingId}/approval`);
