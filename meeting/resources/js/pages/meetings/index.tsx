@@ -52,7 +52,7 @@ return;
             }
         }).then(res => res.json()).then(data => {
             if (data?.status === 'synced') {
-                router.reload({ only: ['meetings'] });
+                router.reload({ only: ['meetings'], preserveState: true, preserveScroll: true });
             }
         }).catch(() => {});
     }, [guardAction]);
@@ -70,7 +70,7 @@ return;
         if (channel) {
             const handleUpdate = (e: any) => {
                 console.log('Meetings list updated:', e);
-                router.reload({ only: ['meetings'] });
+                router.reload({ only: ['meetings'], preserveState: true, preserveScroll: true });
             };
 
             channel.listen('MeetingsListUpdated', handleUpdate);
