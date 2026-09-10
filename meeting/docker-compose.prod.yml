@@ -62,7 +62,25 @@ services:
       - app
 
   # ==========================================
-  # 4. Reverb WebSocket Server
+  # 4. Task Scheduler (Cron)
+  # ==========================================
+  scheduler:
+    image: enotulen-app:latest
+    restart: unless-stopped
+    command: php artisan schedule:work
+    environment:
+      - REVERB_HOST=reverb
+      - REVERB_PORT=8080
+      - REVERB_SCHEME=http
+      - REVERB_INTERNAL_HOST=reverb
+      - REVERB_INTERNAL_PORT=8080
+    env_file:
+      - .env
+    depends_on:
+      - app
+
+  # ==========================================
+  # 5. Reverb WebSocket Server
   # ==========================================
   reverb:
     image: enotulen-app:latest
