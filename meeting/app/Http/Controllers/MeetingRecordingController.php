@@ -203,8 +203,13 @@ class MeetingRecordingController extends Controller
         safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
         safe_broadcast(new MeetingsListUpdated('Tahap rapat beralih ke koreksi transkrip'));
 
-        return redirect()->route('meetings.correction', $meeting->id)
-            ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
+        if (request()->user()->can('transcript.update') || request()->user()->can('transcript.create')) {
+            return redirect()->route('meetings.correction', $meeting->id)
+                ->with('success', 'Rekaman selesai. Lanjutkan ke tahap koreksi transkrip.');
+        }
+
+        return redirect()->route('meetings.show', $meeting->id)
+            ->with('success', 'Tahap rekaman telah diselesaikan dan diteruskan ke bagian terkait untuk transkripsi.');
     }
 
     /**

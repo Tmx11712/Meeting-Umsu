@@ -636,7 +636,7 @@ return;
                                     onClick={finishRecording}
                                     className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-sm h-11 px-6 text-sm"
                                 >
-                                    Selesai & Lanjut Koreksi
+                                    {canTranscribe ? 'Selesai & Lanjut Koreksi' : 'Selesai Rekaman'}
                                 </Button>
                             </div>
                         )}
