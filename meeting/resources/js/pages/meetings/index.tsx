@@ -369,7 +369,7 @@ clearTimeout(searchTimeout.current);
                             <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                                 <QRCodeCanvas 
                                     id="qr-code-canvas"
-                                    value={`http://192.168.100.98:8000/attend/${qrMeeting.id}`} 
+                                    value={`${window.location.origin}/attend/${qrMeeting.id}`} 
                                     size={250}
                                     level="H"
                                     includeMargin={false}
