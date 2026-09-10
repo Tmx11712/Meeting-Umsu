@@ -38,18 +38,20 @@ class DashboardController extends Controller
                 : 100;
 
             // 2. Notulen selesai
-            $minutesCompletedThisMonth = MeetingMinute::query()->where('status', '=', 'disetujui', 'and')
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth], 'and')
-                ->count('*');
-            $minutesCompletedLastMonth = MeetingMinute::query()->where('status', '=', 'disetujui', 'and')
-                ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth], 'and')
-                ->count('*');
+            $minutesCompletedThisMonth = MeetingMinute::whereHas('meeting')
+                ->where('status', 'disetujui')
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->count();
+            $minutesCompletedLastMonth = MeetingMinute::whereHas('meeting')
+                ->where('status', 'disetujui')
+                ->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])
+                ->count();
             $minutesDelta = $minutesCompletedLastMonth > 0
                 ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100)
                 : 100;
 
             // 3. Action item terbuka
-            $openActionItems = MeetingActionItem::query()->where('status', '=', 'open', 'and')->count('*');
+            $openActionItems = MeetingActionItem::whereHas('meeting')->where('status', 'open')->count();
 
             // 4. Rata-rata kehadiran
             $avgAttendance = 0; // Simplified for now, calculate from finished meetings
