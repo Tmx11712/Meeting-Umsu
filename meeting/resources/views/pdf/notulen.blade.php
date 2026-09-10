@@ -19,9 +19,9 @@
         .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; }
         .header p { margin: 5px 0 0; color: #666; }
-        .info-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-        .info-table th { text-align: left; width: 150px; padding: 5px; vertical-align: top; }
-        .info-table td { padding: 5px; vertical-align: top; }
+        .info-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; border: 1px solid #ddd; }
+        .info-table th, .info-table td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+        .info-table th { text-align: left; width: 150px; background-color: #f8fafc; }
         .section-title { font-size: 14px; font-weight: bold; background-color: #f3f4f6; padding: 5px; margin-top: 20px; border-left: 3px solid #2563eb; }
         .content-block { margin-top: 10px; }
         .content-block p { margin-bottom: 10px; text-align: justify; }
