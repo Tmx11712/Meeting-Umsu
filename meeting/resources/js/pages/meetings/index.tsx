@@ -284,25 +284,23 @@ clearTimeout(searchTimeout.current);
                                                     >
                                                         <QrCode className="w-4 h-4" />
                                                     </button>
-                                                    {meeting.source !== 'irvan_cloud' && (
-                                                        <button 
-                                                            className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
-                                                            onClick={async () => {
-                                                                if (!guardAction('meeting')) {
-                                                                    return;
-                                                                }
-                                                                if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
-                                                                    router.delete(`/meetings/${meeting.id}`, {
-                                                                        preserveScroll: true,
-                                                                        preserveState: true,
-                                                                    });
-                                                                }
-                                                            }}
-                                                            title="Hapus Rapat"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    )}
+                                                    <button 
+                                                        className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
+                                                        onClick={async () => {
+                                                            if (!guardAction('meeting')) {
+                                                                return;
+                                                            }
+                                                            if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
+                                                                router.delete(`/meetings/${meeting.id}`, {
+                                                                    preserveScroll: true,
+                                                                    preserveState: true,
+                                                                });
+                                                            }
+                                                        }}
+                                                        title="Hapus Rapat"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
