@@ -30,6 +30,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     const { auth } = usePage<any>().props;
     const { canEdit, hasRole } = usePermissions();
     const canManageReview = canEdit('review');
+    const canManageTranscript = canEdit('transcript');
     const isPimpinan = hasRole('Pimpinan');
     const participants = meeting.participants || [];
 
@@ -570,22 +571,22 @@ return;
                         <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between flex-wrap gap-2">
                             <CardTitle className="text-lg font-bold text-slate-900">Notulen Rapat</CardTitle>
                             <div className="flex gap-2 flex-wrap">
+                                {canManageTranscript && (
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
+                                        onClick={() => setRegenerateModalOpen(true)}
+                                        disabled={sending || isGeneratingAi}
+                                    >
+                                        {isGeneratingAi ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
+                                        {isGeneratingAi ? 'Memproses...' : 'Regenerate AI'}
+                                    </Button>
+                                )}
                                 {canManageReview && (
-                                    <>
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm" 
-                                            className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
-                                            onClick={() => setRegenerateModalOpen(true)}
-                                            disabled={sending || isGeneratingAi}
-                                        >
-                                            {isGeneratingAi ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
-                                            {isGeneratingAi ? 'Memproses...' : 'Regenerate AI'}
-                                        </Button>
-                                        <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
-                                            <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
-                                        </Button>
-                                    </>
+                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
+                                        <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
+                                    </Button>
                                 )}
                                 {meeting.current_stage >= 7 && (
                                     <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600" onClick={downloadPdf}>
