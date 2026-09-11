@@ -10,6 +10,7 @@ use App\Models\Meeting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * [EDUKASI ARSITEKTUR: ORCHESTRATOR PATTERN]
@@ -129,7 +130,10 @@ class SyncMeetingsAction
                     }
 
                     try {
+                        $folderName = $orphaned->id.'-'.Str::slug($orphaned->title);
                         Storage::deleteDirectory('recordings/'.$orphaned->id);
+                        Storage::deleteDirectory('recordings/'.$folderName);
+                        Storage::deleteDirectory('documents/'.$folderName);
                     } catch (\Throwable $e) {
                         Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
                     }

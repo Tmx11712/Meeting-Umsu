@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class MeetingRecordingController extends Controller
@@ -54,7 +55,8 @@ class MeetingRecordingController extends Controller
     {
         $file = $request->file('file');
         // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
-        $path = $file->store('recordings/'.$meeting->id);
+        $folderName = $meeting->id.'-'.Str::slug($meeting->title);
+        $path = $file->store('recordings/'.$folderName);
 
         try {
             /**

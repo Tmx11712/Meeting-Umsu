@@ -288,13 +288,15 @@ class MeetingController extends Controller
         // 1. Soft delete DULU agar meeting hilang dari query database seketika
         $meeting->delete();
 
+        $meetingTitleSlug = Str::slug($meeting->title);
+
         // 2. Broadcast sinyal ke semua client SEGERA setelah delete
         //    Humas di ruang rekaman akan langsung di-redirect ke dashboard
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
         safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
 
         // 3. Eksekusi pembersihan file SETELAH response terkirim ke user (Instan!)
-        app()->terminating(function () use ($recordings, $documents, $meetingId) {
+        app()->terminating(function () use ($recordings, $documents, $meetingId, $meetingTitleSlug) {
             foreach ($recordings as $recording) {
                 try {
                     if (Storage::exists($recording['file_path'])) {
@@ -316,9 +318,15 @@ class MeetingController extends Controller
             }
 
             try {
+                $folderName = $meetingId.'-'.$meetingTitleSlug;
+
+                // Hapus format lama
                 Storage::deleteDirectory('recordings/'.$meetingId);
+                // Hapus format baru (ID-Slug)
+                Storage::deleteDirectory('recordings/'.$folderName);
+                Storage::deleteDirectory('documents/'.$folderName);
             } catch (\Throwable $e) {
-                Log::warning('Gagal menghapus direktori rekaman: '.$e->getMessage());
+                Log::warning('Gagal menghapus direktori: '.$e->getMessage());
             }
         });
 

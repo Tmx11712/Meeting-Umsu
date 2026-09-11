@@ -31,7 +31,8 @@ class MeetingDocumentController extends Controller
 
         // Generate unique name
         $uuidName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('documents', $uuidName);
+        $folderName = $meeting->id.'-'.Str::slug($meeting->title);
+        $path = $file->storeAs('documents/'.$folderName, $uuidName);
 
         try {
             $document = MeetingDocument::create([
@@ -66,7 +67,7 @@ class MeetingDocumentController extends Controller
         }
 
         $filePath = $document->file_path;
-        
+
         $document->deleteOrFail();
 
         // Pindahkan proses hapus file fisik ke background agar response instan
