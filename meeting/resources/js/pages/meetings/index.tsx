@@ -52,7 +52,7 @@ return;
             }
         }).then(res => res.json()).then(data => {
             if (data?.status === 'synced') {
-                router.reload({ only: ['meetings'], preserveState: true, preserveScroll: true });
+                router.reload({ only: ['meetings'] });
             }
         }).catch(() => {});
     }, [guardAction]);
@@ -70,7 +70,7 @@ return;
         if (channel) {
             const handleUpdate = (e: any) => {
                 console.log('Meetings list updated:', e);
-                router.reload({ only: ['meetings'], preserveState: true, preserveScroll: true });
+                router.reload({ only: ['meetings'] });
             };
 
             channel.listen('MeetingsListUpdated', handleUpdate);
@@ -86,7 +86,7 @@ return;
         };
     }, []);
 
-    const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+    const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const applyFilter = (key: string, value: string) => {
         const currentFilters = { ...filters, [key]: value };
