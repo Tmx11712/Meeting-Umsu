@@ -59,8 +59,6 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
     const safeReload = useCallback(() => {
         router.reload({
             only: ['meeting'],
-            preserveScroll: true,
-            preserveState: true,
             onError: () => {
                 // Meeting sudah dihapus (404), arahkan ke dashboard
                 router.visit('/dashboard', { replace: true });
