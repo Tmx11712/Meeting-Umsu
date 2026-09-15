@@ -111,12 +111,14 @@ class SyncMeetingsAction
                 $orphanedMeetings = Meeting::query()
                     ->where('source', '=', 'irvan_cloud')
                     ->where('current_stage', '<', 7)
-                    ->whereBetween('date', [$startDate, $endDate])
+                    ->where('date', '>=', $startDate)
+                    ->where('date', '<=', $endDate)
                     ->when(! empty($activeUuids), function ($q) use ($activeUuids) {
                         $q->whereNotIn('external_id', $activeUuids);
                     })
                     ->get();
 
+                /** @var \App\Models\Meeting $orphaned */
                 foreach ($orphanedMeetings as $orphaned) {
                     // Bersihkan file rekaman dari storage
                     foreach ($orphaned->recordings as $recording) {
