@@ -140,6 +140,7 @@ class SyncMeetingsAction
                         Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
                     }
 
+                    /** @var \App\Models\Meeting $orphaned */
                     $orphaned->delete();
                     $deletedCount++;
                 }
