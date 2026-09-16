@@ -50,10 +50,12 @@ class SyncMeetingsAction
     public function execute(?string $startDate = null, ?string $endDate = null): array
     {
         if (! $startDate) {
-            $startDate = now()->subMonths(3)->startOfMonth()->format('Y-m-d');
+            // Mengambil semua data dari masa lalu (tanpa batas 3 bulan)
+            $startDate = '2020-01-01'; 
         }
         if (! $endDate) {
-            $endDate = now()->addMonths(3)->endOfMonth()->format('Y-m-d');
+            // Mengambil semua data hingga masa depan
+            $endDate = now()->addYears(10)->endOfMonth()->format('Y-m-d');
         }
 
         try {
