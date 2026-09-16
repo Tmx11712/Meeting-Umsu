@@ -174,15 +174,15 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                 <Link href="/meetings" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat semua</Link>
                             </div>
                             {todayMeetings && todayMeetings.length > 0 ? (
-                                <div className="space-y-4">
+                                <div className="divide-y divide-slate-100">
                                     {todayMeetings.map((m) => (
-                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group">
+                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group py-3 first:pt-0 last:pb-0">
                                             <div className="flex items-center justify-between gap-3">
                                                 <div className="min-w-0 flex-1">
                                                     <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate">
                                                         {m.title}
                                                     </h4>
-                                                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
                                                         <Clock className="w-3 h-3" />
                                                         {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}, {m.start_time ? m.start_time.substring(0, 5) : ''}
                                                         <span className="mx-1">·</span>
@@ -209,15 +209,15 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                 <Link href="/meetings" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat semua</Link>
                             </div>
                             {upcomingMeetings && upcomingMeetings.length > 0 ? (
-                                <div className="space-y-4">
+                                <div className="divide-y divide-slate-100">
                                     {upcomingMeetings.map((m) => (
-                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group">
+                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group py-3 first:pt-0 last:pb-0">
                                             <div className="flex items-center justify-between gap-3">
                                                 <div className="min-w-0 flex-1">
                                                     <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate">
                                                         {m.title}
                                                     </h4>
-                                                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
                                                         <Clock className="w-3 h-3" />
                                                         {formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0, 5) : ''}
                                                         <span className="mx-1">·</span>
