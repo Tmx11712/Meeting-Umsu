@@ -3,6 +3,16 @@ import { Download, Search, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+        return dateStr;
+    }
+};
+
 export default function ReportIndex({ meetings, filters }: any) {
     return (
         <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
@@ -60,8 +70,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                             <tr className="border-b bg-muted/50 text-left">
                                 <th className="p-4 font-medium">Judul Rapat</th>
                                 <th className="p-4 font-medium">Tanggal</th>
-                                <th className="p-4 font-medium text-center">Topik Bahasan</th>
-                                <th className="p-4 font-medium text-center">Keputusan</th>
+                                <th className="p-4 font-medium">Ruangan</th>
                                 <th className="p-4 font-medium text-center">Kehadiran</th>
                                 <th className="p-4 font-medium text-right">Aksi</th>
                             </tr>
@@ -73,9 +82,8 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 return (
                                     <tr key={meeting.id} className="border-b last:border-0 hover:bg-muted/20">
                                         <td className="p-4 font-medium">{meeting.title}</td>
-                                        <td className="p-4 text-muted-foreground">{meeting.date}</td>
-                                        <td className="p-4 text-center">{minute?.ai_topics_count || 0}</td>
-                                        <td className="p-4 text-center">{minute?.ai_decisions_count || 0}</td>
+                                        <td className="p-4 text-muted-foreground">{formatDate(meeting.date)}</td>
+                                        <td className="p-4 text-muted-foreground">{meeting.location || '-'}</td>
                                         <td className="p-4 text-center">
                                             {meeting.participants?.length > 0 
                                                 ? Math.round((meeting.attendances?.filter((a: any) => ['hadir', 'terlambat'].includes(a.status)).length || 0) / meeting.participants.length * 100) 
