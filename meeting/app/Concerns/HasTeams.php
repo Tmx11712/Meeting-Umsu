@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * @property int|null $current_team_id
+ */
 trait HasTeams
 {
     /**
