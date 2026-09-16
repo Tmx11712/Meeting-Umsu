@@ -69,6 +69,10 @@ class MeetingMinuteController extends Controller
         abort_unless($request->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
 
         try {
+            // Update status AI menjadi processing di DB
+            $meeting->update(['ai_status' => 'processing']);
+            \App\Events\MeetingUpdated::dispatch($meeting, 'stage_changed');
+
             GenerateMeetingMinuteJob::dispatch($meeting);
 
             return back()->with('info', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Harap tunggu sekitar 1-2 menit...');

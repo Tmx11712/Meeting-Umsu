@@ -43,7 +43,7 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
     useMeetingWebSocket(meeting?.id);
 
     const [sending, setSending] = useState(false);
-    const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+    const isGeneratingAi = meeting?.ai_status === 'processing';
     const [regenerateModalOpen, setRegenerateModalOpen] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
     
@@ -472,7 +472,6 @@ return;
                             <Button 
                                 className="w-full bg-linear-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/20 rounded-xl h-12 font-bold transition-all hover:-translate-y-0.5" 
                                 onClick={() => {
-                                    setIsGeneratingAi(true);
                                     router.post(`/meetings/${meeting.id}/review/ai`, {}, {
                                         preserveScroll: true,
                                     });
@@ -989,7 +988,6 @@ return;
                         <Button 
                             className="bg-blue-600 hover:bg-blue-700 text-white" 
                             onClick={() => {
-                                setIsGeneratingAi(true);
                                 setRegenerateModalOpen(false);
                                 router.post(`/meetings/${meeting.id}/review/ai`, {}, {
                                     preserveScroll: true

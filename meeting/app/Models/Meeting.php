@@ -35,6 +35,7 @@ class Meeting extends Model
         'created_by',
         'current_stage',
         'recording_started_at',
+        'ai_status',
     ];
 
     protected $casts = [
