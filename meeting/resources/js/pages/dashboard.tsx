@@ -164,18 +164,22 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                     </Card>
                 </div>
 
-                {/* Rapat Hari Ini */}
+                {/* Rapat Hari Ini & Tertunda */}
                 {todayMeetings && todayMeetings.length > 0 && (
                     <div className="mb-2">
                         <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat Hari Ini (Terjadwal)</h2>
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat Hari Ini & Tertunda</h2>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {todayMeetings.map((m, idx) => (
                                 <Link key={m.id} href={getMeetingUrl(m)}>
                                     <Card className="rounded-xl border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
                                         <CardContent className="p-5 flex flex-col gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-blue-50 text-blue-500`}>
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                                                new Date(m.date).toISOString().split('T')[0] < new Date().toISOString().split('T')[0] 
+                                                ? 'bg-rose-50 text-rose-500' 
+                                                : 'bg-blue-50 text-blue-500'
+                                            }`}>
                                                 <Users className="w-5 h-5" />
                                             </div>
                                             <div>
@@ -190,7 +194,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                                     )}
                                                 </div>
                                                 <p className="text-[13px] text-slate-500">
-                                                    Hari ini · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
+                                                    {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
                                                 </p>
                                             </div>
                                         </CardContent>
