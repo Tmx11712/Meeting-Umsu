@@ -42,12 +42,12 @@ services:
       - app
 
   # ==========================================
-  # 3. Queue Worker
+  # 3. Queue Worker (Horizon)
   # ==========================================
   worker:
     image: enotulen-app:latest
     restart: unless-stopped
-    command: php artisan queue:work --queue=default --sleep=3 --tries=3 --timeout=900
+    command: php artisan horizon
     environment:
       - REVERB_HOST=reverb
       - REVERB_PORT=8080
