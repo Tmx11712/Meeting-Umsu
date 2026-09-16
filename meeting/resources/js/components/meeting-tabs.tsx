@@ -1,8 +1,13 @@
 import { Link } from '@inertiajs/react';
 import { Info, Mic, Edit3, UserCheck, FileText, CheckCircle } from 'lucide-react';
 
+import { usePermissions } from '@/hooks/use-permissions';
+
 export function MeetingTabs({ meeting, activeTab }: { meeting: any, activeTab: string }) {
-    const tabs = [
+    const { hasRole } = usePermissions();
+    const isLeaderOrViewer = hasRole('Pimpinan') || hasRole('Viewer');
+
+    let tabs = [
         { id: 'info', name: 'Info Umum', route: 'meetings.show', icon: Info, stage: 1 },
         { id: 'recording', name: 'Humas Rekam', route: 'meetings.recording', icon: Mic, stage: 2 },
         { id: 'correction', name: 'Koreksi Transkrip', route: 'meetings.correction', icon: Edit3, stage: 3 },
@@ -10,6 +15,10 @@ export function MeetingTabs({ meeting, activeTab }: { meeting: any, activeTab: s
         { id: 'review', name: 'Review Notulen', route: 'meetings.review', icon: FileText, stage: 5 },
         { id: 'approval', name: 'Approval Pimpinan', route: 'meetings.approval', icon: CheckCircle, stage: 6 },
     ];
+
+    if (isLeaderOrViewer) {
+        tabs = tabs.filter(tab => !['correction', 'attendance', 'review', 'recording'].includes(tab.id));
+    }
 
     const currentStage = meeting.current_stage || 1;
 

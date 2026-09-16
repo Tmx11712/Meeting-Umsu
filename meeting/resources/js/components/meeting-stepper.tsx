@@ -2,15 +2,13 @@ import { Link } from '@inertiajs/react';
 import { Check } from 'lucide-react';
 import { Fragment } from 'react';
 
+import { usePermissions } from '@/hooks/use-permissions';
+
 export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeStage: number }) {
-    /**
-     * [EDUKASI ARSITEKTUR: COMPONENT COMPOSITION & PROPS]
-     * Komponen ini adalah contoh Reusable Component di React.
-     * Alih-alih menulis ulang kode stepper ini di 6 halaman berbeda,
-     * kita membuatnya di satu file dan melempar "Props" (`meeting` dan `activeStage`) dari halaman induknya.
-     * Ini membuat UI kita konsisten dan kode jauh lebih rapi (DRY: Don't Repeat Yourself).
-     */
-    const steps = [
+    const { hasRole } = usePermissions();
+    const isLeaderOrViewer = hasRole('Pimpinan') || hasRole('Viewer');
+
+    let steps = [
         { id: 1, name: 'Login', desc: '', route: null }, // Dummy step as per UI
         { id: 2, name: 'Buat Rapat', desc: '', route: 'meetings.show' },
         { id: 3, name: 'Humas Rekam', desc: '', route: 'meetings.recording' },
@@ -18,6 +16,10 @@ export function MeetingStepper({ meeting, activeStage }: { meeting: any, activeS
         { id: 5, name: 'Review', desc: '', route: 'meetings.review' },
         { id: 6, name: 'Pimpinan', desc: '', route: 'meetings.approval' },
     ];
+
+    if (isLeaderOrViewer) {
+        steps = steps.filter(step => !['Koreksi Transkrip', 'Humas Rekam', 'Review'].includes(step.name));
+    }
 
     const currentStage = meeting.current_stage || 1;
 

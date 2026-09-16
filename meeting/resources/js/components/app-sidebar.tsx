@@ -107,7 +107,16 @@ export function AppSidebar() {
 
     // Try to resolve menu URLs from database menus, fallback to static
     const dbMenus = page.props.menus || [];
-    const resolvedMainMenu = MAIN_MENU_ITEMS.map((item) => {
+    const resolvedMainMenu = MAIN_MENU_ITEMS.filter((item) => {
+        // Sembunyikan menu teknis untuk Pimpinan dan Viewer
+        if (hasRole('Pimpinan') || hasRole('Viewer')) {
+            const allowedMenus = ['Dashboard', 'Jadwal Rapat', 'Laporan'];
+            if (!allowedMenus.includes(item.title)) {
+                return false;
+            }
+        }
+        return true;
+    }).map((item) => {
         const dbMatch = dbMenus.find(
             (m: any) =>
                 m.name?.toLowerCase() === item.title.toLowerCase() ||
