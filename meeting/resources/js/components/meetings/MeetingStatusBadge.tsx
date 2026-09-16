@@ -19,7 +19,7 @@ export function MeetingStatusBadge({ status, category, className = '' }: Meeting
             text = 'Terjadwal';
 
             if (category === 'jadwal_mendatang') {
-                text = 'Jadwal Mendatang';
+                text = 'Mendatang';
                 colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800';
             } else if (category === 'action_item_mendesak') {
                 text = 'Action Item Mendesak';

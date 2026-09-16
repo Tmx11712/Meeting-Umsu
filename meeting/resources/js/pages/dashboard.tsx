@@ -225,7 +225,10 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                                         {m.participants_count || 0} Peserta
                                                     </p>
                                                 </div>
-                                                <MeetingStatusBadge status={m.status} />
+                                                <MeetingStatusBadge 
+                                                    status={m.status} 
+                                                    category={new Date(m.date).toDateString() !== new Date().toDateString() ? 'jadwal_mendatang' : undefined} 
+                                                />
                                             </div>
                                         </Link>
                                     ))}
