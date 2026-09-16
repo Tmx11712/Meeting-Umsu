@@ -112,11 +112,15 @@ class MeetingController extends Controller
             ->orderBy('deadline', 'asc')
             ->take(3)
             ->get();
+        $meetingTypes = \App\Models\MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingRooms = \App\Models\MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
 
         return Inertia::render('meetings/create', [
             'users' => $users,
             'upcomingMeetings' => $upcomingMeetings,
             'actionItems' => $actionItems,
+            'meetingTypes' => $meetingTypes,
+            'meetingRooms' => $meetingRooms,
         ]);
     }
 

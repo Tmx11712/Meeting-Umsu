@@ -12,8 +12,9 @@ import {
     LayoutList,
     UserCog,
     FileKey,
-    LogOut
-    
+    LogOut,
+    BookType,
+    Building
 } from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -56,6 +57,8 @@ const CONFIG_MENU_ITEMS: MenuItem[] = [
     { title: 'Roles', href: '/configuration/roles', icon: ShieldCheck },
     { title: 'Permissions', href: '/configuration/permissions', icon: KeyRound },
     { title: 'Menus', href: '/configuration/menus', icon: LayoutList },
+    { title: 'Tipe Rapat', href: '/configuration/meeting-types', icon: BookType },
+    { title: 'Ruangan', href: '/configuration/meeting-rooms', icon: Building },
     { title: 'Role Permissions', href: '/configuration/role-permissions', icon: UserCog },
     { title: 'User Permissions', href: '/configuration/user-permissions', icon: FileKey },
 ];
