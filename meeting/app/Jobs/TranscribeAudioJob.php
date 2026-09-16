@@ -106,18 +106,18 @@ class TranscribeAudioJob implements ShouldQueue
             }
         } catch (RequestException $e) {
             Log::error('Transcribe API Network Error: '.$e->getMessage());
-            $this->failJob($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
+            $this->markRecordingAsFailed($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
         } catch (\RuntimeException $e) {
             Log::error('Transcribe Runtime Error: '.$e->getMessage());
-            $this->failJob($recording, $e->getMessage());
+            $this->markRecordingAsFailed($recording, $e->getMessage());
         } catch (\Throwable $e) {
             Log::error('Transcribe System Error: '.$e->getMessage());
-            $this->failJob($recording, 'Terjadi kesalahan sistem internal: '.$e->getMessage());
+            $this->markRecordingAsFailed($recording, 'Terjadi kesalahan sistem internal: '.$e->getMessage());
             throw $e; // Re-throw critical system errors to be caught by the queue worker properly
         }
     }
 
-    protected function failJob(MeetingRecording $recording, string $reason)
+    protected function markRecordingAsFailed(MeetingRecording $recording, string $reason)
     {
         $recording->status = MeetingRecordingStatus::FAILED->value;
         $recording->save();
@@ -142,9 +142,10 @@ class TranscribeAudioJob implements ShouldQueue
     public function failed(?\Throwable $exception = null): void
     {
         Log::error('TranscribeAudioJob permanently failed: '.($exception ? $exception->getMessage() : 'Timeout/Unknown error'));
-        $recording = MeetingRecording::find($this->recordingId);
+        /** @var \App\Models\MeetingRecording|null $recording */
+        $recording = MeetingRecording::find($this->recordingId, ['*']);
         if ($recording) {
-            $this->failJob($recording, $exception ? $exception->getMessage() : 'Gagal memproses audio.');
+            $this->markRecordingAsFailed($recording, $exception ? $exception->getMessage() : 'Gagal memproses audio.');
         }
     }
 }
