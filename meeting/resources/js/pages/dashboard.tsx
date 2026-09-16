@@ -73,7 +73,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
 
         const d = new Date(dateStr);
 
-        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+        return d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
     };
 
     // Smart Routing for meetings
@@ -184,7 +184,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                                     </h4>
                                                     <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
                                                         <Clock className="w-3 h-3" />
-                                                        {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}, {m.start_time ? m.start_time.substring(0, 5) : ''}
+                                                        {formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0, 5) : ''}
                                                         <span className="mx-1">·</span>
                                                         <Users className="w-3 h-3" />
                                                         {m.participants_count || 0} Peserta
