@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\MeetingRoom;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MeetingRoomController extends Controller
