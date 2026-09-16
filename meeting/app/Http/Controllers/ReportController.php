@@ -17,12 +17,25 @@ class ReportController extends Controller
             $query->whereBetween('date', [$request->start_date, $request->end_date]);
         }
 
+        if ($request->search) {
+            $keyword = $request->search;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'ilike', '%' . $keyword . '%')
+                  ->orWhereHas('minutes', function ($mq) use ($keyword) {
+                      $mq->where('content', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_summary', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_topics', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_decisions', 'ilike', '%' . $keyword . '%');
+                  });
+            });
+        }
+
         $meetings = $query->orderBy('date', 'desc')->paginate(20);
 
         // Return inertia view
         return Inertia::render('reports/index', [
             'meetings' => $meetings,
-            'filters' => $request->only(['start_date', 'end_date']),
+            'filters' => $request->only(['start_date', 'end_date', 'search']),
         ]);
     }
 
@@ -32,6 +45,19 @@ class ReportController extends Controller
 
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('date', [$request->start_date, $request->end_date]);
+        }
+
+        if ($request->search) {
+            $keyword = $request->search;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'ilike', '%' . $keyword . '%')
+                  ->orWhereHas('minutes', function ($mq) use ($keyword) {
+                      $mq->where('content', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_summary', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_topics', 'ilike', '%' . $keyword . '%')
+                         ->orWhere('ai_decisions', 'ilike', '%' . $keyword . '%');
+                  });
+            });
         }
 
         $meetings = $query->orderBy('date', 'desc')->get();

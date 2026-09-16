@@ -49,12 +49,22 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 defaultValue={filters.end_date || ''}
                             />
                         </div>
+                        <div className="space-y-2 flex-1 min-w-50">
+                            <label className="text-sm font-medium">Cari Isi Notulen</label>
+                            <input 
+                                type="text" 
+                                name="search"
+                                placeholder="Kata kunci..."
+                                className="w-full bg-background rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                defaultValue={filters.search || ''}
+                            />
+                        </div>
                         <div className="flex gap-2">
                             <Button type="submit" variant="secondary">
                                 <Search className="mr-2 h-4 w-4" /> Tampilkan
                             </Button>
                             <Button asChild>
-                                <a href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}`} target="_blank" rel="noopener noreferrer">
+                                <a href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}&search=${filters.search || ''}`} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" /> Download PDF Rekap
                                 </a>
                             </Button>
