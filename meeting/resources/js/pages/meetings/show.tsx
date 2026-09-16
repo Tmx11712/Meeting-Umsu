@@ -221,7 +221,11 @@ return;
                                         </div>
                                         <div>
                                             <p className="text-sm font-medium leading-none">{guest.guest_name}</p>
-                                            <p className="text-xs text-muted-foreground">{guest.guest_institution || 'Tamu Eksternal'}</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {guest.guest_unit_kerja && guest.guest_institution
+                                                    ? `${guest.guest_unit_kerja} - ${guest.guest_institution}`
+                                                    : guest.guest_institution || guest.guest_unit_kerja || 'Tamu Eksternal'}
+                                            </p>
                                         </div>
                                     </li>
                                 ))}

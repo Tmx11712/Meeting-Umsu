@@ -29,6 +29,7 @@ class PublicAttendanceController extends Controller
     {
         $request->validate([
             'guest_name' => 'required|string|max:255',
+            'guest_unit_kerja' => 'required|string|max:255',
             'guest_email' => 'nullable|email|max:255',
             'guest_institution' => 'required|string|max:255',
         ]);
@@ -47,6 +48,7 @@ class PublicAttendanceController extends Controller
             'meeting_id' => $meeting->id,
             'guest_name' => $request->guest_name,
             'guest_email' => $request->guest_email,
+            'guest_unit_kerja' => $request->guest_unit_kerja,
             'guest_institution' => $request->guest_institution,
             'status' => 'hadir',
             'method' => 'qr_code',

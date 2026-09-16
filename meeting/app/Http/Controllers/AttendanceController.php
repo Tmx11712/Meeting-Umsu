@@ -93,7 +93,9 @@ class AttendanceController extends Controller
             MeetingAttendance::query()->updateOrCreate(
                 [
                     'meeting_id' => $meeting->id,
+                    'user_id' => null,
                     'guest_name' => $request->guest_name,
+                    'guest_unit_kerja' => $request->guest_unit_kerja,
                     'guest_institution' => $request->guest_institution,
                 ],
                 [

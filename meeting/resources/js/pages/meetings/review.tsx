@@ -160,9 +160,13 @@ return;
                 id: `g-${a.id}`,
                 user_id: null,
                 name: a.guest_name || 'Tamu',
-                subtitle: a.guest_institution || 'Input Manual',
+                subtitle: a.guest_unit_kerja && a.guest_institution
+                    ? `${a.guest_unit_kerja} - ${a.guest_institution}`
+                    : a.guest_institution || a.guest_unit_kerja || 'Input Manual',
                 status: a.status,
                 isGuest: true,
+                unit_kerja: a.guest_unit_kerja,
+                institution: a.guest_institution
             });
         }
     });
@@ -181,7 +185,8 @@ return;
             payload.user_id = item.user_id;
         } else {
             payload.guest_name = item.name;
-            payload.guest_institution = item.subtitle === 'Input Manual' ? null : item.subtitle;
+            payload.guest_unit_kerja = item.unit_kerja;
+            payload.guest_institution = item.institution;
         }
 
         router.post(`/meetings/${meeting.id}/attendance/manual`, payload, { preserveScroll: true });
@@ -190,6 +195,7 @@ return;
     // Manual attendance form state
     const [showAddForm, setShowAddForm] = useState(false);
     const [guestName, setGuestName] = useState('');
+    const [guestUnitKerja, setGuestUnitKerja] = useState('');
     const [guestInstitution, setGuestInstitution] = useState('');
     const [guestStatus, setGuestStatus] = useState('hadir');
     const [addingAttendance, setAddingAttendance] = useState(false);
@@ -202,12 +208,14 @@ return;
         setAddingAttendance(true);
         router.post(`/meetings/${meeting.id}/attendance/manual`, {
             guest_name: guestName,
+            guest_unit_kerja: guestUnitKerja,
             guest_institution: guestInstitution,
             status: guestStatus,
         }, {
             preserveScroll: true,
             onSuccess: () => {
                 setGuestName('');
+                setGuestUnitKerja('');
                 setGuestInstitution('');
                 setGuestStatus('hadir');
                 setShowAddForm(false);
@@ -309,7 +317,7 @@ return;
                             <Card className="border-blue-200 bg-blue-50/30 mb-3">
                                 <CardContent className="p-4 space-y-3">
                                     <p className="text-sm font-semibold text-slate-800">Input Absensi Manual</p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         <div>
                                             <Label className="text-xs text-slate-600 mb-1">Nama Peserta *</Label>
                                             <Input
@@ -320,11 +328,20 @@ return;
                                             />
                                         </div>
                                         <div>
-                                            <Label className="text-xs text-slate-600 mb-1">Instansi / Asal</Label>
+                                            <Label className="text-xs text-slate-600 mb-1">Unit Kerja</Label>
+                                            <Input
+                                                value={guestUnitKerja}
+                                                onChange={e => setGuestUnitKerja(e.target.value)}
+                                                placeholder="Contoh: Fakultas Teknik"
+                                                className="h-9 text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className="text-xs text-slate-600 mb-1">Jabatan</Label>
                                             <Input
                                                 value={guestInstitution}
                                                 onChange={e => setGuestInstitution(e.target.value)}
-                                                placeholder="Contoh: Dinas Pendidikan"
+                                                placeholder="Contoh: Dosen"
                                                 className="h-9 text-sm"
                                             />
                                         </div>

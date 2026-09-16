@@ -15,6 +15,7 @@ class MeetingAttendance extends Model
         'user_id',
         'guest_name',
         'guest_email',
+        'guest_unit_kerja',
         'guest_institution',
         'status',
         'check_in_time',

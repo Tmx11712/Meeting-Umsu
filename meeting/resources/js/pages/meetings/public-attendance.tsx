@@ -10,6 +10,7 @@ import { submit as submitRoute } from '@/routes/attend';
 export default function PublicAttendance({ meeting, flash }: any) {
     const { data, setData, post, processing, errors } = useForm({
         guest_name: '',
+        guest_unit_kerja: '',
         guest_institution: '',
     });
 
@@ -80,6 +81,20 @@ export default function PublicAttendance({ meeting, flash }: any) {
                                             required
                                         />
                                         {errors.guest_name && <p className="text-sm text-red-500">{errors.guest_name}</p>}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="guest_unit_kerja" className="text-slate-900 font-semibold">Unit Kerja</Label>
+                                        <Input
+                                            id="guest_unit_kerja"
+                                            type="text"
+                                            className="text-slate-900 bg-white border-slate-300 placeholder:text-slate-400"
+                                            placeholder="Contoh: Fakultas Teknik / Biro Administrasi"
+                                            value={data.guest_unit_kerja}
+                                            onChange={(e) => setData('guest_unit_kerja', e.target.value)}
+                                            required
+                                        />
+                                        {errors.guest_unit_kerja && <p className="text-sm text-red-500">{errors.guest_unit_kerja}</p>}
                                     </div>
 
                                     <div className="space-y-2">
