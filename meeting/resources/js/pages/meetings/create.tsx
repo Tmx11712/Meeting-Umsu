@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, X, GripVertical } from 'lucide-react';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -25,18 +24,8 @@ export default function CreateMeeting({ users, meeting, meetingTypes, meetingRoo
         auto_record: meeting?.auto_record ?? true,
     });
 
-    const [newAgenda, setNewAgenda] = useState('');
 
-    const addAgenda = () => {
-        if (newAgenda.trim() !== '') {
-            setData('agenda', [...data.agenda, newAgenda]);
-            setNewAgenda('');
-        }
-    };
 
-    const removeAgenda = (index: number) => {
-        setData('agenda', data.agenda.filter((_: any, i: number) => i !== index));
-    };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
