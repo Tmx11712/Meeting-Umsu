@@ -118,7 +118,7 @@ class SyncMeetingsAction
                     })
                     ->get();
 
-                /** @var \App\Models\Meeting $orphaned */
+                /** @var Meeting $orphaned */
                 foreach ($orphanedMeetings as $orphaned) {
                     // Bersihkan file rekaman dari storage
                     foreach ($orphaned->recordings as $recording) {

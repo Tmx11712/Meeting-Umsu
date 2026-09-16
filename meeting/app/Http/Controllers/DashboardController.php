@@ -91,50 +91,29 @@ class DashboardController extends Controller
             });
         };
 
-        // Latest Meetings (Rapat terbaru)
-        $latestMeetingsRaw = Meeting::withCount('participants')
+        // Rapat Hari Ini
+        $todayMeetingsRaw = Meeting::withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');
             }])
-            ->orderBy('date', 'desc')
-            ->orderBy('start_time', 'desc')
+            ->where('date', '=', $now->toDateString())
+            ->orderBy('start_time', 'asc')
             ->take(5)
             ->get();
-        $latestMeetings = $adjustParticipants($latestMeetingsRaw);
+        $todayMeetings = $adjustParticipants($todayMeetingsRaw);
 
-        // Upcoming Meetings (Jadwal mendatang)
+        // Jadwal Mendatang (Besok dan seterusnya)
         $upcomingMeetingsRaw = Meeting::withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');
             }])
-            ->where('date', '>=', $now->toDateString())
+            ->where('date', '>', $now->toDateString())
             ->whereIn('current_stage', [1, 2], 'and', false) // Still scheduled or Humas Rekam
-            ->where(function ($query) {
-                $query->where('category', '!=', 'action_item_mendesak')
-                    ->orWhereNull('category');
-            })
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
-            ->take(3)
+            ->take(5)
             ->get();
         $upcomingMeetings = $adjustParticipants($upcomingMeetingsRaw);
-
-        // Action Items Mendesak (Dikustomisasi untuk hanya menampilkan Rapat Mendesak)
-        $actionItems = Meeting::query()->where('category', '=', 'action_item_mendesak', 'and')
-            ->where('date', '>=', $now->toDateString())
-            ->orderBy('date', 'asc')
-            ->take(3)
-            ->get()
-            ->map(function ($m) {
-                return [
-                    'id' => 'm_'.$m->id,
-                    'meeting_id' => $m->id,
-                    'description' => $m->title,
-                    'deadline' => $m->date,
-                    'pic' => '-', // Tidak ada PIC spesifik karena ini adalah Rapat
-                    'status' => $m->status,
-                ];
-            });
 
         $pendingInvitations = [];
         if ($request->user()) {
@@ -162,9 +141,8 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard', [
             'stats' => $stats,
-            'latestMeetings' => $latestMeetings,
+            'todayMeetings' => $todayMeetings,
             'upcomingMeetings' => $upcomingMeetings,
-            'actionItems' => $actionItems,
             'pendingInvitations' => $pendingInvitations,
         ]);
     }

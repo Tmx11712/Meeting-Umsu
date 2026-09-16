@@ -136,7 +136,7 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="flex flex-col gap-1.5">
+                        <div className="flex flex-col gap-1.5 md:col-span-2">
                             <label htmlFor="location" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Ruangan</label>
                             <Input 
                                 id="location" 
@@ -145,51 +145,6 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                                 className="h-10 border-slate-200 bg-white rounded-lg text-sm"
                             />
                             {errors.location && <div className="text-red-500 text-xs">{errors.location}</div>}
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                            <label htmlFor="category" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Kategori rapat</label>
-                            <Select value={data.category} onValueChange={(value) => setData('category', value)}>
-                                <SelectTrigger className="h-10 border-slate-200 bg-white rounded-lg text-sm">
-                                    <SelectValue placeholder="Pilih kategori (Opsional)" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="biasa">Biasa</SelectItem>
-                                    <SelectItem value="jadwal_mendatang">Jadwal Mendatang</SelectItem>
-                                    <SelectItem value="action_item_mendesak">Action Items Mendesak</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {errors.category && <div className="text-red-500 text-xs">{errors.category}</div>}
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Agenda rapat</label>
-                        <div className="flex flex-col gap-2">
-                            {data.agenda.map((item: string, index: number) => (
-                                <div key={index} className="flex items-center gap-2 p-2 bg-slate-50 border border-slate-100 rounded-lg">
-                                    <GripVertical className="w-4 h-4 text-slate-400 cursor-move shrink-0 ml-1" />
-                                    <span className="flex-1 text-[13px] text-slate-700">{item}</span>
-                                    <button type="button" onClick={() => removeAgenda(index)} className="p-1.5 text-slate-400 hover:text-red-500">
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            ))}
-                            <div className="flex items-center gap-2 mt-1">
-                                <Input 
-                                    value={newAgenda}
-                                    onChange={e => setNewAgenda(e.target.value)}
-                                    onKeyDown={e => {
- if (e.key === 'Enter') {
- e.preventDefault(); addAgenda(); 
-} 
-}}
-                                    placeholder="Ketik agenda lalu tekan Enter..."
-                                    className="h-10 border-slate-200 bg-white rounded-lg text-sm flex-1"
-                                />
-                                <Button type="button" onClick={addAgenda} variant="outline" className="h-10 px-4 rounded-lg border-slate-200 bg-white text-slate-700 hover:bg-slate-50 font-medium text-[13px]">
-                                    Tambahkan
-                                </Button>
-                            </div>
                         </div>
                     </div>
 

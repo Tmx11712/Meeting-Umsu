@@ -142,7 +142,7 @@ class TranscribeAudioJob implements ShouldQueue
     public function failed(?\Throwable $exception = null): void
     {
         Log::error('TranscribeAudioJob permanently failed: '.($exception ? $exception->getMessage() : 'Timeout/Unknown error'));
-        /** @var \App\Models\MeetingRecording|null $recording */
+        /** @var MeetingRecording|null $recording */
         $recording = MeetingRecording::find($this->recordingId, ['*']);
         if ($recording) {
             $this->markRecordingAsFailed($recording, $exception ? $exception->getMessage() : 'Gagal memproses audio.');

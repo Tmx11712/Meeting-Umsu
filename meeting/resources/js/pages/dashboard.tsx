@@ -15,17 +15,16 @@ type Props = {
         openActionItems: number;
         avgAttendance: number;
     };
-    latestMeetings: any[];
+    todayMeetings: any[];
     upcomingMeetings: any[];
-    actionItems?: any[];
 };
 /**
  * [EDUKASI ARSITEKTUR: INERTIA PROPS]
- * Perhatikan fungsi `Dashboard` menerima `{ stats, latestMeetings, upcomingMeetings }`.
+ * Perhatikan fungsi `Dashboard` menerima `{ stats, todayMeetings, upcomingMeetings }`.
  * Data ini datang langsung dari Backend (Controller) tanpa perlu Fetch API, Axios, atau Loading State!
  * Inertia.js yang menjahitnya di belakang layar. Ini menghemat ratusan baris kode.
  */
-export default function Dashboard({ stats, latestMeetings, upcomingMeetings, actionItems = [] }: Props) {
+export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Props) {
     const { guardAction, hasRole, canEdit, isAdmin } = usePermissions();
 
     const page = usePage<any>();
@@ -40,7 +39,7 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
         if (channel) {
             const handleUpdate = (e: any) => {
                 console.log('Dashboard real-time update:', e);
-                router.reload({ only: ['stats', 'latestMeetings', 'upcomingMeetings', 'actionItems'] });
+                router.reload({ only: ['stats', 'todayMeetings', 'upcomingMeetings'] });
             };
 
             channel.listen('MeetingsListUpdated', handleUpdate);
@@ -165,99 +164,42 @@ export default function Dashboard({ stats, latestMeetings, upcomingMeetings, act
                     </Card>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Rapat terbaru */}
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
-                        <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat terbaru</h2>
-                            <Link href="/meetings" className="text-sm font-medium text-blue-600 hover:underline">Lihat semua</Link>
+                {/* Rapat Hari Ini */}
+                {todayMeetings && todayMeetings.length > 0 && (
+                    <div className="mb-2">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat Hari Ini (Terjadwal)</h2>
                         </div>
-                        <div className="flex-1 divide-y divide-slate-100 dark:divide-slate-800 overflow-y-auto max-h-100">
-                            {latestMeetings && latestMeetings.length > 0 ? (
-                                latestMeetings.map((m, idx) => {
-                                    const today = new Date().toISOString().slice(0, 10);
-                                    const isToday = m.date === today;
-
-                                    return (
-                                        <Link
-                                            key={m.id}
-                                            href={getMeetingUrl(m)}
-                                            className="p-4 sm:p-5 hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group flex justify-between items-start">
-                                            <div className="flex-1 min-w-0 pr-4">
-                                                <h3 className="text-[15px] sm:text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors mb-2 truncate">
-                                                    {m.title}
-                                                </h3>
-                                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-slate-500 dark:text-slate-400 font-mono tracking-tight">
-                                                    <span className="flex items-center gap-1.5 whitespace-nowrap">
-                                                        <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                                        {isToday ? 'Hari ini' : formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0, 5) : ''}
-                                                    </span>
-                                                    <span className="flex items-center gap-1.5 whitespace-nowrap">
-                                                        <Users className="w-3.5 h-3.5 text-slate-400" />
-                                                        {m.participants_count || 0} Peserta
-                                                    </span>
-                                                </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {todayMeetings.map((m, idx) => (
+                                <Link key={m.id} href={getMeetingUrl(m)}>
+                                    <Card className="rounded-xl border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
+                                        <CardContent className="p-5 flex flex-col gap-4">
+                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-blue-50 text-blue-500`}>
+                                                <Users className="w-5 h-5" />
                                             </div>
-
-                                            <div className="shrink-0 pt-1">
-                                                <MeetingStatusBadge status={m.status} category={m.category} />
-                                            </div>
-                                        </Link>
-                                    );
-                                })
-                            ) : (
-                                <div className="p-8 text-center text-slate-400 text-sm">Belum ada rapat terbaru.</div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Action items mendesak */}
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-sm">
-                        <div className="p-4 sm:px-5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Action items mendesak</h2>
-                        </div>
-                        <div className="flex-1 overflow-y-auto max-h-100 p-4 flex flex-col gap-3">
-                            {actionItems && actionItems.length > 0 ? (
-                                actionItems.map((item: any, idx: number) => {
-                                    const bgColors = ['bg-red-50/50 dark:bg-red-900/20 border-red-100/50 dark:border-red-900/50', 'bg-amber-50/50 dark:bg-amber-900/20 border-amber-100/50 dark:border-amber-900/50', 'bg-slate-50/50 dark:bg-slate-800/50 border-slate-100/50 dark:border-slate-800/50'];
-                                    const dotColors = ['bg-red-500', 'bg-amber-500', 'bg-slate-400'];
-                                    const dateColors = ['text-red-600 dark:text-red-400', 'text-amber-600 dark:text-amber-400', 'text-slate-500 dark:text-slate-400'];
-
-                                    const colorIdx = idx < 3 ? idx : 2;
-
-                                    return (
-                                        <Link
-                                            href={`/meetings/${item.meeting_id}`}
-                                            key={item.id}
-                                            className={`rounded-xl border p-4 flex items-start gap-3 transition-transform hover:scale-[1.01] hover:shadow-sm cursor-pointer ${bgColors[colorIdx]}`}
-                                        >
-                                            <div className={`w-2 h-2 rounded-full mt-2 shrink-0 ${dotColors[colorIdx]}`}></div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex justify-between items-start gap-4">
-                                                    <h3 className="text-[14px] font-semibold text-slate-900 dark:text-slate-100 leading-snug">
-                                                        {item.description}
-                                                    </h3>
-                                                    <div className="flex flex-col items-end gap-1 shrink-0">
-                                                        <span className={`text-[12px] whitespace-nowrap ${dateColors[colorIdx]}`}>
-                                                            {item.deadline ? formatDateShort(item.deadline) : 'Tidak ada'}
+                                            <div>
+                                                <div className="flex justify-between items-start gap-2 mb-1.5">
+                                                    <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                                                        {m.title}
+                                                    </h4>
+                                                    {m.status === 'dibatalkan' && (
+                                                        <span className="inline-flex shrink-0 items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
+                                                            Rapat Dibatalkan
                                                         </span>
-                                                        {item.status === 'dibatalkan' && (
-                                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
-                                                                Rapat Dibatalkan
-                                                            </span>
-                                                        )}
-                                                    </div>
+                                                    )}
                                                 </div>
+                                                <p className="text-[13px] text-slate-500">
+                                                    Hari ini · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
+                                                </p>
                                             </div>
-                                        </Link>
-                                    );
-                                })
-                            ) : (
-                                <div className="p-8 text-center text-slate-400 text-sm">Tidak ada action items mendesak.</div>
-                            )}
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            ))}
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Jadwal mendatang */}
                 {upcomingMeetings && upcomingMeetings.length > 0 && (

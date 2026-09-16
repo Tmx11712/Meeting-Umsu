@@ -140,11 +140,6 @@ class MeetingController extends Controller
         $validated['current_stage'] = 1;
         $validated['source'] = 'manual';
 
-        if (! empty($validated['agenda'])) {
-            // Encode agenda array to JSON for storing in notes
-            $validated['notes'] = json_encode(['agenda' => $validated['agenda']]);
-        }
-
         $meeting = Meeting::create($validated);
 
         if (! empty($validated['participants'])) {
@@ -232,10 +227,6 @@ class MeetingController extends Controller
         $start = Carbon::parse($validated['start_time']);
         $end = Carbon::parse($validated['end_time']);
         $validated['duration'] = $end->diffInSeconds($start);
-
-        if (isset($validated['agenda'])) {
-            $validated['notes'] = json_encode(['agenda' => $validated['agenda']]);
-        }
 
         $meeting->fill($validated);
         $meeting->save();
