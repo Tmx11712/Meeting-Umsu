@@ -164,83 +164,78 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                     </Card>
                 </div>
 
-                {/* Rapat Hari Ini & Tertunda */}
-                {todayMeetings && todayMeetings.length > 0 && (
-                    <div className="mb-2">
-                        <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Rapat Hari Ini & Tertunda</h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {todayMeetings.map((m, idx) => (
-                                <Link key={m.id} href={getMeetingUrl(m)}>
-                                    <Card className="rounded-xl border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
-                                        <CardContent className="p-5 flex flex-col gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                                                new Date(m.date).toISOString().split('T')[0] < new Date().toISOString().split('T')[0] 
-                                                ? 'bg-rose-50 text-rose-500' 
-                                                : 'bg-blue-50 text-blue-500'
-                                            }`}>
-                                                <Users className="w-5 h-5" />
-                                            </div>
-                                            <div>
-                                                <div className="flex justify-between items-start gap-2 mb-1.5">
-                                                    <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                {/* Two-column: Rapat Hari Ini & Tertunda + Jadwal Mendatang */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Kolom Kiri: Rapat Hari Ini & Tertunda */}
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-5">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-base font-semibold text-slate-900 dark:text-white">Rapat Hari Ini & Tertunda</h2>
+                                <Link href="/meetings" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat semua</Link>
+                            </div>
+                            {todayMeetings && todayMeetings.length > 0 ? (
+                                <div className="space-y-4">
+                                    {todayMeetings.map((m) => (
+                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group">
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate">
                                                         {m.title}
                                                     </h4>
-                                                    {m.status === 'dibatalkan' && (
-                                                        <span className="inline-flex shrink-0 items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
-                                                            Rapat Dibatalkan
-                                                        </span>
-                                                    )}
+                                                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                                        <Clock className="w-3 h-3" />
+                                                        {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}, {m.start_time ? m.start_time.substring(0, 5) : ''}
+                                                        <span className="mx-1">·</span>
+                                                        <Users className="w-3 h-3" />
+                                                        {m.participants_count || 0} Peserta
+                                                    </p>
                                                 </div>
-                                                <p className="text-[13px] text-slate-500">
-                                                    {new Date(m.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
-                                                </p>
+                                                <MeetingStatusBadge status={m.status} />
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-slate-400 italic">Tidak ada rapat hari ini.</p>
+                            )}
+                        </CardContent>
+                    </Card>
 
-                {/* Jadwal mendatang */}
-                {upcomingMeetings && upcomingMeetings.length > 0 && (
-                    <div>
-                        <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Jadwal mendatang</h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {upcomingMeetings.map((m, idx) => (
-                                <Link key={m.id} href={getMeetingUrl(m)}>
-                                    <Card className="rounded-xl border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer h-full">
-                                        <CardContent className="p-5 flex flex-col gap-4">
-                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${idx === 0 ? 'bg-blue-50 text-blue-500' : idx === 1 ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}`}>
-                                                {idx === 0 ? <Users className="w-5 h-5" /> : idx === 1 ? <Clock className="w-5 h-5" /> : <CalendarDays className="w-5 h-5" />}
-                                            </div>
-                                            <div>
-                                                <div className="flex justify-between items-start gap-2 mb-1.5">
-                                                    <h4 className="font-semibold text-[15px] text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors leading-snug">
+                    {/* Kolom Kanan: Jadwal Mendatang */}
+                    <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900">
+                        <CardContent className="p-5">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-base font-semibold text-slate-900 dark:text-white">Jadwal Mendatang</h2>
+                                <Link href="/meetings" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat semua</Link>
+                            </div>
+                            {upcomingMeetings && upcomingMeetings.length > 0 ? (
+                                <div className="space-y-4">
+                                    {upcomingMeetings.map((m) => (
+                                        <Link key={m.id} href={getMeetingUrl(m)} className="block group">
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div className="min-w-0 flex-1">
+                                                    <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors truncate">
                                                         {m.title}
                                                     </h4>
-                                                    {m.status === 'dibatalkan' && (
-                                                        <span className="inline-flex shrink-0 items-center px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border-slate-200">
-                                                            Rapat Dibatalkan
-                                                        </span>
-                                                    )}
+                                                    <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                                        <Clock className="w-3 h-3" />
+                                                        {formatDateShort(m.date)}, {m.start_time ? m.start_time.substring(0, 5) : ''}
+                                                        <span className="mx-1">·</span>
+                                                        <Users className="w-3 h-3" />
+                                                        {m.participants_count || 0} Peserta
+                                                    </p>
                                                 </div>
-                                                <p className="text-[13px] text-slate-500">
-                                                    {formatDateShort(m.date)} · {m.start_time ? m.start_time.substring(0, 5) : ''} · {m.participants_count || 0} peserta
-                                                </p>
+                                                <MeetingStatusBadge status={m.status} />
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-slate-400 italic">Tidak ada jadwal mendatang.</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </>
     );
