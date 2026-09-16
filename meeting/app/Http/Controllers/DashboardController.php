@@ -98,10 +98,7 @@ class DashboardController extends Controller
             }])
             ->where(function ($query) use ($now) {
                 $query->where('date', '=', $now->toDateString())
-                      ->orWhere(function ($subQuery) use ($now) {
-                          $subQuery->where('date', '<', $now->toDateString())
-                                   ->where('status', '!=', 'selesai');
-                      });
+                      ->orWhere('date', '<', $now->toDateString());
             })
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'asc')

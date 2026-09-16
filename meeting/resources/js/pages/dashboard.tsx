@@ -170,7 +170,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                     <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900">
                         <CardContent className="p-5">
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-base font-semibold text-slate-900 dark:text-white">Rapat Hari Ini & Tertunda</h2>
+                                <h2 className="text-base font-semibold text-slate-900 dark:text-white">Rapat Hari Ini & Terbaru</h2>
                                 <Link href="/meetings" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Lihat semua</Link>
                             </div>
                             {todayMeetings && todayMeetings.length > 0 ? (
