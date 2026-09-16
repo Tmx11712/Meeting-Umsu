@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export default function CreateMeeting({ users, meeting }: { users: any[], meeting?: any }) {
+export default function CreateMeeting({ users, meeting, meetingTypes, meetingRooms }: { users: any[], meeting?: any, meetingTypes: string[], meetingRooms: string[] }) {
     /**
      * [EDUKASI ARSITEKTUR: REACT & INERTIA.JS FORMS]
      * Komponen ini menggunakan `useForm` dari Inertia.js untuk mengelola state form (data, errors, processing).
@@ -15,14 +15,13 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
      */
     const { data, setData, post, put, processing, errors } = useForm({
         title: meeting?.title || '',
-        type: meeting?.type || 'Rapat internal',
-        category: meeting?.category || 'biasa',
+        type: meeting?.type || (meetingTypes?.length > 0 ? meetingTypes[0] : 'Rapat internal'),
         date: meeting?.date || new Date().toISOString().split('T')[0],
         start_time: meeting?.start_time ? meeting.start_time.substring(0, 5) : '09:00',
         end_time: meeting?.end_time ? meeting.end_time.substring(0, 5) : '11:00',
-        location: meeting?.location || 'Ruang Rapat A',
+        location: meeting?.location || (meetingRooms?.length > 0 ? meetingRooms[0] : 'Ruang Rapat A'),
         participants: meeting?.participants?.map((p: any) => p.user_id) || [] as string[],
-        agenda: meeting?.agenda || [] as string[],
+
         auto_record: meeting?.auto_record ?? true,
     });
 
@@ -86,12 +85,22 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label htmlFor="type" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Tipe rapat</label>
-                            <Input 
-                                id="type" 
-                                value={data.type}
-                                onChange={e => setData('type', e.target.value)}
-                                className="h-10 border-slate-200 bg-white rounded-lg text-sm"
-                            />
+                            <Select 
+                                value={data.type} 
+                                onValueChange={(val) => setData('type', val)}
+                            >
+                                <SelectTrigger className="h-10 border-slate-200 bg-white rounded-lg text-sm w-full">
+                                    <SelectValue placeholder="Pilih tipe rapat" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {meetingTypes?.map((mt, idx) => (
+                                        <SelectItem key={idx} value={mt}>{mt}</SelectItem>
+                                    ))}
+                                    {(!meetingTypes || meetingTypes.length === 0) && (
+                                        <SelectItem value="Rapat internal">Rapat internal</SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
                             {errors.type && <div className="text-red-500 text-xs">{errors.type}</div>}
                         </div>
                     </div>
@@ -138,12 +147,22 @@ export default function CreateMeeting({ users, meeting }: { users: any[], meetin
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="flex flex-col gap-1.5 md:col-span-2">
                             <label htmlFor="location" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Ruangan</label>
-                            <Input 
-                                id="location" 
-                                value={data.location}
-                                onChange={e => setData('location', e.target.value)}
-                                className="h-10 border-slate-200 bg-white rounded-lg text-sm"
-                            />
+                            <Select 
+                                value={data.location} 
+                                onValueChange={(val) => setData('location', val)}
+                            >
+                                <SelectTrigger className="h-10 border-slate-200 bg-white rounded-lg text-sm w-full">
+                                    <SelectValue placeholder="Pilih ruangan" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {meetingRooms?.map((mr, idx) => (
+                                        <SelectItem key={idx} value={mr}>{mr}</SelectItem>
+                                    ))}
+                                    {(!meetingRooms || meetingRooms.length === 0) && (
+                                        <SelectItem value="Ruang Rapat A">Ruang Rapat A</SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
                             {errors.location && <div className="text-red-500 text-xs">{errors.location}</div>}
                         </div>
                     </div>

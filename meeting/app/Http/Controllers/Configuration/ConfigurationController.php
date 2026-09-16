@@ -23,6 +23,8 @@ class ConfigurationController extends Controller
                 'menusCount' => Menu::count('id'),
                 'rolePermissionsCount' => Role::count('id'),
                 'userPermissionsCount' => User::query()->whereHas('permissions')->count('id'),
+                'meetingTypesCount' => \App\Models\MeetingType::count('id'),
+                'meetingRoomsCount' => \App\Models\MeetingRoom::count('id'),
             ];
         });
 

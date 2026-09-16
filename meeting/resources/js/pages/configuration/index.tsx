@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ShieldCheck, Users, Key, LayoutGrid, CheckSquare, ShieldBan, ChevronRight } from 'lucide-react';
+import { ShieldCheck, Users, Key, LayoutGrid, CheckSquare, ShieldBan, ChevronRight, List, MapPin } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 
@@ -11,6 +11,8 @@ type Props = {
         menusCount: number;
         rolePermissionsCount: number;
         userPermissionsCount: number;
+        meetingTypesCount: number;
+        meetingRoomsCount: number;
     };
 };
 
@@ -69,6 +71,24 @@ export default function ConfigurationIndex({ stats }: Props) {
             description: 'Hak akses spesifik pengguna',
             color: 'text-rose-600',
             bg: 'bg-rose-100'
+        },
+        {
+            title: 'Tipe Rapat',
+            icon: List,
+            count: stats.meetingTypesCount,
+            href: '/configuration/meeting-types',
+            description: 'Kelola daftar pilihan tipe rapat',
+            color: 'text-indigo-600',
+            bg: 'bg-indigo-100'
+        },
+        {
+            title: 'Ruangan',
+            icon: MapPin,
+            count: stats.meetingRoomsCount,
+            href: '/configuration/meeting-rooms',
+            description: 'Kelola daftar pilihan ruangan rapat',
+            color: 'text-violet-600',
+            bg: 'bg-violet-100'
         },
     ];
 

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Configuration\ConfigurationController;
+use App\Http\Controllers\Configuration\MeetingRoomController;
+use App\Http\Controllers\Configuration\MeetingTypeController;
 use App\Http\Controllers\Configuration\MenuController;
 use App\Http\Controllers\Configuration\PermissionController;
 use App\Http\Controllers\Configuration\RoleController;
@@ -104,6 +106,9 @@ Route::middleware(['auth', 'verified', EnsureConfigAccess::class])->prefix('conf
     Route::resource('permissions', PermissionController::class)->except(['create', 'edit', 'show']);
     Route::resource('menus', MenuController::class)->except(['create', 'edit', 'show']);
     Route::post('menus/{menu}/toggle', [MenuController::class, 'toggleStatus'])->name('menus.toggle');
+
+    Route::resource('meeting-types', MeetingTypeController::class)->except(['create', 'edit', 'show']);
+    Route::resource('meeting-rooms', MeetingRoomController::class)->except(['create', 'edit', 'show']);
 
     Route::get('role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
     Route::put('role-permissions/{role}', [RolePermissionController::class, 'update'])->name('role-permissions.update');

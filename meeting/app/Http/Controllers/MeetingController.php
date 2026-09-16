@@ -214,9 +214,14 @@ class MeetingController extends Controller
         $meeting->load('participants');
         $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
+        $meetingTypes = \App\Models\MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingRooms = \App\Models\MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
+
         return Inertia::render('meetings/create', [
             'meeting' => $meeting,
             'users' => $users,
+            'meetingTypes' => $meetingTypes,
+            'meetingRooms' => $meetingRooms,
         ]);
     }
 
