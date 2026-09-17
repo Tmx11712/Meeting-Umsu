@@ -246,7 +246,7 @@ return;
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                             <QRCodeCanvas
                                 id="qr-code-canvas"
-                                value={`${window.location.origin}/attend/${meeting.id}`}
+                                value={typeof window !== 'undefined' ? `${window.location.origin}/attend/${meeting.id}` : ''}
                                 size={250}
                                 level="H"
                                 includeMargin={false}

@@ -57,10 +57,7 @@ export function MeetingStatusBadge({ status, category, currentStage, className =
 
     // Override based on currentStage if provided (and not cancelled)
     if (s !== 'dibatalkan' && category !== 'jadwal_mendatang' && currentStage !== undefined && currentStage !== null) {
-        if (currentStage === 2) {
-            text = 'Sedang Merekam';
-            colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';
-        } else if (currentStage === 3 || currentStage === 4) {
+        if (currentStage === 3 || currentStage === 4) {
             text = 'Sedang Transkrip';
             colorClass = 'bg-purple-50 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800 animate-pulse';
         } else if (currentStage === 5) {
