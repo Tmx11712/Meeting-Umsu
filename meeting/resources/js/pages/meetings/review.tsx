@@ -674,7 +674,7 @@ return;
                                             <p className="leading-relaxed text-slate-700">{minutes.content.latar_belakang}</p>
                                         </div>
                                     )}
-                                    {minutes.content.pembukaan && !minutes.content.latar_belakang && (
+                                    {minutes.content.pembukaan && (
                                         <div>
                                             <h3 className="font-bold text-sm mb-2 text-slate-900">Pembukaan</h3>
                                             <p className="leading-relaxed text-slate-700">{minutes.content.pembukaan}</p>
