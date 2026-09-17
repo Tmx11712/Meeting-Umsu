@@ -48,6 +48,18 @@ class Meeting extends Model
 
     protected static function booted()
     {
+        static::deleting(function ($model) {
+            // Hard delete related records so they don't persist or reappear when restored by sync
+            $model->actionItems()->delete();
+            $model->approval()->delete();
+            $model->attendances()->delete();
+            $model->documents()->delete();
+            $model->minutes()->delete();
+            $model->participants()->delete();
+            $model->recordings()->delete();
+            $model->transcripts()->delete();
+        });
+
         static::saved(function ($model) {
             cache()->forget('dashboard_stats');
         });
