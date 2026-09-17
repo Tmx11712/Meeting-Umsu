@@ -375,7 +375,7 @@ clearTimeout(searchTimeout.current);
                         <div className="flex flex-col items-center justify-center py-6 gap-4">
                             <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                                 {isClient && (
-                                    <Suspense fallback={<div className="w-[250px] h-[250px] animate-pulse bg-slate-100 rounded" />}>
+                                    <Suspense fallback={<div className="w-62.5 h-62.5 animate-pulse bg-slate-100 rounded" />}>
                                         <QRCodeCanvas 
                                             id="qr-code-canvas"
                                             value={`${window.location.origin}/attend/${qrMeeting?.id}`}
