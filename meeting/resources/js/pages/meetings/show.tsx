@@ -1,7 +1,6 @@
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { Calendar, MapPin, Clock, Edit, Mic, PenTool, Users, FileText, CheckCircle, QrCode, Download, Ban } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
-import { useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,11 +8,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useInitials } from '@/hooks/use-initials';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
-import { confirmDelete } from '@/lib/sweetalert';
+
+// Lazy-load QRCodeCanvas agar tidak crash saat SSR (Node.js tidak punya Canvas API)
+const QRCodeCanvas = lazy(() => import('qrcode.react').then(m => ({ default: m.QRCodeCanvas })));
 
 export default function MeetingShow({ meeting }: any) {
     useMeetingWebSocket(meeting?.id);
     const [isQrOpen, setIsQrOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
@@ -83,6 +89,7 @@ return;
                                     variant="destructive" 
                                     className="rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-5 font-semibold" 
                                     onClick={async () => {
+                                        const { confirmDelete } = await import('@/lib/sweetalert');
                                         if (await confirmDelete('Batalkan Rapat?', 'Rapat yang dibatalkan tidak dapat dikembalikan.', 'Ya, Batalkan!')) {
                                             router.post(`/meetings/${meeting.id}/cancel`);
                                         }
@@ -244,13 +251,17 @@ return;
                     </DialogHeader>
                     <div className="flex flex-col items-center justify-center py-6 gap-4">
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                            <QRCodeCanvas
-                                id="qr-code-canvas"
-                                value={typeof window !== 'undefined' ? `${window.location.origin}/attend/${meeting.id}` : ''}
-                                size={250}
-                                level="H"
-                                includeMargin={false}
-                            />
+                            {isClient && (
+                                <Suspense fallback={<div className="w-[250px] h-[250px] animate-pulse bg-slate-100 rounded" />}>
+                                    <QRCodeCanvas
+                                        id="qr-code-canvas"
+                                        value={`${window.location.origin}/attend/${meeting.id}`}
+                                        size={250}
+                                        level="H"
+                                        includeMargin={false}
+                                    />
+                                </Suspense>
+                            )}
                         </div>
                         <div className="text-center space-y-1">
                             <h4 className="font-semibold text-slate-900 dark:text-slate-100">{meeting.title}</h4>
