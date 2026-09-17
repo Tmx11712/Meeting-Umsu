@@ -1,6 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
-import { confirmDelete } from '@/lib/sweetalert';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();

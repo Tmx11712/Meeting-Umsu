@@ -3,13 +3,11 @@ import { Head, usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import ysFixWebmDuration from 'fix-webm-duration';
 import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download, RotateCcw } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
-import { showSuccess, showError, confirmDelete } from '@/lib/sweetalert';
 import type { Meeting } from '@/types/meeting';
 
 export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
