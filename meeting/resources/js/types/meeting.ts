@@ -56,6 +56,7 @@ export interface Meeting {
     documents?: any[];
     duration_formatted?: string;
     source?: string;
+    ai_status?: string;
     creator?: User;
     recording_started_at?: string;
     created_at?: string;

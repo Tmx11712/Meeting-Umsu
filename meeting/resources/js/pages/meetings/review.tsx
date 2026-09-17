@@ -44,7 +44,6 @@ export default function MeetingReview({ meeting, ...props }: { meeting: Meeting,
 
     const [sending, setSending] = useState(false);
     const isGeneratingAi = meeting?.ai_status === 'processing';
-    const [regenerateModalOpen, setRegenerateModalOpen] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
     
     // Edit Modal States
@@ -224,11 +223,11 @@ return;
         });
     };
 
-    const documentCard = (
+    const renderDocumentCard = (isReadOnly: boolean = false) => (
         <Card className="rounded-xl border-slate-200 shadow-sm">
             <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100">
                 <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
-                {canManageReview && (
+                {canManageReview && !isReadOnly && (
                     <div className="relative">
                         <input 
                             type="file" 
@@ -263,7 +262,7 @@ return;
                                 <p className="text-[10px] text-slate-500 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
                             </div>
                         </div>
-                        {canManageReview && (
+                        {canManageReview && !isReadOnly && (
                             <Button variant="ghost" size="icon" className="text-rose-500 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
                                 <Trash2 className="w-4 h-4" />
                             </Button>
@@ -535,7 +534,7 @@ return;
                                 {isGeneratingAi ? '⏳ AI Sedang Merangkum (1-2 Menit)...' : '✨ Generate Notulen dengan AI'}
                             </Button>
                         </div>
-                        {documentCard}
+                        {renderDocumentCard(false)}
                     </div>
                 </div>
             </div>
@@ -641,18 +640,6 @@ return;
                         <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between flex-wrap gap-2">
                             <CardTitle className="text-lg font-bold text-slate-900">Notulen Rapat</CardTitle>
                             <div className="flex gap-2 flex-wrap">
-                                {canManageTranscript && (
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm" 
-                                        className="h-8 text-xs text-sky-600 border-sky-200 hover:bg-sky-50"
-                                        onClick={() => setRegenerateModalOpen(true)}
-                                        disabled={sending || isGeneratingAi}
-                                    >
-                                        {isGeneratingAi ? <RefreshCw className="w-3 h-3 mr-2 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2" />}
-                                        {isGeneratingAi ? 'Memproses...' : 'Regenerate AI'}
-                                    </Button>
-                                )}
                                 {canManageReview && (
                                     <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
                                         <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
@@ -792,7 +779,7 @@ return;
                     </Card>
 
                     {/* Dokumen Pendukung */}
-                    {documentCard}
+                    {renderDocumentCard(true)}
 
                     {/* Informasi Review */}
                     <Card className="rounded-xl border-slate-200 shadow-sm">
@@ -972,38 +959,6 @@ return;
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={regenerateModalOpen} onOpenChange={setRegenerateModalOpen}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl font-bold text-slate-900">Regenerate Notulen?</DialogTitle>
-                    </DialogHeader>
-                    <div className="py-4 text-slate-600">
-                        <p>Anda yakin ingin men-generate ulang notulen?</p>
-                        <p className="mt-2 text-sm text-amber-600 font-medium">
-                            <AlertCircle className="w-4 h-4 inline mr-1" />
-                            Ini akan menimpa notulen yang ada saat ini dengan versi AI terbaru dari transkrip dan dokumen yang baru di-upload.
-                        </p>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setRegenerateModalOpen(false)}>
-                            Batal
-                        </Button>
-                        <Button 
-                            className="bg-blue-600 hover:bg-blue-700 text-white" 
-                            onClick={() => {
-                                setRegenerateModalOpen(false);
-                                router.post(`/meetings/${meeting.id}/review/ai`, {}, {
-                                    preserveScroll: true
-                                });
-                            }} 
-                            disabled={isGeneratingAi}
-                        >
-                            {isGeneratingAi ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                            {isGeneratingAi ? 'Memproses...' : 'Ya, Regenerate'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
 
             <Dialog open={documentToDelete !== null} onOpenChange={(open) => !open && setDocumentToDelete(null)}>
                 <DialogContent className="sm:max-w-md">
