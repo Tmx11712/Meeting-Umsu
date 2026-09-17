@@ -1,6 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
-import { useEffect, useCallback, useRef, useState } from 'react';
+import { useEffect, useCallback, useRef, useState, lazy, Suspense } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,9 +8,17 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
 
+// Lazy-load QRCodeCanvas agar tidak crash saat SSR
+const QRCodeCanvas = lazy(() => import('qrcode.react').then(m => ({ default: m.QRCodeCanvas })));
+
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
     const [qrMeeting, setQrMeeting] = useState<any>(null);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById("qr-code-canvas") as HTMLCanvasElement;
@@ -288,6 +296,7 @@ clearTimeout(searchTimeout.current);
                                                             if (!guardAction('meeting')) {
                                                                 return;
                                                             }
+                                                            const { confirmDelete } = await import('@/lib/sweetalert');
                                                             if (await confirmDelete(`Yakin ingin menghapus rapat "${meeting.title}"?`)) {
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
@@ -365,13 +374,17 @@ clearTimeout(searchTimeout.current);
                     {qrMeeting && (
                         <div className="flex flex-col items-center justify-center py-6 gap-4">
                             <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                                <QRCodeCanvas 
-                                    id="qr-code-canvas"
-                                    value={`${window.location.origin}/attend/${qrMeeting.id}`} 
-                                    size={250}
-                                    level="H"
-                                    includeMargin={false}
-                                />
+                                {isClient && (
+                                    <Suspense fallback={<div className="w-[250px] h-[250px] animate-pulse bg-slate-100 rounded" />}>
+                                        <QRCodeCanvas 
+                                            id="qr-code-canvas"
+                                            value={`${window.location.origin}/attend/${qrMeeting?.id}`}
+                                            size={250}
+                                            level="H"
+                                            includeMargin={false}
+                                        />
+                                    </Suspense>
+                                )}
                             </div>
                             <div className="text-center space-y-1">
                                 <h4 className="font-semibold text-slate-900 dark:text-slate-100">{qrMeeting.title}</h4>

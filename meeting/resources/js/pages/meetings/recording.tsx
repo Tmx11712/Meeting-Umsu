@@ -3,12 +3,15 @@ import { Head, usePage, router, Link } from '@inertiajs/react';
 import axios from 'axios';
 import ysFixWebmDuration from 'fix-webm-duration';
 import { Square, UploadCloud, Info, Send, Megaphone, Monitor, AlertCircle, Loader2, Bot, Database, Trash2, Pause, Play, Mic, ArrowLeft, QrCode, Download, RotateCcw } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { Meeting } from '@/types/meeting';
+
+// Lazy-load QRCodeCanvas agar tidak crash saat SSR (Node.js tidak punya Canvas API)
+const QRCodeCanvas = lazy(() => import('qrcode.react').then(m => ({ default: m.QRCodeCanvas })));
 
 export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     useMeetingWebSocket(meeting?.id);
@@ -31,6 +34,8 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
     const [errorMsg, setErrorMsg] = useState('');
     const [isQrOpen, setIsQrOpen] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => { setIsClient(true); }, []);
     const [isTranscribing, setIsTranscribing] = useState<number | null>(null);
 
     const handleDownloadQR = () => {
@@ -54,8 +59,9 @@ return;
     const chunksRef = useRef<Blob[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const triggerTranscription = (recordingId: number) => {
+    const triggerTranscription = async (recordingId: number) => {
         setIsTranscribing(recordingId);
+        const { showSuccess, showError } = await import('@/lib/sweetalert');
         router.post(`/meetings/${meeting.id}/recording/transcribe`, {
             recording_id: recordingId
         }, {
@@ -76,6 +82,7 @@ return;
     };
 
     const deleteRecording = async (recordingId: number) => {
+        const { showSuccess, showError, confirmDelete } = await import('@/lib/sweetalert');
         const isConfirmed = await confirmDelete(
             'Hapus Rekaman Audio?',
             'File audio yang sudah dihapus tidak dapat dikembalikan.'
@@ -149,8 +156,9 @@ return;
         return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
-    const handleFileUpload = async (e: any) => {
-        const file = e.target.files[0];
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { showSuccess, showError } = await import('@/lib/sweetalert');
+        const file = e.target.files?.[0];
 
         if (!file) {
 return;
@@ -315,6 +323,7 @@ return;
     };
 
     const sendRecordingToBackend = async () => {
+        const { showSuccess, showError } = await import('@/lib/sweetalert');
         if (!recordedBlob) {
             showError('Perhatian', 'Belum ada rekaman audio yang siap dikirim.');
 
@@ -642,13 +651,17 @@ return;
                     </DialogHeader>
                     <div className="flex flex-col items-center justify-center py-6 gap-4">
                         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                            <QRCodeCanvas
-                                id="qr-code-canvas"
-                                value={`${window.location.origin}/attend/${meeting.id}`}
-                                size={250}
-                                level="H"
-                                includeMargin={false}
-                            />
+                            {isClient && (
+                                <Suspense fallback={<div className="w-[250px] h-[250px] animate-pulse bg-slate-100 rounded" />}>
+                                    <QRCodeCanvas
+                                        id="qr-code-canvas"
+                                        value={`${window.location.origin}/attend/${meeting.id}`}
+                                        size={250}
+                                        level="H"
+                                        includeMargin={false}
+                                    />
+                                </Suspense>
+                            )}
                         </div>
                         <div className="text-center space-y-1">
                             <h4 className="font-semibold text-slate-900 dark:text-slate-100">{meeting.title}</h4>
