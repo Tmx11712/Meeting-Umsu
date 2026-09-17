@@ -59,7 +59,7 @@ return;
                             Informasi Rapat
                         </h1>
                         <Badge variant={meeting.status === 'selesai' ? 'default' : 'secondary'} className="text-sm px-3 py-1 bg-card/60 border-border text-foreground">
-                            {meeting.status === 'dibatalkan' ? 'RAPAT DIBATALKAN' : meeting.status.toUpperCase()}
+                            {meeting.status === 'dibatalkan' ? 'RAPAT DIBATALKAN' : (meeting.status?.toUpperCase() || 'TERJADWAL')}
                         </Badge>
                     </div>
                     <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
