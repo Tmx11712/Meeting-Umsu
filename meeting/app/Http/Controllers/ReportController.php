@@ -22,10 +22,7 @@ class ReportController extends Controller
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'ilike', '%' . $keyword . '%')
                   ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                      $mq->where('content', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_summary', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_topics', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_decisions', 'ilike', '%' . $keyword . '%');
+                      $mq->whereRaw('content::text ilike ?', ['%' . $keyword . '%']);
                   });
             });
         }
@@ -52,10 +49,7 @@ class ReportController extends Controller
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'ilike', '%' . $keyword . '%')
                   ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                      $mq->where('content', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_summary', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_topics', 'ilike', '%' . $keyword . '%')
-                         ->orWhere('ai_decisions', 'ilike', '%' . $keyword . '%');
+                      $mq->whereRaw('content::text ilike ?', ['%' . $keyword . '%']);
                   });
             });
         }
