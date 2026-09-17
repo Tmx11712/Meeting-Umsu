@@ -128,6 +128,20 @@ class GenerateMeetingMinuteAction
                 }
             } elseif ($doc->mime_type === 'text/plain') {
                 $parts[] = "\n--- Dokumen TXT: {$doc->file_name} ---\n".file_get_contents($filePath);
+            } elseif ($doc->mime_type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                try {
+                    $zip = new \ZipArchive;
+                    if ($zip->open($filePath) === true) {
+                        if (($index = $zip->locateName('word/document.xml')) !== false) {
+                            $data = $zip->getFromIndex($index);
+                            $text = strip_tags($data);
+                            $parts[] = "\n--- Dokumen Word: {$doc->file_name} ---\n".$text;
+                        }
+                        $zip->close();
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Gagal mengekstrak teks dari DOCX: '.$e->getMessage());
+                }
             }
         }
 

@@ -18,9 +18,9 @@ class MeetingDocumentController extends Controller
         abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
 
         $request->validate([
-            'document' => 'required|file|mimes:pdf,txt|max:10240', // 10MB max, PDF & TXT only
+            'document' => 'required|file|mimes:pdf,txt,docx|max:10240', // 10MB max, PDF, TXT, DOCX only
         ], [
-            'document.mimes' => 'Hanya format PDF dan TXT yang didukung agar bisa dianalisis oleh AI.',
+            'document.mimes' => 'Hanya format PDF, TXT, dan DOCX yang didukung agar bisa dianalisis oleh AI.',
             'document.max' => 'Ukuran maksimal file adalah 10MB.',
         ]);
 

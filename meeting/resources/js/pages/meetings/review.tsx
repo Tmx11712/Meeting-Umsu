@@ -234,7 +234,7 @@ return;
                             type="file" 
                             id="document-upload" 
                             className="hidden" 
-                            accept=".pdf,.txt"
+                            accept=".pdf,.txt,.docx"
                             onChange={handleUploadDocument}
                             disabled={uploadingDoc}
                         />
