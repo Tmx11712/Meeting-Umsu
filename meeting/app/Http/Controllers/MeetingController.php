@@ -198,6 +198,8 @@ class MeetingController extends Controller
 
     public function show(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         $meeting->load('participants.user', 'recordings', 'minutes', 'attendances');
 
         // Jika rapat sudah selesai (stage >= 7), arahkan semua user langsung ke halaman hasil (approval)

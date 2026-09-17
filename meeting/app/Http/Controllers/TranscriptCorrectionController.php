@@ -30,6 +30,8 @@ class TranscriptCorrectionController extends Controller
 
     public function show(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         /**
          * [EDUKASI ARSITEKTUR: EAGER LOADING DENGAN CLOSURE]
          * Daripada melakukan `load('recordings')` secara polos, kita bisa menyisipkan fungsi Closure

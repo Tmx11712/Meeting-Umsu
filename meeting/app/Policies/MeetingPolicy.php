@@ -33,7 +33,12 @@ class MeetingPolicy
      */
     public function view(User $user, Meeting $meeting): bool
     {
-        return $user->can('meeting.view');
+        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan'])) {
+            return true;
+        }
+
+        // Jika tidak memiliki role global, harus merupakan participant dari meeting ini
+        return $meeting->participants()->where('user_id', $user->id)->exists();
     }
 
     /**

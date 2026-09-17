@@ -38,6 +38,8 @@ class AttendanceController extends Controller
 
     public function show(Meeting $meeting): Response
     {
+        $this->authorize('view', $meeting);
+
         $meeting->load('participants.user', 'attendances.user');
 
         return Inertia::render('meetings/attendance', [

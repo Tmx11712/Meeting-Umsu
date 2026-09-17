@@ -22,6 +22,8 @@ class MeetingRecordingController extends Controller
 {
     public function show(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         if ($meeting->status === MeetingStatus::TERJADWAL->value) {
             $user = request()->user();
             // Hanya Bag. Humas (atau Admin) yang bisa memicu rapat menjadi BERLANGSUNG

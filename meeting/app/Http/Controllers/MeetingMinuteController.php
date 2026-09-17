@@ -39,6 +39,8 @@ class MeetingMinuteController extends Controller
 
     public function show(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         $meeting->load([
             'participants.user',
             'minutes.actionItems',
