@@ -224,6 +224,61 @@ return;
         });
     };
 
+    const documentCard = (
+        <Card className="rounded-xl border-slate-200 shadow-sm">
+            <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100">
+                <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
+                {canManageReview && (
+                    <div className="relative">
+                        <input 
+                            type="file" 
+                            id="document-upload" 
+                            className="hidden" 
+                            accept=".pdf,.txt"
+                            onChange={handleUploadDocument}
+                            disabled={uploadingDoc}
+                        />
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-8 text-xs bg-white text-slate-700 hover:bg-slate-50"
+                            disabled={uploadingDoc}
+                            onClick={() => document.getElementById('document-upload')?.click()}
+                        >
+                            {uploadingDoc ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : <Upload className="w-3 h-3 mr-2" />}
+                            Upload
+                        </Button>
+                    </div>
+                )}
+            </CardHeader>
+            <CardContent className="space-y-3 pt-4">
+                {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
+                    <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                <FileText className="w-4 h-4" />
+                            </div>
+                            <div className="truncate">
+                                <p className="text-sm font-medium text-slate-900 truncate" title={doc.file_name}>{doc.file_name}</p>
+                                <p className="text-[10px] text-slate-500 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
+                        </div>
+                        {canManageReview && (
+                            <Button variant="ghost" size="icon" className="text-rose-500 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
+                                <Trash2 className="w-4 h-4" />
+                            </Button>
+                        )}
+                    </div>
+                )) : (
+                    <div className="text-center py-6 text-slate-500">
+                        <FileText className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                        <p className="text-xs">Belum ada dokumen tambahan.</p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+
     if (!minutes) {
         return (
             <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -460,13 +515,11 @@ return;
                     </div>
 
                     {/* Right side: Action card */}
-                    <div className="flex flex-col">
-                        <div className="text-center p-8 text-slate-500 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center sticky top-4">
-                            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-5 shadow-inner rotate-3">
-                                <Lightbulb className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Notulen Belum Digenerate</h3>
-                            <p className="text-sm mx-auto mb-8 leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
+                    <div className="flex flex-col gap-4 sticky top-4">
+                        <div className="text-center p-8 text-slate-500 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+                            <Sparkles className="w-12 h-12 mb-4 text-sky-500" />
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Notulen Belum Digenerate</h3>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-sm">
                                 AI akan membaca semua transkrip dari rekaman yang ada dan merangkumnya menjadi notulen resmi lengkap dengan keputusan dan tindak lanjut.
                             </p>
                             <Button 
@@ -482,6 +535,7 @@ return;
                                 {isGeneratingAi ? '⏳ AI Sedang Merangkum (1-2 Menit)...' : '✨ Generate Notulen dengan AI'}
                             </Button>
                         </div>
+                        {documentCard}
                     </div>
                 </div>
             </div>
@@ -738,58 +792,7 @@ return;
                     </Card>
 
                     {/* Dokumen Pendukung */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm">
-                        <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100">
-                            <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
-                            {canManageReview && (
-                                <div className="relative">
-                                    <input 
-                                        type="file" 
-                                        id="document-upload" 
-                                        className="hidden" 
-                                        accept=".pdf,.txt"
-                                        onChange={handleUploadDocument}
-                                        disabled={uploadingDoc}
-                                    />
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm" 
-                                        className="h-8 text-xs bg-white text-slate-700 hover:bg-slate-50"
-                                        disabled={uploadingDoc}
-                                        onClick={() => document.getElementById('document-upload')?.click()}
-                                    >
-                                        {uploadingDoc ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : <Upload className="w-3 h-3 mr-2" />}
-                                        Upload
-                                    </Button>
-                                </div>
-                            )}
-                        </CardHeader>
-                        <CardContent className="space-y-3 pt-4">
-                            {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
-                                <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
-                                    <div className="flex items-center gap-3 overflow-hidden">
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                                            <FileText className="w-4 h-4" />
-                                        </div>
-                                        <div className="truncate">
-                                            <p className="text-sm font-medium text-slate-900 truncate" title={doc.file_name}>{doc.file_name}</p>
-                                            <p className="text-[10px] text-slate-500 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
-                                        </div>
-                                    </div>
-                                    {canManageReview && (
-                                        <Button variant="ghost" size="icon" className="text-rose-500 hover:text-rose-600 h-8 w-8 shrink-0" onClick={() => handleDeleteDocument(doc.id)}>
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                    )}
-                                </div>
-                            )) : (
-                                <div className="text-center py-6 text-slate-500">
-                                    <FileText className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                                    <p className="text-xs">Belum ada dokumen tambahan.</p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                    {documentCard}
 
                     {/* Informasi Review */}
                     <Card className="rounded-xl border-slate-200 shadow-sm">
