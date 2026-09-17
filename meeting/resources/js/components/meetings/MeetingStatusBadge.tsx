@@ -3,10 +3,11 @@ import React from 'react';
 interface MeetingStatusBadgeProps {
     status: string | undefined;
     category?: string | null;
+    currentStage?: number | null;
     className?: string;
 }
 
-export function MeetingStatusBadge({ status, category, className = '' }: MeetingStatusBadgeProps) {
+export function MeetingStatusBadge({ status, category, currentStage, className = '' }: MeetingStatusBadgeProps) {
     const s = (status || 'terjadwal').toLowerCase();
     
     let colorClass = 'bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900/30 dark:text-slate-400 dark:border-slate-800';
@@ -29,7 +30,7 @@ export function MeetingStatusBadge({ status, category, className = '' }: Meeting
             break;
         case 'berlangsung':
             colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';
-            text = 'Berlangsung';
+            text = 'Sedang Merekam';
             break;
         case 'selesai':
             colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800';
@@ -52,6 +53,26 @@ export function MeetingStatusBadge({ status, category, className = '' }: Meeting
         default:
             text = s.charAt(0).toUpperCase() + s.slice(1);
             break;
+    }
+
+    // Override based on currentStage if provided (and not cancelled)
+    if (s !== 'dibatalkan' && category !== 'jadwal_mendatang' && currentStage !== undefined && currentStage !== null) {
+        if (currentStage === 2) {
+            text = 'Sedang Merekam';
+            colorClass = 'bg-red-50 text-red-600 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800 animate-pulse';
+        } else if (currentStage === 3 || currentStage === 4) {
+            text = 'Sedang Transkrip';
+            colorClass = 'bg-purple-50 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800 animate-pulse';
+        } else if (currentStage === 5) {
+            text = 'Menyusun Notulen';
+            colorClass = 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800 animate-pulse';
+        } else if (currentStage === 6) {
+            text = 'Menunggu Review';
+            colorClass = 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-900/30 dark:text-orange-400 dark:border-orange-800';
+        } else if (currentStage >= 7) {
+            text = 'Selesai';
+            colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800';
+        }
     }
 
     return (

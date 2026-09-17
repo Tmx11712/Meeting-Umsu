@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Download, Search, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
@@ -107,7 +108,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                                                     </a>
                                                 </Button>
                                             ) : (
-                                                <span className="text-muted-foreground text-xs italic">Belum ada hasil</span>
+                                                <MeetingStatusBadge status={meeting.status} currentStage={meeting.current_stage} />
                                             )}
                                         </td>
                                     </tr>

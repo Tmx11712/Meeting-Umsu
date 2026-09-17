@@ -190,7 +190,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                                         {m.participants_count || 0} Peserta
                                                     </p>
                                                 </div>
-                                                <MeetingStatusBadge status={m.status} />
+                                                <MeetingStatusBadge status={m.status} currentStage={m.current_stage} />
                                             </div>
                                         </Link>
                                     ))}
@@ -227,6 +227,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                                                 </div>
                                                 <MeetingStatusBadge 
                                                     status={m.status} 
+                                                    currentStage={m.current_stage}
                                                     category={new Date(m.date).toDateString() !== new Date().toDateString() ? 'jadwal_mendatang' : undefined} 
                                                 />
                                             </div>
