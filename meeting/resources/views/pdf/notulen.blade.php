@@ -105,11 +105,11 @@
                                 @endforeach
                             </ul>
                         @else
-                            <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($section['list']) !!}</div>
+                            <div class="markdown-content">{!! $section['list'] !!}</div>
                         @endif
                     @endif
                     @if(!empty($section['table']))
-                        <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($section['table']) !!}</div>
+                        <div class="markdown-content">{!! $section['table'] !!}</div>
                     @endif
                 </div>
             @endforeach
@@ -120,7 +120,8 @@
                 <div class="content-block">
                     <p>{{ $content['latar_belakang'] }}</p>
                 </div>
-            @elseif(!empty($content['pembukaan']))
+            @endif
+            @if(!empty($content['pembukaan']))
                 <div class="section-title">{{ $romans[$sIdx++] }}. PEMBUKAAN</div>
                 <div class="content-block">
                     <p>{{ $content['pembukaan'] }}</p>
@@ -136,7 +137,7 @@
                             <strong>{{ $bahas['topik'] ?? 'Topik' }}</strong><br>
                             <p>{{ $bahas['narasi'] ?? '' }}</p>
                             @if(!empty($bahas['tabel']))
-                                <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($bahas['tabel']) !!}</div>
+                                <div class="markdown-content">{!! $bahas['tabel'] !!}</div>
                             @endif
                             @if(!empty($bahas['list']))
                                 @if(is_array($bahas['list']))
@@ -146,7 +147,7 @@
                                         @endforeach
                                     </ul>
                                 @else
-                                    <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($bahas['list']) !!}</div>
+                                    <div class="markdown-content">{!! $bahas['list'] !!}</div>
                                 @endif
                             @endif
                             <br>
