@@ -60,13 +60,14 @@ class TranscribeAudioJob implements ShouldQueue
                 throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
 
-            $tempPath = sys_get_temp_dir().'/'.basename($recording->file_path);
-            file_put_contents($tempPath, $fileContent);
+            $tempRelativePath = 'temp/' . basename($recording->file_path);
+            Storage::disk('local')->put($tempRelativePath, $fileContent);
+            $tempPath = Storage::disk('local')->path($tempRelativePath);
 
             $result = $transcriptionService->transcribeChunk($tempPath);
 
             // Clean up temp file
-            @unlink($tempPath);
+            Storage::disk('local')->delete($tempRelativePath);
 
             // Save each segment as a separate transcript with real timestamps
             $segments = $result['segments'] ?? [];

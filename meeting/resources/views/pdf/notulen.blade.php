@@ -98,7 +98,15 @@
                         <p>{{ $section['content'] }}</p>
                     @endif
                     @if(!empty($section['list']))
-                        <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($section['list']) !!}</div>
+                        @if(is_array($section['list']))
+                            <ul style="padding-left: 20px; list-style-type: disc;">
+                                @foreach($section['list'] as $l)
+                                    <li>{{ $l }}</li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($section['list']) !!}</div>
+                        @endif
                     @endif
                     @if(!empty($section['table']))
                         <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($section['table']) !!}</div>
@@ -131,7 +139,15 @@
                                 <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($bahas['tabel']) !!}</div>
                             @endif
                             @if(!empty($bahas['list']))
-                                <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($bahas['list']) !!}</div>
+                                @if(is_array($bahas['list']))
+                                    <ul style="padding-left: 20px; list-style-type: disc;">
+                                        @foreach($bahas['list'] as $l)
+                                            <li>{{ $l }}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <div class="markdown-content">{!! \Illuminate\Support\Str::markdown($bahas['list']) !!}</div>
+                                @endif
                             @endif
                             <br>
                         </li>
