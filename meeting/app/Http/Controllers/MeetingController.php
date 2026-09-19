@@ -288,7 +288,8 @@ class MeetingController extends Controller
         $documents = $meeting->documents->toArray();
 
         // 1. Soft delete DULU agar meeting hilang dari query database seketika
-        $meeting->delete();
+        // Menggunakan destroy() untuk menghilangkan garis merah (false positive) di IDE Anda
+        Meeting::destroy($meeting->id);
 
         $meetingTitleSlug = Str::slug($meeting->title);
 

@@ -72,7 +72,8 @@ class MeetingMinuteController extends Controller
 
         try {
             // Update status AI menjadi processing di DB
-            $meeting->update(['ai_status' => 'processing']);
+            $meeting->ai_status = 'processing';
+            $meeting->save();
             \App\Events\MeetingUpdated::dispatch($meeting, 'stage_changed');
 
             GenerateMeetingMinuteJob::dispatch($meeting);
