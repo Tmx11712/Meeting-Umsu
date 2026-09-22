@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
+/**
+ * [EDUKASI ARSITEKTUR: FORTIFY ACTION (Pembuatan User Baru)]
+ * Class ini adalah "kontrak" yang dipanggil Fortify setiap kali ada registrasi user baru.
+ *
+ * Kita mengimplementasikan interface `CreatesNewUsers` agar kita bisa
+ * mengkustomisasi logika registrasi (misalnya: wajib isi departemen, buat Team otomatis, dll)
+ * tanpa harus mengubah kode inti Fortify.
+ *
+ * Ini adalah contoh penerapan "Open/Closed Principle" (Prinsip Terbuka/Tertutup):
+ * kode Fortify TERTUTUP untuk diubah, namun TERBUKA untuk diekstensi melalui contract.
+ */
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules, ProfileValidationRules;

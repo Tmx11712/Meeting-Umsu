@@ -9,6 +9,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin MeetingAttendance
  */
+/**
+ * [EDUKASI ARSITEKTUR: ELOQUENT API RESOURCE (Transformer Data Absensi)]
+ * Resource ini memformat data absensi sebelum dikirim sebagai JSON ke aplikasi mobile.
+ *
+ * Field-field sensitif (seperti `id` internal UUID) bisa dikecualikan dari output,
+ * sementara kita bisa menambahkan field kalkulasi (computed field) yang tidak ada di tabel,
+ * seperti `duration_minutes` dari `check_in_time` dan `check_out_time`.
+ * @mixin MeetingAttendance
+ */
 class AttendanceResource extends JsonResource
 {
     /**

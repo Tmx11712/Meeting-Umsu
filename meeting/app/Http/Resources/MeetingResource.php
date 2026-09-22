@@ -9,6 +9,17 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin Meeting
  */
+/**
+ * [EDUKASI ARSITEKTUR: ELOQUENT API RESOURCE (Transformer Data)]
+ * Resource adalah lapisan "Transformer" antara Model database dan output JSON di API.
+ *
+ * Manfaatnya:
+ * - Kita memilih field mana yang boleh dilihat pihak luar (keamanan data).
+ * - Kita bisa mengubah format data (misalnya: mengubah format tanggal dari UTC ke WIB).
+ * - Jika struktur tabel database berubah, kita hanya perlu mengubah Resource ini,
+ *   bukan mengubah setiap controller yang mengembalikan data rapat.
+ * @mixin Meeting
+ */
 class MeetingResource extends JsonResource
 {
     /**

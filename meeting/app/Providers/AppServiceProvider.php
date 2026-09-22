@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * [EDUKASI ARSITEKTUR: SERVICE PROVIDER (Titik Konfigurasi Aplikasi)]
+ * AppServiceProvider adalah tempat pertama yang dijalankan Laravel saat aplikasi di-boot.
+ *
+ * Ini adalah tempat kita mengatur hal-hal global untuk seluruh aplikasi:
+ * - `register()` → Mendaftarkan binding ke Service Container (Dependency Injection).
+ * - `boot()`     → Menjalankan kode setelah semua service terdaftar.
+ *
+ * Di aplikasi ini, `boot()` mengonfigurasi:
+ * - Agar Carbon menggunakan `CarbonImmutable` (tanggal yang tidak bisa diubah, lebih aman).
+ * - URL generator agar selalu menggunakan HTTPS di production.
+ * - Aturan validasi password minimum yang berlaku di seluruh aplikasi.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
