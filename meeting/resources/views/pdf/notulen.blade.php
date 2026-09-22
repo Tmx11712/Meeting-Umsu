@@ -59,6 +59,10 @@
     <div class="section-title">I. INFORMASI RAPAT</div>
     <table class="info-table">
         <tr>
+            <th>Jenis Rapat</th>
+            <td>: {{ $meeting->type ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Tanggal</th>
             <td>: {{ \Carbon\Carbon::parse($meeting->date)->translatedFormat('l, d F Y') }}</td>
         </tr>
@@ -69,10 +73,6 @@
         <tr>
             <th>Tempat</th>
             <td>: {{ $meeting->location ?? '-' }}</td>
-        </tr>
-        <tr>
-            <th>Penyelenggara</th>
-            <td>: Bagian Umum / Pimpinan</td>
         </tr>
     </table>
 
