@@ -5,6 +5,17 @@ namespace App\Actions\Users;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * [EDUKASI ARSITEKTUR: UPSERT USER DARI SUMBER EKSTERNAL]
+ * Action ini bertugas mencari atau membuat akun User berdasarkan data dari Irvan Cloud.
+ *
+ * Logika "Upsert" yang digunakan:
+ * 1. Cari user di database lokal berdasarkan email dari data Irvan Cloud.
+ * 2. Jika sudah ada → kembalikan user yang sudah ada (tidak buat baru, tidak duplikat).
+ * 3. Jika belum ada → buat akun baru secara otomatis dengan password acak.
+ *
+ * Pola ini sering dipakai untuk integrasi antar sistem (SSO/Single Sign-On sederhana).
+ */
 class UpsertUserFromExternalAction
 {
     /**

@@ -6,6 +6,18 @@ use App\Models\Meeting;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * [EDUKASI ARSITEKTUR: SERVICE CLASS]
+ * MeetingActionItemService bertugas mengelola satu aspek bisnis yang spesifik: Tindak Lanjut (Action Items).
+ *
+ * Logika yang disimpan di sini (sync action items) tidak cocok diletakkan di Model (terlalu kompleks)
+ * atau di Controller (terlalu besar), maka lahirlah Service Class sebagai lapisan perantara yang tepat.
+ *
+ * Perhatikan penggunaan `DB::transaction()` di dalam method `updateForMeeting`.
+ * Ini memastikan bahwa operasi HAPUS semua action item lama + INSERT action item baru
+ * berjalan sebagai satu unit yang tidak bisa dipisah. Jika salah satu gagal, keduanya dibatalkan (rollback).
+ * Ini mencegah kondisi di mana data lama sudah terhapus tapi data baru gagal disimpan.
+ */
 class MeetingActionItemService
 {
     /**

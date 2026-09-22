@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
+/**
+ * [EDUKASI ARSITEKTUR: MASTER DATA (Lookup Table)]
+ * MeetingType adalah tabel master/referensi untuk jenis/tipe Rapat.
+ *
+ * Sama dengan MeetingRoom, ini adalah Lookup Table yang memungkinkan Admin mengatur
+ * jenis rapat (misal: 'Rapat Dinas', 'Rapat Koordinasi', 'Rapat Insidental', dll)
+ * langsung dari halaman konfigurasi tanpa perlu menyentuh kode sama sekali.
+ */
 class MeetingType extends Model
 {
     use HasUuids;
