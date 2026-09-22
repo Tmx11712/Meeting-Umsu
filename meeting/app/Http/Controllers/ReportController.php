@@ -20,10 +20,10 @@ class ReportController extends Controller
         if ($request->search) {
             $keyword = $request->search;
             $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'ilike', '%' . $keyword . '%')
-                  ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                      $mq->whereRaw('content::text ilike ?', ['%' . $keyword . '%']);
-                  });
+                $q->where('title', 'ilike', '%'.$keyword.'%')
+                    ->orWhereHas('minutes', function ($mq) use ($keyword) {
+                        $mq->whereRaw('content::text ilike ?', ['%'.$keyword.'%']);
+                    });
             });
         }
 
@@ -47,10 +47,10 @@ class ReportController extends Controller
         if ($request->search) {
             $keyword = $request->search;
             $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'ilike', '%' . $keyword . '%')
-                  ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                      $mq->whereRaw('content::text ilike ?', ['%' . $keyword . '%']);
-                  });
+                $q->where('title', 'ilike', '%'.$keyword.'%')
+                    ->orWhereHas('minutes', function ($mq) use ($keyword) {
+                        $mq->whereRaw('content::text ilike ?', ['%'.$keyword.'%']);
+                    });
             });
         }
 

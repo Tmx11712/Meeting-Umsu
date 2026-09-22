@@ -18,6 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * - Kita bisa mengubah format data (misalnya: mengubah format tanggal dari UTC ke WIB).
  * - Jika struktur tabel database berubah, kita hanya perlu mengubah Resource ini,
  *   bukan mengubah setiap controller yang mengembalikan data rapat.
+ *
  * @mixin Meeting
  */
 class MeetingResource extends JsonResource

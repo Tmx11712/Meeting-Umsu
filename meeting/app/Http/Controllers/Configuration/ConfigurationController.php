@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Configuration;
 
 use App\Http\Controllers\Controller;
+use App\Models\MeetingRoom;
+use App\Models\MeetingType;
 use App\Models\Menu;
 use App\Models\Permission;
 use App\Models\Role;
@@ -29,8 +31,8 @@ class ConfigurationController extends Controller
                 'menusCount' => Menu::count('id'),
                 'rolePermissionsCount' => Role::count('id'),
                 'userPermissionsCount' => User::query()->whereHas('permissions')->count('id'),
-                'meetingTypesCount' => \App\Models\MeetingType::count('id'),
-                'meetingRoomsCount' => \App\Models\MeetingRoom::count('id'),
+                'meetingTypesCount' => MeetingType::count('id'),
+                'meetingRoomsCount' => MeetingRoom::count('id'),
             ];
         });
 

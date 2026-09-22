@@ -43,7 +43,7 @@ class MeetingApprovalController extends Controller
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
         abort_unless(
-            $minute->status === MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
+            in_array($minute->status, [MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value, MeetingMinuteStatus::DISETUJUI->value]),
             403,
             'Notulen belum siap untuk disetujui. Status saat ini: '.$minute->status
         );

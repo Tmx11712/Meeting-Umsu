@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
 use App\Models\MeetingRoom;
 use App\Models\MeetingType;
+use Illuminate\Database\Seeder;
 
 class MasterDataSeeder extends Seeder
 {
@@ -20,7 +18,7 @@ class MasterDataSeeder extends Seeder
             'Rapat Resmi',
             'Rapat Rutin',
             'Rapat Koordinasi',
-            'Rapat Persiapan'
+            'Rapat Persiapan',
         ];
 
         foreach ($types as $type) {
@@ -30,7 +28,7 @@ class MasterDataSeeder extends Seeder
         $rooms = [
             'Ruangan VIP lantai 2 gedung rektor',
             'Ruangan Rapat Lantai 3 Gedung Rektor',
-            'ruangan Work of fame'
+            'ruangan Work of fame',
         ];
 
         foreach ($rooms as $room) {

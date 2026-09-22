@@ -9,6 +9,8 @@ use App\Http\Requests\Meeting\StoreMeetingRequest;
 use App\Http\Requests\Meeting\UpdateMeetingRequest;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
+use App\Models\MeetingRoom;
+use App\Models\MeetingType;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -112,8 +114,8 @@ class MeetingController extends Controller
             ->orderBy('deadline', 'asc')
             ->take(3)
             ->get();
-        $meetingTypes = \App\Models\MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
-        $meetingRooms = \App\Models\MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingTypes = MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingRooms = MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
 
         return Inertia::render('meetings/create', [
             'users' => $users,
@@ -220,8 +222,8 @@ class MeetingController extends Controller
         $meeting->load('participants');
         $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
-        $meetingTypes = \App\Models\MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
-        $meetingRooms = \App\Models\MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingTypes = MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingRooms = MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
 
         return Inertia::render('meetings/create', [
             'meeting' => $meeting,

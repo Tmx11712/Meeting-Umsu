@@ -51,7 +51,7 @@ class SyncMeetingsAction
     {
         if (! $startDate) {
             // Mengambil semua data dari masa lalu (tanpa batas 3 bulan)
-            $startDate = '2020-01-01'; 
+            $startDate = '2020-01-01';
         }
         if (! $endDate) {
             // Mengambil semua data hingga masa depan

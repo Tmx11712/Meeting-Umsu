@@ -33,7 +33,7 @@ class IrvanCloudSyncService
     public function syncEventDetails(string $externalId, Meeting $meeting): void
     {
         $details = $this->fetchEventDetails->execute($externalId);
-        
+
         if ($details && isset($details['data']['participants'])) {
             foreach ($details['data']['participants'] as $participantData) {
                 $user = $this->upsertUser->execute($participantData);

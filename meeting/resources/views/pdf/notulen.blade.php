@@ -49,7 +49,14 @@
     </div>
 
     <div class="kop-surat">
-        <img src="{{ public_path('images/kop.png') }}" alt="Kop Surat UMSU">
+        @php
+            $kopPath = public_path('images/kop.png');
+            $kopBase64 = '';
+            if (file_exists($kopPath)) {
+                $kopBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($kopPath));
+            }
+        @endphp
+        <img src="{{ $kopBase64 }}" alt="Kop Surat UMSU">
     </div>
     <div class="header">
         <h1>NOTULEN RAPAT</h1>

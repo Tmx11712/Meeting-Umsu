@@ -16,6 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * Field-field sensitif (seperti `id` internal UUID) bisa dikecualikan dari output,
  * sementara kita bisa menambahkan field kalkulasi (computed field) yang tidak ada di tabel,
  * seperti `duration_minutes` dari `check_in_time` dan `check_out_time`.
+ *
  * @mixin MeetingAttendance
  */
 class AttendanceResource extends JsonResource

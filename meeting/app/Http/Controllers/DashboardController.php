@@ -108,8 +108,8 @@ class DashboardController extends Controller
             }])
             ->where(function ($query) use ($now) {
                 $query->where('date', '=', $now->toDateString())
-                      ->orWhere('date', '<', $now->toDateString())
-                      ->orWhere('current_stage', '>=', 3); // Rapat yang sudah dimulai (stage 3+) selalu tampil di sini meski tanggal aslinya di masa depan
+                    ->orWhere('date', '<', $now->toDateString())
+                    ->orWhere('current_stage', '>=', 3); // Rapat yang sudah dimulai (stage 3+) selalu tampil di sini meski tanggal aslinya di masa depan
             })
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'asc')

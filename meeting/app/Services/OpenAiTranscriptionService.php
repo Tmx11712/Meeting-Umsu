@@ -31,7 +31,7 @@ class OpenAiTranscriptionService
         // Split audio into 20-minute segments (1200 seconds) at 32kbps MP3
         $segmentDuration = 1200;
 
-        $tempDir = storage_path('app/temp/whisper_chunks_' . uniqid());
+        $tempDir = storage_path('app/temp/whisper_chunks_'.uniqid());
         if (! is_dir($tempDir) && ! mkdir($tempDir, 0755, true)) {
             throw new \Exception('Gagal membuat direktori temporary untuk chunk.');
         }
