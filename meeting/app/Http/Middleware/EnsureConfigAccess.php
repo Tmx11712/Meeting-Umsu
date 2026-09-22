@@ -6,6 +6,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MIDDLEWARE OTORISASI KONFIGURASI]
+ * Middleware ini memastikan bahwa hanya user dengan role 'Super Admin' atau 'Administrator'
+ * yang bisa mengakses section Konfigurasi (User Management, Role, Permission, Menu).
+ *
+ * Cara kerjanya: Sebelum request masuk ke Controller, middleware ini memeriksa role user.
+ * Jika tidak lolos → langsung dikembalikan ke Dashboard dengan pesan error 403.
+ * Ini adalah lapisan keamanan ke-2 (setelah pemeriksaan login di middleware `auth`).
+ */
 class EnsureConfigAccess
 {
     /**

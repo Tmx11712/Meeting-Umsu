@@ -5,6 +5,18 @@ namespace App\Policies;
 use App\Models\Meeting;
 use App\Models\User;
 
+/**
+ * [EDUKASI ARSITEKTUR: POLICY (Otorisasi Level Model)]
+ * Policy adalah cara Laravel yang "bersih" untuk memisahkan logika OTORISASI dari kode bisnis.
+ *
+ * Tanpa Policy, kita perlu menulis cek izin berulang di setiap method Controller:
+ *   `if (!$user->can('meeting.view')) { abort(403); }`
+ *
+ * Dengan Policy, kita cukup panggil `$this->authorize('view', $meeting)` di Controller,
+ * dan seluruh logika detailnya (siapa yang boleh, kondisinya apa) dipusatkan di sini.
+ *
+ * Perhatikan method `before()` yang memberikan bypass total untuk role 'Super Admin'.
+ */
 class MeetingPolicy
 {
     /**
