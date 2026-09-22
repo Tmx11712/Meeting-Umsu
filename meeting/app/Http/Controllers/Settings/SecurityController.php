@@ -11,6 +11,16 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Fortify\Features;
 
+/**
+ * [EDUKASI ARSITEKTUR: KEAMANAN AKUN (2FA & Password)]
+ * Controller ini mengelola fitur keamanan akun milik user yang sedang login:
+ * - Ganti Password: menggunakan `Hash::check()` untuk verifikasi password lama sebelum diganti.
+ * - Two-Factor Authentication (2FA): menggunakan fitur bawaan Laravel Fortify.
+ *
+ * 2FA bekerja dengan cara: setelah login dengan username+password, user juga harus
+ * memasukkan kode 6 digit dari aplikasi Authenticator (Google Authenticator/Authy) di HP-nya.
+ * Ini membuat akun jauh lebih aman, karena pencuri password saja tidak cukup untuk login.
+ */
 class SecurityController extends Controller
 {
     /**

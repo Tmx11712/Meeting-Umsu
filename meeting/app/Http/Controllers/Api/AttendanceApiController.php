@@ -13,6 +13,15 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * [EDUKASI ARSITEKTUR: REST API CONTROLLER (JSON Response)]
+ * Controller ini adalah versi "API" dari AttendanceController yang biasa.
+ * Perbedaan utamanya: semua response dikembalikan dalam format JSON (bukan Inertia/HTML).
+ *
+ * Didesain untuk dipakai oleh Aplikasi Mobile atau mesin scanner QR fisik.
+ * `AttendanceResource` digunakan untuk memformat data sebelum dikirim sebagai JSON,
+ * sehingga kita bisa dengan mudah mengubah struktur data tanpa mengubah query database.
+ */
 class AttendanceApiController extends Controller
 {
     /**

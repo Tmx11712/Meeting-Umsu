@@ -8,6 +8,14 @@ use App\Models\Meeting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * [EDUKASI ARSITEKTUR: REST API CONTROLLER (Konsumsi Data Rapat)]
+ * Controller ini menyediakan data Rapat dalam format JSON untuk dikonsumsi pihak eksternal.
+ *
+ * `MeetingResource` (Eloquent API Resource) digunakan sebagai "transformer":
+ * ia memastikan hanya field-field yang kita pilih yang dikirim ke luar (keamanan data).
+ * Misalnya, kita tidak ingin mengirim field `created_at` atau `external_id` ke aplikasi mobile.
+ */
 class MeetingApiController extends Controller
 {
     /**

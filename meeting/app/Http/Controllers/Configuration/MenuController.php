@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MANAJEMEN MENU DINAMIS]
+ * Controller ini mengelola menu navigasi sidebar yang bisa dikonfigurasi oleh Admin.
+ *
+ * Keunikan Menu di aplikasi ini: menu bersifat DINAMIS dan terhubung ke Role.
+ * Admin bisa:
+ * 1. Mengatur urutan tampilan menu (drag & reorder).
+ * 2. Mengaktifkan/menonaktifkan menu tertentu.
+ * 3. Menentukan Role mana yang boleh melihat menu tersebut.
+ *
+ * Hasilnya, sidebar setiap pengguna bisa tampil berbeda sesuai Role-nya.
+ */
 class MenuController extends Controller
 {
     public function index(Request $request): Response

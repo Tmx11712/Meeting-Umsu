@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MANAJEMEN ROLE]
+ * Controller ini mengelola CRUD untuk Role (Peran/Jabatan) pengguna di sistem.
+ *
+ * Setiap Role yang dibuat di sini akan otomatis bisa diisi dengan kumpulan Permission
+ * melalui halaman Role-Permission. Perubahan Role langsung berdampak pada semua
+ * user yang memiliki role tersebut — tidak perlu mengatur satu per satu per user.
+ */
 class RoleController extends Controller
 {
     public function index(Request $request): Response

@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MANY-TO-MANY ASSIGNMENT (Role ↔ Permission)]
+ * Controller ini mengelola relasi Many-to-Many antara Role dan Permission.
+ *
+ * Analoginya: seorang "Notulis" (Role) bisa diberi izin 'meeting.view' dan 'minute.create' (Permission).
+ * Satu Role bisa punya banyak Permission, dan satu Permission bisa dimiliki oleh banyak Role.
+ *
+ * Method `sync()` dari Eloquent digunakan di sini. `sync()` sangat cerdas:
+ * ia otomatis MENAMBAH izin yang baru dipilih, dan MENGHAPUS izin yang tidak dipilih,
+ * hanya dengan satu baris kode — tanpa perlu kita urus satu per satu.
+ */
 class RolePermissionController extends Controller
 {
     public function index(Request $request): Response

@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: DIRECT USER PERMISSION (Bypass Role)]
+ * Controller ini mengelola Permission yang diberikan LANGSUNG ke User — di luar Role.
+ *
+ * Normalnya, izin akses diatur melalui Role. Namun ada kalanya seorang user tertentu
+ * membutuhkan izin khusus yang tidak dimiliki oleh Role-nya (atau sebaliknya, perlu dicabut).
+ *
+ * Spatie Laravel Permission mendukung dua jenis pemberian izin:
+ * 1. Via Role    → `$user->assignRole('Notulis')` (paling umum digunakan).
+ * 2. Direct      → `$user->givePermissionTo('meeting.delete')` (pengecualian khusus).
+ *
+ * Controller ini mengelola yang nomor 2 — kasus pengecualian per-user.
+ */
 class UserPermissionController extends Controller
 {
     public function index(Request $request): Response

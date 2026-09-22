@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\MeetingType;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: CRUD MASTER DATA (Jenis Rapat)]
+ * Controller ini mengelola CRUD untuk data Master Jenis Rapat.
+ * Sama polanya dengan MeetingRoomController, ini memungkinkan Admin mengatur kategori rapat
+ * (misal: 'Rapat Dinas', 'Rapat Koordinasi', 'Rapat Pleno') secara dinamis tanpa perlu ubah kode.
+ */
 class MeetingTypeController extends Controller
 {
     public function index()

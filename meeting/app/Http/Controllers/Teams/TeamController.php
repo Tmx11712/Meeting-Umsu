@@ -17,6 +17,18 @@ use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MULTI-TENANCY DENGAN TEAM]
+ * Controller ini mengelola fitur Team (Divisi/Unit Kerja) di aplikasi.
+ *
+ * Konsep Team di sini memungkinkan satu instalasi aplikasi dipakai oleh banyak Unit Kerja
+ * yang masing-masing memiliki data rapat terpisah. Ini disebut "Multi-Tenancy".
+ *
+ * Setiap User bisa bergabung di beberapa Team, dan setiap Team punya anggota (Membership)
+ * dengan Role tersendiri (misal: Owner, Admin, Member).
+ *
+ * Ketika user berpindah Team, data rapat yang tampil di dashboardnya akan otomatis berubah.
+ */
 class TeamController extends Controller
 {
     /**

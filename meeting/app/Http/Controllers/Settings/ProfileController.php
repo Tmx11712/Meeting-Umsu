@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: SETTINGS CONTROLLER (Profil Pengguna)]
+ * Controller ini mengelola halaman pengaturan profil user yang sedang login.
+ *
+ * Perbedaan dengan `UserManagementController`:
+ * - `UserManagementController` → Dikelola Admin, bisa edit user SIAPAPUN.
+ * - `ProfileController`        → Dikelola oleh user sendiri, hanya bisa edit profil DIRI SENDIRI.
+ *
+ * Untuk identifikasi user yang sedang login, digunakan `$request->user()` atau `Auth::user()`.
+ */
 class ProfileController extends Controller
 {
     /**

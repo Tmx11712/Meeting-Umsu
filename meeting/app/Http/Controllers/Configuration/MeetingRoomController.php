@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 use App\Models\MeetingRoom;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: CRUD MASTER DATA (Ruangan Rapat)]
+ * Controller ini mengelola CRUD untuk data Master Ruangan Rapat.
+ *
+ * Tabel master ini memungkinkan Admin menambah/mengubah/menonaktifkan ruangan
+ * tanpa perlu menyentuh kode sama sekali. Data ruangan ini dipakai saat Admin
+ * membuat jadwal rapat baru sebagai pilihan dropdown lokasi rapat.
+ */
 class MeetingRoomController extends Controller
 {
     public function index()

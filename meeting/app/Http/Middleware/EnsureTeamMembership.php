@@ -9,6 +9,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: TEAM MEMBERSHIP GUARD]
+ * Middleware ini memastikan user yang mengakses halaman Team sudah benar-benar
+ * menjadi anggota dari Team tersebut.
+ *
+ * Mengapa ini perlu? Tanpa middleware ini, user bisa saja mengetikkan URL Team lain
+ * secara manual di browser dan mengakses data Team yang bukan miliknya.
+ * Middleware ini adalah benteng pertahanan terakhir di level URL untuk keamanan multi-tenancy.
+ */
 class EnsureTeamMembership
 {
     /**

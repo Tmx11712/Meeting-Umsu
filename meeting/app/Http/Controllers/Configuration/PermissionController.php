@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: MANAJEMEN PERMISSION (Izin Akses Atomik)]
+ * Controller ini mengelola CRUD untuk Permission — unit terkecil dari sistem otorisasi.
+ *
+ * Naming convention Permission di aplikasi ini menggunakan format: `[resource].[aksi]`
+ * Contoh: `meeting.create`, `meeting.delete`, `minute.approve`, `user.manage`.
+ *
+ * Permission yang dibuat di sini kemudian bisa di-assign ke Role melalui halaman Role-Permission,
+ * dan Role tersebut kemudian diberikan ke User. Inilah inti dari sistem RBAC aplikasi ini.
+ */
 class PermissionController extends Controller
 {
     public function index(Request $request): Response
