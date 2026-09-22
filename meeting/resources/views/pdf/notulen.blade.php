@@ -16,9 +16,11 @@
             transform: rotate(-45deg);
             white-space: nowrap;
         }
-        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .header p { margin: 5px 0 0; color: #666; }
+        .kop-surat { width: 100%; margin-bottom: 0; }
+        .kop-surat img { width: 100%; display: block; }
+        .header { text-align: center; border-top: 3px solid #1a1a1a; border-bottom: 3px solid #1a1a1a; padding: 8px 0; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 14px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .header p { margin: 3px 0 0; font-size: 12px; font-weight: bold; }
         .info-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; border: 1px solid #ddd; }
         .info-table th, .info-table td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
         .info-table th { text-align: left; width: 150px; background-color: #f8fafc; }
@@ -46,6 +48,9 @@
         Dicetak oleh Sistem e-Notulen pada {{ now()->translatedFormat('d F Y H:i') }}
     </div>
 
+    <div class="kop-surat">
+        <img src="{{ public_path('images/kop.png') }}" alt="Kop Surat UMSU">
+    </div>
     <div class="header">
         <h1>NOTULEN RAPAT</h1>
         <p>{{ strtoupper($meeting->title) }}</p>
