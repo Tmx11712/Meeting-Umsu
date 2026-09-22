@@ -137,16 +137,15 @@ return;
         };
     }, []);
 
-    // Reset UI to 00:00:00 when a new recording is successfully saved (e.g. via Websocket sync)
+    // Reset UI to 00:00:00 only when a new recording is successfully saved
+    const prevRecordingsLength = useRef(meeting.recordings?.length || 0);
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (!isRecording && !isServerRecording) {
-                setRecordingDuration(0);
-            }
-        }, 0);
-
-        return () => clearTimeout(timer);
-    }, [meeting.recordings?.length, isRecording, isServerRecording]);
+        const currentLength = meeting.recordings?.length || 0;
+        if (currentLength > prevRecordingsLength.current) {
+            setRecordingDuration(0);
+        }
+        prevRecordingsLength.current = currentLength;
+    }, [meeting.recordings?.length]);
 
     const formatDuration = (seconds: number) => {
         const h = Math.floor(seconds / 3600);
