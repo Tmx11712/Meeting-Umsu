@@ -9,6 +9,17 @@ use App\Models\MeetingTranscriptCorrection;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: TAHAP KOREKSI TRANSKRIP]
+ * Controller ini mengelola tahap ke-3 dari alur notulensi: Koreksi Teks Transkrip AI.
+ *
+ * Setelah AI selesai mentranskrip audio, hasilnya tidak langsung diterima mentah-mentah.
+ * Notulis/Admin diberi kesempatan untuk mengoreksi kesalahan transkripsi (nama orang salah ejaan,
+ * istilah teknis tidak dikenali AI, dll) melalui halaman yang dikelola controller ini.
+ *
+ * Setiap koreksi disimpan di tabel `meeting_transcript_corrections` (bukan menimpa teks asli),
+ * sehingga perbandingan teks asli AI vs teks terkoreksi selalu bisa dilihat.
+ */
 class TranscriptCorrectionController extends Controller
 {
     public function index(Request $request)

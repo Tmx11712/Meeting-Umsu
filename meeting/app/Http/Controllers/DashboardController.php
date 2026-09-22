@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: SINGLE ACTION CONTROLLER (Invokable)]
+ * Controller ini menggunakan pola "Invokable Controller" - yaitu controller yang hanya punya SATU method: `__invoke`.
+ * Cocok digunakan untuk halaman/aksi tunggal yang tidak membutuhkan banyak method CRUD.
+ *
+ * Perhatikan juga penggunaan `Cache::remember()` di dalam method ini.
+ * Ini adalah teknik "Query Result Caching": hasil query yang lambat (menghitung statistik) disimpan
+ * sementara di cache (Redis/File). Jika ada request dalam 60 detik berikutnya, hasilnya
+ * diambil dari cache (super cepat!) dan database tidak perlu dihitung ulang.
+ */
 class DashboardController extends Controller
 {
     public function __invoke(Request $request): Response

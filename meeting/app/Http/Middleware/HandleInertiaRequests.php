@@ -8,6 +8,17 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
 
+/**
+ * [EDUKASI ARSITEKTUR: INERTIA MIDDLEWARE - JEMBATAN BACKEND DAN FRONTEND]
+ * Ini adalah middleware terpenting di aplikasi ini. Setiap request web PASTI melewati middleware ini.
+ *
+ * Fungsi utamanya: method `share()` di dalam class ini adalah tempat kita "menginjeksi" (memasukkan)
+ * data dari backend PHP ke dalam setiap halaman React secara global.
+ * Data yang di-share di sini (seperti `auth.user`, `menus`, `flash`) bisa diakses
+ * dari SEMUA halaman React tanpa perlu di-pass satu per satu dari masing-masing Controller.
+ *
+ * Analoginya seperti "Variabel Global" yang tersedia di seluruh halaman web.
+ */
 class HandleInertiaRequests extends Middleware
 {
     /**

@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: HALAMAN DASHBOARD KONFIGURASI]
+ * Controller ini menampilkan halaman utama (landing page) dari section Konfigurasi.
+ * Fungsinya mirip DashboardController utama, namun khusus menampilkan ringkasan statistik
+ * data konfigurasi seperti jumlah user, role, izin akses, dan menu yang terdaftar.
+ */
 class ConfigurationController extends Controller
 {
     public function index(): Response

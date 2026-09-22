@@ -13,6 +13,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: APPROVAL WORKFLOW]
+ * Controller ini mengelola alur persetujuan (approval workflow) notulensi rapat oleh Pimpinan.
+ *
+ * Alur kerja:
+ * 1. Notulis selesai menyusun notulen → status menjadi 'menunggu_persetujuan'.
+ * 2. Pimpinan membuka halaman ini, membaca notulen, lalu memilih: Setujui atau Tolak.
+ * 3. Jika DISETUJUI: status rapat difinalisasi, notulen berstatus 'disetujui', file PDF siap dicetak.
+ * 4. Jika DITOLAK: notulen dikembalikan ke Notulis untuk direvisi beserta catatan penolakan.
+ *
+ * Seluruh aksi di sini dibungkus dengan `DB::transaction()` untuk memastikan konsistensi data.
+ */
 class MeetingApprovalController extends Controller
 {
     public function show(Meeting $meeting)

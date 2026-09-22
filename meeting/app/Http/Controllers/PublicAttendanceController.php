@@ -8,6 +8,16 @@ use App\Models\MeetingAttendance;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+/**
+ * [EDUKASI ARSITEKTUR: PUBLIC ROUTE (Akses Tanpa Login)]
+ * Controller ini menangani halaman absensi yang BISA DIAKSES SIAPA SAJA tanpa perlu login.
+ *
+ * Halaman ini muncul ketika peserta membuka URL dari QR Code yang di-scan.
+ * Karena tamu/peserta belum tentu punya akun, route ini dikecualikan dari middleware `auth`.
+ * Peserta cukup mengisi nama dan email mereka, sistem otomatis mencatat kehadiran.
+ *
+ * Ini adalah titik masuk paling krusial untuk fitur absensi real-time.
+ */
 class PublicAttendanceController extends Controller
 {
     public function show(Meeting $meeting)

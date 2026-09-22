@@ -11,6 +11,19 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: RESOURCEFUL CONTROLLER (CRUD)]
+ * Controller ini mengikuti pola "Resource Controller" standar Laravel (CRUD: Create, Read, Update, Delete).
+ * Setiap method punya tanggung jawabnya masing-masing:
+ * - `index()`   → Tampilkan daftar semua user.
+ * - `create()`  → Tampilkan form untuk membuat user baru.
+ * - `store()`   → Simpan data user baru dari form ke database.
+ * - `edit()`    → Tampilkan form untuk mengedit user yang sudah ada.
+ * - `update()`  → Perbarui data user di database.
+ * - `destroy()` → Hapus user dari database.
+ *
+ * Pola ini sangat standar dan dimengerti oleh semua programmer Laravel di seluruh dunia.
+ */
 class UserManagementController extends Controller
 {
     public function index(Request $request): Response

@@ -17,6 +17,17 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
+/**
+ * [EDUKASI ARSITEKTUR: CONTROLLER ABSENSI]
+ * Controller ini mengelola semua operasi terkait kehadiran (absensi) peserta rapat.
+ *
+ * Fitur unggulan di controller ini:
+ * - `generateQr()`: Membuat QR Code dinamis menggunakan library `endroid/qr-code`.
+ *   QR Code berisi URL unik, sehingga peserta cukup scan untuk langsung absen.
+ * - `publicScan()`: Endpoint publik yang dipanggil setelah QR di-scan.
+ *   Endpoint ini TIDAK membutuhkan login (guest middleware), sangat krusial agar scan bisa dilakukan siapapun.
+ * - `syncIrvanCloud()`: Sinkronisasi data kehadiran dari Irvan Cloud ke database lokal.
+ */
 class AttendanceController extends Controller
 {
     public function index(Request $request): Response
