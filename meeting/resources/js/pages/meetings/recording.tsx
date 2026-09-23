@@ -362,6 +362,7 @@ return;
     };
 
     const hasRecordings = meeting?.recordings && meeting.recordings.length > 0;
+    const isAnyRecordingTranscribing = meeting?.recordings?.some((r: any) => r.status === 'transcribing' || r.status === 'processing');
 
     return (
         <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -623,24 +624,18 @@ return;
                                 ))}
                             </div>
                         </div>
-                    </div>
-
                     {/* Selesai Rekaman Action - Hanya untuk yang bisa transkrip (Bag. Umum / Admin) */}
-                    {canTranscribe && !isRecording && !isServerRecording && !recordedBlob && (() => {
-                        const isAnyRecordingTranscribing = meeting?.recordings?.some((r: any) => r.status === 'transcribing' || r.status === 'processing');
-                        
-                        return (
-                            <div className="flex justify-end">
-                                <Button 
-                                    onClick={finishRecording}
-                                    disabled={isAnyRecordingTranscribing}
-                                    className={`font-bold shadow-sm h-11 px-6 text-sm ${isAnyRecordingTranscribing ? 'bg-slate-400 cursor-not-allowed hover:bg-slate-400 opacity-90' : 'bg-emerald-600 hover:bg-emerald-700'}`}
-                                >
-                                    {isAnyRecordingTranscribing ? 'Menunggu AI Selesai...' : (canTranscribe ? 'Selesai & Lanjut Koreksi' : 'Selesai Rekaman')}
-                                </Button>
-                            </div>
-                        );
-                    })()}
+                    {canTranscribe && !isRecording && !isServerRecording && !recordedBlob && (
+                        <div className="flex justify-end">
+                            <Button 
+                                onClick={finishRecording}
+                                disabled={isAnyRecordingTranscribing}
+                                className={`font-bold shadow-sm h-11 px-6 text-sm ${isAnyRecordingTranscribing ? 'bg-slate-400 cursor-not-allowed hover:bg-slate-400 opacity-90 text-white' : 'bg-emerald-600 hover:bg-emerald-700'}`}
+                            >
+                                {isAnyRecordingTranscribing ? 'Menunggu AI Selesai...' : (canTranscribe ? 'Selesai & Lanjut Koreksi' : 'Selesai Rekaman')}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
