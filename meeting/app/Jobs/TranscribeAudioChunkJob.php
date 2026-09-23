@@ -95,12 +95,10 @@ class TranscribeAudioChunkJob implements ShouldQueue
                     $rows[] = [
                         'recording_id' => $chunk->recording_id,
                         'chunk_id' => $chunk->id,
-                        'sequence_order' => $segmentIndex, // Sudah tidak dipakai untuk global ordering, tapi disimpan
-                        'speaker_name' => 'Speaker '.rand(1, 3), // Atau logic identifikasi speaker
-                        'start_time' => date('H:i:s', (int) $s['start']),
-                        'end_time' => date('H:i:s', (int) $s['end']),
+                        'sequence_order' => $segmentIndex, 
+                        'speaker' => 'Speaker '.rand(1, 3),
                         'timestamp_seconds' => $s['start'],
-                        'content' => $s['text'],
+                        'text' => $s['text'],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
