@@ -8,6 +8,7 @@ use App\Events\MeetingsListUpdated;
 use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreRecordingRequest;
 use App\Http\Requests\Meeting\TranscribeRecordingRequest;
+use App\Jobs\PrepareAudioForTranscriptionJob;
 use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
@@ -150,7 +151,7 @@ class MeetingRecordingController extends Controller
         ])->save();
 
         // Dispatch job for transcription
-        TranscribeAudioJob::dispatch($recording->id);
+        $this->dispatchTranscriptionJob($recording);
 
         $meeting->current_stage = max($meeting->current_stage, 3);
         $meeting->save();
@@ -196,7 +197,7 @@ class MeetingRecordingController extends Controller
                 'openai_model_used' => config('services.openai.transcribe_model'),
             ])->save();
 
-            TranscribeAudioJob::dispatch($recording->id);
+            $this->dispatchTranscriptionJob($recording);
             $transcriptionStarted = true;
         }
 
@@ -224,6 +225,20 @@ class MeetingRecordingController extends Controller
 
         return redirect()->route('meetings.show', $meeting->id)
             ->with('success', 'Tahap rekaman telah diselesaikan dan diteruskan ke bagian terkait untuk transkripsi.');
+    }
+
+    /**
+     * Dispatch transcription job based on feature toggle.
+     */
+    private function dispatchTranscriptionJob($recording)
+    {
+        $enabled = filter_var(env('TRANSCRIPTION_CONCURRENT_ENABLED', true), FILTER_VALIDATE_BOOLEAN);
+
+        if ($enabled) {
+            PrepareAudioForTranscriptionJob::dispatch($recording->id);
+        } else {
+            TranscribeAudioJob::dispatch($recording->id);
+        }
     }
 
     /**

@@ -71,7 +71,7 @@ class TranscribeAudioJob implements ShouldQueue
 
             // Delete any existing transcripts (e.g. live transcripts from browser) for this recording
             // to avoid duplicate transcripts
-            MeetingTranscript::where('recording_id', $recording->id)->delete();
+            MeetingTranscript::query()->where('recording_id', $recording->id)->delete();
 
             // Save each segment as a separate transcript with real timestamps
             $segments = $result['segments'] ?? [];
