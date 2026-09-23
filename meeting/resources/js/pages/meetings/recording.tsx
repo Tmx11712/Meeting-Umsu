@@ -248,7 +248,24 @@ fileInputRef.current.value = '';
             const audioTracks = stream.getAudioTracks();
             const audioOnlyStream = new MediaStream(audioTracks);
 
-            const mediaRecorder = new MediaRecorder(audioOnlyStream);
+            const preferredMimeType = 'audio/webm;codecs=opus';
+            const fallbackMimeType = 'audio/webm';
+
+            let mimeType = '';
+
+            if (MediaRecorder.isTypeSupported(preferredMimeType)) {
+                mimeType = preferredMimeType;
+            } else if (MediaRecorder.isTypeSupported(fallbackMimeType)) {
+                mimeType = fallbackMimeType;
+            }
+
+            if (!mimeType) {
+                throw new Error('Browser tidak mendukung format audio recording WebM yang diperlukan oleh sistem.');
+            }
+
+            const mediaRecorder = new MediaRecorder(audioOnlyStream, {
+                mimeType,
+            });
             mediaRecorderRef.current = mediaRecorder;
 
             mediaRecorder.ondataavailable = (e) => {
@@ -258,7 +275,7 @@ fileInputRef.current.value = '';
             };
 
             mediaRecorder.onstop = () => {
-                const fullBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
+                const fullBlob = new Blob(chunksRef.current, { type: mimeType });
                 
                 // Inject duration metadata into the WebM blob so the audio player knows its length
                 setRecordingDuration(currentDuration => {
@@ -326,6 +343,11 @@ return;
         if (!recordedBlob) {
             showError('Perhatian', 'Belum ada rekaman audio yang siap dikirim.');
 
+            return;
+        }
+
+        if (!recordedBlob.type.includes('webm')) {
+            showError('Gagal', 'Format audio tidak kompatibel dengan sistem (bukan WebM).');
             return;
         }
 
