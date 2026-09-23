@@ -109,7 +109,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
 
                 // Bulk insert
                 if (! empty($rows)) {
-                    MeetingTranscript::insert($rows);
+                    DB::table('meeting_transcripts')->insert($rows);
                 }
 
                 // Mark chunk completed

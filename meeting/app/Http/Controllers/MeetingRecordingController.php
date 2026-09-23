@@ -230,7 +230,7 @@ class MeetingRecordingController extends Controller
     /**
      * Dispatch transcription job based on feature toggle.
      */
-    private function dispatchTranscriptionJob($recording)
+    private function dispatchTranscriptionJob(MeetingRecording $recording)
     {
         $enabled = filter_var(env('TRANSCRIPTION_CONCURRENT_ENABLED', true), FILTER_VALIDATE_BOOLEAN);
 
