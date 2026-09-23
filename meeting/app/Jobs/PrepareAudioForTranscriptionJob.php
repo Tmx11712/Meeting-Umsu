@@ -23,9 +23,9 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
 
     public int $timeout = 3600; // 1 jam maksimum untuk preparation
 
-    protected int $recordingId;
+    protected string $recordingId;
 
-    public function __construct(int $recordingId)
+    public function __construct(string $recordingId)
     {
         $this->recordingId = $recordingId;
     }
