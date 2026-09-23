@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download } from 'lucide-react';
+import { Search, Filter, Calendar, Edit3, Trash2, QrCode, Download, Loader2 } from 'lucide-react';
 import { useEffect, useCallback, useRef, useState, lazy, Suspense } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
+import { toast } from 'sonner';
 
 // Lazy-load QRCodeCanvas agar tidak crash saat SSR
 const QRCodeCanvas = lazy(() => import('qrcode.react').then(m => ({ default: m.QRCodeCanvas })));
@@ -15,6 +16,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit, guardAction } = usePermissions();
     const [qrMeeting, setQrMeeting] = useState<any>(null);
     const [isClient, setIsClient] = useState(false);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -250,7 +252,7 @@ clearTimeout(searchTimeout.current);
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                                 {meetings?.data && meetings.data.length > 0 ? (
                                     meetings.data.map((meeting: any, index: number) => (
-                                        <tr key={meeting.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group">
+                                        <tr key={meeting.id} className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group ${deletingId === meeting.id ? 'opacity-50 pointer-events-none' : ''}`}>
                                             <td className="px-4 py-5 text-slate-500 dark:text-slate-400 font-medium">
                                                 {((meetings.current_page - 1) * meetings.per_page) + index + 1}
                                             </td>
@@ -291,7 +293,7 @@ clearTimeout(searchTimeout.current);
                                                         <QrCode className="w-4 h-4" />
                                                     </button>
                                                     <button 
-                                                        className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all"
+                                                        className="p-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-all disabled:opacity-50 flex items-center gap-2"
                                                         onClick={async () => {
                                                             if (!guardAction('meeting')) {
                                                                 return;
@@ -301,12 +303,29 @@ clearTimeout(searchTimeout.current);
                                                                 router.delete(`/meetings/${meeting.id}`, {
                                                                     preserveScroll: true,
                                                                     preserveState: true,
+                                                                    onBefore: () => setDeletingId(meeting.id),
+                                                                    onSuccess: () => {
+                                                                        toast.success('Data berhasil dihapus.');
+                                                                    },
+                                                                    onError: async () => {
+                                                                        const { showError } = await import('@/lib/sweetalert');
+                                                                        showError('Gagal', 'Terjadi kesalahan saat menghapus data.');
+                                                                    },
+                                                                    onFinish: () => setDeletingId(null),
                                                                 });
                                                             }
                                                         }}
                                                         title="Hapus Rapat"
+                                                        disabled={deletingId === meeting.id}
                                                     >
-                                                        <Trash2 className="w-4 h-4" />
+                                                        {deletingId === meeting.id ? (
+                                                            <>
+                                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                                <span className="text-xs font-medium">Menghapus...</span>
+                                                            </>
+                                                        ) : (
+                                                            <Trash2 className="w-4 h-4" />
+                                                        )}
                                                     </button>
                                                 </div>
                                             </td>
