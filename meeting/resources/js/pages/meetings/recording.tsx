@@ -623,21 +623,27 @@ return;
                                 ))}
                             </div>
                         </div>
+                    </div>
 
-                        {/* Selesai Rekaman Action - Hanya untuk yang bisa transkrip (Bag. Umum / Admin) */}
-                        {canTranscribe && !isRecording && !isServerRecording && !recordedBlob && (
+                    {/* Selesai Rekaman Action - Hanya untuk yang bisa transkrip (Bag. Umum / Admin) */}
+                    {canTranscribe && !isRecording && !isServerRecording && !recordedBlob && (() => {
+                        const isAnyRecordingTranscribing = meeting?.recordings?.some((r: any) => r.status === 'transcribing' || r.status === 'processing');
+                        
+                        return (
                             <div className="flex justify-end">
                                 <Button 
                                     onClick={finishRecording}
-                                    className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-sm h-11 px-6 text-sm"
+                                    disabled={isAnyRecordingTranscribing}
+                                    className={`font-bold shadow-sm h-11 px-6 text-sm ${isAnyRecordingTranscribing ? 'bg-slate-400 cursor-not-allowed hover:bg-slate-400 opacity-90' : 'bg-emerald-600 hover:bg-emerald-700'}`}
                                 >
-                                    {canTranscribe ? 'Selesai & Lanjut Koreksi' : 'Selesai Rekaman'}
+                                    {isAnyRecordingTranscribing ? 'Menunggu AI Selesai...' : (canTranscribe ? 'Selesai & Lanjut Koreksi' : 'Selesai Rekaman')}
                                 </Button>
                             </div>
-                        )}
-                    </div>
-                )}
-            </div>
+                        );
+                    })()}
+                </div>
+            )}
+        </div>
 
             {/* QR Absensi Modal */}
             <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>

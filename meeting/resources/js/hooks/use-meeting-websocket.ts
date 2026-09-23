@@ -14,11 +14,9 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
     const isAdmin = roles.includes('Super Admin') || roles.includes('Administrator');
     const isUmum = roles.includes('Bag. Umum');
     const isHumas = roles.includes('Bag. Humas');
+    const isPimpinan = roles.includes('Pimpinan');
     const isOperator = isAdmin || isUmum || isHumas;
 
-    // Logic for routing based on stage (only used for realtime advancement, not on mount)
-    // Humas tetap di ruang rekaman, hanya Admin & Bag. Umum yang maju ke koreksi/absensi/review.
-    // Humas baru diarahkan saat stage 6+ (approval) untuk melihat hasil akhir.
     const isAdminOrUmum = isAdmin || isUmum;
 
     const checkAndRedirect = useCallback((stage: number): boolean => {
@@ -28,33 +26,41 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
 
         const currentPath = window.location.pathname;
         
-        // Stage 3-5: Hanya Admin & Bag. Umum yang diarahkan. Humas tetap di ruang rekaman.
+        // Stage 3-5: Hanya Admin & Bag. Umum yang diarahkan (workflow operasional internal).
+        // Bag. Humas TETAP di halaman saat ini (biasanya ruang rekaman) dan tidak ditarik ke dapur notulen.
         if (stage === 3 && !currentPath.includes('/correction')) {
             if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/correction`);
-
                 return true; 
             }
         } else if (stage === 4 && !currentPath.includes('/attendance')) {
             if (isAdminOrUmum) {
                 router.visit(`/meetings/${meetingId}/attendance`);
-
                 return true; 
             }
         } else if (stage === 5 && !currentPath.includes('/review')) {
-            // Stage 5 (Review): SEMUA role diarahkan ke review agar bisa melihat hasil notulen AI
-            router.visit(`/meetings/${meetingId}/review`);
-
-            return true;
+            if (isAdminOrUmum) {
+                router.visit(`/meetings/${meetingId}/review`);
+                return true;
+            }
         } else if (stage >= 6 && !currentPath.includes('/approval')) {
-            // Stage 6+: Semua role (termasuk Humas) diarahkan ke halaman approval
-            router.visit(`/meetings/${meetingId}/approval`);
-
-            return true; 
+            // Stage 6+: Redirect spesifik berdasarkan role
+            if (isPimpinan || isAdmin) {
+                // Pimpinan (dan Admin) diarahkan ke halaman Approval
+                router.visit(`/meetings/${meetingId}/approval`);
+                return true; 
+            } else if (isHumas || isUmum) {
+                // Humas dan Umum diarahkan ke halaman Detail Rapat utama
+                // (karena mereka tidak punya wewenang di halaman Approval internal pimpinan)
+                if (!currentPath.endsWith(`/meetings/${meetingId}`)) {
+                    router.visit(`/meetings/${meetingId}`);
+                    return true;
+                }
+            }
         }
         
         return false;
-    }, [meetingId, isAdminOrUmum]);
+    }, [meetingId, isAdminOrUmum, isPimpinan, isAdmin, isHumas, isUmum]);
 
     const safeReload = useCallback(() => {
         router.reload({

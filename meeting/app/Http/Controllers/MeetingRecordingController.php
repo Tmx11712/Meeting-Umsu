@@ -171,6 +171,12 @@ class MeetingRecordingController extends Controller
     {
         abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
 
+        // Validasi: Jangan izinkan pindah ke tahap koreksi jika masih ada yang ditranskrip
+        $isAnyTranscribing = $meeting->recordings()->whereIn('status', ['transcribing', 'processing'])->exists();
+        if ($isAnyTranscribing) {
+            return redirect()->back()->with('error', 'Gagal beralih tahap. Harap tunggu AI menyelesaikan semua proses transkripsi terlebih dahulu.');
+        }
+
         // Otomatis jalankan transkripsi untuk semua rekaman yang belum selesai (uploaded, failed, atau transcribing tanpa transkrip)
         $untranscribedRecordings = $meeting->recordings()
             ->where(function ($query) {
