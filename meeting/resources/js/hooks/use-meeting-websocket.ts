@@ -108,11 +108,15 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
         }
 
         const meetingChannel = echo.channel(channelName);
-        const globalChannel = echo.channel('meetings');
-
         const handleMeetingUpdate = (e: any) => {
             console.log(`[WS] Meeting ${meetingId} updated:`, e);
             
+            if (e.type === 'deleted') {
+                // Rapat telah dihapus, arahkan langsung ke dashboard tanpa safeReload
+                router.visit('/dashboard', { replace: true });
+                return;
+            }
+
             if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
                 const redirected = checkAndRedirect(e.meeting.current_stage);
 
@@ -121,31 +125,18 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
                 }
             } else if (e.type === 'approval') {
                 router.visit('/dashboard');
-            } else if (e.type === 'deleted') {
-                router.visit('/dashboard', { replace: true });
             } else {
                 safeReload();
             }
         };
 
-        const handleGlobalUpdate = (e: any) => {
-            console.log(`[WS] Global meetings list updated:`, e);
-            safeReload();
-        };
-
         meetingChannel.listen('MeetingUpdated', handleMeetingUpdate);
         meetingChannel.listen('.MeetingUpdated', handleMeetingUpdate);
-
-        globalChannel.listen('MeetingsListUpdated', handleGlobalUpdate);
-        globalChannel.listen('.MeetingsListUpdated', handleGlobalUpdate);
 
         return () => {
             meetingChannel.stopListening('MeetingUpdated');
             meetingChannel.stopListening('.MeetingUpdated');
             echo.leaveChannel(channelName);
-
-            globalChannel.stopListening('MeetingsListUpdated');
-            globalChannel.stopListening('.MeetingsListUpdated');
         };
     }, [meetingId, checkAndRedirect, safeReload]);
 }
