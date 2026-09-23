@@ -53,11 +53,26 @@ class Meeting extends Model
             $model->actionItems()->delete();
             $model->approval()->delete();
             $model->attendances()->delete();
-            $model->documents()->delete();
+            
+            // Delete documents physically
+            $model->documents->each(function ($doc) {
+                $doc->delete(); 
+            });
+            
             $model->minutes()->delete();
             $model->participants()->delete();
-            $model->recordings()->delete();
+            
+            // Delete recordings physically
+            $model->recordings->each(function ($recording) {
+                $recording->delete(); 
+            });
+            
             $model->transcripts()->delete();
+
+            // Cleanup residual meeting directories in Storage
+            $disk = config('filesystems.default');
+            \Illuminate\Support\Facades\Storage::disk($disk)->deleteDirectory("meetings/{$model->id}");
+            \Illuminate\Support\Facades\Storage::disk($disk)->deleteDirectory("recordings/{$model->id}-" . \Illuminate\Support\Str::slug($model->title));
         });
 
         static::saved(function ($model) {

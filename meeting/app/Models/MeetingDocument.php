@@ -32,6 +32,16 @@ class MeetingDocument extends Model
         'uploaded_by',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($model) {
+            $disk = config('filesystems.default');
+            if ($model->file_path) {
+                \Illuminate\Support\Facades\Storage::disk($disk)->delete($model->file_path);
+            }
+        });
+    }
+
     public function meeting()
     {
         return $this->belongsTo(Meeting::class);

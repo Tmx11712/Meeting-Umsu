@@ -22,6 +22,18 @@ class MeetingRecording extends Model
         'openai_model_used',
     ];
 
+    protected static function booted()
+    {
+        static::deleting(function ($model) {
+            $disk = config('filesystems.default');
+            if ($model->file_path) {
+                \Illuminate\Support\Facades\Storage::disk($disk)->delete($model->file_path);
+            }
+            // Hapus folder chunks milik recording ini jika ada
+            \Illuminate\Support\Facades\Storage::disk($disk)->deleteDirectory("meetings/{$model->meeting_id}/recordings/{$model->id}");
+        });
+    }
+
     public function meeting()
     {
         return $this->belongsTo(Meeting::class);
