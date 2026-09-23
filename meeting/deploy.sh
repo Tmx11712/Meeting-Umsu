@@ -29,7 +29,7 @@ docker compose -f docker-compose.prod.yml up -d
 
 # Sinkronkan aset frontend terbaru ke volume publik Nginx agar selalu update
 echo "Menyinkronkan aset frontend terbaru..."
-docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/build /var/www/html/public/ 2>/dev/null || true"
+docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/* /var/www/html/public/ 2>/dev/null || true"
 
 
 # 6. Optimasi Laravel dan jalankan migrasi database

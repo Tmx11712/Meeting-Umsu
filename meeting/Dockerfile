@@ -81,6 +81,9 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 COPY --from=node-builder /app/public/build /var/www/html/public/build
 COPY --from=node-builder /app/public/build /var/www/html/public-assets/build
 
+# Copy static images into public-assets so they can be synced to the volume on startup
+RUN cp -r /var/www/html/public/images /var/www/html/public-assets/images
+
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
