@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('meeting_transcription_chunks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('recording_id')->constrained('meeting_recordings')->cascadeOnDelete();
+            $table->foreignUuid('recording_id')->constrained('meeting_recordings')->cascadeOnDelete();
             $table->integer('chunk_index');
             $table->float('start_seconds');
             $table->float('end_seconds');
