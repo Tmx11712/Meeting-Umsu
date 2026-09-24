@@ -572,7 +572,7 @@ return;
                             <Send className="w-5 h-5 ml-0.5" />
                         </button>
                         
-                        <h3 className="text-[14px] font-bold text-slate-900 mb-1">Kirim audio ke backend</h3>
+                        <h3 className="text-[14px] font-bold text-slate-900 mb-1">Kirim audio agar ditranskrip</h3>
                         <p className="text-[12px] text-slate-500">Pastikan proses rekaman telah dihentikan sebelum mengirim file</p>
                         
                         {recordedBlob && !isRecording && (
