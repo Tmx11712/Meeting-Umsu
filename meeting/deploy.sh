@@ -1,42 +1,40 @@
 #!/bin/bash
 set -e
 # ========================================================
-# Script Deployment untuk E-Notulen di Proxmox (LXC 101)
+# Script Deployment untuk E-Notulen di Server Resmi Kampus (Bare-metal Ubuntu)
+# Pastikan dijalankan dari direktori aplikasi (/var/www/enotulen)
 # ========================================================
 
-echo "Mulai proses deployment..."
+echo "Mulai proses deployment ke Server Produksi Kampus..."
 
-# 1. Pastikan Git & Docker terinstall (asumsi sudah ada di LXC 101)
-# 2. Tarik update terbaru dari repository
-echo "Menarik update dari Git..."
+# 1. Tarik update terbaru dari Git
+echo "Menarik update terbaru dari GitHub..."
 git pull origin main
 
-# 3. Pastikan konfigurasi .env sudah sesuai dengan IP LXC Proxmox:
-# DB_HOST=10.10.10.2 (LXC 100 - Postgres)
-# REDIS_HOST=10.10.10.4 (LXC 102 - Redis)
-# FILESYSTEM_DISK=s3
-# AWS_ENDPOINT=http://10.10.10.5:9000 (LXC 103 - MinIO)
-# AWS_BUCKET=meeting
+# 2. Install/Update dependensi PHP
+echo "Menginstall dependensi PHP (Composer)..."
+composer install --optimize-autoloader --no-dev
 
-# 4. Build ulang image aplikasi
-echo "Membangun ulang image Docker..."
-docker compose -f docker-compose.prod.yml build
+# 3. Install/Update dependensi Node.js & Build aset frontend
+echo "Membangun aset frontend (Vite)..."
+npm install
+npm run build
 
-# 5. Hentikan container lama (jika ada) dan jalankan yang baru
-echo "Menjalankan aplikasi..."
-docker compose -f docker-compose.prod.yml down
-docker compose -f docker-compose.prod.yml up -d
+# 4. Optimasi Laravel & Migrasi Database
+echo "Menjalankan optimasi cache dan migrasi database..."
+php artisan optimize:clear
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
 
-# Sinkronkan aset frontend terbaru ke volume publik Nginx agar selalu update
-echo "Menyinkronkan aset frontend terbaru..."
-docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/* /var/www/html/public/ 2>/dev/null || true"
+# (Opsional) Memastikan symbolic link storage
+php artisan storage:link || true
 
+# 5. Restart Worker & WebSocket (Supervisor)
+echo "Merestart Queue Worker dan WebSocket Reverb..."
+# Restart menggunakan supervisorctl untuk memuat perubahan kode terbaru ke memori
+sudo supervisorctl restart all
 
-# 6. Optimasi Laravel dan jalankan migrasi database
-echo "Menjalankan optimasi dan migrasi database..."
-docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
-docker compose -f docker-compose.prod.yml exec -T app php artisan optimize
-docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
-docker compose -f docker-compose.prod.yml exec -T app php artisan storage:link
-
-echo "Deployment selesai! Periksa log jika ada error dengan: docker compose -f docker-compose.prod.yml logs -f"
+echo "Deployment selesai dengan sukses! Aplikasi siap digunakan."
