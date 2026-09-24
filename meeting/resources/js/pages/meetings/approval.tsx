@@ -20,7 +20,8 @@ export default function MeetingApproval({ meeting, ...props }: { meeting: Meetin
     const minutes = meeting.minutes && meeting.minutes.length > 0 ? meeting.minutes[0] : null;
     const { auth } = usePage<any>().props;
     const { canEdit } = usePermissions();
-    const canManageApproval = canEdit('approval');
+    const canManageApproval = canEdit('approval'); // Untuk ACC / Tolak
+    const canEditMinutes = canEdit('minutes');     // Untuk Edit Manual / Edit Tindak Lanjut
     const [approving, setApproving] = useState(false);
     const [rejecting, setRejecting] = useState(false);
     const [notes, setNotes] = useState('');
@@ -272,7 +273,7 @@ return '-';
                             <FileText className="w-4 h-4 mr-2 text-slate-500" />
                             Ringkasan Notulen
                         </CardTitle>
-                        {canManageApproval && (
+                        {canEditMinutes && (
                             <Button variant="outline" size="sm" onClick={openEditModal} className="h-8 shadow-sm">
                                 <Edit3 className="w-3.5 h-3.5 mr-1.5" /> Edit Manual
                             </Button>
@@ -343,7 +344,7 @@ return '-';
                             <div className="mt-8">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="font-bold text-sm text-slate-900">Tindak Lanjut</h3>
-                                    {canManageApproval && (
+                                    {canEditMinutes && (
                                         <Button variant="outline" size="sm" onClick={openActionItemsModal} className="h-7 text-xs shadow-sm">
                                             <Edit3 className="w-3 h-3 mr-1" /> Edit
                                         </Button>

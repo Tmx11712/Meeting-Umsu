@@ -44,19 +44,9 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
                 return true;
             }
         } else if (stage >= 6 && !currentPath.includes('/approval')) {
-            // Stage 6+: Redirect spesifik berdasarkan role
-            if (isPimpinan || isAdmin) {
-                // Pimpinan (dan Admin) diarahkan ke halaman Approval
-                router.visit(`/meetings/${meetingId}/approval`);
-                return true; 
-            } else if (isHumas || isUmum) {
-                // Humas dan Umum diarahkan ke halaman Detail Rapat utama
-                // (karena mereka tidak punya wewenang di halaman Approval internal pimpinan)
-                if (!currentPath.endsWith(`/meetings/${meetingId}`)) {
-                    router.visit(`/meetings/${meetingId}`);
-                    return true;
-                }
-            }
+            // Stage 6+: Semua ditarik ke halaman Approval (Sesuai permintaan)
+            router.visit(`/meetings/${meetingId}/approval`);
+            return true;
         }
         
         return false;
