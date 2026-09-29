@@ -44,9 +44,14 @@ class ConfigurationController extends Controller
     public function checkOpenAiStatus()
     {
         try {
+            // Hit v1/chat/completions instead of v1/models to properly check if quota/credits are exhausted
             $response = \Illuminate\Support\Facades\Http::withToken(config('services.openai.key'))
                 ->timeout(5)
-                ->get('https://api.openai.com/v1/models');
+                ->post('https://api.openai.com/v1/chat/completions', [
+                    'model' => config('services.openai.summary_model', 'gpt-4o-mini'),
+                    'messages' => [['role' => 'user', 'content' => 'test']],
+                    'max_tokens' => 1
+                ]);
 
             if ($response->successful()) {
                 return response()->json(['status' => 'active', 'message' => 'Token & Saldo Aktif']);
