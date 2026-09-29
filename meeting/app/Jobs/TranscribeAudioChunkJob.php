@@ -124,6 +124,28 @@ class TranscribeAudioChunkJob implements ShouldQueue
             $totalTime = microtime(true) - $startTime;
             Log::info("[TranscribeChunk_{$chunk->chunk_index}] Selesai dalam {$totalTime} sec.");
 
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            @unlink($localChunkPath);
+            if ($e->response->status() === 429) {
+                Log::warning("[TranscribeChunk_{$chunk->chunk_index}] Rate Limit OpenAI (429). Menunggu 60 detik sebelum mencoba lagi.");
+                $this->release(60);
+                return;
+            }
+
+            $chunk->update([
+                'status' => 'failed',
+                'error_message' => $e->getMessage(),
+            ]);
+            Log::error("[TranscribeChunk_{$chunk->chunk_index}] Gagal API: ".$e->getMessage());
+            
+            /** @var MeetingRecording|null $recording */
+            $recording = MeetingRecording::query()->find($chunk->recording_id);
+            if ($recording && $recording->status !== 'completed') {
+                $recording->fill(['status' => 'failed'])->save();
+            }
+
+            $this->fail($e);
+
         } catch (\Throwable $e) {
             @unlink($localChunkPath);
             $chunk->update([
