@@ -100,6 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified', EnsureConfigAccess::class])->prefix('configuration')->name('configuration.')->group(function () {
     Route::get('/', [ConfigurationController::class, 'index'])->name('index');
+    Route::get('openai-status', [ConfigurationController::class, 'checkOpenAiStatus'])->name('openai-status');
 
     Route::resource('users', UserManagementController::class)->except(['show']);
     Route::resource('roles', RoleController::class);

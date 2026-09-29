@@ -40,4 +40,29 @@ class ConfigurationController extends Controller
             'stats' => $stats,
         ]);
     }
+
+    public function checkOpenAiStatus()
+    {
+        try {
+            $response = \Illuminate\Support\Facades\Http::withToken(config('services.openai.api_key'))
+                ->timeout(5)
+                ->get('https://api.openai.com/v1/models');
+
+            if ($response->successful()) {
+                return response()->json(['status' => 'active', 'message' => 'Token & Saldo Aktif']);
+            }
+
+            if ($response->status() === 429) {
+                return response()->json(['status' => 'exhausted', 'message' => 'Saldo Habis (429)']);
+            }
+            
+            if ($response->status() === 401) {
+                return response()->json(['status' => 'invalid', 'message' => 'API Key Tidak Valid']);
+            }
+
+            return response()->json(['status' => 'error', 'message' => 'Error: ' . $response->status()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Gagal koneksi ke server AI']);
+        }
+    }
 }
