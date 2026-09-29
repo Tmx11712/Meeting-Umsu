@@ -6,16 +6,24 @@
 
 set -e
 
-# --- Konfigurasi ---
-DB_HOST="10.10.10.2"
-DB_PORT="5432"
-DB_NAME="enotulen"
-DB_USER="enotulen"
-DB_PASSWORD="enotulen123!"
+# --- Baca konfigurasi dari file .env ---
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/.env"
 
-MINIO_ENDPOINT="http://10.10.10.5:9000"
-MINIO_ACCESS_KEY="umsu"
-MINIO_SECRET_KEY="UnggulMendunia2026!"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "ERROR: File .env tidak ditemukan di $SCRIPT_DIR"
+    exit 1
+fi
+
+DB_HOST=$(grep -E '^DB_HOST=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+DB_PORT=$(grep -E '^DB_PORT=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+DB_NAME=$(grep -E '^DB_DATABASE=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+DB_USER=$(grep -E '^DB_USERNAME=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+DB_PASSWORD=$(grep -E '^DB_PASSWORD=' "$ENV_FILE" | cut -d '=' -f2- | tr -d '"')
+
+MINIO_ENDPOINT=$(grep -E '^AWS_ENDPOINT=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+MINIO_ACCESS_KEY=$(grep -E '^AWS_ACCESS_KEY_ID=' "$ENV_FILE" | cut -d '=' -f2- | tr -d ' "')
+MINIO_SECRET_KEY=$(grep -E '^AWS_SECRET_ACCESS_KEY=' "$ENV_FILE" | cut -d '=' -f2- | tr -d '"')
 MINIO_BUCKET="backups"
 
 # --- Pilih file backup yang ingin di-restore ---
