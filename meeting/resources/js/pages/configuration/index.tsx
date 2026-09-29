@@ -1,7 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
-import { ShieldCheck, Users, Key, LayoutGrid, CheckSquare, ShieldBan, ChevronRight, List, MapPin } from 'lucide-react';
+import { ShieldCheck, Users, Key, LayoutGrid, CheckSquare, ShieldBan, ChevronRight, List, MapPin, Activity } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
+import { useState, useEffect } from 'react';
 
 type Props = {
     stats: {
@@ -92,6 +93,22 @@ export default function ConfigurationIndex({ stats }: Props) {
         },
     ];
 
+    const [aiStatus, setAiStatus] = useState<{status: string, message: string} | null>(null);
+    const [loadingAi, setLoadingAi] = useState(true);
+
+    useEffect(() => {
+        fetch('/configuration/openai-status')
+            .then(res => res.json())
+            .then(data => {
+                setAiStatus(data);
+                setLoadingAi(false);
+            })
+            .catch(err => {
+                setAiStatus({ status: 'error', message: 'Gagal mengecek status API' });
+                setLoadingAi(false);
+            });
+    }, []);
+
     return (
         <AppLayout breadcrumbs={[]}>
             <Head title="Configuration" />
@@ -103,6 +120,32 @@ export default function ConfigurationIndex({ stats }: Props) {
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {/* OpenAI Status Card */}
+                    <Card className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md">
+                        <div className="p-6">
+                            <div className={`mb-4 inline-flex size-12 items-center justify-center rounded-lg ${
+                                loadingAi ? 'bg-slate-100 text-slate-500' :
+                                aiStatus?.status === 'active' ? 'bg-green-100 text-green-600' :
+                                'bg-red-100 text-red-600'
+                            }`}>
+                                <Activity className={`size-6 ${loadingAi ? 'animate-pulse' : ''}`} />
+                            </div>
+                            <h3 className="text-lg font-bold text-slate-900 mb-1">OpenAI Status (AI)</h3>
+                            <p className="text-sm text-slate-500">
+                                Status kuota & token ChatGPT
+                            </p>
+                        </div>
+                        <div className={`border-t bg-slate-50 px-6 py-4 flex items-center justify-between text-sm font-bold ${
+                                loadingAi ? 'border-slate-100 text-slate-600' :
+                                aiStatus?.status === 'active' ? 'border-green-100 text-green-700 bg-green-50' :
+                                'border-red-100 text-red-700 bg-red-50'
+                            }`}>
+                            <div className="flex items-center gap-1">
+                                {loadingAi ? 'Mengecek status...' : aiStatus?.message}
+                            </div>
+                        </div>
+                    </Card>
+
                     {modules.map((module) => (
                         <Link key={module.title} href={module.href} className="block">
                             <Card className="group overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md hover:border-slate-300">
