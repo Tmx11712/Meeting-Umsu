@@ -44,7 +44,7 @@ class ConfigurationController extends Controller
     public function checkOpenAiStatus()
     {
         try {
-            $response = \Illuminate\Support\Facades\Http::withToken(config('services.openai.api_key'))
+            $response = \Illuminate\Support\Facades\Http::withToken(config('services.openai.key'))
                 ->timeout(5)
                 ->get('https://api.openai.com/v1/models');
 
