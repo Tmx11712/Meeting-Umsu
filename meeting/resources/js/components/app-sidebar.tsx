@@ -14,7 +14,8 @@ import {
     FileKey,
     LogOut,
     BookType,
-    Building
+    Building,
+    Activity
 } from 'lucide-react';
 import type {LucideIcon} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -53,6 +54,7 @@ const MAIN_MENU_ITEMS: MenuItem[] = [
 ];
 
 const CONFIG_MENU_ITEMS: MenuItem[] = [
+    { title: 'AI & Ringkasan', href: '/configuration', icon: Activity },
     { title: 'Users', href: '/configuration/users', icon: Users },
     { title: 'Roles', href: '/configuration/roles', icon: ShieldCheck },
     { title: 'Permissions', href: '/configuration/permissions', icon: KeyRound },
@@ -195,7 +197,9 @@ export function AppSidebar() {
                             </SidebarGroupLabel>
                             <SidebarMenu className="gap-1.5">
                                 {CONFIG_MENU_ITEMS.map((item) => {
-                                    const active = page.url.startsWith(item.href);
+                                    const active = item.href === '/configuration' 
+                                        ? (page.url === '/configuration' || page.url === '/configuration/')
+                                        : page.url.startsWith(item.href);
 
                                     return (
                                         <SidebarMenuItem key={item.title}>
