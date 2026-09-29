@@ -9,6 +9,7 @@ use App\Models\MeetingMinute;
 use App\Services\OpenAiTranscriptionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Smalot\PdfParser\Parser;
 
 /**
@@ -110,28 +111,37 @@ class GenerateMeetingMinuteAction
         }
 
         $parts = [];
+        $disk = config('filesystems.default');
 
         foreach ($documents as $doc) {
-            $filePath = storage_path('app/public/'.str_replace('public/', '', $doc->file_path));
-
-            if (! file_exists($filePath)) {
+            // Cek apakah file ada di MinIO/S3
+            if (! Storage::disk($disk)->exists($doc->file_path)) {
+                Log::warning("[ExtractDoc] File tidak ditemukan di disk '{$disk}': {$doc->file_path}");
                 continue;
             }
 
-            if ($doc->mime_type === 'application/pdf') {
-                try {
+            // Download dari MinIO ke file sementara lokal
+            $tempPath = tempnam(sys_get_temp_dir(), 'doc_');
+            try {
+                $content = Storage::disk($disk)->get($doc->file_path);
+                file_put_contents($tempPath, $content);
+            } catch (\Throwable $e) {
+                Log::warning("[ExtractDoc] Gagal download dari MinIO: {$e->getMessage()}");
+                @unlink($tempPath);
+                continue;
+            }
+
+            // Ekstrak teks berdasarkan tipe file
+            try {
+                if ($doc->mime_type === 'application/pdf') {
                     $parser = new Parser;
-                    $pdf = $parser->parseFile($filePath);
+                    $pdf = $parser->parseFile($tempPath);
                     $parts[] = "\n--- Dokumen PDF: {$doc->file_name} ---\n".$pdf->getText();
-                } catch (\Throwable $e) {
-                    // Skip if PDF parsing fails (corrupt file, unreadable, or missing dependencies)
-                }
-            } elseif ($doc->mime_type === 'text/plain') {
-                $parts[] = "\n--- Dokumen TXT: {$doc->file_name} ---\n".file_get_contents($filePath);
-            } elseif ($doc->mime_type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-                try {
+                } elseif ($doc->mime_type === 'text/plain') {
+                    $parts[] = "\n--- Dokumen TXT: {$doc->file_name} ---\n".file_get_contents($tempPath);
+                } elseif ($doc->mime_type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
                     $zip = new \ZipArchive;
-                    if ($zip->open($filePath) === true) {
+                    if ($zip->open($tempPath) === true) {
                         if (($index = $zip->locateName('word/document.xml')) !== false) {
                             $data = $zip->getFromIndex($index);
                             $text = strip_tags($data);
@@ -139,9 +149,11 @@ class GenerateMeetingMinuteAction
                         }
                         $zip->close();
                     }
-                } catch (\Throwable $e) {
-                    Log::warning('Gagal mengekstrak teks dari DOCX: '.$e->getMessage());
                 }
+            } catch (\Throwable $e) {
+                Log::warning("[ExtractDoc] Gagal mengekstrak teks dari {$doc->file_name}: {$e->getMessage()}");
+            } finally {
+                @unlink($tempPath); // Selalu bersihkan file sementara
             }
         }
 
