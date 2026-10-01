@@ -45,6 +45,10 @@ return [
         'key' => env('OPENAI_API_KEY'),
         'transcribe_model' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),
         'summary_model' => env('OPENAI_SUMMARY_MODEL', 'gpt-4o-mini'),
+        'transcription_concurrent_enabled' => env('TRANSCRIPTION_CONCURRENT_ENABLED', true),
+        'transcription_concurrent_threshold' => env('TRANSCRIPTION_CONCURRENT_THRESHOLD', 1200),
+        'transcription_chunk_duration' => env('TRANSCRIPTION_CHUNK_DURATION', 900),
+        'transcription_chunk_overlap' => env('TRANSCRIPTION_CHUNK_OVERLAP', 15),
     ],
 
 ];

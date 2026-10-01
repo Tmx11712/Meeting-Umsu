@@ -10,6 +10,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -45,12 +46,12 @@ class ConfigurationController extends Controller
     {
         try {
             // Hit v1/chat/completions instead of v1/models to properly check if quota/credits are exhausted
-            $response = \Illuminate\Support\Facades\Http::withToken(config('services.openai.key'))
+            $response = Http::withToken(config('services.openai.key'))
                 ->timeout(5)
                 ->post('https://api.openai.com/v1/chat/completions', [
                     'model' => config('services.openai.summary_model', 'gpt-4o-mini'),
                     'messages' => [['role' => 'user', 'content' => 'test']],
-                    'max_tokens' => 1
+                    'max_tokens' => 1,
                 ]);
 
             if ($response->successful()) {
@@ -60,12 +61,12 @@ class ConfigurationController extends Controller
             if ($response->status() === 429) {
                 return response()->json(['status' => 'exhausted', 'message' => 'Saldo Habis (429)']);
             }
-            
+
             if ($response->status() === 401) {
                 return response()->json(['status' => 'invalid', 'message' => 'API Key Tidak Valid']);
             }
 
-            return response()->json(['status' => 'error', 'message' => 'Error: ' . $response->status()]);
+            return response()->json(['status' => 'error', 'message' => 'Error: '.$response->status()]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => 'Gagal koneksi ke server AI']);
         }

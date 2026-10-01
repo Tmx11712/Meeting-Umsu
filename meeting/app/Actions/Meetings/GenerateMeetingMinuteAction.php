@@ -117,6 +117,7 @@ class GenerateMeetingMinuteAction
             // Cek apakah file ada di MinIO/S3
             if (! Storage::disk($disk)->exists($doc->file_path)) {
                 Log::warning("[ExtractDoc] File tidak ditemukan di disk '{$disk}': {$doc->file_path}");
+
                 continue;
             }
 
@@ -128,6 +129,7 @@ class GenerateMeetingMinuteAction
             } catch (\Throwable $e) {
                 Log::warning("[ExtractDoc] Gagal download dari MinIO: {$e->getMessage()}");
                 @unlink($tempPath);
+
                 continue;
             }
 

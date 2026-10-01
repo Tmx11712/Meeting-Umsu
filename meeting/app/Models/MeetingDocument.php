@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * [EDUKASI ARSITEKTUR: PENYIMPANAN DOKUMEN RAPAT]
@@ -37,7 +38,7 @@ class MeetingDocument extends Model
         static::deleting(function ($model) {
             $disk = config('filesystems.default');
             if ($model->file_path) {
-                \Illuminate\Support\Facades\Storage::disk($disk)->delete($model->file_path);
+                Storage::disk($disk)->delete($model->file_path);
             }
         });
     }

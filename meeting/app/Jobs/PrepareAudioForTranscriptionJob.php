@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\MeetingUpdated;
+use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use App\Models\MeetingTranscriptionChunk;
 use App\Services\OpenAiTranscriptionService;
@@ -34,7 +35,7 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
     {
         $recordingId = $this->recordingId;
         $startTime = microtime(true);
-        
+
         /** @var MeetingRecording|null $recording */
         $recording = MeetingRecording::query()->find($recordingId);
 
@@ -55,102 +56,112 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
 
         // 1. Download audio asli dari MinIO ke local /tmp
         $localOriginalPath = sys_get_temp_dir().'/'.uniqid('original_').'_'.basename($recording->file_path);
-        file_put_contents($localOriginalPath, Storage::disk($disk)->get($recording->file_path));
+        $tempDir = null;
 
-        $downloadTime = microtime(true) - $startTime;
-        Log::info("[PrepareAudio] Download audio selesai: {$downloadTime} sec");
+        try {
+            file_put_contents($localOriginalPath, Storage::disk($disk)->get($recording->file_path));
 
-        // 2. Gunakan Service untuk mengekstrak durasi
-        $duration = $transcriptionService->getAudioDuration($localOriginalPath);
-        $threshold = (int) config('services.openai.transcription_concurrent_threshold', 1200); // default 20 mins
+            $downloadTime = microtime(true) - $startTime;
+            Log::info("[PrepareAudio] Download audio selesai: {$downloadTime} sec");
 
-        // Jika durasi di bawah threshold, kita gunakan job legacy untuk menghemat resource Redis/batching
-        if ($duration < $threshold) {
-            Log::info("[PrepareAudio] Durasi audio {$duration} sec < threshold {$threshold} sec. Fallback ke TranscribeAudioJob (Legacy).");
-            @unlink($localOriginalPath);
-            TranscribeAudioJob::dispatch($recording->id);
+            // 2. Gunakan Service untuk mengekstrak durasi
+            $duration = $transcriptionService->getAudioDuration($localOriginalPath);
+            $threshold = (int) config('services.openai.transcription_concurrent_threshold', 1200); // default 20 mins
 
-            return;
-        }
+            // Jika durasi di bawah threshold, kita gunakan job legacy untuk menghemat resource Redis/batching
+            if ($duration < $threshold) {
+                Log::info("[PrepareAudio] Durasi audio {$duration} sec < threshold {$threshold} sec. Fallback ke TranscribeAudioJob (Legacy).");
+                TranscribeAudioJob::dispatch($recording->id);
 
-        // 3. Split dengan overlap
-        $chunkDuration = (int) config('services.openai.transcription_chunk_duration', 900);
-        $chunkOverlap = (int) config('services.openai.transcription_chunk_overlap', 15);
-
-        $splitStartTime = microtime(true);
-        $splitResult = $transcriptionService->splitAudioToChunks($localOriginalPath, $chunkDuration, $chunkOverlap);
-        $splitTime = microtime(true) - $splitStartTime;
-        Log::info("[PrepareAudio] FFmpeg split selesai: {$splitTime} sec, total chunks: ".count($splitResult['chunks']));
-
-        // Hapus file original lokal setelah di-split
-        @unlink($localOriginalPath);
-
-        // 4. Upload chunk ke MinIO dan insert ke Database
-        $jobs = [];
-        $tempDir = $splitResult['temp_dir'];
-
-        foreach ($splitResult['chunks'] as $chunkMeta) {
-            $chunkMinioPath = "meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks/{$chunkMeta['file_name']}";
-
-            // Upload ke MinIO
-            $contents = file_get_contents($chunkMeta['local_path']);
-            if ($contents !== false) {
-                Storage::disk($disk)->put($chunkMinioPath, $contents);
+                return;
             }
-            @unlink($chunkMeta['local_path']); // Hapus local chunk
 
-            // Daftarkan di Database
-            $chunkRecord = MeetingTranscriptionChunk::create([
-                'recording_id' => $recording->id,
-                'chunk_index' => $chunkMeta['index'],
-                'start_seconds' => $chunkMeta['start_seconds'],
-                'end_seconds' => $chunkMeta['end_seconds'],
-                'normal_end_seconds' => $chunkMeta['normal_end_seconds'],
-                'file_path' => $chunkMinioPath,
-                'status' => 'pending',
-            ]);
+            // 3. Split dengan overlap
+            $chunkDuration = (int) config('services.openai.transcription_chunk_duration', 900);
+            $chunkOverlap = (int) config('services.openai.transcription_chunk_overlap', 15);
 
-            $isLastChunk = ($chunkMeta['index'] === count($splitResult['chunks']) - 1);
+            $splitStartTime = microtime(true);
+            $splitResult = $transcriptionService->splitAudioToChunks($localOriginalPath, $chunkDuration, $chunkOverlap);
+            $splitTime = microtime(true) - $splitStartTime;
+            Log::info("[PrepareAudio] FFmpeg split selesai: {$splitTime} sec, total chunks: ".count($splitResult['chunks']));
 
-            $jobs[] = new TranscribeAudioChunkJob(
-                $chunkRecord->id,
-                $chunkMeta['start_seconds'],
-                $chunkMeta['normal_end_seconds'],
-                $isLastChunk
-            );
-        }
+            // 4. Upload chunk ke MinIO dan insert ke Database
+            $jobs = [];
+            $tempDir = $splitResult['temp_dir'];
 
-        @rmdir($tempDir);
+            foreach ($splitResult['chunks'] as $chunkMeta) {
+                $chunkMinioPath = "meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks/{$chunkMeta['file_name']}";
 
-        // 4. Dispatch Batch
-        $batchId = Bus::batch($jobs)->then(function (Batch $batch) use ($recordingId, $disk) {
-            // Semua chunk sukses
-            Log::info("[Batch] Semua chunk sukses untuk Recording ID: {$recordingId}");
-
-            /** @var MeetingRecording|null $recording */
-            $recording = MeetingRecording::query()->find($recordingId);
-            if ($recording) {
-                // Di sini kita bisa panggil logic re-order jika perlu,
-                // tapi ordering sudah ditangani via start_seconds di frontend/query
-                $recording->fill(['status' => 'completed'])->save();
-
-                // Hapus folder chunks di MinIO
-                Storage::disk($disk)->deleteDirectory("meetings/{$recording->meeting_id}/recordings/{$recordingId}/chunks");
-
-                // Trigger event transcript_ready (ambil data meeting dan broadcast)
-                /** @var \App\Models\Meeting|null $meetingObj */
-                $meetingObj = \App\Models\Meeting::query()->find($recording->meeting_id);
-                if ($meetingObj) {
-                    event(new MeetingUpdated($meetingObj, 'transcript_ready'));
+                // Upload ke MinIO
+                $contents = file_get_contents($chunkMeta['local_path']);
+                if ($contents !== false) {
+                    Storage::disk($disk)->put($chunkMinioPath, $contents);
                 }
-            }
-        })->catch(function (Batch $batch, Throwable $e) use ($recordingId) {
-            Log::error("[Batch] Kegagalan pada batch Transkripsi untuk Recording ID: {$recordingId} - ".$e->getMessage());
-        })->finally(function (Batch $batch) use ($recordingId) {
-            Log::info("[Batch] Selesai dieksekusi untuk Recording ID: {$recordingId}");
-        })->name('Transcription Batch - Rec: '.$recordingId)
-            ->dispatch();
 
-        Log::info('[PrepareAudio] Total waktu persiapan: '.(microtime(true) - $startTime)." sec. Batch ID: {$batchId->id}");
+                // Daftarkan di Database
+                $chunkRecord = MeetingTranscriptionChunk::create([
+                    'recording_id' => $recording->id,
+                    'chunk_index' => $chunkMeta['index'],
+                    'start_seconds' => $chunkMeta['start_seconds'],
+                    'end_seconds' => $chunkMeta['end_seconds'],
+                    'normal_end_seconds' => $chunkMeta['normal_end_seconds'],
+                    'file_path' => $chunkMinioPath,
+                    'status' => 'pending',
+                ]);
+
+                $isLastChunk = ($chunkMeta['index'] === count($splitResult['chunks']) - 1);
+
+                $jobs[] = new TranscribeAudioChunkJob(
+                    $chunkRecord->id,
+                    $chunkMeta['start_seconds'],
+                    $chunkMeta['normal_end_seconds'],
+                    $isLastChunk
+                );
+            }
+
+            // 4. Dispatch Batch
+            $batchId = Bus::batch($jobs)->then(function (Batch $batch) use ($recordingId, $disk) {
+                // Semua chunk sukses
+                Log::info("[Batch] Semua chunk sukses untuk Recording ID: {$recordingId}");
+
+                /** @var MeetingRecording|null $recording */
+                $recording = MeetingRecording::query()->find($recordingId);
+                if ($recording) {
+                    // Di sini kita bisa panggil logic re-order jika perlu,
+                    // tapi ordering sudah ditangani via start_seconds di frontend/query
+                    $recording->fill(['status' => 'completed'])->save();
+
+                    // Hapus folder chunks di MinIO
+                    Storage::disk($disk)->deleteDirectory("meetings/{$recording->meeting_id}/recordings/{$recordingId}/chunks");
+
+                    // Trigger event transcript_ready (ambil data meeting dan broadcast)
+                    /** @var Meeting|null $meetingObj */
+                    $meetingObj = Meeting::query()->find($recording->meeting_id);
+                    if ($meetingObj) {
+                        event(new MeetingUpdated($meetingObj, 'transcript_ready'));
+                    }
+                }
+            })->catch(function (Batch $batch, Throwable $e) use ($recordingId) {
+                Log::error("[Batch] Kegagalan pada batch Transkripsi untuk Recording ID: {$recordingId} - ".$e->getMessage());
+            })->finally(function (Batch $batch) use ($recordingId) {
+                Log::info("[Batch] Selesai dieksekusi untuk Recording ID: {$recordingId}");
+            })->name('Transcription Batch - Rec: '.$recordingId)
+                ->dispatch();
+
+            Log::info('[PrepareAudio] Total waktu persiapan: '.(microtime(true) - $startTime)." sec. Batch ID: {$batchId->id}");
+        } finally {
+            // Cleanup: Hapus file original lokal setelah selesai/gagal
+            @unlink($localOriginalPath);
+
+            if ($tempDir && is_dir($tempDir)) {
+                $files = glob($tempDir.'/*');
+                foreach ($files as $file) {
+                    if (is_file($file)) {
+                        @unlink($file);
+                    }
+                }
+                @rmdir($tempDir);
+            }
+        }
     }
 }

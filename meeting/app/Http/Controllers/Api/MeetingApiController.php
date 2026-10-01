@@ -23,6 +23,8 @@ class MeetingApiController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Meeting::class);
+
         $query = Meeting::query()->with(['createdBy', 'participants.user']);
 
         if ($request->search) {
@@ -61,6 +63,8 @@ class MeetingApiController extends Controller
      */
     public function show(Meeting $meeting): JsonResponse
     {
+        $this->authorize('view', $meeting);
+
         return response()->json([
             'statusCode' => 200,
             'success' => true,

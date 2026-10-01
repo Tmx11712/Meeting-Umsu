@@ -30,7 +30,7 @@ Route::get('/', function () {
 
 // Public Attendance Routes
 Route::get('attend/{meeting}', [PublicAttendanceController::class, 'show'])->name('attend.form');
-Route::post('attend/{meeting}', [PublicAttendanceController::class, 'store'])->name('attend.submit');
+Route::middleware('throttle:15,1')->post('attend/{meeting}', [PublicAttendanceController::class, 'store'])->name('attend.submit');
 
 /**
  * [EDUKASI ARSITEKTUR: ROUTE GROUPING & MIDDLEWARE]

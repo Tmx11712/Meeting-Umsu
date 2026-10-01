@@ -73,7 +73,7 @@ return;
     }, [canEdit, handleSync]);
 
     useEffect(() => {
-        const channel = (window as any).Echo?.channel('meetings');
+        const channel = (window as any).Echo?.private('meetings');
         
         if (channel) {
             const handleUpdate = (e: any) => {

@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('meetings')->name('api.meetings.')->group(function () {
-    // Jadwal Rapat
-    Route::get('/', [MeetingApiController::class, 'index'])->name('index');
-    Route::get('/{meeting}', [MeetingApiController::class, 'show'])->name('show');
+    // Endpoints yang mengekspos data rapat harus authenticated
+    Route::middleware('auth')->group(function () {
+        Route::get('/', [MeetingApiController::class, 'index'])->name('index');
+        Route::get('/{meeting}', [MeetingApiController::class, 'show'])->name('show');
+        Route::get('/{meeting}/attendance', [AttendanceApiController::class, 'index'])->name('attendance.index');
+    });
 
     // Absensi Rapat (Scan QR & Rekap Kehadiran)
-    Route::get('/{meeting}/attendance', [AttendanceApiController::class, 'index'])->name('attendance.index');
-    Route::post('/{meeting}/attendance/scan', [AttendanceApiController::class, 'scan'])->name('attendance.scan');
+    // Dibiarkan public untuk mesin scanner QR fisik (dengan validasi internal)
+    Route::middleware('throttle:30,1')->post('/{meeting}/attendance/scan', [AttendanceApiController::class, 'scan'])->name('attendance.scan');
 });

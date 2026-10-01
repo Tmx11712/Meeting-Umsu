@@ -10,16 +10,16 @@ use Illuminate\Foundation\Http\FormRequest;
  * EDUKASI ARSITEKTUR: FormRequest (Validasi & Otorisasi Terpusat)
  * =========================================================================
  * Mengapa kita membuat file Request khusus (TranscribeRecordingRequest)?
- * 
+ *
  * 1. SEPARATION OF CONCERNS (Pemisahan Tugas):
- *    Controller tidak boleh dipenuhi dengan logika "if-else" untuk mengecek 
- *    hak akses atau validasi input. Controller harus fokus pada "Apa yang 
+ *    Controller tidak boleh dipenuhi dengan logika "if-else" untuk mengecek
+ *    hak akses atau validasi input. Controller harus fokus pada "Apa yang
  *    harus dilakukan" (misal: jalankan transkripsi).
- * 
+ *
  * 2. KEAMANAN LAYER PERTAMA (First Line of Defense):
  *    Sebelum request masuk ke Controller, Laravel akan mencegatnya di sini.
- *    Jika otorisasi (authorize) gagal, atau validasi (rules) gagal, 
- *    Laravel langsung menolak request tersebut dan tidak akan pernah 
+ *    Jika otorisasi (authorize) gagal, atau validasi (rules) gagal,
+ *    Laravel langsung menolak request tersebut dan tidak akan pernah
  *    sampai ke Controller. Ini mencegah eksploitasi keamanan.
  * =========================================================================
  */
@@ -36,6 +36,7 @@ class TranscribeRecordingRequest extends FormRequest
 
     /**
      * Tentukan aturan validasi yang berlaku untuk request ini.
+     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array

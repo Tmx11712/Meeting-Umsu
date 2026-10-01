@@ -29,6 +29,8 @@ class AttendanceApiController extends Controller
      */
     public function index(Meeting $meeting): JsonResponse
     {
+        $this->authorize('view', $meeting);
+
         $attendances = $meeting->attendances()->with('user')->orderBy('check_in_time', 'desc')->get();
 
         $registeredCount = $meeting->participants()->count('*');

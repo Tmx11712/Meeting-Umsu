@@ -34,7 +34,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
 
     // Real-time: listen for global meetings updates via WebSocket
     useEffect(() => {
-        const channel = (window as any).Echo?.channel('meetings');
+        const channel = (window as any).Echo?.private('meetings');
 
         if (channel) {
             const handleUpdate = (e: any) => {

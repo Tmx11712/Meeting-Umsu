@@ -232,7 +232,7 @@ class MeetingRecordingController extends Controller
      */
     private function dispatchTranscriptionJob(MeetingRecording $recording)
     {
-        $enabled = filter_var(env('TRANSCRIPTION_CONCURRENT_ENABLED', true), FILTER_VALIDATE_BOOLEAN);
+        $enabled = filter_var(config('services.openai.transcription_concurrent_enabled', true), FILTER_VALIDATE_BOOLEAN);
 
         if ($enabled) {
             PrepareAudioForTranscriptionJob::dispatch($recording->id);

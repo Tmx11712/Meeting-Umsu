@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Meeting;
 use Illuminate\Support\Facades\Broadcast;
 
 /**
@@ -10,4 +11,19 @@ use Illuminate\Support\Facades\Broadcast;
  */
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('meetings', function ($user) {
+    // Semua user terautentikasi dapat melihat daftar rapat
+    return $user !== null;
+});
+
+Broadcast::channel('meeting.{meetingId}', function ($user, $meetingId) {
+    // Gunakan MeetingPolicy (view) untuk memvalidasi akses ke channel rapat spesifik
+    $meeting = Meeting::find($meetingId);
+    if (! $meeting) {
+        return false;
+    }
+
+    return $user->can('view', $meeting);
 });

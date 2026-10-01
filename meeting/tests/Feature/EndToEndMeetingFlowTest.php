@@ -6,6 +6,7 @@ use App\Models\Meeting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -18,6 +19,7 @@ class EndToEndMeetingFlowTest extends TestCase
     public function test_entire_meeting_flow()
     {
         $this->seed();
+        Storage::fake('s3');
 
         // Find users
         $humasUser = User::whereHas('roles', function ($q) {

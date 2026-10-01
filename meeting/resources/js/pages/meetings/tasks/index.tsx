@@ -40,7 +40,7 @@ export default function TaskDashboard({ meetings, task }: any) {
 
     // Real-time: listen for global meetings updates via WebSocket
     useEffect(() => {
-        const channel = (window as any).Echo?.channel('meetings');
+        const channel = (window as any).Echo?.private('meetings');
         
         if (channel) {
             channel.listen('MeetingsListUpdated', (e: any) => {

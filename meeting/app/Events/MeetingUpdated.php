@@ -3,8 +3,8 @@
 namespace App\Events;
 
 use App\Models\Meeting;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -38,11 +38,11 @@ class MeetingUpdated implements ShouldBroadcastNow
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return Channel|array
+     * @return \Illuminate\Broadcasting\Channel|array
      */
     public function broadcastOn()
     {
-        return new Channel('meeting.'.$this->meeting->id);
+        return new PrivateChannel('meeting.'.$this->meeting->id);
     }
 
     /**
@@ -55,7 +55,13 @@ class MeetingUpdated implements ShouldBroadcastNow
         return [
             'id' => $this->meeting->id,
             'type' => $this->updateType,
-            'meeting' => $this->meeting->toArray(),
+            'meeting' => [
+                'id' => $this->meeting->id,
+                'title' => $this->meeting->title,
+                'status' => $this->meeting->status,
+                'current_stage' => $this->meeting->current_stage,
+                'recording_started_at' => $this->meeting->recording_started_at,
+            ],
         ];
     }
 

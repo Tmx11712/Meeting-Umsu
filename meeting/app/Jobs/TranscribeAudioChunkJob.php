@@ -10,6 +10,7 @@ use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
@@ -95,8 +96,8 @@ class TranscribeAudioChunkJob implements ShouldQueue
                     $rows[] = [
                         'recording_id' => $chunk->recording_id,
                         'chunk_id' => $chunk->id,
-                        'sequence_order' => $segmentIndex, 
-                        'speaker' => 'Speaker '.rand(1, 3),
+                        'sequence_order' => $segmentIndex,
+                        'speaker' => 'Speaker (Otomatis)',
                         'timestamp_seconds' => $s['start'],
                         'text' => $s['text'],
                         'created_at' => now(),
@@ -124,11 +125,12 @@ class TranscribeAudioChunkJob implements ShouldQueue
             $totalTime = microtime(true) - $startTime;
             Log::info("[TranscribeChunk_{$chunk->chunk_index}] Selesai dalam {$totalTime} sec.");
 
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        } catch (RequestException $e) {
             @unlink($localChunkPath);
             if ($e->response->status() === 429) {
                 Log::warning("[TranscribeChunk_{$chunk->chunk_index}] Rate Limit OpenAI (429). Menunggu 60 detik sebelum mencoba lagi.");
                 $this->release(60);
+
                 return;
             }
 
@@ -137,7 +139,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
                 'error_message' => $e->getMessage(),
             ]);
             Log::error("[TranscribeChunk_{$chunk->chunk_index}] Gagal API: ".$e->getMessage());
-            
+
             /** @var MeetingRecording|null $recording */
             $recording = MeetingRecording::query()->find($chunk->recording_id);
             if ($recording && $recording->status !== 'completed') {

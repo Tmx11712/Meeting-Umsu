@@ -103,7 +103,7 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
             return;
         }
 
-        const meetingChannel = echo.channel(channelName);
+        const meetingChannel = echo.private(channelName);
         const handleMeetingUpdate = (e: any) => {
             console.log(`[WS] Meeting ${meetingId} updated:`, e);
             
