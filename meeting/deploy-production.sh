@@ -40,8 +40,6 @@ docker compose -f docker-compose.prod.yml exec -T app composer install --optimiz
 
 # b. Sinkronisasi dan Build Aset Frontend
 echo "?? Mem-build dan menyinkronkan aset frontend (React/Vite)..."
-docker compose -f docker-compose.prod.yml exec -T app npm install
-docker compose -f docker-compose.prod.yml exec -T app npm run build
 docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/* /var/www/html/public/ 2>/dev/null || true"
 
 # c. Optimasi, Caching, dan Migrasi Laravel
