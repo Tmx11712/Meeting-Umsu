@@ -55,13 +55,20 @@ class TranscribeAudioJob implements ShouldQueue
 
             // We download the file content from the default disk (e.g. S3)
             // into a temporary local file because Whisper API needs the actual file path.
-            $fileContent = Storage::get($recording->file_path);
-            if (! $fileContent) {
+            // Gunakan stream (bukan get()) agar file besar tidak dimuat penuh ke memori worker.
+            $sourceStream = Storage::readStream($recording->file_path);
+            if (! $sourceStream) {
                 throw new \RuntimeException('File rekaman tidak ditemukan di storage.');
             }
 
             $tempRelativePath = 'temp/'.basename($recording->file_path);
-            Storage::disk('local')->put($tempRelativePath, $fileContent);
+            try {
+                Storage::disk('local')->writeStream($tempRelativePath, $sourceStream);
+            } finally {
+                if (is_resource($sourceStream)) {
+                    fclose($sourceStream);
+                }
+            }
             $tempPath = Storage::disk('local')->path($tempRelativePath);
 
             $result = $transcriptionService->transcribeChunk($tempPath);

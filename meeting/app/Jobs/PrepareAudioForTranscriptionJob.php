@@ -59,7 +59,20 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
         $tempDir = null;
 
         try {
-            file_put_contents($localOriginalPath, Storage::disk($disk)->get($recording->file_path));
+            // Stream langsung ke disk (bukan get()) agar rekaman besar tidak dimuat penuh ke RAM worker.
+            $sourceStream = Storage::disk($disk)->readStream($recording->file_path);
+            if (! $sourceStream) {
+                throw new \RuntimeException("Gagal membuka stream audio: {$recording->file_path}");
+            }
+            $localHandle = fopen($localOriginalPath, 'wb');
+            try {
+                stream_copy_to_stream($sourceStream, $localHandle);
+            } finally {
+                fclose($localHandle);
+                if (is_resource($sourceStream)) {
+                    fclose($sourceStream);
+                }
+            }
 
             $downloadTime = microtime(true) - $startTime;
             Log::info("[PrepareAudio] Download audio selesai: {$downloadTime} sec");
@@ -92,10 +105,16 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
             foreach ($splitResult['chunks'] as $chunkMeta) {
                 $chunkMinioPath = "meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks/{$chunkMeta['file_name']}";
 
-                // Upload ke MinIO
-                $contents = file_get_contents($chunkMeta['local_path']);
-                if ($contents !== false) {
-                    Storage::disk($disk)->put($chunkMinioPath, $contents);
+                // Upload ke MinIO/S3 via stream (hemat memori)
+                $chunkStream = fopen($chunkMeta['local_path'], 'rb');
+                if ($chunkStream !== false) {
+                    try {
+                        Storage::disk($disk)->writeStream($chunkMinioPath, $chunkStream);
+                    } finally {
+                        if (is_resource($chunkStream)) {
+                            fclose($chunkStream);
+                        }
+                    }
                 }
 
                 // Daftarkan di Database

@@ -60,9 +60,9 @@ RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd pcntl
 # Install Redis extension
 RUN pecl install redis && docker-php-ext-enable redis
 
-# Configure PHP for larger file uploads
-RUN echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/uploads.ini \
+# Configure PHP for larger file uploads (harus >= validasi rekaman 200MB di StoreRecordingRequest)
+RUN echo "upload_max_filesize = 210M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 210M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Get latest Composer
@@ -87,6 +87,12 @@ RUN cp -r /var/www/html/public/images /var/www/html/public-assets/images
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Entrypoint: caching config/route/view + migrasi opsional (RUN_MIGRATIONS=true).
+# Dibutuhkan di AWS ECS karena tidak ada deploy script yang dijalankan manual.
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
+
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]
