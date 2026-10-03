@@ -49,6 +49,8 @@ class TranscribeAudioJob implements ShouldQueue
             return;
         }
 
+        $tempRelativePath = null;
+
         try {
             $recording->status = MeetingRecordingStatus::TRANSCRIBING->value;
             $recording->save();
@@ -72,9 +74,6 @@ class TranscribeAudioJob implements ShouldQueue
             $tempPath = Storage::disk('local')->path($tempRelativePath);
 
             $result = $transcriptionService->transcribeChunk($tempPath);
-
-            // Clean up temp file
-            Storage::disk('local')->delete($tempRelativePath);
 
             // Delete any existing transcripts (e.g. live transcripts from browser) for this recording
             // to avoid duplicate transcripts
@@ -126,6 +125,11 @@ class TranscribeAudioJob implements ShouldQueue
             Log::error('Transcribe System Error: '.$e->getMessage());
             $this->markRecordingAsFailed($recording, 'Terjadi kesalahan sistem internal: '.$e->getMessage());
             throw $e; // Re-throw critical system errors to be caught by the queue worker properly
+        } finally {
+            // Selalu hapus file audio sementara, termasuk saat transkripsi gagal
+            if ($tempRelativePath !== null) {
+                Storage::disk('local')->delete($tempRelativePath);
+            }
         }
     }
 

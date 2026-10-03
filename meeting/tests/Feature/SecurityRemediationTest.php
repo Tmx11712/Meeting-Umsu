@@ -26,7 +26,7 @@ class SecurityRemediationTest extends TestCase
 
     public function test_authenticated_api_access_is_allowed_for_authorized_users()
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->getJson('/api/meetings');
@@ -49,7 +49,7 @@ class SecurityRemediationTest extends TestCase
         ]);
 
         // Non-participant user without any roles
-        /** @var \App\Models\User $stranger */
+        /** @var User $stranger */
         $stranger = User::factory()->create();
 
         $response = $this->actingAs($stranger)->getJson("/api/meetings/{$meeting->id}");

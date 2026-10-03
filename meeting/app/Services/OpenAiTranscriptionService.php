@@ -45,49 +45,61 @@ class OpenAiTranscriptionService
     {
         $duration = $this->getAudioDuration($localFilePath);
         if ($duration <= 0) {
-            throw new \Exception('Gagal menentukan durasi audio atau audio kosong.');
+            throw new \RuntimeException('Gagal menentukan durasi audio atau audio kosong.');
         }
 
         $tempDir = sys_get_temp_dir().'/whisper_chunks_'.uniqid();
         if (! is_dir($tempDir) && ! mkdir($tempDir, 0755, true)) {
-            throw new \Exception('Gagal membuat direktori temporary untuk chunk di /tmp.');
+            throw new \RuntimeException('Gagal membuat direktori temporary untuk chunk di /tmp.');
         }
 
         $chunks = [];
         $chunkIndex = 0;
 
-        while ($chunkIndex * $segmentDuration < $duration) {
-            $start = $chunkIndex * $segmentDuration;
-            // End time includes overlap, unless it exceeds total duration
-            $end = min($start + $segmentDuration + $overlapSeconds, $duration);
-            $chunkDurationTime = $end - $start;
+        try {
+            while ($chunkIndex * $segmentDuration < $duration) {
+                $start = $chunkIndex * $segmentDuration;
+                // End time includes overlap, unless it exceeds total duration
+                $end = min($start + $segmentDuration + $overlapSeconds, $duration);
+                $chunkDurationTime = $end - $start;
 
-            $chunkFileName = 'chunk_'.sprintf('%03d', $chunkIndex).'.mp3';
-            $outPath = $tempDir.'/'.$chunkFileName;
+                $chunkFileName = 'chunk_'.sprintf('%03d', $chunkIndex).'.mp3';
+                $outPath = $tempDir.'/'.$chunkFileName;
 
-            $process = new Process([
-                'ffmpeg', '-y', '-i', $localFilePath,
-                '-ss', (string) $start, '-t', (string) $chunkDurationTime,
-                '-c:a', 'libmp3lame', '-b:a', '32k', '-ac', '1', '-ar', '16000',
-                $outPath,
-            ]);
-            $process->setTimeout(300);
-            $process->run();
+                $process = new Process([
+                    'ffmpeg', '-y', '-i', $localFilePath,
+                    '-ss', (string) $start, '-t', (string) $chunkDurationTime,
+                    '-c:a', 'libmp3lame', '-b:a', '32k', '-ac', '1', '-ar', '16000',
+                    $outPath,
+                ]);
+                $process->setTimeout(300);
+                $process->run();
 
-            if (! $process->isSuccessful()) {
-                throw new \Exception("FFMPEG splitting failed at chunk {$chunkIndex}: ".$process->getErrorOutput());
+                if (! $process->isSuccessful()) {
+                    throw new \RuntimeException("FFMPEG splitting failed at chunk {$chunkIndex}: ".$process->getErrorOutput());
+                }
+
+                $chunks[] = [
+                    'index' => $chunkIndex,
+                    'start_seconds' => (float) $start,
+                    'end_seconds' => (float) $end,
+                    'normal_end_seconds' => (float) min($start + $segmentDuration, $duration),
+                    'local_path' => $outPath,
+                    'file_name' => $chunkFileName,
+                ];
+
+                $chunkIndex++;
             }
+        } catch (\Throwable $e) {
+            // Jangan tinggalkan file sementara jika split gagal di tengah jalan
+            foreach (glob($tempDir.'/*') ?: [] as $file) {
+                if (is_file($file)) {
+                    @unlink($file);
+                }
+            }
+            @rmdir($tempDir);
 
-            $chunks[] = [
-                'index' => $chunkIndex,
-                'start_seconds' => (float) $start,
-                'end_seconds' => (float) $end,
-                'normal_end_seconds' => (float) min($start + $segmentDuration, $duration),
-                'local_path' => $outPath,
-                'file_name' => $chunkFileName,
-            ];
-
-            $chunkIndex++;
+            throw $e;
         }
 
         return [
@@ -159,11 +171,48 @@ class OpenAiTranscriptionService
     }
 
     /**
-     * Legacy method for TranscribeAudioJob (File < 20 minutes)
+     * Jalur legacy untuk TranscribeAudioJob (rekaman pendek / fitur concurrent dimatikan).
+     *
+     * Audio dikompres ke MP3 32kbps mono lalu dipotong per chunk (maksimal 25MB per request
+     * OpenAI), dan tiap chunk ditranskripsi berurutan. Mengembalikan format:
+     * ['segments' => [['start', 'end', 'text'], ...], 'duration' => float]
      */
     public function transcribeChunk(string $localFilePath): array
     {
-        return $this->transcribeSingleChunk($localFilePath, 0, 999999, true);
+        $duration = $this->getAudioDuration($localFilePath);
+        $chunkDuration = (int) config('services.openai.transcription_chunk_duration', 900);
+        $chunkOverlap = (int) config('services.openai.transcription_chunk_overlap', 15);
+
+        $split = $this->splitAudioToChunks($localFilePath, $chunkDuration, $chunkOverlap);
+
+        $segments = [];
+
+        try {
+            $lastIndex = count($split['chunks']) - 1;
+
+            foreach ($split['chunks'] as $i => $chunk) {
+                $chunkSegments = $this->transcribeSingleChunk(
+                    $chunk['local_path'],
+                    $chunk['start_seconds'],
+                    $chunk['normal_end_seconds'],
+                    $i === $lastIndex
+                );
+
+                array_push($segments, ...$chunkSegments);
+            }
+        } finally {
+            foreach (glob($split['temp_dir'].'/*') ?: [] as $file) {
+                if (is_file($file)) {
+                    @unlink($file);
+                }
+            }
+            @rmdir($split['temp_dir']);
+        }
+
+        return [
+            'segments' => $segments,
+            'duration' => $duration,
+        ];
     }
 
     /**
