@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingDocument;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +41,7 @@ class MeetingDocumentController extends Controller
                 'file_size' => $fileSize,
                 'mime_type' => $mimeType,
                 'category' => 'Lainnya',
-                'uploaded_by' => $request->user()?->id ?? User::query()->first()?->id,
+                'uploaded_by' => $request->user()->id,
             ]);
         } catch (\Exception $e) {
             try {
