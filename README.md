@@ -1,165 +1,87 @@
-# 📋 E-Notulen — Sistem Manajemen Rapat UMSU
+# E-Notulen (Sistem Manajemen Rapat & Notulensi)
 
-<div align="center">
+## Tentang Aplikasi
+E-Notulen adalah aplikasi berbasis web yang dirancang untuk memudahkan proses manajemen rapat, mulai dari penjadwalan, pencatatan kehadiran (absensi), hingga dokumentasi hasil rapat (notulensi). Aplikasi ini dilengkapi dengan fitur perekaman audio yang dapat mentranskripsi percakapan secara otomatis menggunakan teknologi OpenAI, memungkinkan pembuatan notulensi menjadi lebih cepat, akurat, dan terstruktur. 
 
-![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Inertia.js](https://img.shields.io/badge/Inertia.js-2-9553E9?style=for-the-badge&logo=inertia&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-Whisper-412991?style=for-the-badge&logo=openai&logoColor=white)
+Fitur-fitur utama meliputi:
+- **Manajemen Jadwal Rapat**: Pembuatan dan penjadwalan rapat.
+- **Absensi & Kehadiran**: Pencatatan kehadiran peserta rapat.
+- **Perekaman Rapat & Transkripsi Otomatis**: Merekam jalannya rapat dan menghasilkan transkrip otomatis menggunakan OpenAI.
+- **Koreksi Transkrip**: Mengedit dan menyesuaikan hasil transkripsi rapat jika diperlukan.
+- **Notulensi & Approval**: Review, pembuatan notulensi rapat, dan proses persetujuan (approval) oleh pimpinan.
+- **Manajemen Pengguna & Peran**: Pengelolaan roles dan permissions pengguna aplikasi.
 
-**Aplikasi manajemen rapat berbasis web untuk Universitas Muhammadiyah Sumatera Utara (UMSU)**
+## Teknologi (Tech Stack)
+- **Backend**: Laravel (PHP)
+- **Frontend**: React (TypeScript), Inertia.js, Tailwind CSS
+- **AI Service**: OpenAI API (untuk transkripsi)
+- **Database**: MySQL/PostgreSQL
 
-</div>
-
----
-
-## 📖 Tentang Aplikasi
-
-**E-Notulen** adalah sistem manajemen rapat digital yang mendigitalisasi seluruh siklus rapat — dari penjadwalan, absensi, perekaman audio, transkripsi otomatis berbasis AI, hingga pembuatan dan persetujuan notulensi resmi.
-
-### 🔄 Alur Kerja
-
-```
-Jadwal Rapat → Absensi → Rekam Audio → Transkripsi AI → Koreksi → Review Notulensi → Approval Pimpinan → Laporan PDF
-```
-
----
-
-## ✨ Fitur Utama
-
-| Fitur | Keterangan |
-|-------|-----------|
-| 📅 **Manajemen Rapat** | Buat & jadwalkan rapat, tracking status otomatis |
-| 👥 **Absensi Digital** | Pencatatan kehadiran peserta rapat |
-| 🎙️ **Rekam Audio** | Rekam langsung dari browser atau upload file audio |
-| 🤖 **Transkripsi AI** | Otomatis menggunakan OpenAI Whisper API |
-| ✏️ **Koreksi Transkrip** | Edit & perbaiki hasil transkripsi |
-| 📝 **Notulensi** | Generate & review hasil notulensi rapat |
-| ✅ **Approval** | Pimpinan menyetujui/menolak notulensi |
-| 📄 **Laporan PDF** | Unduh notulensi dalam format PDF |
-| ⚙️ **Manajemen Akses** | Role-based permissions (Super Admin, Admin, Pimpinan, dll) |
-| 📊 **Dashboard** | Statistik dan ringkasan aktivitas rapat |
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend**: Laravel 11 (PHP 8.2+)
-- **Frontend**: React 19 + TypeScript + Inertia.js
-- **UI Components**: shadcn/ui + Tailwind CSS
-- **Database**: MySQL
-- **AI Service**: OpenAI Whisper API (transkripsi otomatis)
-- **Auth**: Laravel Jetstream + Passkey support
-
----
-
-## 🚀 Cara Instalasi
-
-### Persyaratan Sistem
+## Persyaratan Sistem
 - PHP >= 8.2
 - Composer
-- Node.js & NPM
-- MySQL / MariaDB
-- OpenAI API Key
+- Node.js & NPM / PNPM
+- Database Server (MySQL/MariaDB atau PostgreSQL)
+- Akun OpenAI untuk integrasi API (API Key)
 
-### Langkah Instalasi
+## Cara Instalasi
 
-**1. Clone repositori**
-```bash
-git clone https://github.com/Tmx11712/Meeting-Umsu.git
-cd Meeting-Umsu/meeting
-```
+Berikut adalah langkah-langkah untuk menjalankan aplikasi ini secara lokal (local development):
 
-**2. Install dependensi PHP**
-```bash
-composer install
-```
+1. **Clone repositori**
+   ```bash
+   git clone https://github.com/Tmx11712/Meeting-Umsu.git
+   cd Meeting-Umsu
+   ```
 
-**3. Install dependensi Node.js**
-```bash
-npm install
-```
+2. **Install dependensi PHP (Backend)**
+   ```bash
+   composer install
+   ```
 
-**4. Konfigurasi environment**
-```bash
-cp .env.example .env
-```
+3. **Install dependensi Node.js (Frontend)**
+   Gunakan `pnpm` atau `npm`:
+   ```bash
+   pnpm install
+   # atau
+   npm install
+   ```
 
-Edit file `.env` dan sesuaikan:
-```env
-DB_DATABASE=nama_database
-DB_USERNAME=username_db
-DB_PASSWORD=password_db
+4. **Konfigurasi Environment**
+   Salin file konfigurasi `.env.example` menjadi `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan sesuaikan konfigurasi database (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`), serta pastikan Anda mengisi API Key OpenAI:
+   ```env
+   OPENAI_API_KEY=your-openai-api-key-here
+   ```
 
-OPENAI_API_KEY=your-openai-api-key-here
-```
+5. **Generate Application Key**
+   ```bash
+   php artisan key:generate
+   ```
 
-**5. Generate application key**
-```bash
-php artisan key:generate
-```
+6. **Migrasi Database & Seeder**
+   Pastikan server database Anda sudah berjalan, kemudian jalankan migrasi beserta data awal (roles/permissions):
+   ```bash
+   php artisan migrate --seed
+   ```
 
-**6. Migrasi & seed database**
-```bash
-php artisan migrate --seed
-```
+7. **Jalankan Aplikasi**
+   Anda perlu menjalankan server Laravel dan Vite secara bersamaan.
+   
+   Terminal 1 (Backend Laravel):
+   ```bash
+   php artisan serve
+   ```
+   
+   Terminal 2 (Frontend Vite):
+   ```bash
+   pnpm run dev
+   # atau
+   npm run dev
+   ```
 
-**7. Jalankan aplikasi**
-
-Terminal 1 (Backend):
-```bash
-php artisan serve
-```
-
-Terminal 2 (Frontend):
-```bash
-npm run dev
-```
-
-**8. Akses aplikasi**
-
-Buka browser di: `http://localhost:8000`
-
----
-
-## 👤 Default User
-
-Setelah menjalankan seeder, akun default:
-
-| Role | Email | Password |
-|------|-------|----------|
-| Super Admin | admin@example.com | password |
-
----
-
-## 📁 Struktur Proyek
-
-```
-meeting/
-├── app/
-│   ├── Http/Controllers/    # Controller rapat, notulensi, approval, dll
-│   ├── Models/              # Model Eloquent
-│   ├── Services/            # OpenAI, Transkripsi, Sinkronisasi
-│   └── Jobs/                # Background job transkripsi audio
-├── resources/
-│   ├── js/
-│   │   ├── pages/meetings/  # Halaman React: rekam, review, approval, dll
-│   │   ├── components/      # Komponen UI reusable
-│   │   └── hooks/           # Custom React hooks (permissions, dll)
-│   └── views/pdf/           # Template PDF notulensi
-└── routes/
-    └── web.php              # Definisi route aplikasi
-```
-
----
-
-## 📄 Lisensi
-
-Proyek ini dikembangkan untuk keperluan internal **UMSU**.
-
----
-
-<div align="center">
-  Dikembangkan dengan ❤️ untuk UMSU
-</div>
+8. **Akses Aplikasi**
+   Buka browser dan akses aplikasi di: `http://localhost:8000`
