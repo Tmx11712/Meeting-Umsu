@@ -87,6 +87,10 @@ class TranscribeAudioChunkJob implements ShouldQueue
 
             // 3. Database Upsert/Delete-Insert (Idempotency)
             DB::transaction(function () use ($chunk, $segments) {
+                // Ambil meeting_id dari recording
+                $recording = \App\Models\MeetingRecording::query()->find($chunk->recording_id);
+                $meetingId = $recording ? $recording->meeting_id : null;
+
                 // Hapus data lama milik chunk ini (jika job ini hasil dari retry)
                 MeetingTranscript::query()->where('chunk_id', $chunk->id)->delete();
 
@@ -95,6 +99,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
                 foreach ($segments as $s) {
                     $rows[] = [
                         'id' => \Illuminate\Support\Str::uuid()->toString(),
+                        'meeting_id' => $meetingId,
                         'recording_id' => $chunk->recording_id,
                         'chunk_id' => $chunk->id,
                         'sequence_order' => $segmentIndex,
