@@ -87,31 +87,26 @@ class TranscribeAudioChunkJob implements ShouldQueue
 
             // 3. Database Upsert/Delete-Insert (Idempotency)
             DB::transaction(function () use ($chunk, $segments) {
-                // Ambil meeting_id dari recording
-                $recording = \App\Models\MeetingRecording::query()->find($chunk->recording_id);
-                $meetingId = $recording ? $recording->meeting_id : null;
-
                 // Hapus data lama milik chunk ini (jika job ini hasil dari retry)
                 MeetingTranscript::query()->where('chunk_id', $chunk->id)->delete();
+
+                // Ambil recording untuk meeting_id
+                $recording = \App\Models\MeetingRecording::query()->find($chunk->recording_id);
+                if (!$recording) {
+                    throw new \Exception("Recording dengan ID {$chunk->recording_id} tidak ditemukan untuk chunk {$chunk->id}.");
+                }
+                if (!$recording->meeting_id) {
+                    throw new \Exception("Recording {$recording->id} tidak memiliki meeting_id yang valid. Transkrip dibatalkan.");
+                }
 
                 $rows = [];
                 $segmentIndex = 0;
                 foreach ($segments as $s) {
-                    $rows[] = [
-                        'id' => \Illuminate\Support\Str::uuid()->toString(),
-                        'meeting_id' => $meetingId,
-                        'recording_id' => $chunk->recording_id,
-                        'chunk_id' => $chunk->id,
-                        'sequence_order' => $segmentIndex,
-                        'speaker' => 'Speaker (Otomatis)',
-                        'timestamp_seconds' => (int) round($s['start']),
-                        'text' => $s['text'],
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                    $rows[] = $this->buildTranscriptRow($recording, $chunk, $s, $segmentIndex);
                     $segmentIndex++;
                 }
 
+                // Bulk insert
                 // Bulk insert
                 if (! empty($rows)) {
                     DB::table('meeting_transcripts')->insert($rows);
@@ -171,5 +166,26 @@ class TranscribeAudioChunkJob implements ShouldQueue
 
             $this->fail($e);
         }
+    }
+
+    /**
+     * Membangun satu baris data transkrip untuk keperluan bulk insert.
+     * Dipisahkan dari logika loop agar semua validasi struktur baris ada di satu tempat.
+     */
+    protected function buildTranscriptRow(\App\Models\MeetingRecording $recording, MeetingTranscriptionChunk $chunk, array $segment, int $segmentIndex): array
+    {
+        return [
+            'id' => \Illuminate\Support\Str::uuid()->toString(),
+            'meeting_id' => $recording->meeting_id,
+            'recording_id' => $chunk->recording_id,
+            'chunk_id' => $chunk->id,
+            'sequence_order' => $segmentIndex,
+            'speaker' => 'Speaker (Otomatis)',
+            'timestamp_seconds' => (int) round($segment['start'] ?? 0),
+            'text' => $segment['text'] ?? '',
+            'is_live' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
     }
 }
