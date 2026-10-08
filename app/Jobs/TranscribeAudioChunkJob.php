@@ -94,6 +94,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
                 $segmentIndex = 0;
                 foreach ($segments as $s) {
                     $rows[] = [
+                        'id' => \Illuminate\Support\Str::uuid()->toString(),
                         'recording_id' => $chunk->recording_id,
                         'chunk_id' => $chunk->id,
                         'sequence_order' => $segmentIndex,
