@@ -32,7 +32,7 @@ class TranscribeAudioJob implements ShouldQueue
 
     public $backoff = [10, 30, 60];
 
-    public int $timeout = 900; // 15 menit agar rekaman audio panjang tidak dibunuh paksa oleh worker
+    public int $timeout = 3600; // 1 jam (3600 detik) agar aman untuk proses rekaman panjang yang antre di OpenAI
 
     protected string $recordingId;
 
