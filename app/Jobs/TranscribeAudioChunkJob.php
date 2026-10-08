@@ -98,7 +98,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
                         'chunk_id' => $chunk->id,
                         'sequence_order' => $segmentIndex,
                         'speaker' => 'Speaker (Otomatis)',
-                        'timestamp_seconds' => $s['start'],
+                        'timestamp_seconds' => (int) round($s['start']),
                         'text' => $s['text'],
                         'created_at' => now(),
                         'updated_at' => now(),
