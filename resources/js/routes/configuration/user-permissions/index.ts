@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\UserPermissionController::index
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
@@ -42,47 +42,12 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Configuration\UserPermissionController::index
- * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
- * @route 'http://100.107.175.84/configuration/user-permissions'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\UserPermissionController::index
- * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
- * @route 'http://100.107.175.84/configuration/user-permissions'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Configuration\UserPermissionController::index
- * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
- * @route 'http://100.107.175.84/configuration/user-permissions'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\UserPermissionController::update
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
  * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
  */
-export const update = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -97,7 +62,7 @@ update.definition = {
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
  * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
  */
-update.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+update.url = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { user: args }
     }
@@ -130,42 +95,10 @@ update.url = (args: { user: string | { id: string } } | [user: string | { id: st
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
  * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
  */
-update.put = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
-
-    /**
-* @see \App\Http\Controllers\Configuration\UserPermissionController::update
- * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
- * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
- */
-    const updateForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: update.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'PUT',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\UserPermissionController::update
- * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
- * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
- */
-        updateForm.put = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: update.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PUT',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    update.form = updateForm
 const userPermissions = {
     index: Object.assign(index, index),
 update: Object.assign(update, update),

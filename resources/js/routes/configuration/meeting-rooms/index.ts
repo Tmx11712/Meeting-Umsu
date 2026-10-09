@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
@@ -42,41 +42,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
- * @route 'http://100.107.175.84/configuration/meeting-rooms'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
- * @route 'http://100.107.175.84/configuration/meeting-rooms'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
- * @route 'http://100.107.175.84/configuration/meeting-rooms'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
@@ -111,33 +76,12 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
-    /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
- * @route 'http://100.107.175.84/configuration/meeting-rooms'
- */
-    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: store.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
- * @route 'http://100.107.175.84/configuration/meeting-rooms'
- */
-        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: store.url(options),
-            method: 'post',
-        })
-    
-    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-export const update = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -152,7 +96,7 @@ update.definition = {
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-update.url = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+update.url = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { meeting_room: args }
     }
@@ -185,7 +129,7 @@ update.url = (args: { meeting_room: string | { id: string } } | [meeting_room: s
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-update.put = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -194,62 +138,17 @@ update.put = (args: { meeting_room: string | { id: string } } | [meeting_room: s
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-update.patch = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
 
-    /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
- * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
- */
-    const updateForm = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: update.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'PUT',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
- * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
- */
-        updateForm.put = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: update.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PUT',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
- * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
- */
-        updateForm.patch = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: update.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PATCH',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-export const destroy = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -264,7 +163,7 @@ destroy.definition = {
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-destroy.url = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+destroy.url = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { meeting_room: args }
     }
@@ -297,42 +196,10 @@ destroy.url = (args: { meeting_room: string | { id: string } } | [meeting_room: 
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
  * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
  */
-destroy.delete = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
-
-    /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
- * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
- */
-    const destroyForm = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: destroy.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'DELETE',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
- * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
- */
-        destroyForm.delete = (args: { meeting_room: string | { id: string } } | [meeting_room: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: destroy.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'DELETE',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    destroy.form = destroyForm
 const meetingRooms = {
     index: Object.assign(index, index),
 store: Object.assign(store, store),

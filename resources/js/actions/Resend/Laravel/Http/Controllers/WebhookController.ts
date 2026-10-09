@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../../wayfinder'
 /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
@@ -32,28 +32,6 @@ handleWebhook.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
     url: handleWebhook.url(options),
     method: 'post',
 })
-
-    /**
-* @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
- * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
- */
-    const handleWebhookForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: handleWebhook.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
- * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
- */
-        handleWebhookForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: handleWebhook.url(options),
-            method: 'post',
-        })
-    
-    handleWebhook.form = handleWebhookForm
 const WebhookController = { handleWebhook }
 
 export default WebhookController

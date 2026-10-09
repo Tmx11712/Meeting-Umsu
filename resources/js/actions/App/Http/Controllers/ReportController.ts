@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:12
@@ -42,41 +42,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
- * @route 'http://100.107.175.84/reports'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
- * @route 'http://100.107.175.84/reports'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
- * @route 'http://100.107.175.84/reports'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:39
@@ -119,42 +84,6 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: download.url(options),
     method: 'head',
 })
-
-    /**
-* @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
- * @route 'http://100.107.175.84/reports/download'
- */
-    const downloadForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: download.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
- * @route 'http://100.107.175.84/reports/download'
- */
-        downloadForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: download.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
- * @route 'http://100.107.175.84/reports/download'
- */
-        downloadForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: download.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    download.form = downloadForm
 const ReportController = { index, download }
 
 export default ReportController

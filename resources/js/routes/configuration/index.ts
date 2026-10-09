@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
 import users from './users'
 import roles from './roles'
 import permissions from './permissions'
@@ -9,7 +9,7 @@ import rolePermissions from './role-permissions'
 import userPermissions from './user-permissions'
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
  * @route 'http://100.107.175.84/configuration'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -24,7 +24,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
  * @route 'http://100.107.175.84/configuration'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -33,7 +33,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
  * @route 'http://100.107.175.84/configuration'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -42,7 +42,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
  * @route 'http://100.107.175.84/configuration'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -50,44 +50,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
- * @route 'http://100.107.175.84/configuration'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
- * @route 'http://100.107.175.84/configuration'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::index
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:24
- * @route 'http://100.107.175.84/configuration'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
  * @route 'http://100.107.175.84/configuration/openai-status'
  */
 export const openaiStatus = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -102,7 +67,7 @@ openaiStatus.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
  * @route 'http://100.107.175.84/configuration/openai-status'
  */
 openaiStatus.url = (options?: RouteQueryOptions) => {
@@ -111,7 +76,7 @@ openaiStatus.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
  * @route 'http://100.107.175.84/configuration/openai-status'
  */
 openaiStatus.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -120,49 +85,13 @@ openaiStatus.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
+ * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
  * @route 'http://100.107.175.84/configuration/openai-status'
  */
 openaiStatus.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: openaiStatus.url(options),
     method: 'head',
 })
-
-    /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
- * @route 'http://100.107.175.84/configuration/openai-status'
- */
-    const openaiStatusForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: openaiStatus.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
- * @route 'http://100.107.175.84/configuration/openai-status'
- */
-        openaiStatusForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: openaiStatus.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
- * @see app/Http/Controllers/Configuration/ConfigurationController.php:44
- * @route 'http://100.107.175.84/configuration/openai-status'
- */
-        openaiStatusForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: openaiStatus.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    openaiStatus.form = openaiStatusForm
 const configuration = {
     index: Object.assign(index, index),
 openaiStatus: Object.assign(openaiStatus, openaiStatus),

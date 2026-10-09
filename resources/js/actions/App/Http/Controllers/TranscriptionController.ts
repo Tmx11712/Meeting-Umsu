@@ -1,10 +1,10 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
  * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
  */
-export const progress = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const progress = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: progress.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ progress.definition = {
  * @see app/Http/Controllers/TranscriptionController.php:19
  * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
  */
-progress.url = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+progress.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { meeting: args }
     }
@@ -52,7 +52,7 @@ progress.url = (args: { meeting: string | { id: string } } | [meeting: string | 
  * @see app/Http/Controllers/TranscriptionController.php:19
  * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
  */
-progress.get = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+progress.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: progress.url(args, options),
     method: 'get',
 })
@@ -61,46 +61,10 @@ progress.get = (args: { meeting: string | { id: string } } | [meeting: string | 
  * @see app/Http/Controllers/TranscriptionController.php:19
  * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
  */
-progress.head = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+progress.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: progress.url(args, options),
     method: 'head',
 })
-
-    /**
-* @see \App\Http\Controllers\TranscriptionController::progress
- * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
- */
-    const progressForm = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: progress.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\TranscriptionController::progress
- * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
- */
-        progressForm.get = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: progress.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\TranscriptionController::progress
- * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
- */
-        progressForm.head = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: progress.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    progress.form = progressForm
 const TranscriptionController = { progress }
 
 export default TranscriptionController

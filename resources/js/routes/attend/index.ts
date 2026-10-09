@@ -1,10 +1,10 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-export const form = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const form = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: form.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ form.definition = {
  * @see app/Http/Controllers/PublicAttendanceController.php:23
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-form.url = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+form.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { meeting: args }
     }
@@ -52,7 +52,7 @@ form.url = (args: { meeting: string | { id: string } } | [meeting: string | { id
  * @see app/Http/Controllers/PublicAttendanceController.php:23
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-form.get = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+form.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: form.url(args, options),
     method: 'get',
 })
@@ -61,52 +61,17 @@ form.get = (args: { meeting: string | { id: string } } | [meeting: string | { id
  * @see app/Http/Controllers/PublicAttendanceController.php:23
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-form.head = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+form.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: form.url(args, options),
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\PublicAttendanceController::form
- * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
- */
-    const formForm = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: form.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\PublicAttendanceController::form
- * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
- */
-        formForm.get = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: form.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\PublicAttendanceController::form
- * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
- */
-        formForm.head = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: form.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    form.form = formForm
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-export const submit = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const submit = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
     method: 'post',
 })
@@ -121,7 +86,7 @@ submit.definition = {
  * @see app/Http/Controllers/PublicAttendanceController.php:38
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-submit.url = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+submit.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { meeting: args }
     }
@@ -154,32 +119,10 @@ submit.url = (args: { meeting: string | { id: string } } | [meeting: string | { 
  * @see app/Http/Controllers/PublicAttendanceController.php:38
  * @route 'http://100.107.175.84/attend/{meeting}'
  */
-submit.post = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+submit.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
     method: 'post',
 })
-
-    /**
-* @see \App\Http\Controllers\PublicAttendanceController::submit
- * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
- */
-    const submitForm = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: submit.url(args, options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\PublicAttendanceController::submit
- * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
- */
-        submitForm.post = (args: { meeting: string | { id: string } } | [meeting: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: submit.url(args, options),
-            method: 'post',
-        })
-    
-    submit.form = submitForm
 const attend = {
     form: Object.assign(form, form),
 submit: Object.assign(submit, submit),
