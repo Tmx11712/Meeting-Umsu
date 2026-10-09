@@ -55,7 +55,7 @@ return;
             } catch (e) {
                 console.error("Failed to sync attendance from IrvanCloud", e);
             }
-        }, 5000);
+        }, 15000); // Diubah dari 5000 ke 15000 untuk mengurangi beban network (lelet)
 
         return () => clearInterval(interval);
     }, [isIrvanCloud, meeting.id]);

@@ -79,10 +79,14 @@ class Meeting extends Model
 
         static::saved(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_today_meetings');
+            cache()->forget('dashboard_upcoming_meetings');
         });
 
         static::deleted(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_today_meetings');
+            cache()->forget('dashboard_upcoming_meetings');
         });
     }
 

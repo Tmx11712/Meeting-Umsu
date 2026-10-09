@@ -33,7 +33,7 @@ class AttendanceController extends Controller
     public function index(Request $request): Response
     {
         // Stage >= 4 (Sedang atau sudah lewat tahap absensi)
-        $query = Meeting::query()->where('current_stage', '>=', 4);
+        $query = Meeting::query()->withCount('participants')->where('current_stage', '>=', 4);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');

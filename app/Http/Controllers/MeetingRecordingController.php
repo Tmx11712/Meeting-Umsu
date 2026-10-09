@@ -44,8 +44,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         return Inertia::render('meetings/recording', [
@@ -92,8 +90,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_uploaded'));
@@ -125,8 +121,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_deleted'));
@@ -158,8 +152,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         safe_broadcast(new MeetingUpdated($meeting, 'transcription_started'));
@@ -208,8 +200,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         if ($transcriptionStarted) {
@@ -282,8 +272,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_started'));
@@ -301,8 +289,6 @@ class MeetingRecordingController extends Controller
 
         $meeting->load(['recordings' => function ($q) {
             $q->orderBy('created_at', 'asc');
-        }, 'recordings.transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
         }, 'participants.user']);
 
         safe_broadcast(new MeetingUpdated($meeting, 'recording_session_stopped'));

@@ -25,7 +25,7 @@ class TranscriptCorrectionController extends Controller
     public function index(Request $request)
     {
         // Stage >= 3 (Sedang atau sudah lewat tahap koreksi)
-        $query = Meeting::query()->where('current_stage', '>=', 3);
+        $query = Meeting::query()->withCount('participants')->where('current_stage', '>=', 3);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');

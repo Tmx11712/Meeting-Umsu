@@ -102,32 +102,36 @@ class DashboardController extends Controller
         };
 
         // Rapat Hari Ini & Rapat Tertunda (Belum Selesai)
-        $todayMeetingsRaw = Meeting::withCount('participants')
-            ->with(['minutes' => function ($q) {
-                $q->select('id', 'meeting_id', 'content');
-            }])
-            ->where(function ($query) use ($now) {
-                $query->where('date', '=', $now->toDateString())
-                    ->orWhere('date', '<', $now->toDateString())
-                    ->orWhere('current_stage', '>=', 3); // Rapat yang sudah dimulai (stage 3+) selalu tampil di sini meski tanggal aslinya di masa depan
-            })
-            ->orderBy('date', 'desc')
-            ->orderBy('start_time', 'asc')
-            ->take(5)
-            ->get();
+        $todayMeetingsRaw = Cache::remember('dashboard_today_meetings', 300, function () use ($now) {
+            return Meeting::withCount('participants')
+                ->with(['minutes' => function ($q) {
+                    $q->select('id', 'meeting_id', 'content');
+                }])
+                ->where(function ($query) use ($now) {
+                    $query->where('date', '=', $now->toDateString())
+                        ->orWhere('date', '<', $now->toDateString())
+                        ->orWhere('current_stage', '>=', 3); // Rapat yang sudah dimulai (stage 3+) selalu tampil di sini meski tanggal aslinya di masa depan
+                })
+                ->orderBy('date', 'desc')
+                ->orderBy('start_time', 'asc')
+                ->take(5)
+                ->get();
+        });
         $todayMeetings = $adjustParticipants($todayMeetingsRaw);
 
         // Jadwal Mendatang (Besok dan seterusnya)
-        $upcomingMeetingsRaw = Meeting::withCount('participants')
-            ->with(['minutes' => function ($q) {
-                $q->select('id', 'meeting_id', 'content');
-            }])
-            ->where('date', '>', $now->toDateString())
-            ->whereIn('current_stage', [1, 2], 'and', false) // Still scheduled or Humas Rekam
-            ->orderBy('date', 'asc')
-            ->orderBy('start_time', 'asc')
-            ->take(5)
-            ->get();
+        $upcomingMeetingsRaw = Cache::remember('dashboard_upcoming_meetings', 300, function () use ($now) {
+            return Meeting::withCount('participants')
+                ->with(['minutes' => function ($q) {
+                    $q->select('id', 'meeting_id', 'content');
+                }])
+                ->where('date', '>', $now->toDateString())
+                ->whereIn('current_stage', [1, 2], 'and', false) // Still scheduled or Humas Rekam
+                ->orderBy('date', 'asc')
+                ->orderBy('start_time', 'asc')
+                ->take(5)
+                ->get();
+        });
         $upcomingMeetings = $adjustParticipants($upcomingMeetingsRaw);
 
         $pendingInvitations = [];
