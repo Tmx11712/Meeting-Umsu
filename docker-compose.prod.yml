@@ -101,7 +101,34 @@ services:
       - .env
     depends_on:
       - app
+  # ==========================================
+  # 6. Database (PostgreSQL)
+  # ==========================================
+  pgsql:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-enotulen}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    volumes:
+      - enotulen-db:/var/lib/postgresql/data
+
+  # ==========================================
+  # 7. Redis Cache & Queue
+  # ==========================================
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - enotulen-redis:/data
 
 volumes:
   enotulen-storage:
   enotulen-public:
+  enotulen-db:
+  enotulen-redis:
