@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
 export const accept = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: accept.url(args, options),
@@ -11,13 +11,13 @@ export const accept = (args: { invitation: string | number | { code: string | nu
 
 accept.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/invitations/{invitation}/accept',
+    url: 'https://enotulen.irvan.cloud/invitations/{invitation}/accept',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
 accept.url = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -50,7 +50,7 @@ accept.url = (args: { invitation: string | number | { code: string | number } } 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
 accept.get = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: accept.url(args, options),
@@ -59,7 +59,7 @@ accept.get = (args: { invitation: string | number | { code: string | number } } 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
 accept.head = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: accept.url(args, options),
@@ -69,7 +69,7 @@ accept.head = (args: { invitation: string | number | { code: string | number } }
     /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
     const acceptForm = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: accept.url(args, options),
@@ -79,7 +79,7 @@ accept.head = (args: { invitation: string | number | { code: string | number } }
             /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
         acceptForm.get = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: accept.url(args, options),
@@ -88,7 +88,7 @@ accept.head = (args: { invitation: string | number | { code: string | number } }
             /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::accept
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:61
- * @route 'http://100.107.175.84/invitations/{invitation}/accept'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}/accept'
  */
         acceptForm.head = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: accept.url(args, {
@@ -104,7 +104,7 @@ accept.head = (args: { invitation: string | number | { code: string | number } }
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::decline
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:86
- * @route 'http://100.107.175.84/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}'
  */
 export const decline = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: decline.url(args, options),
@@ -113,13 +113,13 @@ export const decline = (args: { invitation: string | number | { code: string | n
 
 decline.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/invitations/{invitation}',
+    url: 'https://enotulen.irvan.cloud/invitations/{invitation}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::decline
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:86
- * @route 'http://100.107.175.84/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}'
  */
 decline.url = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -152,7 +152,7 @@ decline.url = (args: { invitation: string | number | { code: string | number } }
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::decline
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:86
- * @route 'http://100.107.175.84/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}'
  */
 decline.delete = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: decline.url(args, options),
@@ -162,7 +162,7 @@ decline.delete = (args: { invitation: string | number | { code: string | number 
     /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::decline
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:86
- * @route 'http://100.107.175.84/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}'
  */
     const declineForm = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: decline.url(args, {
@@ -177,7 +177,7 @@ decline.delete = (args: { invitation: string | number | { code: string | number 
             /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::decline
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:86
- * @route 'http://100.107.175.84/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/invitations/{invitation}'
  */
         declineForm.delete = (args: { invitation: string | number | { code: string | number } } | [invitation: string | number | { code: string | number } ] | string | number | { code: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: decline.url(args, {

@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/roles',
+    url: 'https://enotulen.irvan.cloud/configuration/roles',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::index
  * @see app/Http/Controllers/Configuration/RoleController.php:22
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -89,13 +89,13 @@ export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 
 create.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/roles/create',
+    url: 'https://enotulen.irvan.cloud/configuration/roles/create',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
 create.url = (options?: RouteQueryOptions) => {
     return create.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ create.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -113,7 +113,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: create.url(options),
@@ -123,7 +123,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: create.url(options),
@@ -133,7 +133,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url(options),
@@ -142,7 +142,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::create
  * @see app/Http/Controllers/Configuration/RoleController.php:45
- * @route 'http://100.107.175.84/configuration/roles/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url({
@@ -158,7 +158,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::store
  * @see app/Http/Controllers/Configuration/RoleController.php:50
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -167,13 +167,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/configuration/roles',
+    url: 'https://enotulen.irvan.cloud/configuration/roles',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::store
  * @see app/Http/Controllers/Configuration/RoleController.php:50
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -182,7 +182,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::store
  * @see app/Http/Controllers/Configuration/RoleController.php:50
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -192,7 +192,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::store
  * @see app/Http/Controllers/Configuration/RoleController.php:50
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -202,7 +202,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::store
  * @see app/Http/Controllers/Configuration/RoleController.php:50
- * @route 'http://100.107.175.84/configuration/roles'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -213,7 +213,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 export const show = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -222,13 +222,13 @@ export const show = (args: { role: string | number | { id: string | number } } |
 
 show.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/roles/{role}',
+    url: 'https://enotulen.irvan.cloud/configuration/roles/{role}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 show.url = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -261,7 +261,7 @@ show.url = (args: { role: string | number | { id: string | number } } | [role: s
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 show.get = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -270,7 +270,7 @@ show.get = (args: { role: string | number | { id: string | number } } | [role: s
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 show.head = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
@@ -280,7 +280,7 @@ show.head = (args: { role: string | number | { id: string | number } } | [role: 
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
     const showForm = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: show.url(args, options),
@@ -290,7 +290,7 @@ show.head = (args: { role: string | number | { id: string | number } } | [role: 
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         showForm.get = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, options),
@@ -299,7 +299,7 @@ show.head = (args: { role: string | number | { id: string | number } } | [role: 
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::show
  * @see app/Http/Controllers/Configuration/RoleController.php:69
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         showForm.head = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, {
@@ -315,7 +315,7 @@ show.head = (args: { role: string | number | { id: string | number } } | [role: 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
 export const edit = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -324,13 +324,13 @@ export const edit = (args: { role: string | number | { id: string | number } } |
 
 edit.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/roles/{role}/edit',
+    url: 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
 edit.url = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -363,7 +363,7 @@ edit.url = (args: { role: string | number | { id: string | number } } | [role: s
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
 edit.get = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -372,7 +372,7 @@ edit.get = (args: { role: string | number | { id: string | number } } | [role: s
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
 edit.head = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
@@ -382,7 +382,7 @@ edit.head = (args: { role: string | number | { id: string | number } } | [role: 
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
     const editForm = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
@@ -392,7 +392,7 @@ edit.head = (args: { role: string | number | { id: string | number } } | [role: 
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
         editForm.get = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
@@ -401,7 +401,7 @@ edit.head = (args: { role: string | number | { id: string | number } } | [role: 
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::edit
  * @see app/Http/Controllers/Configuration/RoleController.php:99
- * @route 'http://100.107.175.84/configuration/roles/{role}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}/edit'
  */
         editForm.head = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
@@ -417,7 +417,7 @@ edit.head = (args: { role: string | number | { id: string | number } } | [role: 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 export const update = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -426,13 +426,13 @@ export const update = (args: { role: string | number | { id: string | number } }
 
 update.definition = {
     methods: ["put","patch"],
-    url: 'http://100.107.175.84/configuration/roles/{role}',
+    url: 'https://enotulen.irvan.cloud/configuration/roles/{role}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 update.url = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -465,7 +465,7 @@ update.url = (args: { role: string | number | { id: string | number } } | [role:
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 update.put = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -474,7 +474,7 @@ update.put = (args: { role: string | number | { id: string | number } } | [role:
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 update.patch = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -484,7 +484,7 @@ update.patch = (args: { role: string | number | { id: string | number } } | [rol
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
     const updateForm = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -499,7 +499,7 @@ update.patch = (args: { role: string | number | { id: string | number } } | [rol
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         updateForm.put = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -513,7 +513,7 @@ update.patch = (args: { role: string | number | { id: string | number } } | [rol
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::update
  * @see app/Http/Controllers/Configuration/RoleController.php:113
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         updateForm.patch = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -529,7 +529,7 @@ update.patch = (args: { role: string | number | { id: string | number } } | [rol
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
  * @see app/Http/Controllers/Configuration/RoleController.php:132
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 export const destroy = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -538,13 +538,13 @@ export const destroy = (args: { role: string | number | { id: string | number } 
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/configuration/roles/{role}',
+    url: 'https://enotulen.irvan.cloud/configuration/roles/{role}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
  * @see app/Http/Controllers/Configuration/RoleController.php:132
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 destroy.url = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -577,7 +577,7 @@ destroy.url = (args: { role: string | number | { id: string | number } } | [role
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
  * @see app/Http/Controllers/Configuration/RoleController.php:132
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 destroy.delete = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -587,7 +587,7 @@ destroy.delete = (args: { role: string | number | { id: string | number } } | [r
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
  * @see app/Http/Controllers/Configuration/RoleController.php:132
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
     const destroyForm = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -602,7 +602,7 @@ destroy.delete = (args: { role: string | number | { id: string | number } } | [r
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
  * @see app/Http/Controllers/Configuration/RoleController.php:132
- * @route 'http://100.107.175.84/configuration/roles/{role}'
+ * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         destroyForm.delete = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

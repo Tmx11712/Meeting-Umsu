@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/permissions',
+    url: 'https://enotulen.irvan.cloud/configuration/permissions',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/configuration/permissions',
+    url: 'https://enotulen.irvan.cloud/configuration/permissions',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
- * @route 'http://100.107.175.84/configuration/permissions'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -135,7 +135,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 export const update = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -144,13 +144,13 @@ export const update = (args: { permission: string | number | { id: string | numb
 
 update.definition = {
     methods: ["put","patch"],
-    url: 'http://100.107.175.84/configuration/permissions/{permission}',
+    url: 'https://enotulen.irvan.cloud/configuration/permissions/{permission}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 update.url = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -183,7 +183,7 @@ update.url = (args: { permission: string | number | { id: string | number } } | 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 update.put = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -192,7 +192,7 @@ update.put = (args: { permission: string | number | { id: string | number } } | 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 update.patch = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -202,7 +202,7 @@ update.patch = (args: { permission: string | number | { id: string | number } } 
     /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
     const updateForm = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -217,7 +217,7 @@ update.patch = (args: { permission: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
         updateForm.put = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -231,7 +231,7 @@ update.patch = (args: { permission: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
         updateForm.patch = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -247,7 +247,7 @@ update.patch = (args: { permission: string | number | { id: string | number } } 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 export const destroy = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -256,13 +256,13 @@ export const destroy = (args: { permission: string | number | { id: string | num
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/configuration/permissions/{permission}',
+    url: 'https://enotulen.irvan.cloud/configuration/permissions/{permission}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 destroy.url = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -295,7 +295,7 @@ destroy.url = (args: { permission: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
 destroy.delete = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -305,7 +305,7 @@ destroy.delete = (args: { permission: string | number | { id: string | number } 
     /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
     const destroyForm = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -320,7 +320,7 @@ destroy.delete = (args: { permission: string | number | { id: string | number } 
             /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
- * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ * @route 'https://enotulen.irvan.cloud/configuration/permissions/{permission}'
  */
         destroyForm.delete = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

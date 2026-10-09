@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/horizon/api/monitoring',
+    url: 'https://enotulen.irvan.cloud/horizon/api/monitoring',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:47
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::store
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:104
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/horizon/api/monitoring',
+    url: 'https://enotulen.irvan.cloud/horizon/api/monitoring',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::store
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:104
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::store
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:104
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::store
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:104
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::store
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:104
- * @route 'http://100.107.175.84/horizon/api/monitoring'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),

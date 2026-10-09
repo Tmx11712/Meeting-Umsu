@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 export const store = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
@@ -11,13 +11,13 @@ export const store = (args: { meeting: string | number | { id: string | number }
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/meetings/{meeting}/correction',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/correction',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 store.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -50,7 +50,7 @@ store.url = (args: { meeting: string | number | { id: string | number } } | [mee
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 store.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
@@ -60,7 +60,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
     const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(args, options),
@@ -70,7 +70,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
         storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(args, options),
@@ -81,7 +81,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
- * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish'
  */
 export const finish = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: finish.url(args, options),
@@ -90,13 +90,13 @@ export const finish = (args: { meeting: string | number | { id: string | number 
 
 finish.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/meetings/{meeting}/correction/finish',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
- * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish'
  */
 finish.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -129,7 +129,7 @@ finish.url = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
- * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish'
  */
 finish.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: finish.url(args, options),
@@ -139,7 +139,7 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
     /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
- * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish'
  */
     const finishForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: finish.url(args, options),
@@ -149,7 +149,7 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
- * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction/finish'
  */
         finishForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: finish.url(args, options),

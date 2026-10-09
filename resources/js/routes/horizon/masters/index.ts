@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/horizon/api/masters',
+    url: 'https://enotulen.irvan.cloud/horizon/api/masters',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Horizon\Http\Controllers\MasterSupervisorController::index
  * @see vendor/laravel/horizon/src/Http/Controllers/MasterSupervisorController.php:18
- * @route 'http://100.107.175.84/horizon/api/masters'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/masters'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({

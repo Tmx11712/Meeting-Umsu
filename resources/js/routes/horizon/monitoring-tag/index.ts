@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 export const paginate = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: paginate.url(args, options),
@@ -11,13 +11,13 @@ export const paginate = (args: { tag: string | number } | [tag: string | number 
 
 paginate.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/horizon/api/monitoring/{tag}',
+    url: 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 paginate.url = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -45,7 +45,7 @@ paginate.url = (args: { tag: string | number } | [tag: string | number ] | strin
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 paginate.get = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: paginate.url(args, options),
@@ -54,7 +54,7 @@ paginate.get = (args: { tag: string | number } | [tag: string | number ] | strin
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 paginate.head = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: paginate.url(args, options),
@@ -64,7 +64,7 @@ paginate.head = (args: { tag: string | number } | [tag: string | number ] | stri
     /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
     const paginateForm = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: paginate.url(args, options),
@@ -74,7 +74,7 @@ paginate.head = (args: { tag: string | number } | [tag: string | number ] | stri
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
         paginateForm.get = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: paginate.url(args, options),
@@ -83,7 +83,7 @@ paginate.head = (args: { tag: string | number } | [tag: string | number ] | stri
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::paginate
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:64
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
         paginateForm.head = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: paginate.url(args, {
@@ -99,7 +99,7 @@ paginate.head = (args: { tag: string | number } | [tag: string | number ] | stri
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::destroy
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:115
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 export const destroy = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -108,13 +108,13 @@ export const destroy = (args: { tag: string | number } | [tag: string | number ]
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/horizon/api/monitoring/{tag}',
+    url: 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::destroy
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:115
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 destroy.url = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -142,7 +142,7 @@ destroy.url = (args: { tag: string | number } | [tag: string | number ] | string
 /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::destroy
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:115
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
 destroy.delete = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -152,7 +152,7 @@ destroy.delete = (args: { tag: string | number } | [tag: string | number ] | str
     /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::destroy
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:115
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
     const destroyForm = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -167,7 +167,7 @@ destroy.delete = (args: { tag: string | number } | [tag: string | number ] | str
             /**
 * @see \Laravel\Horizon\Http\Controllers\MonitoringController::destroy
  * @see vendor/laravel/horizon/src/Http/Controllers/MonitoringController.php:115
- * @route 'http://100.107.175.84/horizon/api/monitoring/{tag}'
+ * @route 'https://enotulen.irvan.cloud/horizon/api/monitoring/{tag}'
  */
         destroyForm.delete = (args: { tag: string | number } | [tag: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

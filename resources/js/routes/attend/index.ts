@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 export const form = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: form.url(args, options),
@@ -11,13 +11,13 @@ export const form = (args: { meeting: string | number | { id: string | number } 
 
 form.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/attend/{meeting}',
+    url: 'https://enotulen.irvan.cloud/attend/{meeting}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 form.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -50,7 +50,7 @@ form.url = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 form.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: form.url(args, options),
@@ -59,7 +59,7 @@ form.get = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 form.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: form.url(args, options),
@@ -69,7 +69,7 @@ form.head = (args: { meeting: string | number | { id: string | number } } | [mee
     /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
     const formForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: form.url(args, options),
@@ -79,7 +79,7 @@ form.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         formForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: form.url(args, options),
@@ -88,7 +88,7 @@ form.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::form
  * @see app/Http/Controllers/PublicAttendanceController.php:23
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         formForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: form.url(args, {
@@ -104,7 +104,7 @@ form.head = (args: { meeting: string | number | { id: string | number } } | [mee
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 export const submit = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
@@ -113,13 +113,13 @@ export const submit = (args: { meeting: string | number | { id: string | number 
 
 submit.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/attend/{meeting}',
+    url: 'https://enotulen.irvan.cloud/attend/{meeting}',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 submit.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -152,7 +152,7 @@ submit.url = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 submit.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: submit.url(args, options),
@@ -162,7 +162,7 @@ submit.post = (args: { meeting: string | number | { id: string | number } } | [m
     /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
     const submitForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: submit.url(args, options),
@@ -172,7 +172,7 @@ submit.post = (args: { meeting: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::submit
  * @see app/Http/Controllers/PublicAttendanceController.php:38
- * @route 'http://100.107.175.84/attend/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         submitForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: submit.url(args, options),

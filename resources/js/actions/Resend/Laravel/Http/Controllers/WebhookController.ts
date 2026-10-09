@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
+ * @route 'https://enotulen.irvan.cloud/resend/webhook'
  */
 export const handleWebhook = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handleWebhook.url(options),
@@ -11,13 +11,13 @@ export const handleWebhook = (options?: RouteQueryOptions): RouteDefinition<'pos
 
 handleWebhook.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/resend/webhook',
+    url: 'https://enotulen.irvan.cloud/resend/webhook',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
+ * @route 'https://enotulen.irvan.cloud/resend/webhook'
  */
 handleWebhook.url = (options?: RouteQueryOptions) => {
     return handleWebhook.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ handleWebhook.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
+ * @route 'https://enotulen.irvan.cloud/resend/webhook'
  */
 handleWebhook.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: handleWebhook.url(options),
@@ -36,7 +36,7 @@ handleWebhook.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
     /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
+ * @route 'https://enotulen.irvan.cloud/resend/webhook'
  */
     const handleWebhookForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: handleWebhook.url(options),
@@ -46,7 +46,7 @@ handleWebhook.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
             /**
 * @see \Resend\Laravel\Http\Controllers\WebhookController::handleWebhook
  * @see vendor/resend/resend-laravel/src/Http/Controllers/WebhookController.php:45
- * @route 'http://100.107.175.84/resend/webhook'
+ * @route 'https://enotulen.irvan.cloud/resend/webhook'
  */
         handleWebhookForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: handleWebhook.url(options),

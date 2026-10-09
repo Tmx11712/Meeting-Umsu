@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/menus',
+    url: 'https://enotulen.irvan.cloud/configuration/menus',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/configuration/menus',
+    url: 'https://enotulen.irvan.cloud/configuration/menus',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
- * @route 'http://100.107.175.84/configuration/menus'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -135,7 +135,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 export const update = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -144,13 +144,13 @@ export const update = (args: { menu: string | number | { id: string | number } }
 
 update.definition = {
     methods: ["put","patch"],
-    url: 'http://100.107.175.84/configuration/menus/{menu}',
+    url: 'https://enotulen.irvan.cloud/configuration/menus/{menu}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 update.url = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -183,7 +183,7 @@ update.url = (args: { menu: string | number | { id: string | number } } | [menu:
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 update.put = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -192,7 +192,7 @@ update.put = (args: { menu: string | number | { id: string | number } } | [menu:
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 update.patch = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -202,7 +202,7 @@ update.patch = (args: { menu: string | number | { id: string | number } } | [men
     /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
     const updateForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -217,7 +217,7 @@ update.patch = (args: { menu: string | number | { id: string | number } } | [men
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
         updateForm.put = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -231,7 +231,7 @@ update.patch = (args: { menu: string | number | { id: string | number } } | [men
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
         updateForm.patch = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -247,7 +247,7 @@ update.patch = (args: { menu: string | number | { id: string | number } } | [men
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 export const destroy = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -256,13 +256,13 @@ export const destroy = (args: { menu: string | number | { id: string | number } 
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/configuration/menus/{menu}',
+    url: 'https://enotulen.irvan.cloud/configuration/menus/{menu}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 destroy.url = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -295,7 +295,7 @@ destroy.url = (args: { menu: string | number | { id: string | number } } | [menu
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
 destroy.delete = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -305,7 +305,7 @@ destroy.delete = (args: { menu: string | number | { id: string | number } } | [m
     /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
     const destroyForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -320,7 +320,7 @@ destroy.delete = (args: { menu: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
- * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}'
  */
         destroyForm.delete = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
@@ -336,7 +336,7 @@ destroy.delete = (args: { menu: string | number | { id: string | number } } | [m
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggle
  * @see app/Http/Controllers/Configuration/MenuController.php:123
- * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle'
  */
 export const toggle = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
@@ -345,13 +345,13 @@ export const toggle = (args: { menu: string | number | { id: string | number } }
 
 toggle.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/configuration/menus/{menu}/toggle',
+    url: 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggle
  * @see app/Http/Controllers/Configuration/MenuController.php:123
- * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle'
  */
 toggle.url = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -384,7 +384,7 @@ toggle.url = (args: { menu: string | number | { id: string | number } } | [menu:
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggle
  * @see app/Http/Controllers/Configuration/MenuController.php:123
- * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle'
  */
 toggle.post = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
@@ -394,7 +394,7 @@ toggle.post = (args: { menu: string | number | { id: string | number } } | [menu
     /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggle
  * @see app/Http/Controllers/Configuration/MenuController.php:123
- * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle'
  */
     const toggleForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: toggle.url(args, options),
@@ -404,7 +404,7 @@ toggle.post = (args: { menu: string | number | { id: string | number } } | [menu
             /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggle
  * @see app/Http/Controllers/Configuration/MenuController.php:123
- * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ * @route 'https://enotulen.irvan.cloud/configuration/menus/{menu}/toggle'
  */
         toggleForm.post = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: toggle.url(args, options),

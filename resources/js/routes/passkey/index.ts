@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
 export const loginOptions = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: loginOptions.url(options),
@@ -11,13 +11,13 @@ export const loginOptions = (options?: RouteQueryOptions): RouteDefinition<'get'
 
 loginOptions.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/passkeys/login/options',
+    url: 'https://enotulen.irvan.cloud/passkeys/login/options',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
 loginOptions.url = (options?: RouteQueryOptions) => {
     return loginOptions.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ loginOptions.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
 loginOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: loginOptions.url(options),
@@ -35,7 +35,7 @@ loginOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
 loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: loginOptions.url(options),
@@ -45,7 +45,7 @@ loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
     const loginOptionsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: loginOptions.url(options),
@@ -55,7 +55,7 @@ loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
         loginOptionsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: loginOptions.url(options),
@@ -64,7 +64,7 @@ loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::loginOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:27
- * @route 'http://100.107.175.84/passkeys/login/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login/options'
  */
         loginOptionsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: loginOptions.url({
@@ -80,7 +80,7 @@ loginOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:43
- * @route 'http://100.107.175.84/passkeys/login'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login'
  */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: login.url(options),
@@ -89,13 +89,13 @@ export const login = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 login.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/passkeys/login',
+    url: 'https://enotulen.irvan.cloud/passkeys/login',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:43
- * @route 'http://100.107.175.84/passkeys/login'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login'
  */
 login.url = (options?: RouteQueryOptions) => {
     return login.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ login.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:43
- * @route 'http://100.107.175.84/passkeys/login'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login'
  */
 login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: login.url(options),
@@ -114,7 +114,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:43
- * @route 'http://100.107.175.84/passkeys/login'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login'
  */
     const loginForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: login.url(options),
@@ -124,7 +124,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyLoginController::login
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyLoginController.php:43
- * @route 'http://100.107.175.84/passkeys/login'
+ * @route 'https://enotulen.irvan.cloud/passkeys/login'
  */
         loginForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: login.url(options),
@@ -135,7 +135,7 @@ login.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
 export const confirmOptions = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: confirmOptions.url(options),
@@ -144,13 +144,13 @@ export const confirmOptions = (options?: RouteQueryOptions): RouteDefinition<'ge
 
 confirmOptions.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/passkeys/confirm/options',
+    url: 'https://enotulen.irvan.cloud/passkeys/confirm/options',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
 confirmOptions.url = (options?: RouteQueryOptions) => {
     return confirmOptions.definition.url + queryParams(options)
@@ -159,7 +159,7 @@ confirmOptions.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
 confirmOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: confirmOptions.url(options),
@@ -168,7 +168,7 @@ confirmOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
 confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: confirmOptions.url(options),
@@ -178,7 +178,7 @@ confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
     const confirmOptionsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: confirmOptions.url(options),
@@ -188,7 +188,7 @@ confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
         confirmOptionsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: confirmOptions.url(options),
@@ -197,7 +197,7 @@ confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirmOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:27
- * @route 'http://100.107.175.84/passkeys/confirm/options'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm/options'
  */
         confirmOptionsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: confirmOptions.url({
@@ -213,7 +213,7 @@ confirmOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:50
- * @route 'http://100.107.175.84/passkeys/confirm'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm'
  */
 export const confirm = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: confirm.url(options),
@@ -222,13 +222,13 @@ export const confirm = (options?: RouteQueryOptions): RouteDefinition<'post'> =>
 
 confirm.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/passkeys/confirm',
+    url: 'https://enotulen.irvan.cloud/passkeys/confirm',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:50
- * @route 'http://100.107.175.84/passkeys/confirm'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm'
  */
 confirm.url = (options?: RouteQueryOptions) => {
     return confirm.definition.url + queryParams(options)
@@ -237,7 +237,7 @@ confirm.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:50
- * @route 'http://100.107.175.84/passkeys/confirm'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm'
  */
 confirm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: confirm.url(options),
@@ -247,7 +247,7 @@ confirm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:50
- * @route 'http://100.107.175.84/passkeys/confirm'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm'
  */
     const confirmForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: confirm.url(options),
@@ -257,7 +257,7 @@ confirm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyConfirmationController::confirm
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyConfirmationController.php:50
- * @route 'http://100.107.175.84/passkeys/confirm'
+ * @route 'https://enotulen.irvan.cloud/passkeys/confirm'
  */
         confirmForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: confirm.url(options),
@@ -268,7 +268,7 @@ confirm.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 export const registrationOptions = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: registrationOptions.url(options),
@@ -277,13 +277,13 @@ export const registrationOptions = (options?: RouteQueryOptions): RouteDefinitio
 
 registrationOptions.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/user/passkeys/options',
+    url: 'https://enotulen.irvan.cloud/user/passkeys/options',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 registrationOptions.url = (options?: RouteQueryOptions) => {
     return registrationOptions.definition.url + queryParams(options)
@@ -292,7 +292,7 @@ registrationOptions.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 registrationOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: registrationOptions.url(options),
@@ -301,7 +301,7 @@ registrationOptions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: registrationOptions.url(options),
@@ -311,7 +311,7 @@ registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
     const registrationOptionsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: registrationOptions.url(options),
@@ -321,7 +321,7 @@ registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
         registrationOptionsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: registrationOptions.url(options),
@@ -330,7 +330,7 @@ registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::registrationOptions
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
         registrationOptionsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: registrationOptions.url({
@@ -346,7 +346,7 @@ registrationOptions.head = (options?: RouteQueryOptions): RouteDefinition<'head'
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -355,13 +355,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/user/passkeys',
+    url: 'https://enotulen.irvan.cloud/user/passkeys',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -370,7 +370,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -380,7 +380,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -390,7 +390,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -401,7 +401,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 export const destroy = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -410,13 +410,13 @@ export const destroy = (args: { passkey: number | { id: number } } | [passkey: n
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/user/passkeys/{passkey}',
+    url: 'https://enotulen.irvan.cloud/user/passkeys/{passkey}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -449,7 +449,7 @@ destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -459,7 +459,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
     const destroyForm = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -474,7 +474,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
         destroyForm.delete = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

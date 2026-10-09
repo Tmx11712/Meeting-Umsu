@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
 export const passkeys = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: passkeys.url(options),
@@ -10,12 +10,12 @@ export const passkeys = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 
 passkeys.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/.well-known/passkey-endpoints',
+    url: 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
 passkeys.url = (options?: RouteQueryOptions) => {
     return passkeys.definition.url + queryParams(options)
@@ -23,7 +23,7 @@ passkeys.url = (options?: RouteQueryOptions) => {
 
 /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
 passkeys.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: passkeys.url(options),
@@ -31,7 +31,7 @@ passkeys.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
 passkeys.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: passkeys.url(options),
@@ -40,7 +40,7 @@ passkeys.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
     const passkeysForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: passkeys.url(options),
@@ -49,7 +49,7 @@ passkeys.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
         passkeysForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: passkeys.url(options),
@@ -57,7 +57,7 @@ passkeys.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
  * @see routes/settings.php:50
- * @route 'http://100.107.175.84/.well-known/passkey-endpoints'
+ * @route 'https://enotulen.irvan.cloud/.well-known/passkey-endpoints'
  */
         passkeysForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: passkeys.url({

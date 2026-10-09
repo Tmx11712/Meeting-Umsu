@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/user/passkeys/options',
+    url: 'https://enotulen.irvan.cloud/user/passkeys/options',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::index
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:29
- * @route 'http://100.107.175.84/user/passkeys/options'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/options'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/user/passkeys',
+    url: 'https://enotulen.irvan.cloud/user/passkeys',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::store
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:48
- * @route 'http://100.107.175.84/user/passkeys'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -135,7 +135,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 export const destroy = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -144,13 +144,13 @@ export const destroy = (args: { passkey: number | { id: number } } | [passkey: n
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/user/passkeys/{passkey}',
+    url: 'https://enotulen.irvan.cloud/user/passkeys/{passkey}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -183,7 +183,7 @@ destroy.url = (args: { passkey: number | { id: number } } | [passkey: number | {
 /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
 destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -193,7 +193,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
     /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
     const destroyForm = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -208,7 +208,7 @@ destroy.delete = (args: { passkey: number | { id: number } } | [passkey: number 
             /**
 * @see \Laravel\Passkeys\Http\Controllers\PasskeyRegistrationController::destroy
  * @see vendor/laravel/passkeys/src/Http/Controllers/PasskeyRegistrationController.php:68
- * @route 'http://100.107.175.84/user/passkeys/{passkey}'
+ * @route 'https://enotulen.irvan.cloud/user/passkeys/{passkey}'
  */
         destroyForm.delete = (args: { passkey: number | { id: number } } | [passkey: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

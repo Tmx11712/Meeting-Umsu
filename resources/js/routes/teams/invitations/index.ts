@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations'
  */
 export const store = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
@@ -11,13 +11,13 @@ export const store = (args: { team: string | number | { slug: string | number } 
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/settings/teams/{team}/invitations',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations'
  */
 store.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -50,7 +50,7 @@ store.url = (args: { team: string | number | { slug: string | number } } | [team
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations'
  */
 store.post = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(args, options),
@@ -60,7 +60,7 @@ store.post = (args: { team: string | number | { slug: string | number } } | [tea
     /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations'
  */
     const storeForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(args, options),
@@ -70,7 +70,7 @@ store.post = (args: { team: string | number | { slug: string | number } } | [tea
             /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations'
  */
         storeForm.post = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(args, options),
@@ -81,7 +81,7 @@ store.post = (args: { team: string | number | { slug: string | number } } | [tea
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}'
  */
 export const destroy = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -90,13 +90,13 @@ export const destroy = (args: { team: string | number | { slug: string | number 
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}'
  */
 destroy.url = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
@@ -126,7 +126,7 @@ destroy.url = (args: { team: string | number | { slug: string | number }, invita
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}'
  */
 destroy.delete = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -136,7 +136,7 @@ destroy.delete = (args: { team: string | number | { slug: string | number }, inv
     /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}'
  */
     const destroyForm = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -151,7 +151,7 @@ destroy.delete = (args: { team: string | number | { slug: string | number }, inv
             /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
- * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/invitations/{invitation}'
  */
         destroyForm.delete = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

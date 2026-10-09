@@ -9,7 +9,7 @@ import approvalDf7719 from './approval'
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
  * @see app/Http/Controllers/MeetingController.php:184
- * @route 'http://100.107.175.84/meetings/auto-sync'
+ * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 export const autoSync = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: autoSync.url(options),
@@ -18,13 +18,13 @@ export const autoSync = (options?: RouteQueryOptions): RouteDefinition<'post'> =
 
 autoSync.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/meetings/auto-sync',
+    url: 'https://enotulen.irvan.cloud/meetings/auto-sync',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
  * @see app/Http/Controllers/MeetingController.php:184
- * @route 'http://100.107.175.84/meetings/auto-sync'
+ * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 autoSync.url = (options?: RouteQueryOptions) => {
     return autoSync.definition.url + queryParams(options)
@@ -33,7 +33,7 @@ autoSync.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
  * @see app/Http/Controllers/MeetingController.php:184
- * @route 'http://100.107.175.84/meetings/auto-sync'
+ * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: autoSync.url(options),
@@ -43,7 +43,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\MeetingController::autoSync
  * @see app/Http/Controllers/MeetingController.php:184
- * @route 'http://100.107.175.84/meetings/auto-sync'
+ * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
     const autoSyncForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: autoSync.url(options),
@@ -53,7 +53,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::autoSync
  * @see app/Http/Controllers/MeetingController.php:184
- * @route 'http://100.107.175.84/meetings/auto-sync'
+ * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
         autoSyncForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: autoSync.url(options),
@@ -64,7 +64,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
  * @see app/Http/Controllers/MeetingController.php:269
- * @route 'http://100.107.175.84/meetings/{meeting}/cancel'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 export const cancel = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
@@ -73,13 +73,13 @@ export const cancel = (args: { meeting: string | number | { id: string | number 
 
 cancel.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/meetings/{meeting}/cancel',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
  * @see app/Http/Controllers/MeetingController.php:269
- * @route 'http://100.107.175.84/meetings/{meeting}/cancel'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 cancel.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -112,7 +112,7 @@ cancel.url = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
  * @see app/Http/Controllers/MeetingController.php:269
- * @route 'http://100.107.175.84/meetings/{meeting}/cancel'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 cancel.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: cancel.url(args, options),
@@ -122,7 +122,7 @@ cancel.post = (args: { meeting: string | number | { id: string | number } } | [m
     /**
 * @see \App\Http\Controllers\MeetingController::cancel
  * @see app/Http/Controllers/MeetingController.php:269
- * @route 'http://100.107.175.84/meetings/{meeting}/cancel'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
     const cancelForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: cancel.url(args, options),
@@ -132,7 +132,7 @@ cancel.post = (args: { meeting: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\MeetingController::cancel
  * @see app/Http/Controllers/MeetingController.php:269
- * @route 'http://100.107.175.84/meetings/{meeting}/cancel'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
         cancelForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: cancel.url(args, options),
@@ -143,7 +143,7 @@ cancel.post = (args: { meeting: string | number | { id: string | number } } | [m
 /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -152,13 +152,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings',
+    url: 'https://enotulen.irvan.cloud/meetings',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -167,7 +167,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -176,7 +176,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -186,7 +186,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -196,7 +196,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -205,7 +205,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::index
  * @see app/Http/Controllers/MeetingController.php:26
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -221,7 +221,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -230,13 +230,13 @@ export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 
 create.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/create',
+    url: 'https://enotulen.irvan.cloud/meetings/create',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.url = (options?: RouteQueryOptions) => {
     return create.definition.url + queryParams(options)
@@ -245,7 +245,7 @@ create.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -254,7 +254,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: create.url(options),
@@ -264,7 +264,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: create.url(options),
@@ -274,7 +274,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url(options),
@@ -283,7 +283,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::create
  * @see app/Http/Controllers/MeetingController.php:78
- * @route 'http://100.107.175.84/meetings/create'
+ * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url({
@@ -299,7 +299,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::store
  * @see app/Http/Controllers/MeetingController.php:129
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -308,13 +308,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/meetings',
+    url: 'https://enotulen.irvan.cloud/meetings',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::store
  * @see app/Http/Controllers/MeetingController.php:129
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -323,7 +323,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\MeetingController::store
  * @see app/Http/Controllers/MeetingController.php:129
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -333,7 +333,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\MeetingController::store
  * @see app/Http/Controllers/MeetingController.php:129
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -343,7 +343,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\MeetingController::store
  * @see app/Http/Controllers/MeetingController.php:129
- * @route 'http://100.107.175.84/meetings'
+ * @route 'https://enotulen.irvan.cloud/meetings'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -354,7 +354,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -363,13 +363,13 @@ export const show = (args: { meeting: string | number | { id: string | number } 
 
 show.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -402,7 +402,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
@@ -411,7 +411,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
@@ -421,7 +421,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: show.url(args, options),
@@ -431,7 +431,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, options),
@@ -440,7 +440,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\MeetingController::show
  * @see app/Http/Controllers/MeetingController.php:201
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: show.url(args, {
@@ -456,7 +456,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 export const edit = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -465,13 +465,13 @@ export const edit = (args: { meeting: string | number | { id: string | number } 
 
 edit.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/edit',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/edit',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -504,7 +504,7 @@ edit.url = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -513,7 +513,7 @@ edit.get = (args: { meeting: string | number | { id: string | number } } | [meet
 /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
@@ -523,7 +523,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
     /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
     const editForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
@@ -533,7 +533,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
         editForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
@@ -542,7 +542,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
             /**
 * @see \App\Http\Controllers\MeetingController::edit
  * @see app/Http/Controllers/MeetingController.php:220
- * @route 'http://100.107.175.84/meetings/{meeting}/edit'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
         editForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
@@ -558,7 +558,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
 /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const update = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -567,13 +567,13 @@ export const update = (args: { meeting: string | number | { id: string | number 
 
 update.definition = {
     methods: ["put","patch"],
-    url: 'http://100.107.175.84/meetings/{meeting}',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -606,7 +606,7 @@ update.url = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -615,7 +615,7 @@ update.put = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.patch = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -625,7 +625,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
     /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const updateForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -640,7 +640,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
             /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         updateForm.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -654,7 +654,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
             /**
 * @see \App\Http\Controllers\MeetingController::update
  * @see app/Http/Controllers/MeetingController.php:236
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         updateForm.patch = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -670,7 +670,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
  * @see app/Http/Controllers/MeetingController.php:282
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const destroy = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -679,13 +679,13 @@ export const destroy = (args: { meeting: string | number | { id: string | number
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/meetings/{meeting}',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
  * @see app/Http/Controllers/MeetingController.php:282
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 destroy.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -718,7 +718,7 @@ destroy.url = (args: { meeting: string | number | { id: string | number } } | [m
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
  * @see app/Http/Controllers/MeetingController.php:282
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 destroy.delete = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -728,7 +728,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number } } |
     /**
 * @see \App\Http\Controllers\MeetingController::destroy
  * @see app/Http/Controllers/MeetingController.php:282
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const destroyForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -743,7 +743,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number } } |
             /**
 * @see \App\Http\Controllers\MeetingController::destroy
  * @see app/Http/Controllers/MeetingController.php:282
- * @route 'http://100.107.175.84/meetings/{meeting}'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         destroyForm.delete = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
@@ -759,7 +759,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
 export const recording = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: recording.url(args, options),
@@ -768,13 +768,13 @@ export const recording = (args: { meeting: string | number | { id: string | numb
 
 recording.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/recording',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/recording',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
 recording.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -807,7 +807,7 @@ recording.url = (args: { meeting: string | number | { id: string | number } } | 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
 recording.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: recording.url(args, options),
@@ -816,7 +816,7 @@ recording.get = (args: { meeting: string | number | { id: string | number } } | 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
 recording.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: recording.url(args, options),
@@ -826,7 +826,7 @@ recording.head = (args: { meeting: string | number | { id: string | number } } |
     /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
     const recordingForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: recording.url(args, options),
@@ -836,7 +836,7 @@ recording.head = (args: { meeting: string | number | { id: string | number } } |
             /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
         recordingForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: recording.url(args, options),
@@ -845,7 +845,7 @@ recording.head = (args: { meeting: string | number | { id: string | number } } |
             /**
 * @see \App\Http\Controllers\MeetingRecordingController::recording
  * @see app/Http/Controllers/MeetingRecordingController.php:24
- * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording'
  */
         recordingForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: recording.url(args, {
@@ -861,7 +861,7 @@ recording.head = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 export const correction = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: correction.url(args, options),
@@ -870,13 +870,13 @@ export const correction = (args: { meeting: string | number | { id: string | num
 
 correction.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/correction',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/correction',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 correction.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -909,7 +909,7 @@ correction.url = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 correction.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: correction.url(args, options),
@@ -918,7 +918,7 @@ correction.get = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
 correction.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: correction.url(args, options),
@@ -928,7 +928,7 @@ correction.head = (args: { meeting: string | number | { id: string | number } } 
     /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
     const correctionForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: correction.url(args, options),
@@ -938,7 +938,7 @@ correction.head = (args: { meeting: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
         correctionForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: correction.url(args, options),
@@ -947,7 +947,7 @@ correction.head = (args: { meeting: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::correction
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
- * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/correction'
  */
         correctionForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: correction.url(args, {
@@ -963,7 +963,7 @@ correction.head = (args: { meeting: string | number | { id: string | number } } 
 /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 export const attendance = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: attendance.url(args, options),
@@ -972,13 +972,13 @@ export const attendance = (args: { meeting: string | number | { id: string | num
 
 attendance.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/attendance',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 attendance.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -1011,7 +1011,7 @@ attendance.url = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 attendance.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: attendance.url(args, options),
@@ -1020,7 +1020,7 @@ attendance.get = (args: { meeting: string | number | { id: string | number } } |
 /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 attendance.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: attendance.url(args, options),
@@ -1030,7 +1030,7 @@ attendance.head = (args: { meeting: string | number | { id: string | number } } 
     /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
     const attendanceForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: attendance.url(args, options),
@@ -1040,7 +1040,7 @@ attendance.head = (args: { meeting: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
         attendanceForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: attendance.url(args, options),
@@ -1049,7 +1049,7 @@ attendance.head = (args: { meeting: string | number | { id: string | number } } 
             /**
 * @see \App\Http\Controllers\AttendanceController::attendance
  * @see app/Http/Controllers/AttendanceController.php:50
- * @route 'http://100.107.175.84/meetings/{meeting}/attendance'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
         attendanceForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: attendance.url(args, {
@@ -1065,7 +1065,7 @@ attendance.head = (args: { meeting: string | number | { id: string | number } } 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
 export const review = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: review.url(args, options),
@@ -1074,13 +1074,13 @@ export const review = (args: { meeting: string | number | { id: string | number 
 
 review.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/review',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/review',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
 review.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -1113,7 +1113,7 @@ review.url = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
 review.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: review.url(args, options),
@@ -1122,7 +1122,7 @@ review.get = (args: { meeting: string | number | { id: string | number } } | [me
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
 review.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: review.url(args, options),
@@ -1132,7 +1132,7 @@ review.head = (args: { meeting: string | number | { id: string | number } } | [m
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
     const reviewForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: review.url(args, options),
@@ -1142,7 +1142,7 @@ review.head = (args: { meeting: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
         reviewForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: review.url(args, options),
@@ -1151,7 +1151,7 @@ review.head = (args: { meeting: string | number | { id: string | number } } | [m
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::review
  * @see app/Http/Controllers/MeetingMinuteController.php:40
- * @route 'http://100.107.175.84/meetings/{meeting}/review'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/review'
  */
         reviewForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: review.url(args, {
@@ -1167,7 +1167,7 @@ review.head = (args: { meeting: string | number | { id: string | number } } | [m
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 export const approval = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: approval.url(args, options),
@@ -1176,13 +1176,13 @@ export const approval = (args: { meeting: string | number | { id: string | numbe
 
 approval.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/approval',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/approval',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -1215,7 +1215,7 @@ approval.url = (args: { meeting: string | number | { id: string | number } } | [
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: approval.url(args, options),
@@ -1224,7 +1224,7 @@ approval.get = (args: { meeting: string | number | { id: string | number } } | [
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: approval.url(args, options),
@@ -1234,7 +1234,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
     /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
     const approvalForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: approval.url(args, options),
@@ -1244,7 +1244,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
         approvalForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: approval.url(args, options),
@@ -1253,7 +1253,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
  * @see app/Http/Controllers/MeetingApprovalController.php:30
- * @route 'http://100.107.175.84/meetings/{meeting}/approval'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
         approvalForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: approval.url(args, {

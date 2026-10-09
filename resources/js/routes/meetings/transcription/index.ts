@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
 export const progress = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: progress.url(args, options),
@@ -11,13 +11,13 @@ export const progress = (args: { meeting: string | number | { id: string | numbe
 
 progress.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/meetings/{meeting}/transcription/progress',
+    url: 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
 progress.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -50,7 +50,7 @@ progress.url = (args: { meeting: string | number | { id: string | number } } | [
 /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
 progress.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: progress.url(args, options),
@@ -59,7 +59,7 @@ progress.get = (args: { meeting: string | number | { id: string | number } } | [
 /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
 progress.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: progress.url(args, options),
@@ -69,7 +69,7 @@ progress.head = (args: { meeting: string | number | { id: string | number } } | 
     /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
     const progressForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: progress.url(args, options),
@@ -79,7 +79,7 @@ progress.head = (args: { meeting: string | number | { id: string | number } } | 
             /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
         progressForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: progress.url(args, options),
@@ -88,7 +88,7 @@ progress.head = (args: { meeting: string | number | { id: string | number } } | 
             /**
 * @see \App\Http\Controllers\TranscriptionController::progress
  * @see app/Http/Controllers/TranscriptionController.php:19
- * @route 'http://100.107.175.84/meetings/{meeting}/transcription/progress'
+ * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/transcription/progress'
  */
         progressForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: progress.url(args, {

@@ -10,7 +10,7 @@ import userPermissions from './user-permissions'
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -19,13 +19,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration',
+    url: 'https://enotulen.irvan.cloud/configuration',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -34,7 +34,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -43,7 +43,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -53,7 +53,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -72,7 +72,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::index
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:25
- * @route 'http://100.107.175.84/configuration'
+ * @route 'https://enotulen.irvan.cloud/configuration'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -88,7 +88,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
 export const openaiStatus = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: openaiStatus.url(options),
@@ -97,13 +97,13 @@ export const openaiStatus = (options?: RouteQueryOptions): RouteDefinition<'get'
 
 openaiStatus.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/openai-status',
+    url: 'https://enotulen.irvan.cloud/configuration/openai-status',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
 openaiStatus.url = (options?: RouteQueryOptions) => {
     return openaiStatus.definition.url + queryParams(options)
@@ -112,7 +112,7 @@ openaiStatus.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
 openaiStatus.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: openaiStatus.url(options),
@@ -121,7 +121,7 @@ openaiStatus.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
 openaiStatus.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: openaiStatus.url(options),
@@ -131,7 +131,7 @@ openaiStatus.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
     const openaiStatusForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: openaiStatus.url(options),
@@ -141,7 +141,7 @@ openaiStatus.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
         openaiStatusForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: openaiStatus.url(options),
@@ -150,7 +150,7 @@ openaiStatus.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\ConfigurationController::openaiStatus
  * @see app/Http/Controllers/Configuration/ConfigurationController.php:45
- * @route 'http://100.107.175.84/configuration/openai-status'
+ * @route 'https://enotulen.irvan.cloud/configuration/openai-status'
  */
         openaiStatusForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: openaiStatus.url({

@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/users',
+    url: 'https://enotulen.irvan.cloud/configuration/users',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -89,13 +89,13 @@ export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 
 create.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/users/create',
+    url: 'https://enotulen.irvan.cloud/configuration/users/create',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
 create.url = (options?: RouteQueryOptions) => {
     return create.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ create.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: create.url(options),
@@ -113,7 +113,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: create.url(options),
@@ -123,7 +123,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: create.url(options),
@@ -133,7 +133,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url(options),
@@ -142,7 +142,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
- * @route 'http://100.107.175.84/configuration/users/create'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: create.url({
@@ -158,7 +158,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -167,13 +167,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/configuration/users',
+    url: 'https://enotulen.irvan.cloud/configuration/users',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -182,7 +182,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -192,7 +192,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -202,7 +202,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
- * @route 'http://100.107.175.84/configuration/users'
+ * @route 'https://enotulen.irvan.cloud/configuration/users'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -213,7 +213,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
 export const edit = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -222,13 +222,13 @@ export const edit = (args: { user: string | number | { id: string | number } } |
 
 edit.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/configuration/users/{user}/edit',
+    url: 'https://enotulen.irvan.cloud/configuration/users/{user}/edit',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
 edit.url = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -261,7 +261,7 @@ edit.url = (args: { user: string | number | { id: string | number } } | [user: s
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
 edit.get = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -270,7 +270,7 @@ edit.get = (args: { user: string | number | { id: string | number } } | [user: s
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
 edit.head = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
@@ -280,7 +280,7 @@ edit.head = (args: { user: string | number | { id: string | number } } | [user: 
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
     const editForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
@@ -290,7 +290,7 @@ edit.head = (args: { user: string | number | { id: string | number } } | [user: 
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
         editForm.get = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
@@ -299,7 +299,7 @@ edit.head = (args: { user: string | number | { id: string | number } } | [user: 
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
- * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}/edit'
  */
         editForm.head = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
@@ -315,7 +315,7 @@ edit.head = (args: { user: string | number | { id: string | number } } | [user: 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 export const update = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -324,13 +324,13 @@ export const update = (args: { user: string | number | { id: string | number } }
 
 update.definition = {
     methods: ["put","patch"],
-    url: 'http://100.107.175.84/configuration/users/{user}',
+    url: 'https://enotulen.irvan.cloud/configuration/users/{user}',
 } satisfies RouteDefinition<["put","patch"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 update.url = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -363,7 +363,7 @@ update.url = (args: { user: string | number | { id: string | number } } | [user:
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 update.put = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
@@ -372,7 +372,7 @@ update.put = (args: { user: string | number | { id: string | number } } | [user:
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 update.patch = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -382,7 +382,7 @@ update.patch = (args: { user: string | number | { id: string | number } } | [use
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
     const updateForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -397,7 +397,7 @@ update.patch = (args: { user: string | number | { id: string | number } } | [use
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
         updateForm.put = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -411,7 +411,7 @@ update.patch = (args: { user: string | number | { id: string | number } } | [use
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
         updateForm.patch = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -427,7 +427,7 @@ update.patch = (args: { user: string | number | { id: string | number } } | [use
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 export const destroy = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -436,13 +436,13 @@ export const destroy = (args: { user: string | number | { id: string | number } 
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/configuration/users/{user}',
+    url: 'https://enotulen.irvan.cloud/configuration/users/{user}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 destroy.url = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -475,7 +475,7 @@ destroy.url = (args: { user: string | number | { id: string | number } } | [user
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
 destroy.delete = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -485,7 +485,7 @@ destroy.delete = (args: { user: string | number | { id: string | number } } | [u
     /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
     const destroyForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -500,7 +500,7 @@ destroy.delete = (args: { user: string | number | { id: string | number } } | [u
             /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
- * @route 'http://100.107.175.84/configuration/users/{user}'
+ * @route 'https://enotulen.irvan.cloud/configuration/users/{user}'
  */
         destroyForm.delete = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {

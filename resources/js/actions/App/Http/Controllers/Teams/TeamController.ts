@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/settings/teams',
+    url: 'https://enotulen.irvan.cloud/settings/teams',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Teams\TeamController::index
  * @see app/Http/Controllers/Teams/TeamController.php:37
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\Teams\TeamController::store
  * @see app/Http/Controllers/Teams/TeamController.php:49
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -89,13 +89,13 @@ export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => (
 
 store.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/settings/teams',
+    url: 'https://enotulen.irvan.cloud/settings/teams',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::store
  * @see app/Http/Controllers/Teams/TeamController.php:49
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ store.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Teams\TeamController::store
  * @see app/Http/Controllers/Teams/TeamController.php:49
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
@@ -114,7 +114,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \App\Http\Controllers\Teams\TeamController::store
  * @see app/Http/Controllers/Teams/TeamController.php:49
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: store.url(options),
@@ -124,7 +124,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \App\Http\Controllers\Teams\TeamController::store
  * @see app/Http/Controllers/Teams/TeamController.php:49
- * @route 'http://100.107.175.84/settings/teams'
+ * @route 'https://enotulen.irvan.cloud/settings/teams'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: store.url(options),
@@ -135,7 +135,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 export const edit = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -144,13 +144,13 @@ export const edit = (args: { team: string | number | { slug: string | number } }
 
 edit.definition = {
     methods: ["get","head"],
-    url: 'http://100.107.175.84/settings/teams/{team}',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 edit.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -183,7 +183,7 @@ edit.url = (args: { team: string | number | { slug: string | number } } | [team:
 /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 edit.get = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
@@ -192,7 +192,7 @@ edit.get = (args: { team: string | number | { slug: string | number } } | [team:
 /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 edit.head = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
@@ -202,7 +202,7 @@ edit.head = (args: { team: string | number | { slug: string | number } } | [team
     /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
     const editForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
@@ -212,7 +212,7 @@ edit.head = (args: { team: string | number | { slug: string | number } } | [team
             /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
         editForm.get = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
@@ -221,7 +221,7 @@ edit.head = (args: { team: string | number | { slug: string | number } } | [team
             /**
 * @see \App\Http\Controllers\Teams\TeamController::edit
  * @see app/Http/Controllers/Teams/TeamController.php:61
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
         editForm.head = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
@@ -237,7 +237,7 @@ edit.head = (args: { team: string | number | { slug: string | number } } | [team
 /**
 * @see \App\Http\Controllers\Teams\TeamController::update
  * @see app/Http/Controllers/Teams/TeamController.php:103
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 export const update = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -246,13 +246,13 @@ export const update = (args: { team: string | number | { slug: string | number }
 
 update.definition = {
     methods: ["patch"],
-    url: 'http://100.107.175.84/settings/teams/{team}',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}',
 } satisfies RouteDefinition<["patch"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::update
  * @see app/Http/Controllers/Teams/TeamController.php:103
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 update.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -285,7 +285,7 @@ update.url = (args: { team: string | number | { slug: string | number } } | [tea
 /**
 * @see \App\Http\Controllers\Teams\TeamController::update
  * @see app/Http/Controllers/Teams/TeamController.php:103
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 update.patch = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
@@ -295,7 +295,7 @@ update.patch = (args: { team: string | number | { slug: string | number } } | [t
     /**
 * @see \App\Http\Controllers\Teams\TeamController::update
  * @see app/Http/Controllers/Teams/TeamController.php:103
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
     const updateForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
@@ -310,7 +310,7 @@ update.patch = (args: { team: string | number | { slug: string | number } } | [t
             /**
 * @see \App\Http\Controllers\Teams\TeamController::update
  * @see app/Http/Controllers/Teams/TeamController.php:103
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
         updateForm.patch = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
@@ -326,7 +326,7 @@ update.patch = (args: { team: string | number | { slug: string | number } } | [t
 /**
 * @see \App\Http\Controllers\Teams\TeamController::destroy
  * @see app/Http/Controllers/Teams/TeamController.php:161
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 export const destroy = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -335,13 +335,13 @@ export const destroy = (args: { team: string | number | { slug: string | number 
 
 destroy.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/settings/teams/{team}',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::destroy
  * @see app/Http/Controllers/Teams/TeamController.php:161
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 destroy.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -374,7 +374,7 @@ destroy.url = (args: { team: string | number | { slug: string | number } } | [te
 /**
 * @see \App\Http\Controllers\Teams\TeamController::destroy
  * @see app/Http/Controllers/Teams/TeamController.php:161
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
 destroy.delete = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
@@ -384,7 +384,7 @@ destroy.delete = (args: { team: string | number | { slug: string | number } } | 
     /**
 * @see \App\Http\Controllers\Teams\TeamController::destroy
  * @see app/Http/Controllers/Teams/TeamController.php:161
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
     const destroyForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
@@ -399,7 +399,7 @@ destroy.delete = (args: { team: string | number | { slug: string | number } } | 
             /**
 * @see \App\Http\Controllers\Teams\TeamController::destroy
  * @see app/Http/Controllers/Teams/TeamController.php:161
- * @route 'http://100.107.175.84/settings/teams/{team}'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}'
  */
         destroyForm.delete = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
@@ -415,7 +415,7 @@ destroy.delete = (args: { team: string | number | { slug: string | number } } | 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::switchMethod
  * @see app/Http/Controllers/Teams/TeamController.php:123
- * @route 'http://100.107.175.84/settings/teams/{team}/switch'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/switch'
  */
 export const switchMethod = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: switchMethod.url(args, options),
@@ -424,13 +424,13 @@ export const switchMethod = (args: { team: string | number | { slug: string | nu
 
 switchMethod.definition = {
     methods: ["post"],
-    url: 'http://100.107.175.84/settings/teams/{team}/switch',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}/switch',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::switchMethod
  * @see app/Http/Controllers/Teams/TeamController.php:123
- * @route 'http://100.107.175.84/settings/teams/{team}/switch'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/switch'
  */
 switchMethod.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -463,7 +463,7 @@ switchMethod.url = (args: { team: string | number | { slug: string | number } } 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::switchMethod
  * @see app/Http/Controllers/Teams/TeamController.php:123
- * @route 'http://100.107.175.84/settings/teams/{team}/switch'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/switch'
  */
 switchMethod.post = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: switchMethod.url(args, options),
@@ -473,7 +473,7 @@ switchMethod.post = (args: { team: string | number | { slug: string | number } }
     /**
 * @see \App\Http\Controllers\Teams\TeamController::switchMethod
  * @see app/Http/Controllers/Teams/TeamController.php:123
- * @route 'http://100.107.175.84/settings/teams/{team}/switch'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/switch'
  */
     const switchMethodForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: switchMethod.url(args, options),
@@ -483,7 +483,7 @@ switchMethod.post = (args: { team: string | number | { slug: string | number } }
             /**
 * @see \App\Http\Controllers\Teams\TeamController::switchMethod
  * @see app/Http/Controllers/Teams/TeamController.php:123
- * @route 'http://100.107.175.84/settings/teams/{team}/switch'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/switch'
  */
         switchMethodForm.post = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: switchMethod.url(args, options),
@@ -494,7 +494,7 @@ switchMethod.post = (args: { team: string | number | { slug: string | number } }
 /**
 * @see \App\Http\Controllers\Teams\TeamController::leave
  * @see app/Http/Controllers/Teams/TeamController.php:135
- * @route 'http://100.107.175.84/settings/teams/{team}/leave'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/leave'
  */
 export const leave = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: leave.url(args, options),
@@ -503,13 +503,13 @@ export const leave = (args: { team: string | number | { slug: string | number } 
 
 leave.definition = {
     methods: ["delete"],
-    url: 'http://100.107.175.84/settings/teams/{team}/leave',
+    url: 'https://enotulen.irvan.cloud/settings/teams/{team}/leave',
 } satisfies RouteDefinition<["delete"]>
 
 /**
 * @see \App\Http\Controllers\Teams\TeamController::leave
  * @see app/Http/Controllers/Teams/TeamController.php:135
- * @route 'http://100.107.175.84/settings/teams/{team}/leave'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/leave'
  */
 leave.url = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
@@ -542,7 +542,7 @@ leave.url = (args: { team: string | number | { slug: string | number } } | [team
 /**
 * @see \App\Http\Controllers\Teams\TeamController::leave
  * @see app/Http/Controllers/Teams/TeamController.php:135
- * @route 'http://100.107.175.84/settings/teams/{team}/leave'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/leave'
  */
 leave.delete = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: leave.url(args, options),
@@ -552,7 +552,7 @@ leave.delete = (args: { team: string | number | { slug: string | number } } | [t
     /**
 * @see \App\Http\Controllers\Teams\TeamController::leave
  * @see app/Http/Controllers/Teams/TeamController.php:135
- * @route 'http://100.107.175.84/settings/teams/{team}/leave'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/leave'
  */
     const leaveForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: leave.url(args, {
@@ -567,7 +567,7 @@ leave.delete = (args: { team: string | number | { slug: string | number } } | [t
             /**
 * @see \App\Http\Controllers\Teams\TeamController::leave
  * @see app/Http/Controllers/Teams/TeamController.php:135
- * @route 'http://100.107.175.84/settings/teams/{team}/leave'
+ * @route 'https://enotulen.irvan.cloud/settings/teams/{team}/leave'
  */
         leaveForm.delete = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: leave.url(args, {
