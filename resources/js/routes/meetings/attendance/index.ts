@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\AttendanceController::qr
  * @see app/Http/Controllers/AttendanceController.php:61
@@ -66,6 +66,41 @@ qr.head = (args: { meeting: string | number | { id: string | number } } | [meeti
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\AttendanceController::qr
+ * @see app/Http/Controllers/AttendanceController.php:61
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/qr'
+ */
+    const qrForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: qr.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\AttendanceController::qr
+ * @see app/Http/Controllers/AttendanceController.php:61
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/qr'
+ */
+        qrForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: qr.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\AttendanceController::qr
+ * @see app/Http/Controllers/AttendanceController.php:61
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/qr'
+ */
+        qrForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: qr.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    qr.form = qrForm
 /**
 * @see \App\Http\Controllers\AttendanceController::manual
  * @see app/Http/Controllers/AttendanceController.php:81
@@ -124,6 +159,27 @@ manual.post = (args: { meeting: string | number | { id: string | number } } | [m
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\AttendanceController::manual
+ * @see app/Http/Controllers/AttendanceController.php:81
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/manual'
+ */
+    const manualForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: manual.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\AttendanceController::manual
+ * @see app/Http/Controllers/AttendanceController.php:81
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/manual'
+ */
+        manualForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: manual.url(args, options),
+            method: 'post',
+        })
+    
+    manual.form = manualForm
 /**
 * @see \App\Http\Controllers\AttendanceController::finish
  * @see app/Http/Controllers/AttendanceController.php:129
@@ -182,6 +238,27 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\AttendanceController::finish
+ * @see app/Http/Controllers/AttendanceController.php:129
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/finish'
+ */
+    const finishForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: finish.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\AttendanceController::finish
+ * @see app/Http/Controllers/AttendanceController.php:129
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/finish'
+ */
+        finishForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: finish.url(args, options),
+            method: 'post',
+        })
+    
+    finish.form = finishForm
 /**
 * @see \App\Http\Controllers\AttendanceController::scan
  * @see app/Http/Controllers/AttendanceController.php:140
@@ -249,6 +326,41 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\AttendanceController::scan
+ * @see app/Http/Controllers/AttendanceController.php:140
+ * @route 'http://100.107.175.84/meetings/{meeting}/scan'
+ */
+    const scanForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: scan.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\AttendanceController::scan
+ * @see app/Http/Controllers/AttendanceController.php:140
+ * @route 'http://100.107.175.84/meetings/{meeting}/scan'
+ */
+        scanForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: scan.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\AttendanceController::scan
+ * @see app/Http/Controllers/AttendanceController.php:140
+ * @route 'http://100.107.175.84/meetings/{meeting}/scan'
+ */
+        scanForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: scan.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    scan.form = scanForm
 /**
 * @see \App\Http\Controllers\AttendanceController::sync
  * @see app/Http/Controllers/AttendanceController.php:174
@@ -306,6 +418,28 @@ sync.post = (args: { meeting: string | number | { id: string | number } } | [mee
     url: sync.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\AttendanceController::sync
+ * @see app/Http/Controllers/AttendanceController.php:174
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/sync'
+ */
+    const syncForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: sync.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\AttendanceController::sync
+ * @see app/Http/Controllers/AttendanceController.php:174
+ * @route 'http://100.107.175.84/meetings/{meeting}/attendance/sync'
+ */
+        syncForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: sync.url(args, options),
+            method: 'post',
+        })
+    
+    sync.form = syncForm
 const attendance = {
     qr: Object.assign(qr, qr),
 manual: Object.assign(manual, manual),

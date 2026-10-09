@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
  * @see app/Http/Controllers/PublicAttendanceController.php:23
@@ -66,6 +66,41 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\PublicAttendanceController::show
+ * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @route 'http://100.107.175.84/attend/{meeting}'
+ */
+    const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicAttendanceController::show
+ * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @route 'http://100.107.175.84/attend/{meeting}'
+ */
+        showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\PublicAttendanceController::show
+ * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @route 'http://100.107.175.84/attend/{meeting}'
+ */
+        showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
  * @see app/Http/Controllers/PublicAttendanceController.php:38
@@ -123,6 +158,28 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     url: store.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\PublicAttendanceController::store
+ * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @route 'http://100.107.175.84/attend/{meeting}'
+ */
+    const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\PublicAttendanceController::store
+ * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @route 'http://100.107.175.84/attend/{meeting}'
+ */
+        storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 const PublicAttendanceController = { show, store }
 
 export default PublicAttendanceController

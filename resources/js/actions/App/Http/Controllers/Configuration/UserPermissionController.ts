@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\UserPermissionController::index
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserPermissionController::index
+ * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
+ * @route 'http://100.107.175.84/configuration/user-permissions'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserPermissionController::index
+ * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
+ * @route 'http://100.107.175.84/configuration/user-permissions'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\UserPermissionController::index
+ * @see app/Http/Controllers/Configuration/UserPermissionController.php:28
+ * @route 'http://100.107.175.84/configuration/user-permissions'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\UserPermissionController::update
  * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
@@ -99,6 +134,38 @@ update.put = (args: { user: string | number | { id: string | number } } | [user:
     url: update.url(args, options),
     method: 'put',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\UserPermissionController::update
+ * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
+ * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
+ */
+    const updateForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserPermissionController::update
+ * @see app/Http/Controllers/Configuration/UserPermissionController.php:100
+ * @route 'http://100.107.175.84/configuration/user-permissions/{user}'
+ */
+        updateForm.put = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 const UserPermissionController = { index, update }
 
 export default UserPermissionController

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::index
  * @see app/Http/Controllers/Configuration/MenuController.php:27
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MenuController::index
+ * @see app/Http/Controllers/Configuration/MenuController.php:27
+ * @route 'http://100.107.175.84/configuration/menus'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::index
+ * @see app/Http/Controllers/Configuration/MenuController.php:27
+ * @route 'http://100.107.175.84/configuration/menus'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::index
+ * @see app/Http/Controllers/Configuration/MenuController.php:27
+ * @route 'http://100.107.175.84/configuration/menus'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::store
  * @see app/Http/Controllers/Configuration/MenuController.php:48
@@ -76,6 +111,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MenuController::store
+ * @see app/Http/Controllers/Configuration/MenuController.php:48
+ * @route 'http://100.107.175.84/configuration/menus'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::store
+ * @see app/Http/Controllers/Configuration/MenuController.php:48
+ * @route 'http://100.107.175.84/configuration/menus'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::update
  * @see app/Http/Controllers/Configuration/MenuController.php:90
@@ -143,6 +199,51 @@ update.patch = (args: { menu: string | number | { id: string | number } } | [men
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MenuController::update
+ * @see app/Http/Controllers/Configuration/MenuController.php:90
+ * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ */
+    const updateForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::update
+ * @see app/Http/Controllers/Configuration/MenuController.php:90
+ * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ */
+        updateForm.put = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::update
+ * @see app/Http/Controllers/Configuration/MenuController.php:90
+ * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ */
+        updateForm.patch = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::destroy
  * @see app/Http/Controllers/Configuration/MenuController.php:109
@@ -201,6 +302,37 @@ destroy.delete = (args: { menu: string | number | { id: string | number } } | [m
     method: 'delete',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MenuController::destroy
+ * @see app/Http/Controllers/Configuration/MenuController.php:109
+ * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ */
+    const destroyForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::destroy
+ * @see app/Http/Controllers/Configuration/MenuController.php:109
+ * @route 'http://100.107.175.84/configuration/menus/{menu}'
+ */
+        destroyForm.delete = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\Configuration\MenuController::toggleStatus
  * @see app/Http/Controllers/Configuration/MenuController.php:123
@@ -258,6 +390,28 @@ toggleStatus.post = (args: { menu: string | number | { id: string | number } } |
     url: toggleStatus.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\MenuController::toggleStatus
+ * @see app/Http/Controllers/Configuration/MenuController.php:123
+ * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ */
+    const toggleStatusForm = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: toggleStatus.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MenuController::toggleStatus
+ * @see app/Http/Controllers/Configuration/MenuController.php:123
+ * @route 'http://100.107.175.84/configuration/menus/{menu}/toggle'
+ */
+        toggleStatusForm.post = (args: { menu: string | number | { id: string | number } } | [menu: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: toggleStatus.url(args, options),
+            method: 'post',
+        })
+    
+    toggleStatus.form = toggleStatusForm
 const MenuController = { index, store, update, destroy, toggleStatus }
 
 export default MenuController

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\MeetingTypeController::index
  * @see app/Http/Controllers/Configuration/MeetingTypeController.php:18
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::index
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:18
+ * @route 'http://100.107.175.84/configuration/meeting-types'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::index
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:18
+ * @route 'http://100.107.175.84/configuration/meeting-types'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::index
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:18
+ * @route 'http://100.107.175.84/configuration/meeting-types'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingTypeController::store
  * @see app/Http/Controllers/Configuration/MeetingTypeController.php:27
@@ -76,6 +111,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::store
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:27
+ * @route 'http://100.107.175.84/configuration/meeting-types'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::store
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:27
+ * @route 'http://100.107.175.84/configuration/meeting-types'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingTypeController::update
  * @see app/Http/Controllers/Configuration/MeetingTypeController.php:39
@@ -143,6 +199,51 @@ update.patch = (args: { meeting_type: string | number | { id: string | number } 
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::update
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:39
+ * @route 'http://100.107.175.84/configuration/meeting-types/{meeting_type}'
+ */
+    const updateForm = (args: { meeting_type: string | number | { id: string | number } } | [meeting_type: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::update
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:39
+ * @route 'http://100.107.175.84/configuration/meeting-types/{meeting_type}'
+ */
+        updateForm.put = (args: { meeting_type: string | number | { id: string | number } } | [meeting_type: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::update
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:39
+ * @route 'http://100.107.175.84/configuration/meeting-types/{meeting_type}'
+ */
+        updateForm.patch = (args: { meeting_type: string | number | { id: string | number } } | [meeting_type: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingTypeController::destroy
  * @see app/Http/Controllers/Configuration/MeetingTypeController.php:51
@@ -200,6 +301,38 @@ destroy.delete = (args: { meeting_type: string | number | { id: string | number 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::destroy
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:51
+ * @route 'http://100.107.175.84/configuration/meeting-types/{meeting_type}'
+ */
+    const destroyForm = (args: { meeting_type: string | number | { id: string | number } } | [meeting_type: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingTypeController::destroy
+ * @see app/Http/Controllers/Configuration/MeetingTypeController.php:51
+ * @route 'http://100.107.175.84/configuration/meeting-types/{meeting_type}'
+ */
+        destroyForm.delete = (args: { meeting_type: string | number | { id: string | number } } | [meeting_type: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const MeetingTypeController = { index, store, update, destroy }
 
 export default MeetingTypeController

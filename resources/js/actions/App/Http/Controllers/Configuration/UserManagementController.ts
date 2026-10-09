@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::index
  * @see app/Http/Controllers/Configuration/UserManagementController.php:29
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::index
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:29
+ * @route 'http://100.107.175.84/configuration/users'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::index
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:29
+ * @route 'http://100.107.175.84/configuration/users'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::index
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:29
+ * @route 'http://100.107.175.84/configuration/users'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::create
  * @see app/Http/Controllers/Configuration/UserManagementController.php:66
@@ -85,6 +120,41 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::create
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:66
+ * @route 'http://100.107.175.84/configuration/users/create'
+ */
+    const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: create.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::create
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:66
+ * @route 'http://100.107.175.84/configuration/users/create'
+ */
+        createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: create.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::create
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:66
+ * @route 'http://100.107.175.84/configuration/users/create'
+ */
+        createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: create.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    create.form = createForm
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::store
  * @see app/Http/Controllers/Configuration/UserManagementController.php:75
@@ -119,6 +189,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::store
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:75
+ * @route 'http://100.107.175.84/configuration/users'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::store
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:75
+ * @route 'http://100.107.175.84/configuration/users'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::edit
  * @see app/Http/Controllers/Configuration/UserManagementController.php:96
@@ -186,6 +277,41 @@ edit.head = (args: { user: string | number | { id: string | number } } | [user: 
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::edit
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:96
+ * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ */
+    const editForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: edit.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::edit
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:96
+ * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ */
+        editForm.get = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::edit
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:96
+ * @route 'http://100.107.175.84/configuration/users/{user}/edit'
+ */
+        editForm.head = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: edit.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    edit.form = editForm
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::update
  * @see app/Http/Controllers/Configuration/UserManagementController.php:112
@@ -253,6 +379,51 @@ update.patch = (args: { user: string | number | { id: string | number } } | [use
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::update
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:112
+ * @route 'http://100.107.175.84/configuration/users/{user}'
+ */
+    const updateForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::update
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:112
+ * @route 'http://100.107.175.84/configuration/users/{user}'
+ */
+        updateForm.put = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::update
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:112
+ * @route 'http://100.107.175.84/configuration/users/{user}'
+ */
+        updateForm.patch = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\UserManagementController::destroy
  * @see app/Http/Controllers/Configuration/UserManagementController.php:138
@@ -310,6 +481,38 @@ destroy.delete = (args: { user: string | number | { id: string | number } } | [u
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::destroy
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:138
+ * @route 'http://100.107.175.84/configuration/users/{user}'
+ */
+    const destroyForm = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\UserManagementController::destroy
+ * @see app/Http/Controllers/Configuration/UserManagementController.php:138
+ * @route 'http://100.107.175.84/configuration/users/{user}'
+ */
+        destroyForm.delete = (args: { user: string | number | { id: string | number } } | [user: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const UserManagementController = { index, create, store, edit, update, destroy }
 
 export default UserManagementController

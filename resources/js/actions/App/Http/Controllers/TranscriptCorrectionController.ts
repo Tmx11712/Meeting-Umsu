@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::index
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:25
+ * @route 'http://100.107.175.84/transcripts'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::index
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:25
+ * @route 'http://100.107.175.84/transcripts'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::index
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:25
+ * @route 'http://100.107.175.84/transcripts'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::show
  * @see app/Http/Controllers/TranscriptCorrectionController.php:42
@@ -109,6 +144,41 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::show
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:42
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ */
+    const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::show
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:42
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ */
+        showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::show
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:42
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ */
+        showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::store
  * @see app/Http/Controllers/TranscriptCorrectionController.php:68
@@ -167,6 +237,27 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::store
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:68
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ */
+    const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::store
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:68
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction'
+ */
+        storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::finish
  * @see app/Http/Controllers/TranscriptCorrectionController.php:82
@@ -224,6 +315,28 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
     url: finish.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::finish
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:82
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ */
+    const finishForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: finish.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\TranscriptCorrectionController::finish
+ * @see app/Http/Controllers/TranscriptCorrectionController.php:82
+ * @route 'http://100.107.175.84/meetings/{meeting}/correction/finish'
+ */
+        finishForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: finish.url(args, options),
+            method: 'post',
+        })
+    
+    finish.form = finishForm
 const TranscriptCorrectionController = { index, show, store, finish }
 
 export default TranscriptCorrectionController

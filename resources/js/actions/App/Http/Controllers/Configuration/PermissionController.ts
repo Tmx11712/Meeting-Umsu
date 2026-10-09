@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::index
  * @see app/Http/Controllers/Configuration/PermissionController.php:23
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\PermissionController::index
+ * @see app/Http/Controllers/Configuration/PermissionController.php:23
+ * @route 'http://100.107.175.84/configuration/permissions'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::index
+ * @see app/Http/Controllers/Configuration/PermissionController.php:23
+ * @route 'http://100.107.175.84/configuration/permissions'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::index
+ * @see app/Http/Controllers/Configuration/PermissionController.php:23
+ * @route 'http://100.107.175.84/configuration/permissions'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::store
  * @see app/Http/Controllers/Configuration/PermissionController.php:57
@@ -76,6 +111,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\PermissionController::store
+ * @see app/Http/Controllers/Configuration/PermissionController.php:57
+ * @route 'http://100.107.175.84/configuration/permissions'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::store
+ * @see app/Http/Controllers/Configuration/PermissionController.php:57
+ * @route 'http://100.107.175.84/configuration/permissions'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::update
  * @see app/Http/Controllers/Configuration/PermissionController.php:78
@@ -143,6 +199,51 @@ update.patch = (args: { permission: string | number | { id: string | number } } 
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\PermissionController::update
+ * @see app/Http/Controllers/Configuration/PermissionController.php:78
+ * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ */
+    const updateForm = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::update
+ * @see app/Http/Controllers/Configuration/PermissionController.php:78
+ * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ */
+        updateForm.put = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::update
+ * @see app/Http/Controllers/Configuration/PermissionController.php:78
+ * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ */
+        updateForm.patch = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\PermissionController::destroy
  * @see app/Http/Controllers/Configuration/PermissionController.php:98
@@ -200,6 +301,38 @@ destroy.delete = (args: { permission: string | number | { id: string | number } 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\PermissionController::destroy
+ * @see app/Http/Controllers/Configuration/PermissionController.php:98
+ * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ */
+    const destroyForm = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\PermissionController::destroy
+ * @see app/Http/Controllers/Configuration/PermissionController.php:98
+ * @route 'http://100.107.175.84/configuration/permissions/{permission}'
+ */
+        destroyForm.delete = (args: { permission: string | number | { id: string | number } } | [permission: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const PermissionController = { index, store, update, destroy }
 
 export default PermissionController

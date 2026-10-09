@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @route 'http://100.107.175.84/configuration/meeting-rooms'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @route 'http://100.107.175.84/configuration/meeting-rooms'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::index
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @route 'http://100.107.175.84/configuration/meeting-rooms'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
@@ -76,6 +111,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::store
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @route 'http://100.107.175.84/configuration/meeting-rooms'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::store
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @route 'http://100.107.175.84/configuration/meeting-rooms'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
@@ -143,6 +199,51 @@ update.patch = (args: { meeting_room: string | number | { id: string | number } 
     method: 'patch',
 })
 
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
+ */
+    const updateForm = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
+ */
+        updateForm.put = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::update
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
+ */
+        updateForm.patch = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
  * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
@@ -200,6 +301,38 @@ destroy.delete = (args: { meeting_room: string | number | { id: string | number 
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
+ */
+    const destroyForm = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @route 'http://100.107.175.84/configuration/meeting-rooms/{meeting_room}'
+ */
+        destroyForm.delete = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const meetingRooms = {
     index: Object.assign(index, index),
 store: Object.assign(store, store),

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::store
  * @see app/Http/Controllers/MeetingRecordingController.php:57
@@ -57,6 +57,27 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::store
+ * @see app/Http/Controllers/MeetingRecordingController.php:57
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ */
+    const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::store
+ * @see app/Http/Controllers/MeetingRecordingController.php:57
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording'
+ */
+        storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
  * @see app/Http/Controllers/MeetingRecordingController.php:275
@@ -115,6 +136,27 @@ startSession.post = (args: { meeting: string | number | { id: string | number } 
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::startSession
+ * @see app/Http/Controllers/MeetingRecordingController.php:275
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/start-session'
+ */
+    const startSessionForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: startSession.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::startSession
+ * @see app/Http/Controllers/MeetingRecordingController.php:275
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/start-session'
+ */
+        startSessionForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: startSession.url(args, options),
+            method: 'post',
+        })
+    
+    startSession.form = startSessionForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
  * @see app/Http/Controllers/MeetingRecordingController.php:295
@@ -173,6 +215,27 @@ stopSession.post = (args: { meeting: string | number | { id: string | number } }
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::stopSession
+ * @see app/Http/Controllers/MeetingRecordingController.php:295
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/stop-session'
+ */
+    const stopSessionForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: stopSession.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::stopSession
+ * @see app/Http/Controllers/MeetingRecordingController.php:295
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/stop-session'
+ */
+        stopSessionForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: stopSession.url(args, options),
+            method: 'post',
+        })
+    
+    stopSession.form = stopSessionForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::destroy
  * @see app/Http/Controllers/MeetingRecordingController.php:106
@@ -226,6 +289,37 @@ destroy.delete = (args: { meeting: string | number | { id: string | number }, re
     method: 'delete',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::destroy
+ * @see app/Http/Controllers/MeetingRecordingController.php:106
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/{recording}'
+ */
+    const destroyForm = (args: { meeting: string | number | { id: string | number }, recording: string | number } | [meeting: string | number | { id: string | number }, recording: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::destroy
+ * @see app/Http/Controllers/MeetingRecordingController.php:106
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/{recording}'
+ */
+        destroyForm.delete = (args: { meeting: string | number | { id: string | number }, recording: string | number } | [meeting: string | number | { id: string | number }, recording: string | number ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::transcribe
  * @see app/Http/Controllers/MeetingRecordingController.php:141
@@ -284,6 +378,27 @@ transcribe.post = (args: { meeting: string | number | { id: string | number } } 
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::transcribe
+ * @see app/Http/Controllers/MeetingRecordingController.php:141
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/transcribe'
+ */
+    const transcribeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: transcribe.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::transcribe
+ * @see app/Http/Controllers/MeetingRecordingController.php:141
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/transcribe'
+ */
+        transcribeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: transcribe.url(args, options),
+            method: 'post',
+        })
+    
+    transcribe.form = transcribeForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::finish
  * @see app/Http/Controllers/MeetingRecordingController.php:171
@@ -342,6 +457,27 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::finish
+ * @see app/Http/Controllers/MeetingRecordingController.php:171
+ * @route 'http://100.107.175.84/meetings/{meeting}/finish-recording'
+ */
+    const finishForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: finish.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::finish
+ * @see app/Http/Controllers/MeetingRecordingController.php:171
+ * @route 'http://100.107.175.84/meetings/{meeting}/finish-recording'
+ */
+        finishForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: finish.url(args, options),
+            method: 'post',
+        })
+    
+    finish.form = finishForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::stream
  * @see app/Http/Controllers/MeetingRecordingController.php:247
@@ -405,6 +541,42 @@ stream.head = (args: { meeting: string | number | { id: string | number }, recor
     url: stream.url(args, options),
     method: 'head',
 })
+
+    /**
+* @see \App\Http\Controllers\MeetingRecordingController::stream
+ * @see app/Http/Controllers/MeetingRecordingController.php:247
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/{recording}/stream'
+ */
+    const streamForm = (args: { meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: stream.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::stream
+ * @see app/Http/Controllers/MeetingRecordingController.php:247
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/{recording}/stream'
+ */
+        streamForm.get = (args: { meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: stream.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\MeetingRecordingController::stream
+ * @see app/Http/Controllers/MeetingRecordingController.php:247
+ * @route 'http://100.107.175.84/meetings/{meeting}/recording/{recording}/stream'
+ */
+        streamForm.head = (args: { meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, recording: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: stream.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    stream.form = streamForm
 const recording = {
     store: Object.assign(store, store),
 startSession: Object.assign(startSession, startSession),

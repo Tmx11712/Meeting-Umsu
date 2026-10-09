@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::store
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
@@ -57,6 +57,27 @@ store.post = (args: { team: string | number | { slug: string | number } } | [tea
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Teams\TeamInvitationController::store
+ * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
+ * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ */
+    const storeForm = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Teams\TeamInvitationController::store
+ * @see app/Http/Controllers/Teams/TeamInvitationController.php:23
+ * @route 'http://100.107.175.84/settings/teams/{team}/invitations'
+ */
+        storeForm.post = (args: { team: string | number | { slug: string | number } } | [team: string | number | { slug: string | number } ] | string | number | { slug: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
  * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
@@ -111,6 +132,38 @@ destroy.delete = (args: { team: string | number | { slug: string | number }, inv
     url: destroy.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
+ * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
+ * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ */
+    const destroyForm = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Teams\TeamInvitationController::destroy
+ * @see app/Http/Controllers/Teams/TeamInvitationController.php:45
+ * @route 'http://100.107.175.84/settings/teams/{team}/invitations/{invitation}'
+ */
+        destroyForm.delete = (args: { team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } } | [team: string | number | { slug: string | number }, invitation: string | number | { code: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const invitations = {
     store: Object.assign(store, store),
 destroy: Object.assign(destroy, destroy),

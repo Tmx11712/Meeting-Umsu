@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\AttendanceApiController::index
  * @see app/Http/Controllers/Api/AttendanceApiController.php:30
@@ -66,6 +66,41 @@ index.head = (args: { meeting: string | number | { id: string | number } } | [me
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Api\AttendanceApiController::index
+ * @see app/Http/Controllers/Api/AttendanceApiController.php:30
+ * @route 'http://100.107.175.84/api/meetings/{meeting}/attendance'
+ */
+    const indexForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Api\AttendanceApiController::index
+ * @see app/Http/Controllers/Api/AttendanceApiController.php:30
+ * @route 'http://100.107.175.84/api/meetings/{meeting}/attendance'
+ */
+        indexForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Api\AttendanceApiController::index
+ * @see app/Http/Controllers/Api/AttendanceApiController.php:30
+ * @route 'http://100.107.175.84/api/meetings/{meeting}/attendance'
+ */
+        indexForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Api\AttendanceApiController::scan
  * @see app/Http/Controllers/Api/AttendanceApiController.php:66
@@ -123,6 +158,28 @@ scan.post = (args: { meeting: string | number | { id: string | number } } | [mee
     url: scan.url(args, options),
     method: 'post',
 })
+
+    /**
+* @see \App\Http\Controllers\Api\AttendanceApiController::scan
+ * @see app/Http/Controllers/Api/AttendanceApiController.php:66
+ * @route 'http://100.107.175.84/api/meetings/{meeting}/attendance/scan'
+ */
+    const scanForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: scan.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Api\AttendanceApiController::scan
+ * @see app/Http/Controllers/Api/AttendanceApiController.php:66
+ * @route 'http://100.107.175.84/api/meetings/{meeting}/attendance/scan'
+ */
+        scanForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: scan.url(args, options),
+            method: 'post',
+        })
+    
+    scan.form = scanForm
 const attendance = {
     index: Object.assign(index, index),
 scan: Object.assign(scan, scan),
