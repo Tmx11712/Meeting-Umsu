@@ -37,7 +37,7 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "7081:80"
       - "9001:9001"
     volumes:
       # Use our custom Nginx config
