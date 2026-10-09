@@ -50,7 +50,7 @@ docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
 docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
 docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
 docker compose -f docker-compose.prod.yml exec -T app php artisan event:cache
-docker compose -f docker-compose.prod.yml exec -T app php artisan storage:link || true
+docker compose -f docker-compose.prod.yml exec -T app php artisan storage:link --force || true
 
 # 6. Restart Queue Worker (Penting untuk pemrosesan AI)
 echo "?? Merestart antrian (Queue Worker)..."
