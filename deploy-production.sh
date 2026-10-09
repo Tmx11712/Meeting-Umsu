@@ -44,8 +44,8 @@ docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/htm
 
 # c. Optimasi, Caching, dan Migrasi Laravel
 echo "??? Menjalankan migrasi database dan caching aplikasi..."
-docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
 docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
+docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
 docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
 docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
 docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
