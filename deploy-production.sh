@@ -25,7 +25,7 @@ fi
 
 # 4. Build dan Restart Docker Container
 echo "?? Membangun ulang dan menyalakan Docker Container..."
-docker compose -f docker-compose.prod.yml down
+docker compose -f docker-compose.prod.yml down --remove-orphans
 docker compose -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml up -d
 
