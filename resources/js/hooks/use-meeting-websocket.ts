@@ -69,7 +69,8 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
         }
 
         const isRecordingPage = window.location.pathname.includes('/recording');
-        const pollInterval = isRecordingPage ? 5000 : 15000;
+        // Ubah dari 5 detik menjadi 15 detik agar browser tidak lelet (mengurangi beban network)
+        const pollInterval = isRecordingPage ? 15000 : 30000;
 
         const interval = setInterval(safeReload, pollInterval);
         
