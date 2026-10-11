@@ -20,7 +20,7 @@ Agar aplikasi di dalam kontainer `10.10.10.3` bisa diakses menggunakan IP Proxmo
 1. Buka terminal di laptop Anda dan masuk ke Proxmox Host:
    ```bash
    ssh root@100.107.175.84
-   # Masukkan password: Allahuakbar1213*
+   # Masukkan password root Proxmox (minta ke admin, JANGAN ditulis di repo)
    ```
 2. Jalankan perintah `iptables` ini untuk meneruskan trafik Port 80 (Web dan WebSockets):
    ```bash
@@ -85,7 +85,7 @@ Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungka
    cat << 'EOF' > .env
    APP_NAME=enotulen
    APP_ENV=production
-   APP_KEY=base64:duT5VTKp+gwtjhiMVlYRb3kXqjP8AmRmNfTu+vQOUdQ=
+   APP_KEY=GANTI_DENGAN_HASIL_php_artisan_key_generate_--show
    APP_DEBUG=false
    APP_URL=http://100.107.175.84
    
@@ -94,8 +94,8 @@ Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungka
    DB_HOST=10.10.10.2
    DB_PORT=5432
    DB_DATABASE=enotulen
-   DB_USERNAME=umsu
-   DB_PASSWORD=UnggulMendunia2026!
+   DB_USERNAME=GANTI_USERNAME_DB
+   DB_PASSWORD=GANTI_PASSWORD_DB
    
    # REDIS (LXC 102)
    REDIS_CLIENT=phpredis
@@ -108,8 +108,8 @@ Di dalam direktori `/var/www/enotulen`, buat file konfigurasi untuk menghubungka
    
    # MINIO (LXC 103)
    FILESYSTEM_DISK=s3
-   AWS_ACCESS_KEY_ID=enotulenadmin
-   AWS_SECRET_ACCESS_KEY=enotulenadmin123
+   AWS_ACCESS_KEY_ID=GANTI_ACCESS_KEY_MINIO
+   AWS_SECRET_ACCESS_KEY=GANTI_SECRET_KEY_MINIO
    AWS_DEFAULT_REGION=us-east-1
    AWS_BUCKET=enotulen-recordings
    AWS_ENDPOINT=http://10.10.10.5:9000

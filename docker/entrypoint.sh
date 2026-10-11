@@ -22,6 +22,18 @@ mkdir -p storage/logs \
          storage/app/private/temp \
          bootstrap/cache
 
+# 0. Sinkronisasi aset frontend ke volume public bersama (set SYNC_PUBLIC_ASSETS=true HANYA di service app).
+#    Named volume Docker tidak di-update otomatis saat image di-rebuild, sehingga tanpa langkah ini
+#    Nginx bisa terus menyajikan build lama. Memakai cp tanpa rm agar tidak ada jeda file hilang;
+#    file ber-hash lama dibiarkan supaya browser yang masih memegang HTML lama tidak kena 404.
+#    public/hot dihapus karena jika ada, @vite akan memuat aset dari dev server Vite (CSS rusak).
+if [ "${SYNC_PUBLIC_ASSETS:-false}" = "true" ] && [ -d /var/www/html/public-assets ]; then
+    echo "[entrypoint] Sinkronisasi aset frontend ke public/..."
+    rm -f public/hot
+    cp -rf /var/www/html/public-assets/. /var/www/html/public/ \
+        || echo "[entrypoint] PERINGATAN: sinkronisasi aset frontend gagal."
+fi
+
 # 1. Migrasi database (opsional). --isolated memakai cache lock (Redis) sehingga
 #    aman walau beberapa task ECS start bersamaan: hanya satu yang menjalankan migrasi.
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
