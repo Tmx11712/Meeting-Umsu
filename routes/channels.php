@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Broadcast;
  * Misalnya: hanya user yang ID-nya sama dengan ID di URL channel yang boleh terhubung ke channel pribadi ini.
  */
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+    return (string) $user->id === (string) $id;
 });
 
 Broadcast::channel('meetings', function ($user) {
