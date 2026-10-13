@@ -20,7 +20,7 @@ Broadcast::channel('meetings', function ($user) {
 
 Broadcast::channel('meeting.{meetingId}', function ($user, $meetingId) {
     // Gunakan MeetingPolicy (view) untuk memvalidasi akses ke channel rapat spesifik
-    $meeting = Meeting::find($meetingId);
+    $meeting = Meeting::query()->find($meetingId);
     if (! $meeting) {
         return false;
     }
