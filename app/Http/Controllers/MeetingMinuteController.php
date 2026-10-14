@@ -50,7 +50,7 @@ class MeetingMinuteController extends Controller
                 $q->orderBy('created_at', 'asc');
             },
             'recordings.transcripts' => function ($q) {
-                $q->orderBy('sequence_order', 'asc');
+                $q->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc');
             },
             'recordings.transcripts.corrections',
         ]);

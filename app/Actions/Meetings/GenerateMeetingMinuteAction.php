@@ -59,7 +59,7 @@ class GenerateMeetingMinuteAction
         // Ambil transkrip berdasarkan urutan rekaman (waktu dibuat) agar tidak tercampur (interleaved)
         // jika ada lebih dari 1 file audio.
         $recordings = $meeting->recordings()->with(['transcripts' => function ($q) {
-            $q->orderBy('sequence_order', 'asc');
+            $q->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc');
         }, 'transcripts.corrections'])->orderBy('created_at', 'asc')->get();
 
         $parts = [];
@@ -159,7 +159,14 @@ class GenerateMeetingMinuteAction
             }
         }
 
-        return implode('', $parts);
+        $fullText = implode('', $parts);
+
+        // Batasi maksimal 15.000 karakter agar tidak melebihi context window dan batas timeout OpenAI
+        if (mb_strlen($fullText) > 15000) {
+            $fullText = mb_substr($fullText, 0, 15000)."\n\n[... Teks dokumen dipotong untuk menjaga batas kapasitas pemrosesan AI ...]";
+        }
+
+        return $fullText;
     }
 
     /**

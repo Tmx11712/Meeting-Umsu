@@ -63,8 +63,12 @@ class MeetingApprovalController extends Controller
                 $meeting->fill([
                     'status' => MeetingStatus::SELESAI->value,
                     'current_stage' => 7,
-                ]);
-                $meeting->save();
+                ])->save();
+            } else {
+                // Jika notulen ditolak, kembalikan tahapan ke Stage 5 (Review Notulen) agar dapat direvisi oleh Notulis
+                $meeting->fill([
+                    'current_stage' => 5,
+                ])->save();
             }
         });
 

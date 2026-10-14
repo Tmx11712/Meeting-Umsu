@@ -149,14 +149,17 @@ class Meeting extends Model
 
     public function getAttendanceRateAttribute()
     {
-        $total = $this->attendances->count();
-        if ($total === 0) {
+        $participantsCount = $this->participants->count();
+        $guestsCount = $this->attendances->whereNull('user_id')->count();
+        $totalTarget = $participantsCount > 0 ? ($participantsCount + $guestsCount) : $this->attendances->count();
+
+        if ($totalTarget === 0) {
             return 0;
         }
 
         $present = $this->attendances->whereIn('status', ['hadir', 'terlambat'])->count();
 
-        return round(($present / $total) * 100);
+        return min(100, (int) round(($present / $totalTarget) * 100));
     }
 
     public function getDurationFormattedAttribute()

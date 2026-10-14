@@ -182,7 +182,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::updateActionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:76
+ * @see app/Http/Controllers/MeetingApprovalController.php:80
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 export const updateActionItems = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -197,7 +197,7 @@ updateActionItems.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::updateActionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:76
+ * @see app/Http/Controllers/MeetingApprovalController.php:80
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 updateActionItems.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -230,7 +230,7 @@ updateActionItems.url = (args: { meeting: string | number | { id: string | numbe
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::updateActionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:76
+ * @see app/Http/Controllers/MeetingApprovalController.php:80
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 updateActionItems.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -240,7 +240,7 @@ updateActionItems.put = (args: { meeting: string | number | { id: string | numbe
 
     /**
 * @see \App\Http\Controllers\MeetingApprovalController::updateActionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:76
+ * @see app/Http/Controllers/MeetingApprovalController.php:80
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
     const updateActionItemsForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -255,7 +255,7 @@ updateActionItems.put = (args: { meeting: string | number | { id: string | numbe
 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::updateActionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:76
+ * @see app/Http/Controllers/MeetingApprovalController.php:80
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
         updateActionItemsForm.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -16,8 +16,8 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     const { canEdit, hasRole, isAdmin } = usePermissions();
     const { flash } = usePage().props as any;
     
-    // Logika Bypass Admin: Jika status rapat sudah selesai/direview, hanya Admin yang boleh mengubah.
-    const isLocked = ['selesai', 'reviewed'].includes(meeting.status);
+    // Logika Bypass Admin: Jika status rapat sudah selesai atau tahap persetujuan, hanya Admin yang boleh mengubah.
+    const isLocked = meeting.status === 'selesai' || Number(meeting.current_stage || 1) >= 6;
     const canManageAttendance = isAdmin || (canEdit('attendance') && !isLocked);
 
     useMeetingWebSocket(meeting?.id);

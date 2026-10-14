@@ -45,12 +45,15 @@ return;
     const isPimpinan = roles.includes('Pimpinan');
     const isViewer = roles.includes('Viewer');
 
-    const canRecord = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum) && ['terjadwal', 'berlangsung', 'recording', 'recorded'].includes(meeting.status);
-    const canCorrect = (isAdmin || isUmum) && ['berlangsung', 'recorded', 'corrected'].includes(meeting.status);
-    const canAttend = (isAdmin || isUmum || isHumas) && ['berlangsung', 'recorded', 'corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canReview = (isAdmin || isUmum) && ['corrected', 'reviewed', 'selesai'].includes(meeting.status);
-    const canApprove = (isAdmin || isPimpinan) && meeting.status === 'reviewed';
+    const currentStage = Number(meeting.current_stage || 1);
+    const isCancelled = meeting.status === 'dibatalkan';
+
+    const canRecord = (isAdmin || isHumas || isUmum) && !isCancelled && currentStage <= 2;
+    const canEnterRecordingRoom = (isAdmin || isHumas || isUmum) && !isCancelled;
+    const canCorrect = (isAdmin || isUmum) && !isCancelled && currentStage >= 3;
+    const canAttend = (isAdmin || isUmum || isHumas) && !isCancelled;
+    const canReview = (isAdmin || isUmum) && !isCancelled && currentStage >= 4;
+    const canApprove = (isAdmin || isPimpinan) && !isCancelled && currentStage >= 6;
     const hasOperationalActions = canEnterRecordingRoom || canCorrect || canAttend || canReview || canApprove;
 
     return (

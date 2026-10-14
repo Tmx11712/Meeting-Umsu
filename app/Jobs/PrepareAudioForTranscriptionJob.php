@@ -157,6 +157,11 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
                     /** @var Meeting|null $meetingObj */
                     $meetingObj = Meeting::query()->find($recording->meeting_id);
                     if ($meetingObj) {
+                        if ($meetingObj->current_stage < 3) {
+                            $meetingObj->current_stage = 3;
+                            $meetingObj->save();
+                        }
+
                         event(new MeetingUpdated($meetingObj, 'transcript_ready'));
                     }
                 }
