@@ -31,7 +31,13 @@ export default function AuthSimpleLayout({
                     href={home()}
                     className="flex items-center gap-3 font-semibold text-lg"
                 >
-                    <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-10 w-10 object-contain" />
+                    <img
+                        src="/images/logo-umsu.webp"
+                        alt="Logo UMSU"
+                        width={40}
+                        height={40}
+                        className="h-10 w-10 object-contain"
+                    />
                     <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600">
                         <AppLogoIcon className="size-4 text-white" />
                     </div>
@@ -59,7 +65,13 @@ export default function AuthSimpleLayout({
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col items-center gap-6">
                             {/* UMSU Logo */}
-                            <img src="/images/logo-umsu.png" alt="Logo UMSU" className="h-24 w-auto object-contain" />
+                            <img
+                                src="/images/logo-umsu.webp"
+                                alt="Logo UMSU"
+                                width={68}
+                                height={96}
+                                className="h-24 w-auto object-contain"
+                            />
 
                             {/* eNotulen Logo & Text */}
                             <div className="flex flex-col items-center justify-center gap-3 text-center">
