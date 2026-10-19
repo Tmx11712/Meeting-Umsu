@@ -64,29 +64,29 @@ export default function TaskDashboard({ meetings, task }: any) {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">{task.title}</h1>
-                    <p className="text-slate-500 text-sm mt-1">{task.description}</p>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{task.title}</h1>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{task.description}</p>
                 </div>
             </div>
 
-            <Card className="rounded-xl border-slate-200 shadow-sm overflow-hidden">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
-                    <CardTitle className="text-lg font-semibold text-slate-800 flex items-center">
+            <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm overflow-hidden bg-white dark:bg-slate-900/80">
+                <CardHeader className="bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800/60 pb-4">
+                    <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white flex items-center">
                         <TaskIcon className="h-5 w-5 mr-2 text-primary" /> {task.header}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
                         {meetings.data.map((meeting: any) => (
-                            <div key={meeting.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50 transition-colors group">
+                            <div key={meeting.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <Link href={`/meetings/${meeting.id}/${task.actionRoute.split('.').pop()}`} className="font-semibold text-lg text-slate-900 hover:text-primary transition-colors">
+                                        <Link href={`/meetings/${meeting.id}/${task.actionRoute.split('.').pop()}`} className="font-semibold text-lg text-slate-900 dark:text-white hover:text-primary dark:hover:text-blue-400 transition-colors">
                                             {meeting.title}
                                         </Link>
                                         <MeetingStatusBadge status={meeting.status} category={meeting.category} />
                                     </div>
-                                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+                                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
                                         <div className="flex items-center">
                                             <Calendar className="mr-2 h-4 w-4 text-slate-400" />
                                             {meeting.date}
@@ -109,7 +109,7 @@ export default function TaskDashboard({ meetings, task }: any) {
                                             </Link>
                                         </Button>
                                     ) : (
-                                        <Button className="shadow-sm bg-slate-100 text-slate-400 hover:bg-slate-100 cursor-not-allowed border border-slate-200">
+                                        <Button className="shadow-sm bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-not-allowed border border-slate-200 dark:border-slate-700">
                                             <Lock className="mr-2 h-4 w-4" /> Tidak Ada Akses
                                         </Button>
                                     )}
@@ -119,11 +119,11 @@ export default function TaskDashboard({ meetings, task }: any) {
 
                         {meetings.data.length === 0 && (
                             <div className="py-16 flex flex-col items-center justify-center text-center">
-                                <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                <div className="h-16 w-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                                     <TaskIcon className="h-8 w-8 text-green-500 opacity-80" />
                                 </div>
-                                <h3 className="text-lg font-medium text-slate-900 mb-1">{task.emptyTitle}</h3>
-                                <p className="text-slate-500 max-w-sm">{task.emptyDesc}</p>
+                                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">{task.emptyTitle}</h3>
+                                <p className="text-slate-500 dark:text-slate-400 max-w-sm">{task.emptyDesc}</p>
                             </div>
                         )}
                     </div>
@@ -131,15 +131,15 @@ export default function TaskDashboard({ meetings, task }: any) {
             </Card>
 
             {meetings.data.length > 0 && (
-                <div className="flex items-center justify-between text-sm text-slate-500 mt-2">
+                <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mt-2">
                     <div>
-                        Menampilkan <span className="font-medium text-slate-900">{meetings.from || 0}</span> - <span className="font-medium text-slate-900">{meetings.to || 0}</span> dari <span className="font-medium text-slate-900">{meetings.total || 0}</span> rapat
+                        Menampilkan <span className="font-medium text-slate-900 dark:text-white">{meetings.from || 0}</span> - <span className="font-medium text-slate-900 dark:text-white">{meetings.to || 0}</span> dari <span className="font-medium text-slate-900 dark:text-white">{meetings.total || 0}</span> rapat
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" disabled={!meetings.prev_page_url} asChild={!!meetings.prev_page_url}>
+                        <Button variant="outline" size="sm" className="dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" disabled={!meetings.prev_page_url} asChild={!!meetings.prev_page_url}>
                             {meetings.prev_page_url ? <Link href={meetings.prev_page_url}>Sebelumnya</Link> : <span>Sebelumnya</span>}
                         </Button>
-                        <Button variant="outline" size="sm" disabled={!meetings.next_page_url} asChild={!!meetings.next_page_url}>
+                        <Button variant="outline" size="sm" className="dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" disabled={!meetings.next_page_url} asChild={!!meetings.next_page_url}>
                             {meetings.next_page_url ? <Link href={meetings.next_page_url}>Selanjutnya</Link> : <span>Selanjutnya</span>}
                         </Button>
                     </div>

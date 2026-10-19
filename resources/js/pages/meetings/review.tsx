@@ -224,9 +224,9 @@ return;
     };
 
     const renderDocumentCard = (isReadOnly: boolean = false) => (
-        <Card className="rounded-xl border-slate-200 shadow-sm">
-            <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100">
-                <CardTitle className="text-base font-semibold text-slate-900">Dokumen Pendukung</CardTitle>
+        <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm bg-white dark:bg-slate-900/80">
+            <CardHeader className="pb-4 flex flex-row items-center justify-between border-b border-slate-100 dark:border-slate-800/60">
+                <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">Dokumen Pendukung</CardTitle>
                 {canManageReview && !isReadOnly && (
                     <div className="relative">
                         <input 
@@ -240,7 +240,7 @@ return;
                         <Button 
                             variant="outline" 
                             size="sm" 
-                            className="h-8 text-xs bg-white text-slate-700 hover:bg-slate-50"
+                            className="h-8 text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                             disabled={uploadingDoc}
                             onClick={() => document.getElementById('document-upload')?.click()}
                         >
@@ -252,14 +252,14 @@ return;
             </CardHeader>
             <CardContent className="space-y-3 pt-4">
                 {meeting.documents && meeting.documents.length > 0 ? meeting.documents.map((doc: any) => (
-                    <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                    <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg border border-slate-100 dark:border-slate-800/60">
                         <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                                 <FileText className="w-4 h-4" />
                             </div>
                             <div className="truncate">
-                                <p className="text-sm font-medium text-slate-900 truncate" title={doc.file_name}>{doc.file_name}</p>
-                                <p className="text-[10px] text-slate-500 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate" title={doc.file_name}>{doc.file_name}</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase">{doc.mime_type.split('/')[1] || 'FILE'} • {(doc.file_size / 1024 / 1024).toFixed(2)} MB</p>
                             </div>
                         </div>
                         {canManageReview && !isReadOnly && (
@@ -269,7 +269,7 @@ return;
                         )}
                     </div>
                 )) : (
-                    <div className="text-center py-6 text-slate-500">
+                    <div className="text-center py-6 text-slate-500 dark:text-slate-400">
                         <FileText className="w-8 h-8 mx-auto mb-2 opacity-20" />
                         <p className="text-xs">Belum ada dokumen tambahan.</p>
                     </div>
@@ -601,31 +601,31 @@ return;
                     />
 
                     {/* Ringkasan Otomatis */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm h-fit w-fit ml-auto">
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm h-fit w-fit ml-auto bg-white dark:bg-slate-900/80">
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold text-slate-900">Ringkasan Otomatis (AI)</CardTitle>
+                            <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">Ringkasan Otomatis (AI)</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-wrap justify-center gap-3">
-                                <div className="w-28 h-28 shrink-0 bg-blue-50/50 rounded-xl p-2 text-center border border-blue-100 flex flex-col justify-center items-center">
-                                    <p className="text-[10px] text-blue-700 font-medium mb-1">Topik Dibahas</p>
-                                    <p className="text-2xl font-bold text-blue-600 leading-none">{minutes.ai_topics_count || 0}</p>
-                                    <p className="text-[10px] text-blue-500 mt-1">Topik utama</p>
+                                <div className="w-28 h-28 shrink-0 bg-blue-50/50 dark:bg-blue-950/30 rounded-xl p-2 text-center border border-blue-100 dark:border-blue-900/40 flex flex-col justify-center items-center">
+                                    <p className="text-[10px] text-blue-700 dark:text-blue-300 font-medium mb-1">Topik Dibahas</p>
+                                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 leading-none">{minutes.ai_topics_count || 0}</p>
+                                    <p className="text-[10px] text-blue-500 dark:text-blue-400 mt-1">Topik utama</p>
                                 </div>
-                                <div className="w-28 h-28 shrink-0 bg-green-50/50 rounded-xl p-2 text-center border border-green-100 flex flex-col justify-center items-center">
-                                    <p className="text-[10px] text-green-700 font-medium mb-1">Keputusan</p>
-                                    <p className="text-2xl font-bold text-green-600 leading-none">{minutes.ai_decisions_count || 0}</p>
-                                    <p className="text-[10px] text-green-500 mt-1">Keputusan penting</p>
+                                <div className="w-28 h-28 shrink-0 bg-green-50/50 dark:bg-emerald-950/30 rounded-xl p-2 text-center border border-green-100 dark:border-emerald-900/40 flex flex-col justify-center items-center">
+                                    <p className="text-[10px] text-green-700 dark:text-emerald-300 font-medium mb-1">Keputusan</p>
+                                    <p className="text-2xl font-bold text-green-600 dark:text-emerald-400 leading-none">{minutes.ai_decisions_count || 0}</p>
+                                    <p className="text-[10px] text-green-500 dark:text-emerald-400 mt-1">Keputusan penting</p>
                                 </div>
-                                <div className="w-28 h-28 shrink-0 bg-yellow-50/50 rounded-xl p-2 text-center border border-yellow-100 flex flex-col justify-center items-center">
-                                    <p className="text-[10px] text-yellow-700 font-medium mb-1">Tindak Lanjut</p>
-                                    <p className="text-2xl font-bold text-yellow-600 leading-none">{minutes.action_items?.length || 0}</p>
-                                    <p className="text-[10px] text-yellow-500 mt-1">Action items</p>
+                                <div className="w-28 h-28 shrink-0 bg-yellow-50/50 dark:bg-amber-950/30 rounded-xl p-2 text-center border border-yellow-100 dark:border-amber-900/40 flex flex-col justify-center items-center">
+                                    <p className="text-[10px] text-yellow-700 dark:text-amber-300 font-medium mb-1">Tindak Lanjut</p>
+                                    <p className="text-2xl font-bold text-yellow-600 dark:text-amber-400 leading-none">{minutes.action_items?.length || 0}</p>
+                                    <p className="text-[10px] text-yellow-500 dark:text-amber-400 mt-1">Action items</p>
                                 </div>
-                                <div className="w-28 h-28 shrink-0 bg-sky-50/50 rounded-xl p-2 text-center border border-sky-100 flex flex-col justify-center items-center">
-                                    <p className="text-[10px] text-sky-700 font-medium mb-1">Durasi Rapat</p>
-                                    <p className="text-xl font-bold text-sky-600 mt-1 leading-none">{recordingDuration}</p>
-                                    <p className="text-[10px] text-sky-500 mt-1">Jam:Menit:Detik</p>
+                                <div className="w-28 h-28 shrink-0 bg-sky-50/50 dark:bg-sky-950/30 rounded-xl p-2 text-center border border-sky-100 dark:border-sky-900/40 flex flex-col justify-center items-center">
+                                    <p className="text-[10px] text-sky-700 dark:text-sky-300 font-medium mb-1">Durasi Rapat</p>
+                                    <p className="text-xl font-bold text-sky-600 dark:text-sky-400 mt-1 leading-none">{recordingDuration}</p>
+                                    <p className="text-[10px] text-sky-500 dark:text-sky-400 mt-1">Jam:Menit:Detik</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -636,32 +636,32 @@ return;
 
                 {/* Tengah: Notulen Rapat */}
                 <div className="flex flex-col">
-                    <Card className="rounded-xl border-slate-200 shadow-sm flex-1 flex flex-col">
-                        <CardHeader className="pb-4 border-b border-slate-100 flex flex-row items-center justify-between flex-wrap gap-2">
-                            <CardTitle className="text-lg font-bold text-slate-900">Notulen Rapat</CardTitle>
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm flex-1 flex flex-col bg-white dark:bg-slate-900/80">
+                        <CardHeader className="pb-4 border-b border-slate-100 dark:border-slate-800/60 flex flex-row items-center justify-between flex-wrap gap-2">
+                            <CardTitle className="text-lg font-bold text-slate-900 dark:text-white">Notulen Rapat</CardTitle>
                             <div className="flex gap-2 flex-wrap">
                                 {canManageReview && (
-                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 hidden sm:flex" onClick={openEditModal}>
+                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800 hidden sm:flex" onClick={openEditModal}>
                                         <Edit3 className="w-3 h-3 mr-2" /> Edit Notulen
                                     </Button>
                                 )}
                                 {meeting.current_stage >= 7 && (
-                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600" onClick={downloadPdf}>
+                                    <Button variant="outline" size="sm" className="h-8 text-xs text-slate-600 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800" onClick={downloadPdf}>
                                         <Download className="w-3 h-3 mr-2" /> Unduh <ChevronDown className="w-3 h-3 ml-1" />
                                     </Button>
                                 )}
                             </div>
                         </CardHeader>
-                        <CardContent className="p-4 flex-1 text-sm text-slate-800 space-y-8">
+                        <CardContent className="p-4 flex-1 text-sm text-slate-800 dark:text-slate-200 space-y-8">
                             {minutes.content && typeof minutes.content === 'object' && !Array.isArray(minutes.content) ? (
                                 <div className="space-y-8">
                                     {/* Peserta Rapat */}
                                     {minutes.content.peserta_rapat && Array.isArray(minutes.content.peserta_rapat) && minutes.content.peserta_rapat.length > 0 && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Peserta Rapat</h3>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900 dark:text-white">Peserta Rapat</h3>
                                             <ul className="list-disc pl-5 space-y-1.5">
                                                 {minutes.content.peserta_rapat.map((peserta: string, idx: number) => (
-                                                    <li key={idx} className="leading-relaxed text-slate-700">{peserta}</li>
+                                                    <li key={idx} className="leading-relaxed text-slate-700 dark:text-slate-300">{peserta}</li>
                                                 ))}
                                             </ul>
                                         </div>
@@ -670,28 +670,28 @@ return;
                                     {/* Latar Belakang */}
                                     {minutes.content.latar_belakang && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Latar Belakang</h3>
-                                            <p className="leading-relaxed text-slate-700">{minutes.content.latar_belakang}</p>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900 dark:text-white">Latar Belakang</h3>
+                                            <p className="leading-relaxed text-slate-700 dark:text-slate-300">{minutes.content.latar_belakang}</p>
                                         </div>
                                     )}
                                     {minutes.content.pembukaan && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Pembukaan</h3>
-                                            <p className="leading-relaxed text-slate-700">{minutes.content.pembukaan}</p>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900 dark:text-white">Pembukaan</h3>
+                                            <p className="leading-relaxed text-slate-700 dark:text-slate-300">{minutes.content.pembukaan}</p>
                                         </div>
                                     )}
 
                                     {/* Pembahasan */}
                                     {minutes.content.pembahasan && Array.isArray(minutes.content.pembahasan) && minutes.content.pembahasan.length > 0 && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-3 text-slate-900">Pembahasan</h3>
+                                            <h3 className="font-bold text-sm mb-3 text-slate-900 dark:text-white">Pembahasan</h3>
                                             <div className="space-y-6">
                                                 {minutes.content.pembahasan.map((bahas: any, idx: number) => (
-                                                    <div key={idx} className="border-l-2 border-blue-200 pl-4">
-                                                        <h4 className="font-semibold text-sm text-slate-800 mb-2">{bahas.topik}</h4>
-                                                        <p className="leading-relaxed text-slate-700 mb-2">{bahas.narasi}</p>
-                                                        {bahas.tabel && <div className="mt-2 text-xs overflow-x-auto bg-slate-50 p-2 rounded" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.tabel)}} />}
-                                                        {bahas.list && <div className="mt-2 pl-4 list-disc text-sm text-slate-700" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.list)}} />}
+                                                    <div key={idx} className="border-l-2 border-blue-200 dark:border-blue-700 pl-4">
+                                                        <h4 className="font-semibold text-sm text-slate-800 dark:text-slate-200 mb-2">{bahas.topik}</h4>
+                                                        <p className="leading-relaxed text-slate-700 dark:text-slate-300 mb-2">{bahas.narasi}</p>
+                                                        {bahas.tabel && <div className="mt-2 text-xs overflow-x-auto bg-slate-50 dark:bg-slate-800/60 p-2 rounded" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.tabel)}} />}
+                                                        {bahas.list && <div className="mt-2 pl-4 list-disc text-sm text-slate-700 dark:text-slate-300" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(bahas.list)}} />}
                                                     </div>
                                                 ))}
                                             </div>
@@ -701,35 +701,35 @@ return;
                                     {/* Keputusan */}
                                     {minutes.content.keputusan && Array.isArray(minutes.content.keputusan) && minutes.content.keputusan.length > 0 && (
                                         <div>
-                                            <h3 className="font-bold text-sm mb-2 text-slate-900">Keputusan</h3>
+                                            <h3 className="font-bold text-sm mb-2 text-slate-900 dark:text-white">Keputusan</h3>
                                             <ul className="list-disc pl-5 space-y-1.5">
                                                 {minutes.content.keputusan.map((kep: string, idx: number) => (
-                                                    <li key={idx} className="leading-relaxed text-slate-700">{kep}</li>
+                                                    <li key={idx} className="leading-relaxed text-slate-700 dark:text-slate-300">{kep}</li>
                                                 ))}
                                             </ul>
                                         </div>
                                     )}
                                 </div>
                             ) : (
-                                <div className="text-slate-500 italic">Konten notulen tidak tersedia atau format tidak didukung.</div>
+                                <div className="text-slate-500 dark:text-slate-400 italic">Konten notulen tidak tersedia atau format tidak didukung.</div>
                             )}
 
                             <div>
-                                <h3 className="font-bold text-sm mb-2 text-slate-900">Tindak Lanjut</h3>
+                                <h3 className="font-bold text-sm mb-2 text-slate-900 dark:text-white">Tindak Lanjut</h3>
                                 <div className="space-y-2">
                                     {minutes.action_items && minutes.action_items.length > 0 ? minutes.action_items.map((item: any) => (
                                         <div className="flex gap-2" key={item.id}>
                                             <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                                            <p className="leading-relaxed text-sm">
+                                            <p className="leading-relaxed text-sm text-slate-700 dark:text-slate-300">
                                                 {item.description} (PIC: {item.pic}, Deadline: {item.deadline ? new Date(item.deadline).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-'})
                                             </p>
                                         </div>
-                                    )) : <div className="text-slate-500 italic text-sm">Tidak ada tindak lanjut.</div>}
+                                    )) : <div className="text-slate-500 dark:text-slate-400 italic text-sm">Tidak ada tindak lanjut.</div>}
                                 </div>
                             </div>
                         </CardContent>
-                        <CardFooter className="bg-slate-50/50 border-t border-slate-100 p-4 rounded-b-xl">
-                            <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-4 py-2.5 rounded-lg w-full">
+                        <CardFooter className="bg-slate-50/50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800/60 p-4 rounded-b-xl">
+                            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 px-4 py-2.5 rounded-lg w-full">
                                 <Info className="w-4 h-4 shrink-0" />
                                 <span className="text-xs font-medium">Notulen ini telah melalui proses transkripsi, koreksi, dan verifikasi kehadiran.</span>
                             </div>
@@ -740,39 +740,39 @@ return;
                 {/* Kanan: Peserta Rapat & Info Review */}
                 <div className="space-y-6">
                     {/* Peserta Rapat */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm">
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm bg-white dark:bg-slate-900/80">
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold text-slate-900">Peserta Rapat</CardTitle>
+                            <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">Peserta Rapat</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                                        <span className="text-slate-700 font-medium">Hadir</span>
+                                        <span className="text-slate-700 dark:text-slate-300 font-medium">Hadir</span>
                                     </div>
-                                    <span className="font-semibold text-slate-900">{hadir} ({getPct(hadir)}%)</span>
+                                    <span className="font-semibold text-slate-900 dark:text-white">{hadir} ({getPct(hadir)}%)</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                                        <span className="text-slate-700 font-medium">Terlambat</span>
+                                        <span className="text-slate-700 dark:text-slate-300 font-medium">Terlambat</span>
                                     </div>
-                                    <span className="font-semibold text-slate-900">{terlambat} ({getPct(terlambat)}%)</span>
+                                    <span className="font-semibold text-slate-900 dark:text-white">{terlambat} ({getPct(terlambat)}%)</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                                        <span className="text-slate-700 font-medium">Tidak Hadir</span>
+                                        <span className="text-slate-700 dark:text-slate-300 font-medium">Tidak Hadir</span>
                                     </div>
-                                    <span className="font-semibold text-slate-900">{tidakHadir} ({getPct(tidakHadir)}%)</span>
+                                    <span className="font-semibold text-slate-900 dark:text-white">{tidakHadir} ({getPct(tidakHadir)}%)</span>
                                 </div>
-                                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-sm">
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-                                        <span className="text-slate-700 font-bold">Total Peserta</span>
+                                        <span className="text-slate-700 dark:text-slate-300 font-bold">Total Peserta</span>
                                     </div>
-                                    <span className="font-bold text-slate-900">{total} Orang</span>
+                                    <span className="font-bold text-slate-900 dark:text-white">{total} Orang</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -782,34 +782,34 @@ return;
                     {renderDocumentCard(true)}
 
                     {/* Informasi Review */}
-                    <Card className="rounded-xl border-slate-200 shadow-sm">
+                    <Card className="rounded-xl border-slate-200 dark:border-slate-800/80 shadow-sm bg-white dark:bg-slate-900/80">
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold text-slate-900">Informasi Review</CardTitle>
+                            <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">Informasi Review</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-5">
                             <div>
-                                <p className="text-[11px] text-slate-500 mb-2">Direview oleh</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2">Direview oleh</p>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold flex items-center justify-center text-xs uppercase">
+                                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-emerald-950/60 text-green-700 dark:text-emerald-400 font-bold flex items-center justify-center text-xs uppercase">
                                         {auth?.user?.name?.substring(0, 2) || 'BU'}
                                     </div>
                                     <div>
-                                        <p className="text-sm font-semibold text-slate-900">{auth?.user?.name || 'Bag. Umum'}</p>
-                                        <Badge variant="secondary" className="text-[10px] bg-blue-50 text-blue-600 mt-0.5 h-5">{auth?.user?.department || 'Operator'}</Badge>
+                                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{auth?.user?.name || 'Bag. Umum'}</p>
+                                        <Badge variant="secondary" className="text-[10px] bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mt-0.5 h-5">{auth?.user?.department || 'Operator'}</Badge>
                                     </div>
                                 </div>
                             </div>
                             
                             <div>
-                                <p className="text-[11px] text-slate-500 mb-1">Tanggal Review</p>
-                                <p className="text-sm font-semibold text-slate-900">
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Tanggal Review</p>
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white">
                                     {minutes.reviewed_at ? new Date(minutes.reviewed_at).toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).replace('.', ':') + ' WIB' : 'Belum direview'}
                                 </p>
                             </div>
 
                             <div>
-                                <p className="text-[11px] text-slate-500 mb-1">Status</p>
-                                <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 shadow-none text-xs font-medium border-0">Siap Dikirim</Badge>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Status</p>
+                                <Badge className="bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 shadow-none text-xs font-medium border-0">Siap Dikirim</Badge>
                             </div>
 
 

@@ -392,14 +392,14 @@ return;
 
             {/* Header */}
             <div className="flex flex-col gap-4">
-                <Link href={`/meetings/${meeting.id}`} className="flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:text-slate-700 transition-colors w-fit">
+                <Link href={`/meetings/${meeting.id}`} className="flex items-center gap-1.5 text-sm font-semibold text-slate-900 dark:text-slate-200 hover:text-slate-700 dark:hover:text-white transition-colors w-fit">
                     <ArrowLeft className="w-4 h-4" />
                     Kembali ke Detail Rapat
                 </Link>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-[22px] font-semibold text-slate-900 leading-tight">Operator rekaman</h1>
-                        <p className="text-[13px] text-slate-500 mt-1">Tekan Play untuk mulai merekam rapat</p>
+                        <h1 className="text-[22px] font-semibold text-slate-900 dark:text-white leading-tight">Operator rekaman</h1>
+                        <p className="text-[13px] text-slate-500 dark:text-slate-400 mt-1">Tekan Play untuk mulai merekam rapat</p>
                     </div>
                 <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${isServerRecording ? 'bg-rose-500 animate-pulse' : 'bg-slate-400'}`}></div>
