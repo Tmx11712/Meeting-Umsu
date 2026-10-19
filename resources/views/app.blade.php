@@ -27,7 +27,8 @@
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                color-scheme: dark;
+                background-color: #0b0f19;
             }
         </style>
 

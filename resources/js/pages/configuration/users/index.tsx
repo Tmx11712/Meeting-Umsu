@@ -42,16 +42,16 @@ export default function UsersIndex({ users, roles, filters }: Props) {
     const getRoleStyles = (roleName: string) => {
         switch (roleName) {
             case 'Bag. Umum':
-                return 'bg-blue-100 text-blue-700 hover:bg-blue-200';
+                return 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50';
             case 'Bag. Humas':
-                return 'bg-orange-100 text-orange-700 hover:bg-orange-200';
+                return 'bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50';
             case 'Pimpinan':
-                return 'bg-sky-100 text-sky-700 hover:bg-sky-200';
+                return 'bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/50';
             case 'Administrator':
             case 'Super Admin':
-                return 'bg-red-100 text-red-700 hover:bg-red-200';
+                return 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50';
             default:
-                return 'bg-slate-100 text-slate-700 hover:bg-slate-200';
+                return 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700';
         }
     };
 
@@ -62,8 +62,8 @@ export default function UsersIndex({ users, roles, filters }: Props) {
             <div className="flex h-full flex-1 flex-col p-8 max-w-7xl mx-auto w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Users</h1>
-                        <p className="text-slate-500">Daftar semua pengguna sistem</p>
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Users</h1>
+                        <p className="text-slate-500 dark:text-slate-400">Daftar semua pengguna sistem</p>
                     </div>
                     <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white">
                         <Link href="/configuration/users/create">
@@ -73,7 +73,7 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                     </Button>
                 </div>
 
-                <Card className="rounded-xl border border-slate-200 bg-white shadow-sm p-6">
+                <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-card shadow-sm p-6">
                     <div className="flex flex-col sm:flex-row gap-3 pb-6">
                         <form onSubmit={handleSearch} className="flex flex-1 items-center">
                             <div className="relative w-full">
@@ -81,13 +81,13 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                                 <Input
                                     type="search"
                                     placeholder="Cari pengguna..."
-                                    className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-blue-500"
+                                    className="pl-9 bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 focus-visible:ring-blue-500"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
                             </div>
                         </form>
-                        <Button variant="outline" className="text-slate-600 border-slate-200 gap-2">
+                        <Button variant="outline" className="text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 dark:hover:bg-slate-850 gap-2">
                             <Filter className="size-4" />
                             Filter
                         </Button>
@@ -96,7 +96,7 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                     <div className="overflow-x-auto pb-4">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="border-b border-slate-200 text-slate-500 text-left">
+                                <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-left">
                                     <th className="py-3 px-4 font-medium w-16 text-center">No</th>
                                     <th className="py-3 px-4 font-medium">Nama</th>
                                     <th className="py-3 px-4 font-medium">Email</th>
@@ -107,14 +107,14 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                             </thead>
                             <tbody>
                                 {users.data.length > 0 ? users.data.map((user, index) => (
-                                    <tr key={user.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                                        <td className="py-4 px-4 text-center text-slate-500">
+                                    <tr key={user.id} className="border-b border-slate-100 dark:border-slate-800/80 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                                        <td className="py-4 px-4 text-center text-slate-500 dark:text-slate-400">
                                             {(users.current_page - 1) * 10 + index + 1}
                                         </td>
-                                        <td className="py-4 px-4 font-bold text-slate-900">
+                                        <td className="py-4 px-4 font-bold text-slate-900 dark:text-white">
                                             {user.name}
                                         </td>
-                                        <td className="py-4 px-4 text-slate-500">
+                                        <td className="py-4 px-4 text-slate-500 dark:text-slate-400">
                                             {user.email}
                                         </td>
                                         <td className="py-4 px-4">
@@ -131,7 +131,7 @@ export default function UsersIndex({ users, roles, filters }: Props) {
                                             </div>
                                         </td>
                                         <td className="py-4 px-4">
-                                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${user.status === 'aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${user.status === 'aktif' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300'}`}>
                                                 {user.status === 'aktif' ? 'Aktif' : 'Nonaktif'}
                                             </span>
                                         </td>
@@ -140,44 +140,44 @@ export default function UsersIndex({ users, roles, filters }: Props) {
 
                                                 <Link 
                                                     href={`/configuration/users/${user.id}/edit`}
-                                                    className="text-slate-400 hover:text-slate-600 transition"
+                                                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
                                                 >
                                                     <PenLine className="size-4" />
                                                 </Link>
                                                 {user.name !== 'Super Admin' && (
                                                     <button 
                                                         type="button"
-                                                        className="text-slate-400 hover:text-red-600 transition"
+                                                        className="text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition"
                                                         onClick={async () => {
-                                                            if (await confirmDelete(`Yakin ingin menghapus user ${user.name}?`)) {
-                                                                router.delete(`/configuration/users/${user.id}`, {
-                                                                    preserveScroll: true,
-                                                                });
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Trash2 className="size-4" />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )) : (
-                                    <tr>
-                                        <td colSpan={6} className="py-8 text-center text-slate-500">
-                                            Tidak ada data pengguna yang ditemukan.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    {/* Pagination */}
-                    {users.total > 0 && (
-                        <div className="pt-4 flex items-center justify-between text-sm border-t border-slate-100">
-                            <div className="text-slate-500">
-                                Showing {users.from} to {users.to} of {users.total} results
+                                                             if (await confirmDelete(`Yakin ingin menghapus user ${user.name}?`)) {
+                                                                 router.delete(`/configuration/users/${user.id}`, {
+                                                                     preserveScroll: true,
+                                                                 });
+                                                             }
+                                                         }}
+                                                     >
+                                                         <Trash2 className="size-4" />
+                                                     </button>
+                                                 )}
+                                             </div>
+                                         </td>
+                                     </tr>
+                                 )) : (
+                                     <tr>
+                                         <td colSpan={6} className="py-8 text-center text-slate-500 dark:text-slate-400">
+                                             Tidak ada data pengguna yang ditemukan.
+                                         </td>
+                                     </tr>
+                                 )}
+                             </tbody>
+                         </table>
+                     </div>
+                     
+                     {/* Pagination */}
+                     {users.total > 0 && (
+                         <div className="pt-4 flex items-center justify-between text-sm border-t border-slate-100 dark:border-slate-800">
+                             <div className="text-slate-500 dark:text-slate-400">
+                                 Showing {users.from} to {users.to} of {users.total} results
                             </div>
                             <div className="flex items-center gap-1">
                                 <Button 

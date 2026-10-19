@@ -73,23 +73,23 @@ export default function MeetingTypesIndex({ types }: { types: any }) {
                         )}
                     </form>
 
-                    <div className="border rounded-lg overflow-hidden">
+                    <div className="border dark:border-border rounded-lg overflow-hidden">
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-slate-50 border-b">
+                            <thead className="bg-slate-50 dark:bg-slate-900/60 border-b dark:border-border">
                                 <tr>
-                                    <th className="px-6 py-3 font-medium text-slate-900">Nama Tipe Rapat</th>
-                                    <th className="px-6 py-3 font-medium text-slate-900 w-32 text-right">Aksi</th>
+                                    <th className="px-6 py-3 font-medium text-slate-900 dark:text-slate-200">Nama Tipe Rapat</th>
+                                    <th className="px-6 py-3 font-medium text-slate-900 dark:text-slate-200 w-32 text-right">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y">
+                            <tbody className="divide-y dark:divide-slate-800">
                                 {types.data.map((type: any) => (
-                                    <tr key={type.id} className="bg-white hover:bg-slate-50">
-                                        <td className="px-6 py-4 font-medium text-slate-900">{type.name}</td>
+                                    <tr key={type.id} className="bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                                        <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{type.name}</td>
                                         <td className="px-6 py-4 text-right space-x-2">
-                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(type)} className="text-blue-600">
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(type)} className="text-blue-600 dark:text-blue-400">
                                                 <Edit className="w-4 h-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(type.id)} className="text-red-600">
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(type.id)} className="text-red-600 dark:text-red-400">
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </td>

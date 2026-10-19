@@ -412,17 +412,17 @@ return;
 
             {/* Meeting Info Card (Top Section) */}
             <div className="w-full">
-                <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="bg-white dark:bg-card rounded-xl border border-slate-200/60 dark:border-border shadow-sm p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-500 dark:text-rose-400 flex items-center justify-center shrink-0">
                             <Megaphone className="w-5 h-5" />
                         </div>
                         <div>
-                            <h2 className="text-[14px] font-bold text-slate-900">{meeting?.title || 'Review Strategi'}</h2>
-                            <p className="text-[12px] text-slate-500 mt-0.5">{meeting?.location || 'Ruang Rapat'} - {meeting?.date}</p>
+                            <h2 className="text-[14px] font-bold text-slate-900 dark:text-white">{meeting?.title || 'Review Strategi'}</h2>
+                            <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">{meeting?.location || 'Ruang Rapat'} - {meeting?.date}</p>
                         </div>
                     </div>
-                    <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-100 whitespace-nowrap">
+                    <Button onClick={() => setIsQrOpen(true)} variant="outline" className="border-blue-300 dark:border-blue-800 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-950 whitespace-nowrap">
                         <QrCode className="mr-2 h-4 w-4" /> Tampilkan QR Absensi
                     </Button>
                 </div>
@@ -434,19 +434,19 @@ return;
                 {/* KOLOM KIRI (Upload & Rekam) - Visible to everyone so Pimpinan can record */}
                 <div className={`${hasRecordings ? 'lg:col-span-5' : 'lg:col-span-12'} flex flex-col gap-6 transition-all duration-500`}>
                     {/* Recording Controls */}
-                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm">
-                        <div className="flex p-1 gap-1 border-b border-slate-100">
+                    <div className="bg-white dark:bg-card rounded-xl border border-slate-200/60 dark:border-border shadow-sm">
+                        <div className="flex p-1 gap-1 border-b border-slate-100 dark:border-border">
                             <button 
                                 onClick={() => setActiveTab('upload')}
-                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'upload' ? 'bg-blue-50/50 text-blue-600 border border-blue-100/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'upload' ? 'bg-blue-50/50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100/50 dark:border-blue-800/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                             >
-                                <UploadCloud className={`w-4 h-4 ${activeTab === 'upload' ? 'text-blue-500' : 'text-slate-400'}`} /> Unggah berkas
+                                <UploadCloud className={`w-4 h-4 ${activeTab === 'upload' ? 'text-blue-500 dark:text-blue-400' : 'text-slate-400'}`} /> Unggah berkas
                             </button>
                             <button 
                                 onClick={() => setActiveTab('record')}
-                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'record' ? 'bg-blue-50/50 text-blue-600 border border-blue-100/50' : 'text-slate-600 hover:bg-slate-50'}`}
+                                className={`flex-1 text-[12px] font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${activeTab === 'record' ? 'bg-blue-50/50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100/50 dark:border-blue-800/50' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                             >
-                                <Monitor className={`w-4 h-4 ${activeTab === 'record' ? 'text-blue-500' : 'text-slate-400'}`} /> Rekam (Sistem)
+                                <Monitor className={`w-4 h-4 ${activeTab === 'record' ? 'text-blue-500 dark:text-blue-400' : 'text-slate-400'}`} /> Rekam (Sistem)
                             </button>
                             <button 
                                 onClick={() => setActiveTab('record_mic')}
@@ -524,12 +524,12 @@ return;
                     </div>
 
                     {/* Timer & Send Action */}
-                    <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-12 flex flex-col items-center text-center relative overflow-hidden">
+                    <div className="bg-white dark:bg-card rounded-xl border border-slate-200/60 dark:border-border shadow-sm p-12 flex flex-col items-center text-center relative overflow-hidden">
                         {uploading && (
-                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12">
+                            <div className="absolute inset-0 bg-white/80 dark:bg-card/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12">
                                 <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
-                                <p className="text-sm font-bold text-emerald-700 mb-3">Mengirim audio ke server... {uploadProgress}%</p>
-                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 rounded-full overflow-hidden shadow-inner">
+                                <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-3">Mengirim audio ke server... {uploadProgress}%</p>
+                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 dark:bg-emerald-950/60 rounded-full overflow-hidden shadow-inner">
                                     <div 
                                         className="h-full bg-emerald-500 transition-all duration-300 ease-out rounded-full"
                                         style={{ width: `${uploadProgress}%` }}
@@ -539,11 +539,11 @@ return;
                         )}
 
                         {(!isRecording && !isServerRecording && recordingDuration > 0 && !recordedBlob && (activeTab === 'record' || activeTab === 'record_mic')) && (
-                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12 animate-in fade-in duration-500">
+                            <div className="absolute inset-0 bg-white/80 dark:bg-card/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center px-12 animate-in fade-in duration-500">
                                 <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mb-4" />
-                                <p className="text-sm font-bold text-emerald-700 mb-2">Operator sedang mengunggah file rekaman...</p>
-                                <p className="text-xs text-slate-500 mb-4">Selesai merekam ({formatDuration(recordingDuration)})</p>
-                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 rounded-full overflow-hidden shadow-inner">
+                                <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-2">Operator sedang mengunggah file rekaman...</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Selesai merekam ({formatDuration(recordingDuration)})</p>
+                                <div className="w-full max-w-xs h-2.5 bg-emerald-100 dark:bg-emerald-950/60 rounded-full overflow-hidden shadow-inner">
                                     <div className="h-full bg-emerald-500 w-full animate-pulse rounded-full"></div>
                                 </div>
                             </div>
@@ -551,14 +551,14 @@ return;
 
                         
                         <div className="flex items-center gap-1.5 mb-6">
-                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`}></div>
-                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '150ms'}}></div>
-                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '300ms'}}></div>
-                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '450ms'}}></div>
-                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300'}`} style={{animationDelay: '600ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} style={{animationDelay: '150ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} style={{animationDelay: '300ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} style={{animationDelay: '450ms'}}></div>
+                            <div className={`w-0.75 h-0.75 rounded-full ${isServerRecording ? 'bg-rose-500/80 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} style={{animationDelay: '600ms'}}></div>
                         </div>
                         
-                        <div className={`font-mono text-5xl font-black tracking-widest mb-3 text-slate-900`}>
+                        <div className={`font-mono text-5xl font-black tracking-widest mb-3 text-slate-900 dark:text-white`}>
                             {formatDuration(recordingDuration)}
                         </div>
                         <p className="text-[11px] text-slate-400 font-medium mb-10">Waktu proses perekaman</p>
@@ -566,17 +566,17 @@ return;
                         <button 
                             onClick={sendRecordingToBackend}
                             disabled={isRecording || !recordedBlob || uploading}
-                            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all mb-6 shadow-sm ${(!recordedBlob || isRecording) ? 'bg-slate-50 border border-slate-100 text-slate-300 cursor-not-allowed' : 'bg-emerald-50 border border-emerald-100 text-emerald-600 hover:bg-emerald-100 hover:scale-105 cursor-pointer'}`}
+                            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all mb-6 shadow-sm ${(!recordedBlob || isRecording) ? 'bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 hover:scale-105 cursor-pointer'}`}
                             title={isRecording ? 'Harap hentikan perekaman terlebih dahulu' : !recordedBlob ? 'Belum ada rekaman tersimpan' : 'Kirim rekaman sekarang'}
                         >
                             <Send className="w-5 h-5 ml-0.5" />
                         </button>
                         
-                        <h3 className="text-[14px] font-bold text-slate-900 mb-1">Kirim audio agar ditranskrip</h3>
-                        <p className="text-[12px] text-slate-500">Pastikan proses rekaman telah dihentikan sebelum mengirim file</p>
+                        <h3 className="text-[14px] font-bold text-slate-900 dark:text-white mb-1">Kirim audio agar ditranskrip</h3>
+                        <p className="text-[12px] text-slate-500 dark:text-slate-400">Pastikan proses rekaman telah dihentikan sebelum mengirim file</p>
                         
                         {recordedBlob && !isRecording && (
-                            <div className="mt-4 px-3 py-1 bg-emerald-50 text-emerald-600 text-[11px] font-bold rounded-full border border-emerald-100">
+                            <div className="mt-4 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold rounded-full border border-emerald-100 dark:border-emerald-800">
                                 ✓ Audio {(recordedBlob.size / 1024 / 1024).toFixed(2)} MB siap dikirim
                             </div>
                         )}
@@ -587,17 +587,17 @@ return;
                 {hasRecordings && (
                     <div className="lg:col-span-7 flex flex-col gap-6">
                         {/* Hasil Audio Tersimpan */}
-                        <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm p-6">
-                            <h3 className="text-[15px] font-bold text-slate-900 mb-4 flex items-center gap-2">
-                                <Database className="w-4 h-4 text-slate-500" /> Hasil Audio Tersimpan
+                        <div className="bg-white dark:bg-card rounded-xl border border-slate-200/60 dark:border-border shadow-sm p-6">
+                            <h3 className="text-[15px] font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                                <Database className="w-4 h-4 text-slate-500 dark:text-slate-400" /> Hasil Audio Tersimpan
                             </h3>
                             
                             <div className="flex flex-col gap-4">
                                 {meeting.recordings.map((rec: any, index: number) => (
-                                    <div key={rec.id} className="border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50/30">
+                                    <div key={rec.id} className="border border-slate-200 dark:border-border rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50/30 dark:bg-slate-900/40">
                                         <div className="flex-1 w-full">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="font-bold text-slate-700 text-[13px]">Rekaman #{index + 1}</span>
+                                                <span className="font-bold text-slate-700 dark:text-slate-200 text-[13px]">Rekaman #{index + 1}</span>
                                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${rec.status === 'uploaded' ? 'bg-amber-100 text-amber-700' : rec.status === 'transcribing' ? 'bg-blue-100 text-blue-700 animate-pulse' : rec.status === 'failed' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
                                                     {rec.status === 'uploaded' ? 'Menunggu Transkripsi' : rec.status === 'transcribing' ? 'Sedang Diproses AI...' : rec.status === 'failed' ? 'Gagal Transkripsi' : 'Selesai Transkripsi'}
                                                 </span>

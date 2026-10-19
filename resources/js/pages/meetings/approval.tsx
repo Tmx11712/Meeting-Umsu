@@ -433,25 +433,25 @@ return '-';
             </div>
 
             {/* Bottom Row Info Banner */}
-            <div className="bg-white border border-slate-200 rounded-xl p-4 flex justify-between items-center px-4 mt-2">
+            <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl p-4 flex justify-between items-center px-4 mt-2">
                 <div className="flex gap-4 items-center">
-                    <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                         <Info className="w-4 h-4" />
                     </div>
                     <div>
                         <p className="text-[10px] text-slate-400">Dibuat oleh</p>
-                        <p className="text-xs font-semibold text-slate-900 mt-0.5">{meeting.creator?.name || 'Sistem'} <span className="text-slate-500 font-normal">(Operator)</span></p>
+                        <p className="text-xs font-semibold text-slate-900 dark:text-white mt-0.5">{meeting.creator?.name || 'Sistem'} <span className="text-slate-500 dark:text-slate-400 font-normal">(Operator)</span></p>
                     </div>
                 </div>
                 
-                <div className="w-px h-8 bg-slate-100"></div>
+                <div className="w-px h-8 bg-slate-100 dark:bg-slate-800"></div>
                 
                 <div>
                     <p className="text-[10px] text-slate-400">Tanggal Review</p>
-                    <p className="text-xs font-semibold text-slate-900 mt-0.5">{formatReviewDate(minutes?.reviewed_at || minutes?.updated_at || meeting.updated_at)}</p>
+                    <p className="text-xs font-semibold text-slate-900 dark:text-white mt-0.5">{formatReviewDate(minutes?.reviewed_at || minutes?.updated_at || meeting.updated_at)}</p>
                 </div>
                 
-                <div className="w-px h-8 bg-slate-100"></div>
+                <div className="w-px h-8 bg-slate-100 dark:bg-slate-800"></div>
                 
                 <div className="pr-12">
                     <p className="text-[10px] text-slate-400">Versi</p>

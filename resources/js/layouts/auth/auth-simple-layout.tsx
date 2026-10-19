@@ -24,19 +24,19 @@ export default function AuthSimpleLayout({
     };
 
     return (
-        <div className="flex min-h-svh flex-col bg-slate-50 dark:bg-slate-950">
+        <div className="flex min-h-svh flex-col bg-slate-50 dark:bg-background transition-colors duration-200">
             {/* Top Navigation Bar */}
-            <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:bg-slate-900 dark:border-slate-800">
+            <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:bg-sidebar dark:border-border transition-colors duration-200">
                 <Link
                     href={home()}
-                    className="flex items-center gap-3 font-semibold text-lg"
+                    className="flex items-center gap-3 font-semibold text-lg text-foreground"
                 >
                     <img
                         src="/images/logo-umsu.webp"
                         alt="Logo UMSU"
                         width={40}
                         height={40}
-                        className="h-10 w-10 object-contain"
+                        className="h-10 w-10 object-contain drop-shadow-sm"
                     />
                     <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600">
                         <AppLogoIcon className="size-4 text-white" />
@@ -61,7 +61,7 @@ export default function AuthSimpleLayout({
 
             {/* Main Content (Centered Card) */}
             <main className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
-                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 dark:bg-card dark:ring-border/80 dark:shadow-2xl transition-colors duration-200">
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col items-center gap-6">
                             {/* UMSU Logo */}
