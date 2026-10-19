@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
- * @see app/Http/Controllers/MeetingController.php:184
+ * @see app/Http/Controllers/MeetingController.php:192
  * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 export const autoSync = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ autoSync.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
- * @see app/Http/Controllers/MeetingController.php:184
+ * @see app/Http/Controllers/MeetingController.php:192
  * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 autoSync.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ autoSync.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MeetingController::autoSync
- * @see app/Http/Controllers/MeetingController.php:184
+ * @see app/Http/Controllers/MeetingController.php:192
  * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
 autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -35,7 +35,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\MeetingController::autoSync
- * @see app/Http/Controllers/MeetingController.php:184
+ * @see app/Http/Controllers/MeetingController.php:192
  * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
     const autoSyncForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -45,7 +45,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\MeetingController::autoSync
- * @see app/Http/Controllers/MeetingController.php:184
+ * @see app/Http/Controllers/MeetingController.php:192
  * @route 'https://enotulen.irvan.cloud/meetings/auto-sync'
  */
         autoSyncForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -56,7 +56,7 @@ autoSync.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     autoSync.form = autoSyncForm
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
- * @see app/Http/Controllers/MeetingController.php:269
+ * @see app/Http/Controllers/MeetingController.php:277
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 export const cancel = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -71,7 +71,7 @@ cancel.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
- * @see app/Http/Controllers/MeetingController.php:269
+ * @see app/Http/Controllers/MeetingController.php:277
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 cancel.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -104,7 +104,7 @@ cancel.url = (args: { meeting: string | number | { id: string | number } } | [me
 
 /**
 * @see \App\Http\Controllers\MeetingController::cancel
- * @see app/Http/Controllers/MeetingController.php:269
+ * @see app/Http/Controllers/MeetingController.php:277
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
 cancel.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -114,7 +114,7 @@ cancel.post = (args: { meeting: string | number | { id: string | number } } | [m
 
     /**
 * @see \App\Http\Controllers\MeetingController::cancel
- * @see app/Http/Controllers/MeetingController.php:269
+ * @see app/Http/Controllers/MeetingController.php:277
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
     const cancelForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -124,7 +124,7 @@ cancel.post = (args: { meeting: string | number | { id: string | number } } | [m
 
             /**
 * @see \App\Http\Controllers\MeetingController::cancel
- * @see app/Http/Controllers/MeetingController.php:269
+ * @see app/Http/Controllers/MeetingController.php:277
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/cancel'
  */
         cancelForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -213,7 +213,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -228,7 +228,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -237,7 +237,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -246,7 +246,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -256,7 +256,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -266,7 +266,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -275,7 +275,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\MeetingController::create
- * @see app/Http/Controllers/MeetingController.php:78
+ * @see app/Http/Controllers/MeetingController.php:86
  * @route 'https://enotulen.irvan.cloud/meetings/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -291,7 +291,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\MeetingController::store
- * @see app/Http/Controllers/MeetingController.php:129
+ * @see app/Http/Controllers/MeetingController.php:137
  * @route 'https://enotulen.irvan.cloud/meetings'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -306,7 +306,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::store
- * @see app/Http/Controllers/MeetingController.php:129
+ * @see app/Http/Controllers/MeetingController.php:137
  * @route 'https://enotulen.irvan.cloud/meetings'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -315,7 +315,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MeetingController::store
- * @see app/Http/Controllers/MeetingController.php:129
+ * @see app/Http/Controllers/MeetingController.php:137
  * @route 'https://enotulen.irvan.cloud/meetings'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -325,7 +325,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\MeetingController::store
- * @see app/Http/Controllers/MeetingController.php:129
+ * @see app/Http/Controllers/MeetingController.php:137
  * @route 'https://enotulen.irvan.cloud/meetings'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -335,7 +335,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\MeetingController::store
- * @see app/Http/Controllers/MeetingController.php:129
+ * @see app/Http/Controllers/MeetingController.php:137
  * @route 'https://enotulen.irvan.cloud/meetings'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -346,7 +346,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -361,7 +361,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -394,7 +394,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -403,7 +403,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -413,7 +413,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -423,7 +423,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -432,7 +432,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\MeetingController::show
- * @see app/Http/Controllers/MeetingController.php:201
+ * @see app/Http/Controllers/MeetingController.php:209
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -448,7 +448,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     show.form = showForm
 /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 export const edit = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -463,7 +463,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -496,7 +496,7 @@ edit.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -505,7 +505,7 @@ edit.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
 edit.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -515,7 +515,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
     const editForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -525,7 +525,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
         editForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -534,7 +534,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\MeetingController::edit
- * @see app/Http/Controllers/MeetingController.php:220
+ * @see app/Http/Controllers/MeetingController.php:228
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/edit'
  */
         editForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -550,7 +550,7 @@ edit.head = (args: { meeting: string | number | { id: string | number } } | [mee
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const update = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -565,7 +565,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -598,7 +598,7 @@ update.url = (args: { meeting: string | number | { id: string | number } } | [me
 
 /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -607,7 +607,7 @@ update.put = (args: { meeting: string | number | { id: string | number } } | [me
 })
 /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 update.patch = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -617,7 +617,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
 
     /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const updateForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -632,7 +632,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
 
             /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         updateForm.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -646,7 +646,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
         })
             /**
 * @see \App\Http\Controllers\MeetingController::update
- * @see app/Http/Controllers/MeetingController.php:236
+ * @see app/Http/Controllers/MeetingController.php:244
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         updateForm.patch = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -662,7 +662,7 @@ update.patch = (args: { meeting: string | number | { id: string | number } } | [
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
- * @see app/Http/Controllers/MeetingController.php:282
+ * @see app/Http/Controllers/MeetingController.php:290
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 export const destroy = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -677,7 +677,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
- * @see app/Http/Controllers/MeetingController.php:282
+ * @see app/Http/Controllers/MeetingController.php:290
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 destroy.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -710,7 +710,7 @@ destroy.url = (args: { meeting: string | number | { id: string | number } } | [m
 
 /**
 * @see \App\Http\Controllers\MeetingController::destroy
- * @see app/Http/Controllers/MeetingController.php:282
+ * @see app/Http/Controllers/MeetingController.php:290
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
 destroy.delete = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -720,7 +720,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number } } |
 
     /**
 * @see \App\Http\Controllers\MeetingController::destroy
- * @see app/Http/Controllers/MeetingController.php:282
+ * @see app/Http/Controllers/MeetingController.php:290
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
     const destroyForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -735,7 +735,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number } } |
 
             /**
 * @see \App\Http\Controllers\MeetingController::destroy
- * @see app/Http/Controllers/MeetingController.php:282
+ * @see app/Http/Controllers/MeetingController.php:290
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}'
  */
         destroyForm.delete = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

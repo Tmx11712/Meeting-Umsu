@@ -11,7 +11,7 @@ it('builds transcript row correctly for a single valid recording (batch dengan s
         'id' => Str::uuid()->toString(),
     ]);
 
-    $chunk = new MeetingTranscriptionChunk();
+    $chunk = new MeetingTranscriptionChunk;
     $chunk->id = 1;
     $chunk->recording_id = $recording->id;
 
@@ -38,11 +38,11 @@ it('can build rows for multiple different recordings separately (batch dengan be
     $recording1 = new MeetingRecording(['meeting_id' => Str::uuid()->toString(), 'id' => Str::uuid()->toString()]);
     $recording2 = new MeetingRecording(['meeting_id' => Str::uuid()->toString(), 'id' => Str::uuid()->toString()]);
 
-    $chunk1 = new MeetingTranscriptionChunk();
+    $chunk1 = new MeetingTranscriptionChunk;
     $chunk1->id = 1;
     $chunk1->recording_id = $recording1->id;
 
-    $chunk2 = new MeetingTranscriptionChunk();
+    $chunk2 = new MeetingTranscriptionChunk;
     $chunk2->id = 2;
     $chunk2->recording_id = $recording2->id;
 
@@ -62,15 +62,15 @@ it('can build rows for multiple different recordings separately (batch dengan be
 it('throws exception if recording is missing meeting_id', function () {
     $recording = new MeetingRecording(['id' => Str::uuid()->toString()]);
     // meeting_id disengaja null
-    
+
     $error = null;
     try {
-        if (!$recording->meeting_id) {
-            throw new \Exception("Recording {$recording->id} tidak memiliki meeting_id yang valid. Transkrip dibatalkan.");
+        if (! $recording->meeting_id) {
+            throw new Exception("Recording {$recording->id} tidak memiliki meeting_id yang valid. Transkrip dibatalkan.");
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $error = $e->getMessage();
     }
-    
+
     expect($error)->toContain('tidak memiliki meeting_id yang valid');
 });

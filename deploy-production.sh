@@ -6,28 +6,28 @@ echo "?? Memulai Deployment E-Notulen ke Server Produksi Kampus (Docker)"
 echo "=========================================================="
 
 # 1. Persiapan Folder Storage & Hak Akses
-echo "?? Menyiapkan folder dan hak akses..."
+echo "📁 Menyiapkan folder dan hak akses..."
 mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/testing storage/framework/views bootstrap/cache
-# Ubah permission agar bisa diakses oleh Nginx dan Worker di dalam maupun luar container
-sudo chmod -R 777 storage bootstrap/cache || true
+# Ubah permission agar aman dan bisa diakses oleh Nginx dan Worker di dalam maupun luar container
+sudo chmod -R 775 storage bootstrap/cache || true
 
 # 2. Tarik kode terbaru dari GitHub
-echo "?? Menarik kode terbaru dari branch main..."
+echo "📥 Menarik kode terbaru dari branch main..."
 git pull origin main
 
 # 3. Pengecekan Environment
 if [ ! -f .env ]; then
-    echo "?? File .env tidak ditemukan! Meng-copy dari template .env.production..."
+    echo "⚠️ File .env tidak ditemukan! Meng-copy dari template .env.production..."
     cp .env.production .env
     echo "Tolong edit file .env dan sesuaikan dengan rahasia server (database, AWS, dll), lalu jalankan ulang script ini."
     exit 1
 fi
 
-# 4. Build dan Restart Docker Container
-echo "?? Membangun ulang dan menyalakan Docker Container..."
-docker compose -f docker-compose.prod.yml down --remove-orphans
+# 4. Build dan Restart Docker Container (Zero-downtime recreation)
+echo "📦 Membangun image Docker sebelum restart untuk meminimalkan downtime..."
 docker compose -f docker-compose.prod.yml build
-docker compose -f docker-compose.prod.yml up -d
+echo "🚀 Memperbarui dan menyalakan Docker Container..."
+docker compose -f docker-compose.prod.yml up -d --remove-orphans
 
 echo "? Menunggu container siap..."
 sleep 5

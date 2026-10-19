@@ -22,18 +22,31 @@ class MeetingMinuteController extends Controller
 {
     public function index(Request $request)
     {
-        // Stage 5, 6, 7 = Review / Notulen, Persetujuan, Selesai
-        $query = Meeting::query()->whereIn('current_stage', [4, 5, 6, 7], 'and', false);
+        // Stage 4, 5, 6, 7 = Rekam, Review / Notulen, Persetujuan, Selesai
+        $query = Meeting::query()
+            ->withCount('participants')
+            ->whereIn('current_stage', [4, 5, 6, 7], 'and', false);
 
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
+        }
+        if ($request->status && $request->status !== 'all') {
+            $query->where('status', '=', $request->status);
+        }
+        if ($request->month && $request->month !== 'all') {
+            if (str_contains($request->month, '-')) {
+                [$year, $month] = explode('-', $request->month);
+                $query->whereYear('date', $year)->whereMonth('date', $month);
+            } else {
+                $query->whereMonth('date', $request->month);
+            }
         }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
 
         return Inertia::render('meetings/minutes-index', [
             'meetings' => $meetings,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'status', 'month']),
         ]);
     }
 

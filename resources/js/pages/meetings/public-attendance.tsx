@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import { Calendar, MapPin, Clock, Building, CheckCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, Building, CheckCircle, Lock, AlertCircle } from 'lucide-react';
 import type { FormEventHandler } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { submit as submitRoute } from '@/routes/attend';
 
-export default function PublicAttendance({ meeting, flash }: any) {
+export default function PublicAttendance({ meeting, flash, isOpen = true, closedReason }: any) {
     const { data, setData, post, processing, errors } = useForm({
         guest_name: '',
         guest_unit_kerja: '',
@@ -20,6 +20,7 @@ export default function PublicAttendance({ meeting, flash }: any) {
     };
 
     const isSuccess = flash?.success;
+    const errorMessage = flash?.error || (errors as any)?.general || errors?.guest_name;
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] flex flex-col items-center justify-center p-4">
@@ -38,12 +39,42 @@ export default function PublicAttendance({ meeting, flash }: any) {
                     <CardHeader className="text-center pb-4 border-b border-slate-200 dark:border-slate-800">
                         <CardTitle className="text-xl font-bold text-slate-900 dark:text-white">{meeting.title}</CardTitle>
                         <CardDescription className="text-slate-600 dark:text-slate-300 font-semibold">
-                            {isSuccess ? 'Kehadiran Anda telah berhasil dicatat' : 'Silakan isi form absensi di bawah ini'}
+                            {!isOpen
+                                ? 'Pemberitahuan Kehadiran'
+                                : isSuccess
+                                    ? 'Kehadiran Anda telah berhasil dicatat'
+                                    : 'Silakan isi form absensi di bawah ini'}
                         </CardDescription>
                     </CardHeader>
                     
                     <CardContent className="pt-6">
-                        {isSuccess ? (
+                        {!isOpen ? (
+                            <div className="flex flex-col items-center justify-center py-4 text-center space-y-4 animate-in fade-in zoom-in duration-500">
+                                <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-950/60 flex items-center justify-center">
+                                    <Lock className="w-8 h-8 text-amber-600 dark:text-amber-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Sesi Absensi Tidak Tersedia</h3>
+                                    <p className="text-slate-600 dark:text-slate-300 mt-2 text-sm leading-relaxed max-w-xs mx-auto">
+                                        {closedReason || 'Sesi absensi untuk rapat ini tidak dapat menerima kehadiran saat ini.'}
+                                    </p>
+                                </div>
+                                <div className="w-full bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 mt-2 space-y-3 text-sm text-left border border-slate-100 dark:border-slate-800">
+                                    <div className="flex items-center gap-3 text-slate-900 dark:text-slate-200 font-semibold">
+                                        <Calendar className="w-4 h-4 text-blue-500 shrink-0" />
+                                        <span>{meeting.date}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-slate-900 dark:text-slate-200 font-semibold">
+                                        <Clock className="w-4 h-4 text-blue-500 shrink-0" />
+                                        <span>{meeting.start_time?.substring(0, 5)} - {meeting.end_time?.substring(0, 5)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-slate-900 dark:text-slate-200 font-semibold">
+                                        <MapPin className="w-4 h-4 text-blue-500 shrink-0" />
+                                        <span>{meeting.location}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : isSuccess ? (
                             <div className="flex flex-col items-center justify-center py-6 text-center space-y-4 animate-in fade-in zoom-in duration-500">
                                 <CheckCircle className="w-16 h-16 text-emerald-500" />
                                 <div>
@@ -67,6 +98,13 @@ export default function PublicAttendance({ meeting, flash }: any) {
                                         <span>{meeting.location}</span>
                                     </div>
                                 </div>
+
+                                {errorMessage && (
+                                    <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-xl p-3 flex items-start gap-2.5 text-sm text-red-700 dark:text-red-300 mb-4 animate-in fade-in">
+                                        <AlertCircle className="w-5 h-5 shrink-0 text-red-500 mt-0.5" />
+                                        <span>{errorMessage}</span>
+                                    </div>
+                                )}
 
                                 <form onSubmit={submit} className="space-y-4">
                                     <div className="space-y-2">

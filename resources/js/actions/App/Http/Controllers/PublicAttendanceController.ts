@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -58,7 +58,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -68,7 +68,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -78,7 +78,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -87,7 +87,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::show
- * @see app/Http/Controllers/PublicAttendanceController.php:23
+ * @see app/Http/Controllers/PublicAttendanceController.php:52
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -103,7 +103,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     show.form = showForm
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
- * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @see app/Http/Controllers/PublicAttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 export const store = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -118,7 +118,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
- * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @see app/Http/Controllers/PublicAttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 store.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -151,7 +151,7 @@ store.url = (args: { meeting: string | number | { id: string | number } } | [mee
 
 /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
- * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @see app/Http/Controllers/PublicAttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
 store.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -161,7 +161,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
 
     /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
- * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @see app/Http/Controllers/PublicAttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
     const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -171,7 +171,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
 
             /**
 * @see \App\Http\Controllers\PublicAttendanceController::store
- * @see app/Http/Controllers/PublicAttendanceController.php:38
+ * @see app/Http/Controllers/PublicAttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/attend/{meeting}'
  */
         storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

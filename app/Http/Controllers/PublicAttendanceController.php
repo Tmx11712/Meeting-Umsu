@@ -20,8 +20,39 @@ use Inertia\Inertia;
  */
 class PublicAttendanceController extends Controller
 {
+    private function getAttendanceAvailability(Meeting $meeting): array
+    {
+        if ($meeting->status === 'dibatalkan') {
+            return [
+                'isOpen' => false,
+                'reason' => 'Rapat ini telah dibatalkan.',
+            ];
+        }
+
+        if ($meeting->status === 'selesai' || $meeting->current_stage >= 5) {
+            return [
+                'isOpen' => false,
+                'reason' => 'Sesi absensi untuk rapat ini telah resmi ditutup.',
+            ];
+        }
+
+        if ($meeting->date > now()->toDateString() && $meeting->status === 'terjadwal' && $meeting->current_stage < 2) {
+            return [
+                'isOpen' => false,
+                'reason' => 'Sesi absensi belum dibuka. Absensi dibuka pada hari pelaksanaan rapat.',
+            ];
+        }
+
+        return [
+            'isOpen' => true,
+            'reason' => null,
+        ];
+    }
+
     public function show(Meeting $meeting)
     {
+        $availability = $this->getAttendanceAvailability($meeting);
+
         return Inertia::render('meetings/public-attendance', [
             'meeting' => [
                 'id' => $meeting->id,
@@ -31,12 +62,23 @@ class PublicAttendanceController extends Controller
                 'end_time' => $meeting->end_time,
                 'location' => $meeting->location,
                 'status' => $meeting->status,
+                'current_stage' => $meeting->current_stage,
             ],
+            'isOpen' => $availability['isOpen'],
+            'closedReason' => $availability['reason'],
         ]);
     }
 
     public function store(Request $request, Meeting $meeting)
     {
+        $availability = $this->getAttendanceAvailability($meeting);
+
+        if (! $availability['isOpen']) {
+            return back()->with('error', $availability['reason'])->withErrors([
+                'guest_name' => $availability['reason'],
+            ]);
+        }
+
         $request->validate([
             'guest_name' => 'required|string|max:255',
             'guest_unit_kerja' => 'required|string|max:255',

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
+use App\Models\MeetingAttendance;
 use App\Models\MeetingMinute;
+use App\Models\MeetingParticipant;
 use App\Models\TeamInvitation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,7 +47,7 @@ class DashboardController extends Controller
             $meetingsLastMonth = Meeting::query()->whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
             $meetingsDelta = $meetingsLastMonth > 0
                 ? round((($meetingsThisMonth - $meetingsLastMonth) / $meetingsLastMonth) * 100)
-                : 100;
+                : ($meetingsThisMonth > 0 ? 100 : 0);
 
             // 2. Notulen selesai
             $minutesCompletedThisMonth = MeetingMinute::whereHas('meeting')
@@ -58,17 +60,28 @@ class DashboardController extends Controller
                 ->count();
             $minutesDelta = $minutesCompletedLastMonth > 0
                 ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100)
-                : 100;
+                : ($minutesCompletedThisMonth > 0 ? 100 : 0);
 
             // 3. Action item terbuka
             $openActionItems = MeetingActionItem::whereHas('meeting')->where('status', 'open')->count();
 
-            // 4. Rata-rata kehadiran
-            $avgAttendance = 0; // Simplified for now, calculate from finished meetings
-            $finishedMeetings = Meeting::with('attendances')->where('status', '=', 'selesai', 'and')->get();
-            if ($finishedMeetings->count() > 0) {
-                $totalRates = $finishedMeetings->map->attendance_rate->sum();
-                $avgAttendance = round($totalRates / $finishedMeetings->count());
+            // 4. Rata-rata kehadiran (Dihitung efisien via SQL Agregasi pada rapat yang telah selesai)
+            $avgAttendance = 0;
+            $finishedMeetingIds = Meeting::query()->where('status', '=', 'selesai', 'and')->pluck('id');
+            if ($finishedMeetingIds->isNotEmpty()) {
+                $totalAttended = MeetingAttendance::query()
+                    ->whereIn('meeting_id', $finishedMeetingIds, 'and', false)
+                    ->whereIn('status', ['hadir', 'terlambat'], 'and', false)
+                    ->count('*');
+                $totalExpected = MeetingParticipant::query()
+                    ->whereIn('meeting_id', $finishedMeetingIds, 'and', false)
+                    ->count('*');
+                $totalGuests = MeetingAttendance::query()
+                    ->whereIn('meeting_id', $finishedMeetingIds, 'and', false)
+                    ->whereNull('user_id', 'and', false)
+                    ->count('*');
+                $totalTarget = $totalExpected + $totalGuests;
+                $avgAttendance = $totalTarget > 0 ? (int) round(($totalAttended / $totalTarget) * 100) : 0;
             }
 
             return [
@@ -101,16 +114,23 @@ class DashboardController extends Controller
             });
         };
 
-        // Rapat Hari Ini & Rapat Tertunda (Belum Selesai)
+        // Rapat Hari Ini & Rapat Berjalan (Belum Selesai)
         $todayMeetingsRaw = Meeting::withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');
             }])
             ->where(function ($query) use ($now) {
                 $query->where('date', '=', $now->toDateString())
-                    ->orWhere('date', '<', $now->toDateString())
-                    ->orWhere('current_stage', '>=', 3); // Rapat yang sudah dimulai (stage 3+) selalu tampil di sini meski tanggal aslinya di masa depan
+                    ->orWhere(function ($pastQuery) use ($now) {
+                        $pastQuery->where('date', '<', $now->toDateString())
+                            ->whereNotIn('status', ['selesai', 'dibatalkan']);
+                    })
+                    ->orWhere(function ($activeFuture) {
+                        $activeFuture->where('current_stage', '>=', 3)
+                            ->whereNotIn('status', ['selesai', 'dibatalkan']);
+                    });
             })
+            ->where('status', '!=', 'dibatalkan')
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'asc')
             ->take(5)

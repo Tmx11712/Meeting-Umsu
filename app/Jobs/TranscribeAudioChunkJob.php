@@ -16,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TranscribeAudioChunkJob implements ShouldQueue
 {
@@ -91,11 +92,11 @@ class TranscribeAudioChunkJob implements ShouldQueue
                 MeetingTranscript::query()->where('chunk_id', $chunk->id)->delete();
 
                 // Ambil recording untuk meeting_id
-                $recording = \App\Models\MeetingRecording::query()->find($chunk->recording_id);
-                if (!$recording) {
+                $recording = MeetingRecording::query()->find($chunk->recording_id);
+                if (! $recording) {
                     throw new \Exception("Recording dengan ID {$chunk->recording_id} tidak ditemukan untuk chunk {$chunk->id}.");
                 }
-                if (!$recording->meeting_id) {
+                if (! $recording->meeting_id) {
                     throw new \Exception("Recording {$recording->id} tidak memiliki meeting_id yang valid. Transkrip dibatalkan.");
                 }
 
@@ -172,10 +173,10 @@ class TranscribeAudioChunkJob implements ShouldQueue
      * Membangun satu baris data transkrip untuk keperluan bulk insert.
      * Dipisahkan dari logika loop agar semua validasi struktur baris ada di satu tempat.
      */
-    protected function buildTranscriptRow(\App\Models\MeetingRecording $recording, MeetingTranscriptionChunk $chunk, array $segment, int $segmentIndex): array
+    protected function buildTranscriptRow(MeetingRecording $recording, MeetingTranscriptionChunk $chunk, array $segment, int $segmentIndex): array
     {
         return [
-            'id' => \Illuminate\Support\Str::uuid()->toString(),
+            'id' => Str::uuid()->toString(),
             'meeting_id' => $recording->meeting_id,
             'recording_id' => $chunk->recording_id,
             'chunk_id' => $chunk->id,

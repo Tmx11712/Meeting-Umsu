@@ -2,6 +2,7 @@
 
 use App\Services\OpenAiTranscriptionService;
 use Illuminate\Support\Facades\Http;
+use Mockery\MockInterface;
 
 /**
  * Regression test: jalur legacy transcribeChunk() sempat mengembalikan array flat sehingga
@@ -36,7 +37,7 @@ it('mengembalikan format segments + duration dan menghapus folder temp', functio
 
     $split = makeFakeChunks(1);
 
-    /** @var OpenAiTranscriptionService|\Mockery\MockInterface $service */
+    /** @var OpenAiTranscriptionService|MockInterface $service */
     $service = Mockery::mock(OpenAiTranscriptionService::class)->makePartial();
     $service->shouldReceive('getAudioDuration')->andReturn(120.0);
     $service->shouldReceive('splitAudioToChunks')->once()->andReturn($split);
@@ -65,7 +66,7 @@ it('menggeser timestamp tiap chunk dan membuang segmen overlap dari chunk non-te
 
     $split = makeFakeChunks(2);
 
-    /** @var OpenAiTranscriptionService|\Mockery\MockInterface $service */
+    /** @var OpenAiTranscriptionService|MockInterface $service */
     $service = Mockery::mock(OpenAiTranscriptionService::class)->makePartial();
     $service->shouldReceive('getAudioDuration')->andReturn(1500.0);
     $service->shouldReceive('splitAudioToChunks')->andReturn($split);
@@ -102,7 +103,7 @@ it('tetap menghapus folder temp saat panggilan OpenAI gagal', function () {
 
     $split = makeFakeChunks(1);
 
-    /** @var OpenAiTranscriptionService|\Mockery\MockInterface $service */
+    /** @var OpenAiTranscriptionService|MockInterface $service */
     $service = Mockery::mock(OpenAiTranscriptionService::class)->makePartial();
     $service->shouldReceive('getAudioDuration')->andReturn(60.0);
     $service->shouldReceive('splitAudioToChunks')->andReturn($split);

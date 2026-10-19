@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -127,7 +127,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -146,7 +146,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -156,7 +156,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\AttendanceController::show
- * @see app/Http/Controllers/AttendanceController.php:50
+ * @see app/Http/Controllers/AttendanceController.php:61
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -181,7 +181,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     show.form = showForm
 /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
 export const generateQrCode = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -196,7 +196,7 @@ generateQrCode.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
 generateQrCode.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -229,7 +229,7 @@ generateQrCode.url = (args: { meeting: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
 generateQrCode.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -238,7 +238,7 @@ generateQrCode.get = (args: { meeting: string | number | { id: string | number }
 })
 /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
 generateQrCode.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -248,7 +248,7 @@ generateQrCode.head = (args: { meeting: string | number | { id: string | number 
 
     /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
     const generateQrCodeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -258,7 +258,7 @@ generateQrCode.head = (args: { meeting: string | number | { id: string | number 
 
             /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
         generateQrCodeForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,7 +267,7 @@ generateQrCode.head = (args: { meeting: string | number | { id: string | number 
         })
             /**
 * @see \App\Http\Controllers\AttendanceController::generateQrCode
- * @see app/Http/Controllers/AttendanceController.php:61
+ * @see app/Http/Controllers/AttendanceController.php:72
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/qr'
  */
         generateQrCodeForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -283,7 +283,7 @@ generateQrCode.head = (args: { meeting: string | number | { id: string | number 
     generateQrCode.form = generateQrCodeForm
 /**
 * @see \App\Http\Controllers\AttendanceController::storeManual
- * @see app/Http/Controllers/AttendanceController.php:81
+ * @see app/Http/Controllers/AttendanceController.php:92
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/manual'
  */
 export const storeManual = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -298,7 +298,7 @@ storeManual.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::storeManual
- * @see app/Http/Controllers/AttendanceController.php:81
+ * @see app/Http/Controllers/AttendanceController.php:92
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/manual'
  */
 storeManual.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -331,7 +331,7 @@ storeManual.url = (args: { meeting: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\AttendanceController::storeManual
- * @see app/Http/Controllers/AttendanceController.php:81
+ * @see app/Http/Controllers/AttendanceController.php:92
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/manual'
  */
 storeManual.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -341,7 +341,7 @@ storeManual.post = (args: { meeting: string | number | { id: string | number } }
 
     /**
 * @see \App\Http\Controllers\AttendanceController::storeManual
- * @see app/Http/Controllers/AttendanceController.php:81
+ * @see app/Http/Controllers/AttendanceController.php:92
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/manual'
  */
     const storeManualForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -351,7 +351,7 @@ storeManual.post = (args: { meeting: string | number | { id: string | number } }
 
             /**
 * @see \App\Http\Controllers\AttendanceController::storeManual
- * @see app/Http/Controllers/AttendanceController.php:81
+ * @see app/Http/Controllers/AttendanceController.php:92
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/manual'
  */
         storeManualForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -362,7 +362,7 @@ storeManual.post = (args: { meeting: string | number | { id: string | number } }
     storeManual.form = storeManualForm
 /**
 * @see \App\Http\Controllers\AttendanceController::finish
- * @see app/Http/Controllers/AttendanceController.php:129
+ * @see app/Http/Controllers/AttendanceController.php:140
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/finish'
  */
 export const finish = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -377,7 +377,7 @@ finish.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::finish
- * @see app/Http/Controllers/AttendanceController.php:129
+ * @see app/Http/Controllers/AttendanceController.php:140
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/finish'
  */
 finish.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -410,7 +410,7 @@ finish.url = (args: { meeting: string | number | { id: string | number } } | [me
 
 /**
 * @see \App\Http\Controllers\AttendanceController::finish
- * @see app/Http/Controllers/AttendanceController.php:129
+ * @see app/Http/Controllers/AttendanceController.php:140
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/finish'
  */
 finish.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -420,7 +420,7 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
 
     /**
 * @see \App\Http\Controllers\AttendanceController::finish
- * @see app/Http/Controllers/AttendanceController.php:129
+ * @see app/Http/Controllers/AttendanceController.php:140
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/finish'
  */
     const finishForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -430,7 +430,7 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
 
             /**
 * @see \App\Http\Controllers\AttendanceController::finish
- * @see app/Http/Controllers/AttendanceController.php:129
+ * @see app/Http/Controllers/AttendanceController.php:140
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/finish'
  */
         finishForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -441,7 +441,7 @@ finish.post = (args: { meeting: string | number | { id: string | number } } | [m
     finish.form = finishForm
 /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
 export const scan = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -456,7 +456,7 @@ scan.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
 scan.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -489,7 +489,7 @@ scan.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
 scan.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -498,7 +498,7 @@ scan.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
 scan.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -508,7 +508,7 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
     const scanForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -518,7 +518,7 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
         scanForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -527,7 +527,7 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\AttendanceController::scan
- * @see app/Http/Controllers/AttendanceController.php:140
+ * @see app/Http/Controllers/AttendanceController.php:151
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/scan'
  */
         scanForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -543,7 +543,7 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
     scan.form = scanForm
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:174
+ * @see app/Http/Controllers/AttendanceController.php:185
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 export const syncIrvanCloud = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -558,7 +558,7 @@ syncIrvanCloud.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:174
+ * @see app/Http/Controllers/AttendanceController.php:185
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 syncIrvanCloud.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -591,7 +591,7 @@ syncIrvanCloud.url = (args: { meeting: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:174
+ * @see app/Http/Controllers/AttendanceController.php:185
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -601,7 +601,7 @@ syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number 
 
     /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:174
+ * @see app/Http/Controllers/AttendanceController.php:185
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
     const syncIrvanCloudForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -611,7 +611,7 @@ syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number 
 
             /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:174
+ * @see app/Http/Controllers/AttendanceController.php:185
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
         syncIrvanCloudForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

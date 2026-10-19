@@ -38,12 +38,23 @@ class AttendanceController extends Controller
         if ($request->search) {
             $query->where('title', 'ilike', '%'.$request->search.'%');
         }
+        if ($request->status && $request->status !== 'all') {
+            $query->where('status', '=', $request->status);
+        }
+        if ($request->month && $request->month !== 'all') {
+            if (str_contains($request->month, '-')) {
+                [$year, $month] = explode('-', $request->month);
+                $query->whereYear('date', $year)->whereMonth('date', $month);
+            } else {
+                $query->whereMonth('date', $request->month);
+            }
+        }
 
         $meetings = $query->orderBy('date', 'desc')->paginate(10);
 
         return Inertia::render('meetings/attendances-index', [
             'meetings' => $meetings,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'status', 'month']),
         ]);
     }
 

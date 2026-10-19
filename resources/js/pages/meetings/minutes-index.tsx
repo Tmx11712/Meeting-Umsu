@@ -1,5 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
-import { Search, Filter, Calendar } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Search, Calendar } from 'lucide-react';
+import { useRef } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +9,36 @@ import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
     const { canEdit } = usePermissions();
+    const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const applyFilter = (key: string, value: string) => {
+        const currentFilters = { ...filters, [key]: value };
+        router.get('/minutes', currentFilters, {
+            preserveState: true,
+            replace: true,
+            preserveScroll: true,
+            only: ['meetings', 'filters'],
+        });
+    };
+
+    const handleSearchChange = (value: string) => {
+        if (searchTimeout.current) {
+            clearTimeout(searchTimeout.current);
+        }
+        searchTimeout.current = setTimeout(() => {
+            applyFilter('search', value);
+        }, 300);
+    };
+
+    const monthOptions = Array.from({ length: 12 }, (_, i) => {
+        const d = new Date();
+        d.setDate(1);
+        d.setMonth(d.getMonth() - i);
+        const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const label = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+        return { value, label };
+    });
 
     return (
         <div className="flex h-full flex-1 flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -34,14 +65,24 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 placeholder="Cari judul rapat..." 
                                 className="pl-9 w-75 bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg h-10 text-slate-900 dark:text-slate-100 placeholder:dark:text-slate-400"
                                 defaultValue={filters?.search || ''}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        if (searchTimeout.current) {
+                                            clearTimeout(searchTimeout.current);
+                                        }
+                                        applyFilter('search', (e.target as HTMLInputElement).value);
+                                    }
+                                }}
                             />
                         </div>
                         
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             <div className="relative">
                                 <select 
                                     className="h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 w-40 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                                    defaultValue={filters?.status || 'all'}
+                                    value={filters?.status || 'all'}
+                                    onChange={(e) => applyFilter('status', e.target.value)}
                                 >
                                     <option value="all" className="dark:bg-slate-900">Semua Status</option>
                                     <option value="terjadwal" className="dark:bg-slate-900">Terjadwal</option>
@@ -59,18 +100,18 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                     <Calendar className="h-4 w-4 text-slate-400" />
                                 </div>
                                 <select 
-                                    className="h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 w-40 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-                                    defaultValue="juni"
+                                    className="h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 w-44 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    value={filters?.month || 'all'}
+                                    onChange={(e) => applyFilter('month', e.target.value)}
                                 >
-                                    <option value="juni" className="dark:bg-slate-900">Juni 2026</option>
-                                    <option value="mei" className="dark:bg-slate-900">Mei 2026</option>
-                                    <option value="april" className="dark:bg-slate-900">April 2026</option>
+                                    <option value="all" className="dark:bg-slate-900">Semua Bulan</option>
+                                    {monthOptions.map((opt) => (
+                                        <option key={opt.value} value={opt.value} className="dark:bg-slate-900">
+                                            {opt.label}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
-
-                            <Button variant="outline" className="h-10 px-4 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
-                                <Filter className="w-4 h-4 mr-2 text-slate-500 dark:text-slate-400" /> Filter
-                            </Button>
                         </div>
                     </div>
 
@@ -93,16 +134,20 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 {meetings?.data && meetings.data.length > 0 ? (
                                     meetings.data.map((meeting: any, index: number) => (
                                         <tr key={meeting.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group">
-                                            <td className="px-4 py-4 text-slate-500 dark:text-slate-400">{index + 1}</td>
+                                            <td className="px-4 py-4 text-slate-500 dark:text-slate-400">
+                                                {(meetings.from ?? 1) + index}
+                                            </td>
                                             <td className="px-4 py-4">
                                                 <Link href={`/meetings/${meeting.id}/review`} className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                     {meeting.title}
                                                 </Link>
                                             </td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{meeting.date || '4 Jun 2026'}</td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{meeting.start_time?.substring(0,5)} - {meeting.end_time?.substring(0,5)}</td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300 max-w-50"><span className="block truncate" title={meeting.location || 'Rapat A - Lt. 3'}>{meeting.location || 'Rapat A - Lt. 3'}</span></td>
-                                            <td className="px-4 py-4 text-center text-slate-600 dark:text-slate-300">{meeting.participants?.length || 12}</td>
+                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{meeting.date || '-'}</td>
+                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
+                                                {meeting.start_time ? `${meeting.start_time.substring(0, 5)}${meeting.end_time ? ` - ${meeting.end_time.substring(0, 5)}` : ''}` : '-'}
+                                            </td>
+                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300 max-w-50"><span className="block truncate" title={meeting.location || '-'}>{meeting.location || '-'}</span></td>
+                                            <td className="px-4 py-4 text-center text-slate-600 dark:text-slate-300">{meeting.participants_count ?? 0}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-center">
                                                 <MeetingStatusBadge status={meeting.status} currentStage={meeting.current_stage} category={meeting.category} />
                                             </td>
@@ -110,7 +155,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                                 {canEdit('minutes') ? (
                                                     <Button asChild variant="outline" size="sm" className="h-8">
                                                         <Link href={`/meetings/${meeting.id}/review`}>
-                                                             Mulai Review
+                                                            Mulai Review
                                                         </Link>
                                                     </Button>
                                                 ) : (
@@ -135,26 +180,37 @@ export default function MeetingIndex({ meetings, filters }: any) {
                     </div>
 
                     {/* Pagination Footer */}
-                    <div className="p-5 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+                    <div className="p-5 border-t border-slate-100 dark:border-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
                         <div>
-                            Menampilkan 1 - {meetings?.data?.length || 0} dari {meetings?.total || 0} data
+                            Menampilkan {meetings?.from ?? 0} – {meetings?.to ?? 0} dari {meetings?.total ?? 0} data
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" disabled>
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-                            </Button>
-                            <Button variant="default" size="icon" className="w-8 h-8 rounded-md bg-blue-600 hover:bg-blue-700 text-white">
-                                1
-                            </Button>
-                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                2
-                            </Button>
-                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                3
-                            </Button>
-                            <Button variant="outline" size="icon" className="w-8 h-8 rounded-md border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-                            </Button>
+                            {meetings?.links?.map((link: any, i: number) => {
+                                const label = link.label
+                                    .replace('&laquo; Previous', '←')
+                                    .replace('Next &raquo;', '→');
+
+                                return (
+                                    <Button
+                                        key={i}
+                                        variant={link.active ? 'default' : 'outline'}
+                                        size="icon"
+                                        className={`w-8 h-8 rounded-md text-xs font-semibold transition-all ${
+                                            link.active
+                                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                                                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                        } ${!link.url ? 'opacity-40 cursor-not-allowed' : ''}`}
+                                        disabled={!link.url}
+                                        onClick={() => link.url && router.get(link.url, filters, {
+                                            preserveState: true,
+                                            preserveScroll: true,
+                                            only: ['meetings', 'filters'],
+                                        })}
+                                    >
+                                        {label}
+                                    </Button>
+                                );
+                            })}
                         </div>
                     </div>
                 </CardContent>

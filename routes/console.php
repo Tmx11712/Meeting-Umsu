@@ -32,3 +32,6 @@ Artisan::command('irvan-cloud:sync', function (IrvanCloudSyncService $syncServic
 
 // Secara otomatis menjalankan sinkronisasi setiap jam
 Schedule::command('irvan-cloud:sync')->hourly();
+
+// Secara otomatis mem-backup database setiap hari pukul 02:00 dini hari
+Schedule::command('db:backup')->dailyAt('02:00');
