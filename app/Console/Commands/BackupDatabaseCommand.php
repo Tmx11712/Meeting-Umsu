@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 
@@ -123,15 +124,86 @@ class BackupDatabaseCommand extends Command
             $process->run();
 
             if (! $process->isSuccessful()) {
-                // Jika pg_dump binary tidak tersedia atau host tidak bisa dijangkau
-                $this->warn('pg_dump error: '.$process->getErrorOutput());
+                $this->warn('pg_dump tidak tersedia di sistem: '.$process->getErrorOutput());
 
-                return false;
+                return $this->backupPostgresViaPdo($filePath);
             }
 
             return true;
         } catch (\Exception $e) {
             $this->warn('Eksekusi pg_dump gagal: '.$e->getMessage());
+
+            return $this->backupPostgresViaPdo($filePath);
+        }
+    }
+
+    private function backupPostgresViaPdo(string $filePath): bool
+    {
+        $this->info('Menggunakan fallback engine PDO untuk mengekspor database...');
+
+        try {
+            $tables = DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public' ORDER BY tablename");
+            if (empty($tables)) {
+                $this->warn('Tidak ada tabel yang ditemukan di skema public.');
+
+                return false;
+            }
+
+            $handle = fopen($filePath, 'w');
+            if (! $handle) {
+                return false;
+            }
+
+            fwrite($handle, "-- eNotulen Database Backup (PDO Fallback Engine)\n");
+            fwrite($handle, '-- Generated: '.Carbon::now()->toIso8601String()."\n\n");
+            fwrite($handle, "SET statement_timeout = 0;\n");
+            fwrite($handle, "SET client_encoding = 'UTF8';\n\n");
+
+            foreach ($tables as $tableRow) {
+                $tableName = $tableRow->tablename;
+                fwrite($handle, "\n-- Table: {$tableName}\n");
+
+                $rows = DB::table($tableName)->get();
+                if ($rows->isEmpty()) {
+                    continue;
+                }
+
+                $columns = array_keys((array) $rows->first());
+                $quotedColumns = array_map(fn ($col) => "\"{$col}\"", $columns);
+                $columnsList = implode(', ', $quotedColumns);
+
+                foreach ($rows->chunk(100) as $chunk) {
+                    $valuesSql = [];
+                    foreach ($chunk as $row) {
+                        $rowArray = (array) $row;
+                        $escapedValues = array_map(function ($val) {
+                            if (is_null($val)) {
+                                return 'NULL';
+                            }
+                            if (is_bool($val)) {
+                                return $val ? 'TRUE' : 'FALSE';
+                            }
+                            if (is_numeric($val) && ! is_string($val)) {
+                                return (string) $val;
+                            }
+
+                            return "'".str_replace("'", "''", (string) $val)."'";
+                        }, array_values($rowArray));
+
+                        $valuesSql[] = '('.implode(', ', $escapedValues).')';
+                    }
+
+                    if (! empty($valuesSql)) {
+                        fwrite($handle, "INSERT INTO \"{$tableName}\" ({$columnsList}) VALUES\n".implode(",\n", $valuesSql).";\n");
+                    }
+                }
+            }
+
+            fclose($handle);
+
+            return true;
+        } catch (\Exception $e) {
+            $this->error('Fallback PDO backup gagal: '.$e->getMessage());
 
             return false;
         }

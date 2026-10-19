@@ -50,6 +50,7 @@ RUN apk add --no-cache \
     unzip \
     libpq-dev \
     postgresql-dev \
+    postgresql-client \
     linux-headers \
     ffmpeg \
     $PHPIZE_DEPS
