@@ -34,13 +34,14 @@ RUN npm run build
 # ==========================================
 # Stage 2: Build PHP Application
 # ==========================================
-FROM php:8.4-fpm-alpine
+# Pinned to 8.4.27+ to patch PHP2Shell critical RCE vulnerabilities (CVE-2026-109618 & CVE-2026-109619)
+FROM php:8.4.27-fpm-alpine
 
 # Set working directory
 WORKDIR /var/www/html
 
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apk update && apk upgrade --no-cache && apk add --no-cache \
     git \
     curl \
     libpng-dev \

@@ -25,9 +25,9 @@ fi
 
 # 4. Build dan Restart Docker Container (Zero-downtime recreation)
 echo "📦 Membangun image Docker sebelum restart untuk meminimalkan downtime..."
-docker compose -f docker-compose.prod.yml build
+docker compose -f docker-compose.prod.yml build --pull
 echo "🚀 Memperbarui dan menyalakan Docker Container..."
-docker compose -f docker-compose.prod.yml up -d --remove-orphans
+docker compose -f docker-compose.prod.yml up -d --remove-orphans --force-recreate
 
 echo "? Menunggu container siap..."
 sleep 5
