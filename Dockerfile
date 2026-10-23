@@ -1,8 +1,12 @@
 # ==========================================
 # Stage 1: Build Node.js assets (React/Vite)
 # ==========================================
-FROM node:22-alpine AS node-builder
+# Pinned to 22.23.4+ to patch Node2Shell Brotli critical RCE (CVE-2026-111497)
+FROM node:22.23.4-alpine AS node-builder
 WORKDIR /app
+
+# Ensure Alpine OS libraries in builder are updated
+RUN apk update && apk upgrade --no-cache
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
