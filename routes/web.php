@@ -24,12 +24,10 @@ use App\Http\Controllers\TranscriptionController;
 use App\Http\Middleware\EnsureConfigAccess;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('home');
+Route::redirect('/', '/login')->name('home');
 
 // Public Attendance Routes
-Route::get('attend/{meeting}', [PublicAttendanceController::class, 'show'])->name('attend.form');
+Route::middleware('throttle:60,1')->get('attend/{meeting}', [PublicAttendanceController::class, 'show'])->name('attend.form');
 Route::middleware('throttle:15,1')->post('attend/{meeting}', [PublicAttendanceController::class, 'store'])->name('attend.submit');
 
 /**

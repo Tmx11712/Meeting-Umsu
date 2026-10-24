@@ -122,8 +122,8 @@ class MeetingController extends Controller
             ->orderBy('deadline', 'asc')
             ->take(3)
             ->get();
-        $meetingTypes = MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
-        $meetingRooms = MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingTypes = Cache::remember('active_meeting_types', 3600, fn () => MeetingType::where('is_active', true)->orderBy('name')->pluck('name'));
+        $meetingRooms = Cache::remember('active_meeting_rooms', 3600, fn () => MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name'));
 
         return Inertia::render('meetings/create', [
             'users' => $users,
@@ -230,8 +230,8 @@ class MeetingController extends Controller
         $meeting->load('participants');
         $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
-        $meetingTypes = MeetingType::where('is_active', true)->orderBy('name')->pluck('name');
-        $meetingRooms = MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name');
+        $meetingTypes = Cache::remember('active_meeting_types', 3600, fn () => MeetingType::where('is_active', true)->orderBy('name')->pluck('name'));
+        $meetingRooms = Cache::remember('active_meeting_rooms', 3600, fn () => MeetingRoom::where('is_active', true)->orderBy('name')->pluck('name'));
 
         return Inertia::render('meetings/create', [
             'meeting' => $meeting,

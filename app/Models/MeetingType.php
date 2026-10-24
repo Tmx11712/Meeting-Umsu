@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * [EDUKASI ARSITEKTUR: MASTER DATA (Lookup Table)]
@@ -18,4 +19,10 @@ class MeetingType extends Model
     use HasUuids;
 
     protected $fillable = ['name', 'is_active'];
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('active_meeting_types'));
+        static::deleted(fn () => Cache::forget('active_meeting_types'));
+    }
 }

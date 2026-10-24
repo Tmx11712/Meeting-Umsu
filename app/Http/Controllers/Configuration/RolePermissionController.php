@@ -86,6 +86,7 @@ class RolePermissionController extends Controller
         foreach ($userIds as $id) {
             Cache::forget("user_menus_{$id}");
         }
+        Cache::increment('menu_cache_version');
 
         return back()->with('flash', [
             'type' => 'success',

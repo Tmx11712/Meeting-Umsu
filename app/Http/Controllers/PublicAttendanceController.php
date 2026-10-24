@@ -79,17 +79,22 @@ class PublicAttendanceController extends Controller
             ]);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'guest_name' => 'required|string|max:255',
             'guest_unit_kerja' => 'required|string|max:255',
             'guest_email' => 'nullable|email|max:255',
             'guest_institution' => 'required|string|max:255',
         ]);
 
+        $name = trim(strip_tags($validated['guest_name']));
+        $unitKerja = trim(strip_tags($validated['guest_unit_kerja']));
+        $institution = trim(strip_tags($validated['guest_institution']));
+        $email = ! empty($validated['guest_email']) ? strtolower(trim($validated['guest_email'])) : null;
+
         // Check if this guest already submitted attendance based on name and institution
         $existing = MeetingAttendance::query()->where('meeting_id', '=', $meeting->id)
-            ->where('guest_name', '=', $request->guest_name)
-            ->where('guest_institution', '=', $request->guest_institution)
+            ->where('guest_name', '=', $name)
+            ->where('guest_institution', '=', $institution)
             ->first();
 
         if ($existing) {
@@ -98,10 +103,10 @@ class PublicAttendanceController extends Controller
 
         MeetingAttendance::create([
             'meeting_id' => $meeting->id,
-            'guest_name' => $request->guest_name,
-            'guest_email' => $request->guest_email,
-            'guest_unit_kerja' => $request->guest_unit_kerja,
-            'guest_institution' => $request->guest_institution,
+            'guest_name' => $name,
+            'guest_email' => $email,
+            'guest_unit_kerja' => $unitKerja,
+            'guest_institution' => $institution,
             'status' => 'hadir',
             'method' => 'qr_code',
             'check_in_time' => now(),

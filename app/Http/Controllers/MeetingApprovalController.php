@@ -8,6 +8,7 @@ use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreApprovalRequest;
 use App\Models\Meeting;
 use App\Models\MeetingApproval;
+use App\Models\MeetingMinute;
 use App\Services\MeetingActionItemService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -49,24 +50,27 @@ class MeetingApprovalController extends Controller
         );
 
         DB::transaction(function () use ($request, $meeting, $minute) {
+            $lockedMeeting = Meeting::query()->where('id', '=', $meeting->id, 'and')->lockForUpdate()->firstOrFail();
+            $lockedMinute = MeetingMinute::query()->where('id', '=', $minute->id, 'and')->lockForUpdate()->firstOrFail();
+
             MeetingApproval::create([
-                'meeting_id' => $meeting->id,
-                'minute_id' => $minute->id,
+                'meeting_id' => $lockedMeeting->id,
+                'minute_id' => $lockedMinute->id,
                 'approved_by' => $request->user()->id,
                 'decision' => $request->decision,
                 'notes' => $request->notes,
                 'decided_at' => now(),
             ]);
 
-            $minute->fill(['status' => $request->decision === 'approved' ? MeetingMinuteStatus::DISETUJUI->value : MeetingMinuteStatus::DITOLAK->value])->save();
+            $lockedMinute->fill(['status' => $request->decision === 'approved' ? MeetingMinuteStatus::DISETUJUI->value : MeetingMinuteStatus::DITOLAK->value])->save();
             if ($request->decision === 'approved') {
-                $meeting->fill([
+                $lockedMeeting->fill([
                     'status' => MeetingStatus::SELESAI->value,
                     'current_stage' => 7,
                 ])->save();
             } else {
                 // Jika notulen ditolak, kembalikan tahapan ke Stage 5 (Review Notulen) agar dapat direvisi oleh Notulis
-                $meeting->fill([
+                $lockedMeeting->fill([
                     'current_stage' => 5,
                 ])->save();
             }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Meeting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ReportController extends Controller
@@ -19,10 +20,13 @@ class ReportController extends Controller
 
         if ($request->search) {
             $keyword = $request->search;
-            $query->where(function ($q) use ($keyword) {
+            $driver = DB::connection()->getDriverName();
+            $contentClause = $driver === 'pgsql' ? 'content::text ilike ?' : 'content like ?';
+
+            $query->where(function ($q) use ($keyword, $contentClause) {
                 $q->where('title', 'ilike', '%'.$keyword.'%')
-                    ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                        $mq->whereRaw('content::text ilike ?', ['%'.$keyword.'%']);
+                    ->orWhereHas('minutes', function ($mq) use ($keyword, $contentClause) {
+                        $mq->whereRaw($contentClause, ['%'.$keyword.'%']);
                     });
             });
         }
@@ -46,10 +50,13 @@ class ReportController extends Controller
 
         if ($request->search) {
             $keyword = $request->search;
-            $query->where(function ($q) use ($keyword) {
+            $driver = DB::connection()->getDriverName();
+            $contentClause = $driver === 'pgsql' ? 'content::text ilike ?' : 'content like ?';
+
+            $query->where(function ($q) use ($keyword, $contentClause) {
                 $q->where('title', 'ilike', '%'.$keyword.'%')
-                    ->orWhereHas('minutes', function ($mq) use ($keyword) {
-                        $mq->whereRaw('content::text ilike ?', ['%'.$keyword.'%']);
+                    ->orWhereHas('minutes', function ($mq) use ($keyword, $contentClause) {
+                        $mq->whereRaw($contentClause, ['%'.$keyword.'%']);
                     });
             });
         }

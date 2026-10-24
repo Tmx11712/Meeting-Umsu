@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * [EDUKASI ARSITEKTUR: SELF-REFERENCING MODEL (Pohon Menu)]
@@ -25,6 +26,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Menu extends Model
 {
     use HasFactory, HasUuids;
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::increment('menu_cache_version'));
+        static::deleted(fn () => Cache::increment('menu_cache_version'));
+    }
 
     protected $fillable = [
         'name',
