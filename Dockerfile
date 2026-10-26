@@ -93,8 +93,10 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 COPY --from=node-builder /app/public/build /var/www/html/public/build
 COPY --from=node-builder /app/public/build /var/www/html/public-assets/build
 
-# Copy static images into public-assets so they can be synced to the volume on startup
-RUN cp -r /var/www/html/public/images /var/www/html/public-assets/images
+# Copy static images and root public files (favicons, icons, etc.) into public-assets so they can be synced to the volume on startup
+RUN cp -r /var/www/html/public/images /var/www/html/public-assets/images \
+    && cp -f /var/www/html/public/favicon* /var/www/html/public-assets/ 2>/dev/null || true \
+    && cp -f /var/www/html/public/apple-touch-icon* /var/www/html/public-assets/ 2>/dev/null || true
 
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
