@@ -38,9 +38,14 @@ echo "?? Mengkonfigurasi Laravel & Frontend di dalam container..."
 # a. Pastikan dependensi PHP terbaru
 docker compose -f docker-compose.prod.yml exec -T app composer install --optimize-autoloader --no-dev
 
-# b. Sinkronisasi dan Build Aset Frontend
-echo "?? Mem-build dan menyinkronkan aset frontend (React/Vite)..."
+# b. Sinkronisasi dan Build Aset Frontend & Favicon
+echo "⚡ Mem-build dan menyinkronkan aset frontend (React/Vite & Favicon UMSU)..."
 docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/* /var/www/html/public/ 2>/dev/null || true"
+docker compose -f docker-compose.prod.yml cp public/favicon.svg app:/var/www/html/public/favicon.svg || true
+docker compose -f docker-compose.prod.yml cp public/favicon.ico app:/var/www/html/public/favicon.ico || true
+docker compose -f docker-compose.prod.yml cp public/favicon-32x32.png app:/var/www/html/public/favicon-32x32.png || true
+docker compose -f docker-compose.prod.yml cp public/favicon-16x16.png app:/var/www/html/public/favicon-16x16.png || true
+docker compose -f docker-compose.prod.yml cp public/apple-touch-icon.png app:/var/www/html/public/apple-touch-icon.png || true
 
 # c. Optimasi, Caching, dan Migrasi Laravel
 echo "??? Menjalankan migrasi database dan caching aplikasi..."
