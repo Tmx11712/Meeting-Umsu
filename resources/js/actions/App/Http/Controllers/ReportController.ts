@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\ReportController::index
- * @see app/Http/Controllers/ReportController.php:12
+ * @see app/Http/Controllers/ReportController.php:13
  * @route 'https://enotulen.irvan.cloud/reports'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
 export const download = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ download.definition = {
 
 /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
 download.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ download.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
 download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
 download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
     const downloadForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
         downloadForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\ReportController::download
- * @see app/Http/Controllers/ReportController.php:39
+ * @see app/Http/Controllers/ReportController.php:43
  * @route 'https://enotulen.irvan.cloud/reports/download'
  */
         downloadForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

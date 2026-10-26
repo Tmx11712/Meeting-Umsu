@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::store
- * @see app/Http/Controllers/MeetingApprovalController.php:41
+ * @see app/Http/Controllers/MeetingApprovalController.php:42
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 export const store = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::store
- * @see app/Http/Controllers/MeetingApprovalController.php:41
+ * @see app/Http/Controllers/MeetingApprovalController.php:42
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 store.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ store.url = (args: { meeting: string | number | { id: string | number } } | [mee
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::store
- * @see app/Http/Controllers/MeetingApprovalController.php:41
+ * @see app/Http/Controllers/MeetingApprovalController.php:42
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 store.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
 
     /**
 * @see \App\Http\Controllers\MeetingApprovalController::store
- * @see app/Http/Controllers/MeetingApprovalController.php:41
+ * @see app/Http/Controllers/MeetingApprovalController.php:42
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
     const storeForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::store
- * @see app/Http/Controllers/MeetingApprovalController.php:41
+ * @see app/Http/Controllers/MeetingApprovalController.php:42
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
         storeForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -80,7 +80,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::actionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:80
+ * @see app/Http/Controllers/MeetingApprovalController.php:84
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 export const actionItems = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -95,7 +95,7 @@ actionItems.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::actionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:80
+ * @see app/Http/Controllers/MeetingApprovalController.php:84
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 actionItems.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -128,7 +128,7 @@ actionItems.url = (args: { meeting: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::actionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:80
+ * @see app/Http/Controllers/MeetingApprovalController.php:84
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
 actionItems.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -138,7 +138,7 @@ actionItems.put = (args: { meeting: string | number | { id: string | number } } 
 
     /**
 * @see \App\Http\Controllers\MeetingApprovalController::actionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:80
+ * @see app/Http/Controllers/MeetingApprovalController.php:84
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
     const actionItemsForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -153,7 +153,7 @@ actionItems.put = (args: { meeting: string | number | { id: string | number } } 
 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::actionItems
- * @see app/Http/Controllers/MeetingApprovalController.php:80
+ * @see app/Http/Controllers/MeetingApprovalController.php:84
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval/action-items'
  */
         actionItemsForm.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

@@ -211,7 +211,8 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     register.form = registerForm
 /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -220,12 +221,13 @@ export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 home.definition = {
-    methods: ["get","head"],
+    methods: ["get","head","post","put","patch","delete","options"],
     url: 'https://enotulen.irvan.cloud',
-} satisfies RouteDefinition<["get","head"]>
+} satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
 home.url = (options?: RouteQueryOptions) => {
@@ -233,7 +235,8 @@ home.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -241,16 +244,63 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: home.url(options),
     method: 'head',
 })
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+home.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: home.url(options),
+    method: 'post',
+})
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+home.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: home.url(options),
+    method: 'put',
+})
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+home.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: home.url(options),
+    method: 'patch',
+})
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+home.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: home.url(options),
+    method: 'delete',
+})
+/**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: home.url(options),
+    method: 'options',
+})
 
     /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
     const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -259,7 +309,8 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
         homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -267,13 +318,79 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:27
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
  * @route 'https://enotulen.irvan.cloud'
  */
         homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: home.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+            /**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+        homeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: home.url(options),
+            method: 'post',
+        })
+            /**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+        homeForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: home.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+        homeForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: home.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+        homeForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: home.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
+* @see \Illuminate\Routing\RedirectController::__invoke
+ * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
+ * @route 'https://enotulen.irvan.cloud'
+ */
+        homeForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: home.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'OPTIONS',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
                         }
                     }),

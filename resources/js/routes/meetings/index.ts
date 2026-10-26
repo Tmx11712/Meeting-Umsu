@@ -1166,7 +1166,7 @@ review.head = (args: { meeting: string | number | { id: string | number } } | [m
     review.form = reviewForm
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 export const approval = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -1181,7 +1181,7 @@ approval.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -1214,7 +1214,7 @@ approval.url = (args: { meeting: string | number | { id: string | number } } | [
 
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -1223,7 +1223,7 @@ approval.get = (args: { meeting: string | number | { id: string | number } } | [
 })
 /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
 approval.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -1233,7 +1233,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
 
     /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
     const approvalForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1243,7 +1243,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
 
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
         approvalForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1252,7 +1252,7 @@ approval.head = (args: { meeting: string | number | { id: string | number } } | 
         })
             /**
 * @see \App\Http\Controllers\MeetingApprovalController::approval
- * @see app/Http/Controllers/MeetingApprovalController.php:30
+ * @see app/Http/Controllers/MeetingApprovalController.php:31
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/approval'
  */
         approvalForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
