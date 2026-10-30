@@ -26,10 +26,15 @@ class SyncMeetingAttendanceAction
          * Metode firstOrCreate sangat tangguh. Ia akan mengecek apakah data sudah ada di database.
          * Jika belum ada, baru ia melakukan INSERT. Ini mencegah duplikasi data (Duplicate Entry Error).
          */
-        MeetingParticipant::query()->firstOrCreate([
-            'meeting_id' => $meeting->id,
-            'user_id' => $user->id,
-        ]);
+        MeetingParticipant::query()->firstOrCreate(
+            [
+                'meeting_id' => $meeting->id,
+                'user_id' => $user->id,
+            ],
+            [
+                'is_invited' => true,
+            ]
+        );
 
         // 2. Update Attendance if scanned (scanned_at is present)
         if (! empty($participantData['scanned_at'])) {

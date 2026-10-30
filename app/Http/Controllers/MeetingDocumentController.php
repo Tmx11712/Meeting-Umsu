@@ -14,7 +14,11 @@ class MeetingDocumentController extends Controller
 {
     public function store(Request $request, Meeting $meeting): RedirectResponse
     {
-        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.');
+        abort_unless(
+            $request->user()->can('minute.update') || $request->user()->can('review.update') || $request->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
+            403,
+            'Akses Terbatas: Anda tidak memiliki izin untuk mengunggah dokumen.'
+        );
 
         $request->validate([
             'document' => 'required|file|mimes:pdf,txt,docx|max:10240', // 10MB max, PDF, TXT, DOCX only
@@ -59,7 +63,11 @@ class MeetingDocumentController extends Controller
 
     public function destroy(Meeting $meeting, MeetingDocument $document): RedirectResponse
     {
-        abort_unless(request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.');
+        abort_unless(
+            request()->user()->can('minute.update') || request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
+            403,
+            'Akses Terbatas: Anda tidak memiliki izin untuk menghapus dokumen.'
+        );
 
         if ($document->meeting_id !== $meeting->id) {
             abort(403);
@@ -85,7 +93,11 @@ class MeetingDocumentController extends Controller
 
     public function download(Meeting $meeting, MeetingDocument $document)
     {
-        abort_unless(request()->user()->can('review.read') || request()->user()->hasRole(['Pimpinan', 'Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']), 403, 'Akses Terbatas.');
+        abort_unless(
+            request()->user()->can('view', $meeting) || request()->user()->can('minute.read') || request()->user()->can('review.read') || request()->user()->hasRole(['Pimpinan', 'Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
+            403,
+            'Akses Terbatas.'
+        );
 
         abort_if($document->meeting_id !== $meeting->id, 404);
         abort_unless(Storage::exists($document->file_path), 404, 'File dokumen tidak ditemukan.');

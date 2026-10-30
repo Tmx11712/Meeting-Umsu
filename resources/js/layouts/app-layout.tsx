@@ -13,22 +13,35 @@ export default function AppLayout({
     useFlashToast();
     
     useEffect(() => {
-        // Lakukan auto-sync secara background saat aplikasi dimuat. 
-        // Backend sudah memiliki proteksi Cache Lock 5 menit agar tidak membebani server.
-        const getXsrfToken = () => {
-            const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+        // Lakukan auto-sync secara background setelah halaman selesai dirender (idle)
+        // agar tidak menghambat Largest Contentful Paint (LCP) saat Soft Navigation.
+        const lastSync = sessionStorage.getItem('enotulen_last_autosync');
+        const now = Date.now();
 
-            return match ? decodeURIComponent(match[2]) : '';
-        };
+        if (lastSync && now - Number(lastSync) < 60_000) {
+            return;
+        }
 
-        fetch('/meetings/auto-sync', {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-XSRF-TOKEN': getXsrfToken(),
-                'Content-Type': 'application/json'
-            }
-        }).catch(() => {});
+        const timer = window.setTimeout(() => {
+            sessionStorage.setItem('enotulen_last_autosync', String(Date.now()));
+
+            const getXsrfToken = () => {
+                const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+
+                return match ? decodeURIComponent(match[2]) : '';
+            };
+
+            fetch('/meetings/auto-sync', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-XSRF-TOKEN': getXsrfToken(),
+                    'Content-Type': 'application/json',
+                },
+            }).catch(() => {});
+        }, 2500);
+
+        return () => window.clearTimeout(timer);
     }, []);
     
     return (

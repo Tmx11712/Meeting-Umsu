@@ -37,7 +37,7 @@ class MeetingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('meeting.view');
+        return $user->can('meeting.read') || $user->can('meeting.view');
     }
 
     /**
@@ -49,8 +49,11 @@ class MeetingPolicy
             return true;
         }
 
-        // Jika tidak memiliki role global, harus merupakan participant dari meeting ini
-        return $meeting->participants()->where('user_id', $user->id)->exists();
+        // Jika tidak memiliki role global, harus merupakan participant terundang dari meeting ini
+        return $meeting->participants()
+            ->where('user_id', '=', $user->id)
+            ->where('is_invited', '=', true)
+            ->exists();
     }
 
     /**
@@ -66,8 +69,11 @@ class MeetingPolicy
      */
     public function update(User $user, Meeting $meeting): bool
     {
-        // Harus punya izin global DAN merupakan pembuat rapat tersebut
-        return $user->can('meeting.update') && $user->id === $meeting->created_by;
+        // Harus punya izin global DAN merupakan pembuat rapat atau pengelola utama (Bag. Umum / Administrator)
+        return $user->can('meeting.update') && (
+            $user->hasRole(['Super Admin', 'Administrator', 'Bag. Umum']) ||
+            $user->id === $meeting->created_by
+        );
     }
 
     /**
@@ -75,7 +81,10 @@ class MeetingPolicy
      */
     public function delete(User $user, Meeting $meeting): bool
     {
-        return $user->can('meeting.delete') && $user->id === $meeting->created_by;
+        return $user->can('meeting.delete') && (
+            $user->hasRole(['Super Admin', 'Administrator', 'Bag. Umum']) ||
+            $user->id === $meeting->created_by
+        );
     }
 
     /**

@@ -227,6 +227,8 @@ class MeetingController extends Controller
 
     public function edit(Meeting $meeting)
     {
+        $this->authorize('update', $meeting);
+
         $meeting->load('participants');
         $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
@@ -276,7 +278,7 @@ class MeetingController extends Controller
 
     public function cancel(Meeting $meeting)
     {
-        abort_unless(request()->user()->can('meeting.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk membatalkan rapat.');
+        $this->authorize('update', $meeting);
 
         $meeting->status = 'dibatalkan';
         $meeting->save();
@@ -289,7 +291,7 @@ class MeetingController extends Controller
 
     public function destroy(Meeting $meeting)
     {
-        abort_unless(request()->user()->can('meeting.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rapat.');
+        $this->authorize('delete', $meeting);
 
         // Simpan data yang diperlukan untuk cleanup file SEBELUM soft delete
         $meeting->load('recordings', 'documents');

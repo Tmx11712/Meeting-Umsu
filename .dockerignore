@@ -3,6 +3,8 @@ vendor
 .git
 .github
 .env
+.env.*
+!.env.example
 storage/*.key
 public/storage
 public/build

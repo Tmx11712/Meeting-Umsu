@@ -4,6 +4,7 @@ namespace App\Actions\Users;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * [EDUKASI ARSITEKTUR: UPSERT USER DARI SUMBER EKSTERNAL]
@@ -34,17 +35,12 @@ class UpsertUserFromExternalAction
             $user = User::create([
                 'name' => $fullname,
                 'email' => $participantData['email'],
-                'password' => Hash::make('password123'), // Default password
-                'nip' => $participantData['nip'] ?? null,
-                'department' => 'Umum', // Default fallback
-                'position' => 'Staff',
-                'phone' => null,
-                'is_active' => true,
+                'password' => Hash::make(Str::random(32)),
+                'department' => 'Umum',
+                'status' => 'aktif',
             ]);
             // Assign Viewer role
             $user->assignRole('Viewer');
-        } elseif (! empty($participantData['nip']) && empty($user->nip)) {
-            $user->fill(['nip' => $participantData['nip']])->save();
         }
 
         return $user;

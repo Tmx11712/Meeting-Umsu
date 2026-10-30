@@ -3,10 +3,13 @@
 namespace App\Http\Middleware;
 
 use App\Models\Menu;
+use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * [EDUKASI ARSITEKTUR: INERTIA MIDDLEWARE - JEMBATAN BACKEND DAN FRONTEND]
@@ -38,6 +41,24 @@ class HandleInertiaRequests extends Middleware
     public function version(Request $request): ?string
     {
         return parent::version($request);
+    }
+
+    /**
+     * Handle the incoming request and force-logout deactivated users.
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $user = $request->user();
+
+        if ($user && ($user->status ?? 'aktif') === 'nonaktif') {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login');
+        }
+
+        return parent::handle($request, $next);
     }
 
     /**

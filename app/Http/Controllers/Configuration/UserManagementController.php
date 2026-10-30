@@ -76,6 +76,12 @@ class UserManagementController extends Controller
     {
         $validated = $request->validated();
 
+        $role = Role::findById($validated['role_id']);
+
+        if ($role->name === 'Super Admin' && ! $request->user()->hasRole('Super Admin')) {
+            abort(403, 'Hanya Super Admin yang dapat memberikan role Super Admin.');
+        }
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -84,7 +90,6 @@ class UserManagementController extends Controller
             'initials' => strtoupper(collect(explode(' ', $validated['name']))->map(fn ($w) => $w[0])->take(2)->join('')),
         ]);
 
-        $role = Role::findById($validated['role_id']);
         $user->assignRole($role);
 
         return redirect('/configuration/users')->with('flash', [
@@ -113,6 +118,12 @@ class UserManagementController extends Controller
     {
         $validated = $request->validated();
 
+        $role = Role::findById($validated['role_id']);
+
+        if (($user->hasRole('Super Admin') || $role->name === 'Super Admin') && ! $request->user()->hasRole('Super Admin')) {
+            abort(403, 'Hanya Super Admin yang dapat mengelola akun dengan role Super Admin.');
+        }
+
         $user->fill([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -126,7 +137,6 @@ class UserManagementController extends Controller
             $user->save();
         }
 
-        $role = Role::findById($validated['role_id']);
         $user->syncRoles([$role]);
 
         return redirect('/configuration/users')->with('flash', [
@@ -137,6 +147,12 @@ class UserManagementController extends Controller
 
     public function destroy(User $user)
     {
+        abort_if($user->id === request()->user()->id, 403, 'Anda tidak dapat menghapus akun Anda sendiri.');
+
+        if ($user->hasRole('Super Admin') && ! request()->user()->hasRole('Super Admin')) {
+            abort(403, 'Hanya Super Admin yang dapat menghapus akun Super Admin.');
+        }
+
         $name = $user->name;
 
         // Menggunakan deleteOrFail() untuk menghindari error false-positive dari IDE (misal Intelephense)

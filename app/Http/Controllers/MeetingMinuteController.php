@@ -139,6 +139,8 @@ class MeetingMinuteController extends Controller
 
     public function downloadPdf(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         $meeting->load('minutes.actionItems', 'participants.user');
 
         $minute = $meeting->minutes()->latest()->first();

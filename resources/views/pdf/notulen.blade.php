@@ -81,6 +81,7 @@
         $content = $minute ? $minute->content : null;
         $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'];
         $sIdx = 1; // Mulai dari index 1 ("II") karena I. INFORMASI RAPAT sudah diluar
+        $allowedPdfTags = '<ul><ol><li><table><thead><tbody><tr><th><td><strong><em><b><i><u><br><p><span>';
     @endphp
 
     @if($content)
@@ -110,11 +111,11 @@
                                 @endforeach
                             </ul>
                         @else
-                            <div class="markdown-content">{!! $section['list'] !!}</div>
+                            <div class="markdown-content">{!! strip_tags((string) $section['list'], $allowedPdfTags) !!}</div>
                         @endif
                     @endif
                     @if(!empty($section['table']))
-                        <div class="markdown-content">{!! $section['table'] !!}</div>
+                        <div class="markdown-content">{!! strip_tags((string) $section['table'], $allowedPdfTags) !!}</div>
                     @endif
                 </div>
             @endforeach
@@ -142,7 +143,7 @@
                             <strong>{{ $bahas['topik'] ?? 'Topik' }}</strong><br>
                             <p>{{ $bahas['narasi'] ?? '' }}</p>
                             @if(!empty($bahas['tabel']))
-                                <div class="markdown-content">{!! $bahas['tabel'] !!}</div>
+                                <div class="markdown-content">{!! strip_tags((string) $bahas['tabel'], $allowedPdfTags) !!}</div>
                             @endif
                             @if(!empty($bahas['list']))
                                 @if(is_array($bahas['list']))
@@ -152,7 +153,7 @@
                                         @endforeach
                                     </ul>
                                 @else
-                                    <div class="markdown-content">{!! $bahas['list'] !!}</div>
+                                    <div class="markdown-content">{!! strip_tags((string) $bahas['list'], $allowedPdfTags) !!}</div>
                                 @endif
                             @endif
                             <br>

@@ -83,6 +83,14 @@ class MeetingApprovalController extends Controller
 
     public function updateActionItems(Request $request, Meeting $meeting, MeetingActionItemService $actionItemService)
     {
+        abort_unless(
+            $request->user()->can('minute.update') || $request->user()->hasAnyRole(['Pimpinan', 'Super Admin', 'Administrator', 'Bag. Umum']),
+            403,
+            'Akses Terbatas: Anda tidak memiliki izin untuk memperbarui tindak lanjut.'
+        );
+
+        $this->authorize('view', $meeting);
+
         $request->validate([
             'action_items' => 'array',
             'action_items.*.description' => 'required|string',

@@ -117,6 +117,13 @@ class RoleController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
+        if (
+            in_array($role->name, ['Super Admin', 'Administrator', 'Bag. Umum', 'Bag. Humas', 'Pimpinan', 'Viewer'], true)
+            && $validated['name'] !== $role->name
+        ) {
+            abort(403, 'Nama role sistem utama tidak dapat diubah.');
+        }
+
         /** @var Model $role */
         $role->fill([
             'name' => $validated['name'],

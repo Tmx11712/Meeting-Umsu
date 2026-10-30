@@ -156,6 +156,12 @@ class AttendanceController extends Controller
             abort(403, 'Silakan login terlebih dahulu untuk melakukan absensi.');
         }
 
+        abort_if(
+            $meeting->status === 'dibatalkan' || $meeting->status === 'selesai' || $meeting->current_stage >= 5,
+            403,
+            'Sesi absensi untuk rapat ini sudah ditutup atau rapat dibatalkan.'
+        );
+
         $now = now();
         $meetingStartTime = Carbon::parse($meeting->date.' '.$meeting->start_time);
         $status = $now->greaterThan($meetingStartTime) ? 'terlambat' : 'hadir';

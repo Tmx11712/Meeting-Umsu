@@ -65,6 +65,14 @@ class AttendanceApiController extends Controller
      */
     public function scan(ScanAttendanceApiRequest $request, Meeting $meeting): JsonResponse
     {
+        if ($meeting->status === 'dibatalkan' || $meeting->status === 'selesai' || $meeting->current_stage >= 5) {
+            return response()->json([
+                'statusCode' => 422,
+                'success' => false,
+                'message' => 'Sesi absensi untuk rapat ini sudah ditutup atau rapat dibatalkan.',
+            ], 422);
+        }
+
         // 1. Identifikasi peserta
         $user = $request->user();
 
@@ -83,11 +91,16 @@ class AttendanceApiController extends Controller
 
         // 3. Simpan absensi
         if ($user) {
-            // Pastikan terdaftar di tabel peserta rapat
-            MeetingParticipant::query()->firstOrCreate([
-                'meeting_id' => $meeting->id,
-                'user_id' => $user->id,
-            ]);
+            // Pastikan terdaftar di tabel peserta rapat (tanpa mengubah is_invited menjadi true jika bukan undangan resmi)
+            MeetingParticipant::query()->firstOrCreate(
+                [
+                    'meeting_id' => $meeting->id,
+                    'user_id' => $user->id,
+                ],
+                [
+                    'is_invited' => false,
+                ]
+            );
 
             $attendance = MeetingAttendance::query()->updateOrCreate(
                 [

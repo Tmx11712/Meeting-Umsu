@@ -18,6 +18,8 @@ class TranscriptionController extends Controller
 {
     public function progress(Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         $recording = $meeting->recordings()->latest()->first();
         $transcripts = $meeting->transcripts()->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc')->get();
 
