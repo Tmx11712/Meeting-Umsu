@@ -36,6 +36,7 @@ export default function AuthSimpleLayout({
                         alt="Logo UMSU"
                         width={40}
                         height={40}
+                        decoding="async"
                         className="h-10 w-10 object-contain drop-shadow-sm"
                     />
                     <div className="flex h-6 w-6 items-center justify-center rounded bg-blue-600">
@@ -70,6 +71,8 @@ export default function AuthSimpleLayout({
                                 alt="Logo UMSU"
                                 width={68}
                                 height={96}
+                                fetchPriority="high"
+                                decoding="async"
                                 className="h-24 w-auto object-contain"
                             />
 

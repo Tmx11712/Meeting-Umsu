@@ -8,6 +8,7 @@ export default function AppLogo() {
                 alt="Logo UMSU"
                 width={36}
                 height={44}
+                decoding="async"
                 className="h-10 sm:h-11 w-auto object-contain mr-1 sm:mr-2 shrink-0"
             />
             <div className="flex aspect-square size-6 items-center justify-center rounded bg-primary text-primary-foreground shrink-0 group-data-[collapsible=icon]:hidden">
