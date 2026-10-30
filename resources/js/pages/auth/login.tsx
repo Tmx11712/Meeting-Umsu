@@ -1,5 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
 import { Mail } from 'lucide-react';
+import { useEffect } from 'react';
 import InputError from '@/components/input-error';
 
 import PasswordInput from '@/components/password-input';
@@ -26,6 +27,11 @@ export default function Login({
     canResetPassword,
     teamInvitation,
 }: Props) {
+    useEffect(() => {
+        // Pre-fetch the dashboard component chunk in the background while user fills the login form
+        import('@/pages/dashboard').catch(() => {});
+    }, []);
+
     return (
         <>
             <Head title="Masuk" />

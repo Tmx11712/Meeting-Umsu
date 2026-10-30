@@ -1,5 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
 import { Mail, User, AtSign } from 'lucide-react';
+import { useEffect } from 'react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TeamInvitationAlert from '@/components/team-invitation-alert';
@@ -18,6 +19,10 @@ type Props = {
 };
 
 export default function Register({ passwordRules, teamInvitation }: Props) {
+    useEffect(() => {
+        import('@/pages/auth/login').catch(() => {});
+    }, []);
+
     return (
         <>
             <Head title="Daftar" />
