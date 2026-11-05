@@ -120,14 +120,25 @@ class OpenAiTranscriptionService
             throw new \Exception('API key OpenAI belum dikonfigurasi di server.');
         }
 
-        $response = Http::withToken($apiKey)
-            ->timeout(300) // 5 minutes max per chunk
-            ->attach('file', file_get_contents($localChunkPath), basename($localChunkPath))
-            ->post('https://api.openai.com/v1/audio/transcriptions', [
-                'model' => config('services.openai.transcribe_model'),
-                'response_format' => 'verbose_json',
-                'timestamp_granularities' => ['segment'],
-            ]);
+        $stream = fopen($localChunkPath, 'rb');
+        if ($stream === false) {
+            throw new \RuntimeException("Gagal membuka file chunk audio: {$localChunkPath}");
+        }
+
+        try {
+            $response = Http::withToken($apiKey)
+                ->timeout(300) // 5 minutes max per chunk
+                ->attach('file', $stream, basename($localChunkPath))
+                ->post('https://api.openai.com/v1/audio/transcriptions', [
+                    'model' => config('services.openai.transcribe_model'),
+                    'response_format' => 'verbose_json',
+                    'timestamp_granularities' => ['segment'],
+                ]);
+        } finally {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }
 
         if ($response->failed()) {
             Log::error('OpenAI Whisper Error on chunk: '.$response->body());

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Configuration;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingRoom;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 /**
@@ -34,6 +35,7 @@ class MeetingRoomController extends Controller
         ]);
 
         MeetingRoom::create($validated);
+        Cache::forget('active_meeting_rooms');
 
         return redirect()->back()->with('success', 'Ruangan rapat berhasil ditambahkan.');
     }
@@ -46,6 +48,7 @@ class MeetingRoomController extends Controller
         ]);
 
         $meetingRoom->update($validated);
+        Cache::forget('active_meeting_rooms');
 
         return redirect()->back()->with('success', 'Ruangan rapat berhasil diperbarui.');
     }
@@ -53,6 +56,7 @@ class MeetingRoomController extends Controller
     public function destroy(MeetingRoom $meetingRoom)
     {
         $meetingRoom->delete();
+        Cache::forget('active_meeting_rooms');
 
         return redirect()->back()->with('success', 'Ruangan rapat berhasil dihapus.');
     }

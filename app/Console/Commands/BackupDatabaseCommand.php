@@ -163,16 +163,16 @@ class BackupDatabaseCommand extends Command
                 $tableName = $tableRow->tablename;
                 fwrite($handle, "\n-- Table: {$tableName}\n");
 
-                $rows = DB::table($tableName)->get();
-                if ($rows->isEmpty()) {
+                $firstRow = DB::table($tableName)->first();
+                if (! $firstRow) {
                     continue;
                 }
 
-                $columns = array_keys((array) $rows->first());
+                $columns = array_keys((array) $firstRow);
                 $quotedColumns = array_map(fn ($col) => "\"{$col}\"", $columns);
                 $columnsList = implode(', ', $quotedColumns);
 
-                foreach ($rows->chunk(100) as $chunk) {
+                foreach (DB::table($tableName)->cursor()->chunk(100) as $chunk) {
                     $valuesSql = [];
                     foreach ($chunk as $row) {
                         $rowArray = (array) $row;

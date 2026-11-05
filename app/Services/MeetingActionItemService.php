@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\MeetingActionItemStatus;
 use App\Models\Meeting;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -42,7 +43,7 @@ class MeetingActionItemService
                     'description' => trim($item['description']),
                     'pic' => trim($item['pic'] ?? '-'),
                     'deadline' => ! empty($item['deadline']) ? Carbon::parse($item['deadline'])->format('Y-m-d') : null,
-                    'status' => 'pending',
+                    'status' => MeetingActionItemStatus::OPEN->value,
                 ]);
             }
         });

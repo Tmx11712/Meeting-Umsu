@@ -24,8 +24,14 @@ class UpsertMeetingAction
         // Get a default super admin ID for created_by fallback
         $defaultAdminId = Auth::id();
         if (! $defaultAdminId) {
-            $admin = User::query()->whereHas('roles', fn ($q) => $q->where('name', '=', 'Super Admin'))->first();
+            $admin = User::query()
+                ->whereHas('roles', fn ($q) => $q->whereIn('name', ['Super Admin', 'Administrator', 'Bag. Umum'], 'and', false))
+                ->first() ?? User::query()->first();
             $defaultAdminId = $admin ? $admin->id : null;
+        }
+
+        if (! $defaultAdminId) {
+            throw new \RuntimeException('Tidak ada user aktif untuk dijadikan pemilik rapat (created_by).');
         }
 
         /**

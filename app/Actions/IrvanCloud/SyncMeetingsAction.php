@@ -50,18 +50,26 @@ class SyncMeetingsAction
     public function execute(?string $startDate = null, ?string $endDate = null): array
     {
         if (! $startDate) {
-            // Mengambil semua data dari masa lalu (tanpa batas 3 bulan)
-            $startDate = '2020-01-01';
+            // Fokus pada rentang rapat aktif (H-30 s.d H+60) agar sinkronisasi cepat dan aman dari batas paginasi 100 item
+            $startDate = now()->subDays(30)->format('Y-m-d');
         }
         if (! $endDate) {
-            // Mengambil semua data hingga masa depan
-            $endDate = now()->addYears(10)->endOfMonth()->format('Y-m-d');
+            $endDate = now()->addDays(60)->endOfMonth()->format('Y-m-d');
         }
 
         try {
             $events = $this->fetchEvents->execute($startDate, $endDate);
             $syncedCount = 0;
             $deletedCount = 0;
+
+            $finishedExternalIds = Meeting::query()
+                ->where('source', '=', 'irvan_cloud')
+                ->where(function ($q) {
+                    $q->where('status', '=', 'selesai')
+                        ->orWhere('current_stage', '>=', 5);
+                })
+                ->pluck('external_id')
+                ->all();
 
             // Phase 1: Fetch all data first (Do NOT hold DB locks during HTTP requests)
             $meetingsToProcess = [];
@@ -70,7 +78,8 @@ class SyncMeetingsAction
                     continue;
                 }
 
-                $details = $this->fetchEventDetails->execute($event['id']);
+                $isAlreadyFinished = ! empty($event['uuid']) && in_array($event['uuid'], $finishedExternalIds, true);
+                $details = $isAlreadyFinished ? null : $this->fetchEventDetails->execute($event['id']);
                 $meetingsToProcess[] = [
                     'event' => $event,
                     'details' => $details,
@@ -78,7 +87,7 @@ class SyncMeetingsAction
             }
 
             // Phase 2: Perform all database writes inside a transaction
-            DB::transaction(function () use ($meetingsToProcess, &$syncedCount, &$deletedCount, $startDate, $endDate) {
+            DB::transaction(function () use ($meetingsToProcess, $events, &$syncedCount, &$deletedCount, $startDate, $endDate) {
                 $activeUuids = [];
 
                 foreach ($meetingsToProcess as $data) {
@@ -109,41 +118,41 @@ class SyncMeetingsAction
                 }
 
                 // Hapus (soft delete) rapat yang sudah dihapus di Irvan Cloud
-                // Hanya lindungi rapat yang sudah disetujui pimpinan (current_stage >= 7)
-                $orphanedMeetings = Meeting::query()
-                    ->where('source', '=', 'irvan_cloud')
-                    ->where('current_stage', '<', 7)
-                    ->where('date', '>=', $startDate)
-                    ->where('date', '<=', $endDate)
-                    ->when(! empty($activeUuids), function ($q) use ($activeUuids) {
-                        $q->whereNotIn('external_id', $activeUuids);
-                    })
-                    ->get();
+                // Hanya jalankan jika daftar rapat tidak kosong dan tidak terpotong batas paginasi (100 item)
+                if (! empty($activeUuids) && count($events) < 100) {
+                    $orphanedMeetings = Meeting::query()
+                        ->where('source', '=', 'irvan_cloud')
+                        ->where('current_stage', '<', 7)
+                        ->where('date', '>=', $startDate)
+                        ->where('date', '<=', $endDate)
+                        ->whereNotIn('external_id', $activeUuids)
+                        ->get();
 
-                /** @var Meeting $orphaned */
-                foreach ($orphanedMeetings as $orphaned) {
-                    // Bersihkan file rekaman dari storage
-                    foreach ($orphaned->recordings as $recording) {
-                        try {
-                            if (Storage::exists($recording->file_path)) {
-                                Storage::delete($recording->file_path);
+                    /** @var Meeting $orphaned */
+                    foreach ($orphanedMeetings as $orphaned) {
+                        // Bersihkan file rekaman dari storage
+                        foreach ($orphaned->recordings as $recording) {
+                            try {
+                                if (Storage::exists($recording->file_path)) {
+                                    Storage::delete($recording->file_path);
+                                }
+                            } catch (\Throwable $e) {
+                                Log::warning('Gagal menghapus file rekaman orphan: '.$e->getMessage());
                             }
-                        } catch (\Throwable $e) {
-                            Log::warning('Gagal menghapus file rekaman orphan: '.$e->getMessage());
                         }
-                    }
 
-                    try {
-                        $folderName = $orphaned->id.'-'.Str::slug($orphaned->title);
-                        Storage::deleteDirectory('recordings/'.$orphaned->id);
-                        Storage::deleteDirectory('recordings/'.$folderName);
-                        Storage::deleteDirectory('documents/'.$folderName);
-                    } catch (\Throwable $e) {
-                        Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
-                    }
+                        try {
+                            $folderName = $orphaned->id.'-'.Str::slug($orphaned->title);
+                            Storage::deleteDirectory('recordings/'.$orphaned->id);
+                            Storage::deleteDirectory('recordings/'.$folderName);
+                            Storage::deleteDirectory('documents/'.$folderName);
+                        } catch (\Throwable $e) {
+                            Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
+                        }
 
-                    Meeting::destroy($orphaned->id);
-                    $deletedCount++;
+                        Meeting::destroy($orphaned->id);
+                        $deletedCount++;
+                    }
                 }
             });
 

@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 it('builds transcript row correctly for a single valid recording (batch dengan satu rekaman)', function () {
     $recording = new MeetingRecording([
         'meeting_id' => Str::uuid()->toString(),
-        'id' => Str::uuid()->toString(),
     ]);
+    $recording->id = Str::uuid()->toString();
 
     $chunk = new MeetingTranscriptionChunk;
     $chunk->id = 1;
@@ -35,8 +35,11 @@ it('builds transcript row correctly for a single valid recording (batch dengan s
 });
 
 it('can build rows for multiple different recordings separately (batch dengan beberapa rekaman berbeda)', function () {
-    $recording1 = new MeetingRecording(['meeting_id' => Str::uuid()->toString(), 'id' => Str::uuid()->toString()]);
-    $recording2 = new MeetingRecording(['meeting_id' => Str::uuid()->toString(), 'id' => Str::uuid()->toString()]);
+    $recording1 = new MeetingRecording(['meeting_id' => Str::uuid()->toString()]);
+    $recording1->id = Str::uuid()->toString();
+
+    $recording2 = new MeetingRecording(['meeting_id' => Str::uuid()->toString()]);
+    $recording2->id = Str::uuid()->toString();
 
     $chunk1 = new MeetingTranscriptionChunk;
     $chunk1->id = 1;
@@ -60,7 +63,8 @@ it('can build rows for multiple different recordings separately (batch dengan be
 });
 
 it('throws exception if recording is missing meeting_id', function () {
-    $recording = new MeetingRecording(['id' => Str::uuid()->toString()]);
+    $recording = new MeetingRecording;
+    $recording->id = Str::uuid()->toString();
     // meeting_id disengaja null
 
     $error = null;

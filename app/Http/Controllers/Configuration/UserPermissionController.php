@@ -107,6 +107,7 @@ class UserPermissionController extends Controller
         $user->syncPermissions($validated['permissions'] ?? []);
 
         Cache::forget("user_menus_{$user->id}");
+        Cache::increment('menu_cache_version');
 
         return back()->with('flash', [
             'type' => 'success',

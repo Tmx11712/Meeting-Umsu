@@ -85,6 +85,8 @@ class MeetingController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Meeting::class);
+
         $users = User::query()->where('status', '=', 'aktif')->get(['id', 'name', 'department', 'initials']);
 
         $now = Carbon::now();

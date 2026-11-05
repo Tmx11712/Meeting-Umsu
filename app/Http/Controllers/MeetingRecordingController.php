@@ -101,7 +101,7 @@ class MeetingRecordingController extends Controller
 
     public function destroy(Meeting $meeting, string $recordingId)
     {
-        abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
+        abort_unless(request()->user()->can('recording.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
 
         $recording = $meeting->recordings()->findOrFail($recordingId);
         $filePath = $recording->file_path;
@@ -238,8 +238,11 @@ class MeetingRecordingController extends Controller
     {
         abort_unless($recording->meeting_id === $meeting->id, 404, 'Rekaman tidak ditemukan untuk rapat ini.');
 
-        $isParticipant = $meeting->participants()->where('user_id', '=', request()->user()->id)->exists();
-        $isAuthorized = $isParticipant || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
+        $isParticipant = $meeting->participants()
+            ->where('user_id', '=', request()->user()->id)
+            ->where('is_invited', '=', true)
+            ->exists();
+        $isAuthorized = $isParticipant || request()->user()->can('recording.read') || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
         abort_unless($isAuthorized, 403, 'Akses Terbatas: Anda tidak berhak memutar rekaman rapat ini.');
 
         abort_unless(Storage::exists($recording->file_path), 404, 'File audio tidak ditemukan.');

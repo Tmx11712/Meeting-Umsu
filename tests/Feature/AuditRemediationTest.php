@@ -141,13 +141,11 @@ test('dashboard calculates avg attendance accurately with sql count without ram 
     MeetingParticipant::create([
         'meeting_id' => $meeting->id,
         'user_id' => $participant1->id,
-        'role' => 'peserta',
     ]);
 
     MeetingParticipant::create([
         'meeting_id' => $meeting->id,
         'user_id' => $participant2->id,
-        'role' => 'peserta',
     ]);
 
     // 1 guest attendance

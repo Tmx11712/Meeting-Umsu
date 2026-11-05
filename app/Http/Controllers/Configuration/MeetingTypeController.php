@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Configuration;
 use App\Http\Controllers\Controller;
 use App\Models\MeetingType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 /**
@@ -32,6 +33,7 @@ class MeetingTypeController extends Controller
         ]);
 
         MeetingType::create($validated);
+        Cache::forget('active_meeting_types');
 
         return redirect()->back()->with('success', 'Tipe rapat berhasil ditambahkan.');
     }
@@ -44,6 +46,7 @@ class MeetingTypeController extends Controller
         ]);
 
         $meetingType->update($validated);
+        Cache::forget('active_meeting_types');
 
         return redirect()->back()->with('success', 'Tipe rapat berhasil diperbarui.');
     }
@@ -51,6 +54,7 @@ class MeetingTypeController extends Controller
     public function destroy(MeetingType $meetingType)
     {
         $meetingType->delete();
+        Cache::forget('active_meeting_types');
 
         return redirect()->back()->with('success', 'Tipe rapat berhasil dihapus.');
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -81,6 +82,8 @@ class MenuController extends Controller
             return $menu;
         });
 
+        Cache::increment('menu_cache_version');
+
         return back()->with('flash', [
             'type' => 'success',
             'message' => "Menu {$validated['name']} beserta permission dasarnya berhasil ditambahkan.",
@@ -99,6 +102,7 @@ class MenuController extends Controller
         ]);
 
         $menu->fill($validated)->save();
+        Cache::increment('menu_cache_version');
 
         return back()->with('flash', [
             'type' => 'success',
@@ -110,6 +114,7 @@ class MenuController extends Controller
     {
         $name = $menu->name;
         $menu->deleteOrFail();
+        Cache::increment('menu_cache_version');
 
         return back()->with('flash', [
             'type' => 'success',
@@ -123,6 +128,7 @@ class MenuController extends Controller
     public function toggleStatus(Menu $menu)
     {
         $menu->fill(['status' => ! $menu->status])->save();
+        Cache::increment('menu_cache_version');
 
         return back()->with('flash', [
             'type' => 'success',
