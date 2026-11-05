@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Configuration\ConfigurationController;
 use App\Http\Controllers\Configuration\MeetingRoomController;
 use App\Http\Controllers\Configuration\MeetingTypeController;
@@ -25,6 +26,11 @@ use App\Http\Middleware\EnsureConfigAccess;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login')->name('home');
+
+Route::middleware('guest')->group(function () {
+    Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
+    Route::get('auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
 
 // Public Attendance Routes
 Route::middleware('throttle:60,1')->get('attend/{meeting}', [PublicAttendanceController::class, 'show'])->name('attend.form');

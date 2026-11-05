@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Actions\Teams\CreateTeam;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -64,7 +65,11 @@ class CreateNewUser implements CreatesNewUsers
 
             $this->createTeam->handle($user, $user->name."'s Team", isPersonal: true);
 
-            // Assign default role if needed, or handled via seeder/admin.
+            $defaultRole = Role::query()->where('name', '=', 'Viewer')->first();
+            if ($defaultRole) {
+                $user->assignRole($defaultRole);
+            }
+
             return $user;
         });
     }
