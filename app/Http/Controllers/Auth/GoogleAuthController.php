@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
@@ -20,14 +21,16 @@ class GoogleAuthController extends Controller
 
     public function redirect(): RedirectResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback(Request $request): RedirectResponse
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
-        } catch (Throwable) {
+            $googleUser = Socialite::driver('google')->stateless()->user();
+        } catch (Throwable $e) {
+            Log::error('Google Auth callback failed: '.$e->getMessage(), ['exception' => $e]);
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Gagal masuk dengan Google. Silakan coba lagi.',
             ]);

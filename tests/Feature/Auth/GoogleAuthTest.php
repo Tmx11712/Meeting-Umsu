@@ -5,14 +5,17 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 use Laravel\Socialite\Facades\Socialite;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use function Pest\Laravel\assertAuthenticated;
 use function Pest\Laravel\assertGuest;
 use function Pest\Laravel\get;
 
 it('redirects to google oauth', function () {
-    get('/auth/google')
-        ->assertRedirect();
+    $redirectMock = Mockery::mock(RedirectResponse::class);
+    Socialite::shouldReceive('driver->stateless->redirect')->once()->andReturn($redirectMock);
+
+    get('/auth/google');
 });
 
 it('creates a new user with Viewer role and personal team on first google login', function () {
@@ -23,7 +26,7 @@ it('creates a new user with Viewer role and personal team on first google login'
     $abstractUser->shouldReceive('getName')->andReturn('User Baru');
     $abstractUser->shouldReceive('getEmail')->andReturn('userbaru@gmail.com');
 
-    Socialite::shouldReceive('driver->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
@@ -51,7 +54,7 @@ it('links google_id to existing user and preserves their role', function () {
     $abstractUser->shouldReceive('getName')->andReturn('Pegawai');
     $abstractUser->shouldReceive('getEmail')->andReturn('pegawai@gmail.com');
 
-    Socialite::shouldReceive('driver->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
@@ -75,7 +78,7 @@ it('rejects google login for nonaktif user', function () {
     $abstractUser->shouldReceive('getName')->andReturn('Suspended User');
     $abstractUser->shouldReceive('getEmail')->andReturn('suspended@gmail.com');
 
-    Socialite::shouldReceive('driver->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
