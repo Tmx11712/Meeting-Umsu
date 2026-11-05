@@ -172,29 +172,26 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
                 Daftar dengan Google
             </a>
 
-                        <div className="text-center text-sm text-slate-600 dark:text-slate-400">
-                            Sudah punya akun?{' '}
-                            <TextLink
-                                href={
-                                    teamInvitation
-                                        ? login.url({
-                                              query: {
-                                                  invitation:
-                                                      teamInvitation.code,
-                                              },
-                                          })
-                                        : login()
-                                }
-                                data-test="team-invitation-login-link"
-                                tabIndex={7}
-                                className="font-semibold text-blue-600 hover:text-blue-700"
-                            >
-                                Masuk di sini
-                            </TextLink>
-                        </div>
-                    </>
-                )}
-            </Form>
+            <div className="text-center text-sm text-slate-600 dark:text-slate-400">
+                Sudah punya akun?{' '}
+                <TextLink
+                    href={
+                        teamInvitation
+                            ? login.url({
+                                  query: {
+                                      invitation:
+                                          teamInvitation.code,
+                                  },
+                              })
+                            : login()
+                    }
+                    data-test="team-invitation-login-link"
+                    tabIndex={7}
+                    className="font-semibold text-blue-600 hover:text-blue-700"
+                >
+                    Masuk di sini
+                </TextLink>
+            </div>
         </>
     );
 }

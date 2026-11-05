@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::index
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:20
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:21
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:30
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:30
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:30
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:30
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::store
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:29
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:30
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 export const update = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -149,7 +149,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 update.url = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -182,7 +182,7 @@ update.url = (args: { meeting_room: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 update.put = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -191,7 +191,7 @@ update.put = (args: { meeting_room: string | number | { id: string | number } } 
 })
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 update.patch = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -201,7 +201,7 @@ update.patch = (args: { meeting_room: string | number | { id: string | number } 
 
     /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
     const updateForm = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -216,7 +216,7 @@ update.patch = (args: { meeting_room: string | number | { id: string | number } 
 
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
         updateForm.put = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -230,7 +230,7 @@ update.patch = (args: { meeting_room: string | number | { id: string | number } 
         })
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::update
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:41
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:43
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
         updateForm.patch = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -246,7 +246,7 @@ update.patch = (args: { meeting_room: string | number | { id: string | number } 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:56
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 export const destroy = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -261,7 +261,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:56
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 destroy.url = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -294,7 +294,7 @@ destroy.url = (args: { meeting_room: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:56
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
 destroy.delete = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -304,7 +304,7 @@ destroy.delete = (args: { meeting_room: string | number | { id: string | number 
 
     /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:56
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
     const destroyForm = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -319,7 +319,7 @@ destroy.delete = (args: { meeting_room: string | number | { id: string | number 
 
             /**
 * @see \App\Http\Controllers\Configuration\MeetingRoomController::destroy
- * @see app/Http/Controllers/Configuration/MeetingRoomController.php:53
+ * @see app/Http/Controllers/Configuration/MeetingRoomController.php:56
  * @route 'https://enotulen.irvan.cloud/configuration/meeting-rooms/{meeting_room}'
  */
         destroyForm.delete = (args: { meeting_room: string | number | { id: string | number } } | [meeting_room: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

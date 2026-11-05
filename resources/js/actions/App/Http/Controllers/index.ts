@@ -1,4 +1,5 @@
 import Api from './Api'
+import Auth from './Auth'
 import PublicAttendanceController from './PublicAttendanceController'
 import DashboardController from './DashboardController'
 import MeetingController from './MeetingController'
@@ -15,6 +16,7 @@ import Teams from './Teams'
 import Settings from './Settings'
 const Controllers = {
     Api: Object.assign(Api, Api),
+Auth: Object.assign(Auth, Auth),
 PublicAttendanceController: Object.assign(PublicAttendanceController, PublicAttendanceController),
 DashboardController: Object.assign(DashboardController, DashboardController),
 MeetingController: Object.assign(MeetingController, MeetingController),

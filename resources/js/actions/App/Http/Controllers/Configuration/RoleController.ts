@@ -528,7 +528,7 @@ update.patch = (args: { role: string | number | { id: string | number } } | [rol
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
- * @see app/Http/Controllers/Configuration/RoleController.php:132
+ * @see app/Http/Controllers/Configuration/RoleController.php:139
  * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 export const destroy = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -543,7 +543,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
- * @see app/Http/Controllers/Configuration/RoleController.php:132
+ * @see app/Http/Controllers/Configuration/RoleController.php:139
  * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 destroy.url = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -576,7 +576,7 @@ destroy.url = (args: { role: string | number | { id: string | number } } | [role
 
 /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
- * @see app/Http/Controllers/Configuration/RoleController.php:132
+ * @see app/Http/Controllers/Configuration/RoleController.php:139
  * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
 destroy.delete = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -586,7 +586,7 @@ destroy.delete = (args: { role: string | number | { id: string | number } } | [r
 
     /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
- * @see app/Http/Controllers/Configuration/RoleController.php:132
+ * @see app/Http/Controllers/Configuration/RoleController.php:139
  * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
     const destroyForm = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -601,7 +601,7 @@ destroy.delete = (args: { role: string | number | { id: string | number } } | [r
 
             /**
 * @see \App\Http\Controllers\Configuration\RoleController::destroy
- * @see app/Http/Controllers/Configuration/RoleController.php:132
+ * @see app/Http/Controllers/Configuration/RoleController.php:139
  * @route 'https://enotulen.irvan.cloud/configuration/roles/{role}'
  */
         destroyForm.delete = (args: { role: string | number | { id: string | number } } | [role: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

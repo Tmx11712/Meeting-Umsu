@@ -182,7 +182,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
- * @see app/Http/Controllers/MeetingRecordingController.php:265
+ * @see app/Http/Controllers/MeetingRecordingController.php:268
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/start-session'
  */
 export const startSession = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -197,7 +197,7 @@ startSession.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
- * @see app/Http/Controllers/MeetingRecordingController.php:265
+ * @see app/Http/Controllers/MeetingRecordingController.php:268
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/start-session'
  */
 startSession.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -230,7 +230,7 @@ startSession.url = (args: { meeting: string | number | { id: string | number } }
 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
- * @see app/Http/Controllers/MeetingRecordingController.php:265
+ * @see app/Http/Controllers/MeetingRecordingController.php:268
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/start-session'
  */
 startSession.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -240,7 +240,7 @@ startSession.post = (args: { meeting: string | number | { id: string | number } 
 
     /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
- * @see app/Http/Controllers/MeetingRecordingController.php:265
+ * @see app/Http/Controllers/MeetingRecordingController.php:268
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/start-session'
  */
     const startSessionForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -250,7 +250,7 @@ startSession.post = (args: { meeting: string | number | { id: string | number } 
 
             /**
 * @see \App\Http\Controllers\MeetingRecordingController::startSession
- * @see app/Http/Controllers/MeetingRecordingController.php:265
+ * @see app/Http/Controllers/MeetingRecordingController.php:268
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/start-session'
  */
         startSessionForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -261,7 +261,7 @@ startSession.post = (args: { meeting: string | number | { id: string | number } 
     startSession.form = startSessionForm
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
- * @see app/Http/Controllers/MeetingRecordingController.php:283
+ * @see app/Http/Controllers/MeetingRecordingController.php:286
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/stop-session'
  */
 export const stopSession = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -276,7 +276,7 @@ stopSession.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
- * @see app/Http/Controllers/MeetingRecordingController.php:283
+ * @see app/Http/Controllers/MeetingRecordingController.php:286
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/stop-session'
  */
 stopSession.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -309,7 +309,7 @@ stopSession.url = (args: { meeting: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
- * @see app/Http/Controllers/MeetingRecordingController.php:283
+ * @see app/Http/Controllers/MeetingRecordingController.php:286
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/stop-session'
  */
 stopSession.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -319,7 +319,7 @@ stopSession.post = (args: { meeting: string | number | { id: string | number } }
 
     /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
- * @see app/Http/Controllers/MeetingRecordingController.php:283
+ * @see app/Http/Controllers/MeetingRecordingController.php:286
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/stop-session'
  */
     const stopSessionForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -329,7 +329,7 @@ stopSession.post = (args: { meeting: string | number | { id: string | number } }
 
             /**
 * @see \App\Http\Controllers\MeetingRecordingController::stopSession
- * @see app/Http/Controllers/MeetingRecordingController.php:283
+ * @see app/Http/Controllers/MeetingRecordingController.php:286
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/recording/stop-session'
  */
         stopSessionForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

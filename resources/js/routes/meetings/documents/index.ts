@@ -80,7 +80,7 @@ store.post = (args: { meeting: string | number | { id: string | number } } | [me
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::destroy
- * @see app/Http/Controllers/MeetingDocumentController.php:60
+ * @see app/Http/Controllers/MeetingDocumentController.php:64
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}'
  */
 export const destroy = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -95,7 +95,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::destroy
- * @see app/Http/Controllers/MeetingDocumentController.php:60
+ * @see app/Http/Controllers/MeetingDocumentController.php:64
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}'
  */
 destroy.url = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -125,7 +125,7 @@ destroy.url = (args: { meeting: string | number | { id: string | number }, docum
 
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::destroy
- * @see app/Http/Controllers/MeetingDocumentController.php:60
+ * @see app/Http/Controllers/MeetingDocumentController.php:64
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}'
  */
 destroy.delete = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -135,7 +135,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number }, do
 
     /**
 * @see \App\Http\Controllers\MeetingDocumentController::destroy
- * @see app/Http/Controllers/MeetingDocumentController.php:60
+ * @see app/Http/Controllers/MeetingDocumentController.php:64
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}'
  */
     const destroyForm = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -150,7 +150,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number }, do
 
             /**
 * @see \App\Http\Controllers\MeetingDocumentController::destroy
- * @see app/Http/Controllers/MeetingDocumentController.php:60
+ * @see app/Http/Controllers/MeetingDocumentController.php:64
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}'
  */
         destroyForm.delete = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -166,7 +166,7 @@ destroy.delete = (args: { meeting: string | number | { id: string | number }, do
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
 export const download = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -181,7 +181,7 @@ download.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
 download.url = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions) => {
@@ -211,7 +211,7 @@ download.url = (args: { meeting: string | number | { id: string | number }, docu
 
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
 download.get = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -220,7 +220,7 @@ download.get = (args: { meeting: string | number | { id: string | number }, docu
 })
 /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
 download.head = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -230,7 +230,7 @@ download.head = (args: { meeting: string | number | { id: string | number }, doc
 
     /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
     const downloadForm = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -240,7 +240,7 @@ download.head = (args: { meeting: string | number | { id: string | number }, doc
 
             /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
         downloadForm.get = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -249,7 +249,7 @@ download.head = (args: { meeting: string | number | { id: string | number }, doc
         })
             /**
 * @see \App\Http\Controllers\MeetingDocumentController::download
- * @see app/Http/Controllers/MeetingDocumentController.php:86
+ * @see app/Http/Controllers/MeetingDocumentController.php:94
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/documents/{document}/download'
  */
         downloadForm.head = (args: { meeting: string | number | { id: string | number }, document: string | number | { id: string | number } } | [meeting: string | number | { id: string | number }, document: string | number | { id: string | number } ], options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

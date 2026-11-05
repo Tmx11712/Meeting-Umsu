@@ -543,7 +543,7 @@ scan.head = (args: { meeting: string | number | { id: string | number } } | [mee
     scan.form = scanForm
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:185
+ * @see app/Http/Controllers/AttendanceController.php:191
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 export const syncIrvanCloud = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -558,7 +558,7 @@ syncIrvanCloud.definition = {
 
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:185
+ * @see app/Http/Controllers/AttendanceController.php:191
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 syncIrvanCloud.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -591,7 +591,7 @@ syncIrvanCloud.url = (args: { meeting: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:185
+ * @see app/Http/Controllers/AttendanceController.php:191
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
 syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -601,7 +601,7 @@ syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number 
 
     /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:185
+ * @see app/Http/Controllers/AttendanceController.php:191
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
     const syncIrvanCloudForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -611,7 +611,7 @@ syncIrvanCloud.post = (args: { meeting: string | number | { id: string | number 
 
             /**
 * @see \App\Http\Controllers\AttendanceController::syncIrvanCloud
- * @see app/Http/Controllers/AttendanceController.php:185
+ * @see app/Http/Controllers/AttendanceController.php:191
  * @route 'https://enotulen.irvan.cloud/meetings/{meeting}/attendance/sync'
  */
         syncIrvanCloudForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
