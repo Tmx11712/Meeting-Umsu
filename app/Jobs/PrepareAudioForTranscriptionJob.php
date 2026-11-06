@@ -79,6 +79,9 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
 
             // 2. Gunakan Service untuk mengekstrak durasi
             $duration = $transcriptionService->getAudioDuration($localOriginalPath);
+            if ($duration > 0 && ! $recording->duration_seconds) {
+                $recording->fill(['duration_seconds' => (int) round($duration)])->save();
+            }
             $threshold = (int) config('services.openai.transcription_concurrent_threshold', 1200); // default 20 mins
 
             // Jika durasi di bawah threshold, kita gunakan job legacy untuk menghemat resource Redis/batching
@@ -167,6 +170,16 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
                 }
             })->catch(function (Batch $batch, Throwable $e) use ($recordingId) {
                 Log::error("[Batch] Kegagalan pada batch Transkripsi untuk Recording ID: {$recordingId} - ".$e->getMessage());
+                /** @var MeetingRecording|null $recording */
+                $recording = MeetingRecording::query()->find($recordingId);
+                if ($recording && $recording->status !== 'completed') {
+                    $recording->fill(['status' => 'failed'])->save();
+                    /** @var Meeting|null $meetingObj */
+                    $meetingObj = Meeting::query()->find($recording->meeting_id);
+                    if ($meetingObj) {
+                        safe_broadcast(new MeetingUpdated($meetingObj, 'transcript_failed'));
+                    }
+                }
             })->finally(function (Batch $batch) use ($recordingId) {
                 Log::info("[Batch] Selesai dieksekusi untuk Recording ID: {$recordingId}");
             })->name('Transcription Batch - Rec: '.$recordingId)

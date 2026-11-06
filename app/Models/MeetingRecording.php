@@ -47,6 +47,8 @@ class MeetingRecording extends Model
 
     public function transcripts()
     {
-        return $this->hasMany(MeetingTranscript::class, 'recording_id');
+        return $this->hasMany(MeetingTranscript::class, 'recording_id')
+            ->orderBy('timestamp_seconds', 'asc')
+            ->orderBy('sequence_order', 'asc');
     }
 }

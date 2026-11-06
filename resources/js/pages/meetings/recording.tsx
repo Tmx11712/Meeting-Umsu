@@ -265,6 +265,7 @@ fileInputRef.current.value = '';
 
             const mediaRecorder = new MediaRecorder(audioOnlyStream, {
                 mimeType,
+                audioBitsPerSecond: 48000,
             });
             mediaRecorderRef.current = mediaRecorder;
 

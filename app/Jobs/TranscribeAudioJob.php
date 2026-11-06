@@ -109,7 +109,7 @@ class TranscribeAudioJob implements ShouldQueue
                 $meeting->load(['recordings' => function ($q) {
                     $q->orderBy('created_at', 'asc');
                 }, 'recordings.transcripts' => function ($q) {
-                    $q->orderBy('sequence_order', 'asc');
+                    $q->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc');
                 }, 'participants.user']);
 
                 safe_broadcast(new MeetingUpdated($meeting, 'transcript_ready'));
@@ -144,7 +144,7 @@ class TranscribeAudioJob implements ShouldQueue
             $meeting->load(['recordings' => function ($q) {
                 $q->orderBy('created_at', 'asc');
             }, 'recordings.transcripts' => function ($q) {
-                $q->orderBy('sequence_order', 'asc');
+                $q->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc');
             }, 'participants.user']);
 
             safe_broadcast(new MeetingUpdated($meeting, 'transcript_failed'));

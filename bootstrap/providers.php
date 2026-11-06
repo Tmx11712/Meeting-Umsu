@@ -10,5 +10,5 @@ return [
     FortifyServiceProvider::class,
     HorizonServiceProvider::class,
     SocialiteServiceProvider::class,
-    Laravel\Socialite\SocialiteServiceProvider::class,
+    SocialiteServiceProvider::class,
 ];

@@ -62,6 +62,30 @@ it('can build rows for multiple different recordings separately (batch dengan be
         ->and($row1['meeting_id'])->not->toBe($row2['meeting_id']);
 });
 
+it('offsets sequence_order by chunk_index so multi-chunk recordings stay ordered', function () {
+    $recording = new MeetingRecording(['meeting_id' => Str::uuid()->toString()]);
+    $recording->id = Str::uuid()->toString();
+
+    $chunk0 = new MeetingTranscriptionChunk(['chunk_index' => 0]);
+    $chunk0->id = 1;
+    $chunk0->recording_id = $recording->id;
+
+    $chunk1 = new MeetingTranscriptionChunk(['chunk_index' => 1]);
+    $chunk1->id = 2;
+    $chunk1->recording_id = $recording->id;
+
+    $job = new TranscribeAudioChunkJob(1, 0, 900, false);
+    $reflection = new ReflectionMethod($job, 'buildTranscriptRow');
+    $reflection->setAccessible(true);
+
+    $rowChunk0 = $reflection->invoke($job, $recording, $chunk0, ['start' => 10, 'text' => 'Awal'], 2);
+    $rowChunk1 = $reflection->invoke($job, $recording, $chunk1, ['start' => 910, 'text' => 'Menit 15'], 0);
+
+    expect($rowChunk0['sequence_order'])->toBe(2)
+        ->and($rowChunk1['sequence_order'])->toBe(10000)
+        ->and($rowChunk1['sequence_order'])->toBeGreaterThan($rowChunk0['sequence_order']);
+});
+
 it('throws exception if recording is missing meeting_id', function () {
     $recording = new MeetingRecording;
     $recording->id = Str::uuid()->toString();

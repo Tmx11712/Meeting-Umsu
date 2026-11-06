@@ -67,8 +67,9 @@ class OpenAiTranscriptionService
                 $outPath = $tempDir.'/'.$chunkFileName;
 
                 $process = new Process([
-                    'ffmpeg', '-y', '-i', $localFilePath,
+                    'ffmpeg', '-y',
                     '-ss', (string) $start, '-t', (string) $chunkDurationTime,
+                    '-i', $localFilePath,
                     '-c:a', 'libmp3lame', '-b:a', '32k', '-ac', '1', '-ar', '16000',
                     $outPath,
                 ]);
