@@ -148,7 +148,7 @@ class MeetingMinuteController extends Controller
 
         if ($minute->status !== MeetingMinuteStatus::DISETUJUI->value) {
             abort_unless(
-                request()->user()->can('minute.update') || request()->user()->hasAnyRole(['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan', 'Viewer']),
+                request()->user()->can('minute.update'),
                 403,
                 'Notulen ini belum disetujui dan belum dapat diunduh oleh publik.'
             );
