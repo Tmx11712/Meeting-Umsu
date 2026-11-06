@@ -85,6 +85,15 @@ return;
                             Kembali ke Jadwal
                         </Link>
                     </Button>
+                    {meeting.minutes && meeting.minutes.length > 0 && (
+                        <Button 
+                            variant="outline" 
+                            onClick={() => window.open(`/meetings/${meeting.id}/review/pdf`, '_blank')} 
+                            className="rounded-xl border-border bg-card/60 hover:bg-card shadow-sm h-11 px-4 font-semibold text-slate-700 dark:text-slate-200"
+                        >
+                            <Download className="w-4 h-4 mr-2" /> Unduh Notulen PDF
+                        </Button>
+                    )}
                     {(isAdmin || isUmum) && (
                         <>
                             {['terjadwal'].includes(meeting.status) && (

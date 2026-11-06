@@ -201,6 +201,13 @@ return '-';
                             Kembali ke Jadwal
                         </Link>
                     </Button>
+                    <Button 
+                        variant="outline" 
+                        onClick={() => window.open(`/meetings/${meeting.id}/review/pdf`, '_blank')} 
+                        className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11 px-4 font-semibold text-slate-700 dark:text-slate-200"
+                    >
+                        <Download className="w-4 h-4 mr-2" /> Unduh PDF
+                    </Button>
                     {canManageApproval && (
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md hover:shadow-lg transition-all h-11 px-4 font-semibold" onClick={handleApprove} disabled={approving || rejecting}>
                             <CheckCircle2 className="w-4 h-4 mr-2" /> Setujui Notulen

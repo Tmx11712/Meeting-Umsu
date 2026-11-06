@@ -13,7 +13,7 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         abort_unless(
-            $request->user()->can('report.read') || $request->user()->hasAnyRole(['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan']),
+            $request->user()->can('report.read') || $request->user()->hasAnyRole(['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan', 'Viewer']),
             403,
             'Akses Terbatas: Anda tidak memiliki izin untuk mengakses laporan.'
         );
@@ -49,7 +49,7 @@ class ReportController extends Controller
     public function download(Request $request)
     {
         abort_unless(
-            $request->user()->can('report.read') || $request->user()->hasAnyRole(['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan']),
+            $request->user()->can('report.read') || $request->user()->hasAnyRole(['Super Admin', 'Administrator', 'Bag. Umum', 'Pimpinan', 'Viewer']),
             403,
             'Akses Terbatas: Anda tidak memiliki izin untuk mengunduh laporan.'
         );

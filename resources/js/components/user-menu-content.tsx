@@ -48,13 +48,14 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
                 <Link
-                    className="block w-full cursor-pointer"
-                    href={logout()}
+                    className="flex items-center w-full cursor-pointer text-destructive focus:text-destructive"
+                    href="/logout"
+                    method="post"
                     as="button"
-                    onClick={handleLogout}
+                    onClick={cleanup}
                     data-test="logout-button"
                 >
-                    <LogOut className="mr-2" />
+                    <LogOut className="mr-2 h-4 w-4" />
                     Log out
                 </Link>
             </DropdownMenuItem>
