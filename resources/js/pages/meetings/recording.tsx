@@ -137,6 +137,21 @@ return;
         };
     }, []);
 
+    // Cegah tab tertutup / reload tidak sengaja saat sedang merekam atau audio belum terkirim
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (isRecording || recordedBlob || uploading) {
+                e.preventDefault();
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [isRecording, recordedBlob, uploading]);
+
     // Reset UI to 00:00:00 only when a new recording is successfully saved
     const prevRecordingsLength = useRef(meeting.recordings?.length || 0);
     useEffect(() => {
