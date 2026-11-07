@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 const DashboardController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: DashboardController.url(options),
@@ -11,13 +11,13 @@ const DashboardController = (options?: RouteQueryOptions): RouteDefinition<'get'
 
 DashboardController.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/dashboard',
+    url: '/dashboard',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 DashboardController.url = (options?: RouteQueryOptions) => {
     return DashboardController.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ DashboardController.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 DashboardController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: DashboardController.url(options),
@@ -35,7 +35,7 @@ DashboardController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> 
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 DashboardController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: DashboardController.url(options),
@@ -45,7 +45,7 @@ DashboardController.head = (options?: RouteQueryOptions): RouteDefinition<'head'
     /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
     const DashboardControllerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: DashboardController.url(options),
@@ -55,7 +55,7 @@ DashboardController.head = (options?: RouteQueryOptions): RouteDefinition<'head'
             /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
         DashboardControllerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: DashboardController.url(options),
@@ -64,7 +64,7 @@ DashboardController.head = (options?: RouteQueryOptions): RouteDefinition<'head'
             /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
         DashboardControllerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: DashboardController.url({

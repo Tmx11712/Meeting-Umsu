@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/transcripts',
+    url: '/transcripts',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\TranscriptCorrectionController::index
  * @see app/Http/Controllers/TranscriptCorrectionController.php:25
- * @route 'https://enotulen.irvan.cloud/transcripts'
+ * @route '/transcripts'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({

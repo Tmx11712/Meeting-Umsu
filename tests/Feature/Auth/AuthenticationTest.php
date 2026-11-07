@@ -129,3 +129,19 @@ test('users are rate limited', function () {
 
     $response->assertTooManyRequests();
 });
+
+test('users can authenticate across multiple domains without cross-origin redirect', function (string $domainUrl) {
+    /** @var TestCase $this */
+    $user = User::factory()->create();
+
+    $response = $this->post("{$domainUrl}/login", [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect("{$domainUrl}/dashboard");
+})->with([
+    'umsu domain' => 'https://enotulen.umsu.ac.id',
+    'irvan cloud domain' => 'https://enotulen.irvan.cloud',
+]);

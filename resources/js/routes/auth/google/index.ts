@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
 export const callback = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: callback.url(options),
@@ -11,13 +11,13 @@ export const callback = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 
 callback.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/auth/google/callback',
+    url: '/auth/google/callback',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
 callback.url = (options?: RouteQueryOptions) => {
     return callback.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ callback.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
 callback.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: callback.url(options),
@@ -35,7 +35,7 @@ callback.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
 callback.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: callback.url(options),
@@ -45,7 +45,7 @@ callback.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
     const callbackForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: callback.url(options),
@@ -55,7 +55,7 @@ callback.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
         callbackForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: callback.url(options),
@@ -64,7 +64,7 @@ callback.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::callback
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:31
- * @route 'https://enotulen.irvan.cloud/auth/google/callback'
+ * @route '/auth/google/callback'
  */
         callbackForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: callback.url({

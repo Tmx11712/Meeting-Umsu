@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
 export const authenticate = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: authenticate.url(options),
@@ -11,13 +11,13 @@ export const authenticate = (options?: RouteQueryOptions): RouteDefinition<'get'
 
 authenticate.definition = {
     methods: ["get","post","head"],
-    url: 'https://enotulen.irvan.cloud/broadcasting/auth',
+    url: '/broadcasting/auth',
 } satisfies RouteDefinition<["get","post","head"]>
 
 /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
 authenticate.url = (options?: RouteQueryOptions) => {
     return authenticate.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ authenticate.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
 authenticate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: authenticate.url(options),
@@ -35,7 +35,7 @@ authenticate.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
 authenticate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: authenticate.url(options),
@@ -44,7 +44,7 @@ authenticate.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
 authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: authenticate.url(options),
@@ -54,7 +54,7 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
     const authenticateForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: authenticate.url(options),
@@ -64,7 +64,7 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
         authenticateForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: authenticate.url(options),
@@ -73,7 +73,7 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
         authenticateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: authenticate.url(options),
@@ -82,7 +82,7 @@ authenticate.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Illuminate\Broadcasting\BroadcastController::authenticate
  * @see vendor/laravel/framework/src/Illuminate/Broadcasting/BroadcastController.php:18
- * @route 'https://enotulen.irvan.cloud/broadcasting/auth'
+ * @route '/broadcasting/auth'
  */
         authenticateForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: authenticate.url({

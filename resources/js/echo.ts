@@ -6,12 +6,10 @@ if (typeof window !== 'undefined') {
 
     const isHttps = window.location.protocol === 'https:' || import.meta.env.VITE_REVERB_SCHEME === 'https';
 
-    const envHost = import.meta.env.VITE_REVERB_HOST;
     // Dynamically connect to the host the user is browsing on,
-    // ensuring WebSockets work seamlessly on localhost, LAN IP (192.168.x.x), Tailscale (100.x.x.x), and domain names.
-    const wsHost = (envHost && envHost !== 'localhost' && envHost !== '127.0.0.1')
-        ? envHost
-        : window.location.hostname;
+    // ensuring WebSockets work seamlessly across multiple domains (enotulen.umsu.ac.id, enotulen.irvan.cloud),
+    // localhost, LAN IP (192.168.x.x), and Tailscale (100.x.x.x).
+    const wsHost = window.location.hostname || import.meta.env.VITE_REVERB_HOST || 'localhost';
 
     // In production behind Nginx reverse proxy, port 80/443 forwards /app to Reverb 8080.
     // In local development (port 8000/5173), connect directly to Reverb port (default 8080).

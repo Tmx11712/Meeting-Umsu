@@ -3,7 +3,7 @@ import google723582 from './google'
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
 export const google = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: google.url(options),
@@ -12,13 +12,13 @@ export const google = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 
 google.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/auth/google',
+    url: '/auth/google',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
 google.url = (options?: RouteQueryOptions) => {
     return google.definition.url + queryParams(options)
@@ -27,7 +27,7 @@ google.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
 google.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: google.url(options),
@@ -36,7 +36,7 @@ google.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
 google.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: google.url(options),
@@ -46,7 +46,7 @@ google.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
     const googleForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: google.url(options),
@@ -56,7 +56,7 @@ google.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
         googleForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: google.url(options),
@@ -65,7 +65,7 @@ google.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\Auth\GoogleAuthController::google
  * @see app/Http/Controllers/Auth/GoogleAuthController.php:23
- * @route 'https://enotulen.irvan.cloud/auth/google'
+ * @route '/auth/google'
  */
         googleForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: google.url({

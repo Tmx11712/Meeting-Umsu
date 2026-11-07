@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
 export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: login.url(options),
@@ -11,13 +11,13 @@ export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 login.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/login',
+    url: '/login',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
 login.url = (options?: RouteQueryOptions) => {
     return login.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ login.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
 login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: login.url(options),
@@ -35,7 +35,7 @@ login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
 login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: login.url(options),
@@ -45,7 +45,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
     const loginForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: login.url(options),
@@ -55,7 +55,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
         loginForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: login.url(options),
@@ -64,7 +64,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route 'https://enotulen.irvan.cloud/login'
+ * @route '/login'
  */
         loginForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: login.url({
@@ -80,7 +80,7 @@ login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route 'https://enotulen.irvan.cloud/logout'
+ * @route '/logout'
  */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: logout.url(options),
@@ -89,13 +89,13 @@ export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
 logout.definition = {
     methods: ["post"],
-    url: 'https://enotulen.irvan.cloud/logout',
+    url: '/logout',
 } satisfies RouteDefinition<["post"]>
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route 'https://enotulen.irvan.cloud/logout'
+ * @route '/logout'
  */
 logout.url = (options?: RouteQueryOptions) => {
     return logout.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ logout.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route 'https://enotulen.irvan.cloud/logout'
+ * @route '/logout'
  */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: logout.url(options),
@@ -114,7 +114,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route 'https://enotulen.irvan.cloud/logout'
+ * @route '/logout'
  */
     const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: logout.url(options),
@@ -124,7 +124,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
             /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
  * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route 'https://enotulen.irvan.cloud/logout'
+ * @route '/logout'
  */
         logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: logout.url(options),
@@ -135,7 +135,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
 export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: register.url(options),
@@ -144,13 +144,13 @@ export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 
 register.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/register',
+    url: '/register',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
 register.url = (options?: RouteQueryOptions) => {
     return register.definition.url + queryParams(options)
@@ -159,7 +159,7 @@ register.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
 register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: register.url(options),
@@ -168,7 +168,7 @@ register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
 register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: register.url(options),
@@ -178,7 +178,7 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
     const registerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: register.url(options),
@@ -188,7 +188,7 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
         registerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: register.url(options),
@@ -197,7 +197,7 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route 'https://enotulen.irvan.cloud/register'
+ * @route '/register'
  */
         registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: register.url({
@@ -213,7 +213,7 @@ register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: home.url(options),
@@ -222,13 +222,13 @@ export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 home.definition = {
     methods: ["get","head","post","put","patch","delete","options"],
-    url: 'https://enotulen.irvan.cloud',
+    url: '/',
 } satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.url = (options?: RouteQueryOptions) => {
     return home.definition.url + queryParams(options)
@@ -237,7 +237,7 @@ home.url = (options?: RouteQueryOptions) => {
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: home.url(options),
@@ -246,7 +246,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: home.url(options),
@@ -255,7 +255,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: home.url(options),
@@ -264,7 +264,7 @@ home.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: home.url(options),
@@ -273,7 +273,7 @@ home.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: home.url(options),
@@ -282,7 +282,7 @@ home.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: home.url(options),
@@ -291,7 +291,7 @@ home.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
 home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
     url: home.url(options),
@@ -301,7 +301,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
     /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
     const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: home.url(options),
@@ -311,7 +311,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: home.url(options),
@@ -320,7 +320,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: home.url({
@@ -334,7 +334,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: home.url(options),
@@ -343,7 +343,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: home.url({
@@ -357,7 +357,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: home.url({
@@ -371,7 +371,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: home.url({
@@ -385,7 +385,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
         homeForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: home.url({
@@ -401,7 +401,7 @@ home.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: dashboard.url(options),
@@ -410,13 +410,13 @@ export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> =
 
 dashboard.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/dashboard',
+    url: '/dashboard',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 dashboard.url = (options?: RouteQueryOptions) => {
     return dashboard.definition.url + queryParams(options)
@@ -425,7 +425,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: dashboard.url(options),
@@ -434,7 +434,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: dashboard.url(options),
@@ -444,7 +444,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
     const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: dashboard.url(options),
@@ -454,7 +454,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
         dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: dashboard.url(options),
@@ -463,7 +463,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\DashboardController::__invoke
  * @see app/Http/Controllers/DashboardController.php:29
- * @route 'https://enotulen.irvan.cloud/dashboard'
+ * @route '/dashboard'
  */
         dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: dashboard.url({

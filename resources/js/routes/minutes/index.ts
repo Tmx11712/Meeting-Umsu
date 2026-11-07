@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/minutes',
+    url: '/minutes',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
  * @see app/Http/Controllers/MeetingMinuteController.php:23
- * @route 'https://enotulen.irvan.cloud/minutes'
+ * @route '/minutes'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({

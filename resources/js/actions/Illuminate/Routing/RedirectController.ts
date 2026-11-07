@@ -2,117 +2,117 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-const RedirectController0241be9f84ad24d14efd5cad31f38c02 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+const RedirectController980bb49ee7ae63891f1d891d2fbcf1c9 = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'get',
 })
 
-RedirectController0241be9f84ad24d14efd5cad31f38c02.definition = {
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.definition = {
     methods: ["get","head","post","put","patch","delete","options"],
-    url: 'https://enotulen.irvan.cloud',
+    url: '/',
 } satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.url = (options?: RouteQueryOptions) => {
-    return RedirectController0241be9f84ad24d14efd5cad31f38c02.definition.url + queryParams(options)
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url = (options?: RouteQueryOptions) => {
+    return RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.definition.url + queryParams(options)
 }
 
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'get',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'head',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'post',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'put',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'patch',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'delete',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
-    url: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
     method: 'options',
 })
 
     /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-    const RedirectController0241be9f84ad24d14efd5cad31f38c02Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+    const RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
         method: 'get',
     })
 
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
             method: 'get',
         })
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url({
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -123,19 +123,19 @@ RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url(options),
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url(options),
             method: 'post',
         })
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url({
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -146,10 +146,10 @@ RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url({
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -160,10 +160,10 @@ RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url({
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -174,10 +174,10 @@ RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud'
+ * @route '/'
  */
-        RedirectController0241be9f84ad24d14efd5cad31f38c02Form.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController0241be9f84ad24d14efd5cad31f38c02.url({
+        RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'OPTIONS',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -186,121 +186,121 @@ RedirectController0241be9f84ad24d14efd5cad31f38c02.options = (options?: RouteQue
             method: 'get',
         })
     
-    RedirectController0241be9f84ad24d14efd5cad31f38c02.form = RedirectController0241be9f84ad24d14efd5cad31f38c02Form
+    RedirectController980bb49ee7ae63891f1d891d2fbcf1c9.form = RedirectController980bb49ee7ae63891f1d891d2fbcf1c9Form
     /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-const RedirectController879a294197f855a3a72014a5672dc11e = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+const RedirectController4b87d2df7e3aa853f6720faea796e36c = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'get',
 })
 
-RedirectController879a294197f855a3a72014a5672dc11e.definition = {
+RedirectController4b87d2df7e3aa853f6720faea796e36c.definition = {
     methods: ["get","head","post","put","patch","delete","options"],
-    url: 'https://enotulen.irvan.cloud/settings',
+    url: '/settings',
 } satisfies RouteDefinition<["get","head","post","put","patch","delete","options"]>
 
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.url = (options?: RouteQueryOptions) => {
-    return RedirectController879a294197f855a3a72014a5672dc11e.definition.url + queryParams(options)
+RedirectController4b87d2df7e3aa853f6720faea796e36c.url = (options?: RouteQueryOptions) => {
+    return RedirectController4b87d2df7e3aa853f6720faea796e36c.definition.url + queryParams(options)
 }
 
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'get',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'head',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'post',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'put',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'patch',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'delete',
 })
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
-    url: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+RedirectController4b87d2df7e3aa853f6720faea796e36c.options = (options?: RouteQueryOptions): RouteDefinition<'options'> => ({
+    url: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
     method: 'options',
 })
 
     /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-    const RedirectController879a294197f855a3a72014a5672dc11eForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+    const RedirectController4b87d2df7e3aa853f6720faea796e36cForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
         method: 'get',
     })
 
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
             method: 'get',
         })
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url({
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -311,19 +311,19 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url(options),
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url(options),
             method: 'post',
         })
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url({
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -334,10 +334,10 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url({
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -348,10 +348,10 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url({
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -362,10 +362,10 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
             /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
- * @route 'https://enotulen.irvan.cloud/settings'
+ * @route '/settings'
  */
-        RedirectController879a294197f855a3a72014a5672dc11eForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: RedirectController879a294197f855a3a72014a5672dc11e.url({
+        RedirectController4b87d2df7e3aa853f6720faea796e36cForm.options = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: RedirectController4b87d2df7e3aa853f6720faea796e36c.url({
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'OPTIONS',
                             ...(options?.query ?? options?.mergeQuery ?? {}),
@@ -374,7 +374,7 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
             method: 'get',
         })
     
-    RedirectController879a294197f855a3a72014a5672dc11e.form = RedirectController879a294197f855a3a72014a5672dc11eForm
+    RedirectController4b87d2df7e3aa853f6720faea796e36c.form = RedirectController4b87d2df7e3aa853f6720faea796e36cForm
 
 /**
 * Multiple routes resolve to \Illuminate\Routing\RedirectController::RedirectController, so this export is a
@@ -382,8 +382,8 @@ RedirectController879a294197f855a3a72014a5672dc11e.options = (options?: RouteQue
 * or import the route by name from your generated `routes/` directory.
 */
 const RedirectController = {
-    'https://enotulen.irvan.cloud': RedirectController0241be9f84ad24d14efd5cad31f38c02,
-    'https://enotulen.irvan.cloud/settings': RedirectController879a294197f855a3a72014a5672dc11e,
+    '/': RedirectController980bb49ee7ae63891f1d891d2fbcf1c9,
+    '/settings': RedirectController4b87d2df7e3aa853f6720faea796e36c,
 }
 
 export default RedirectController

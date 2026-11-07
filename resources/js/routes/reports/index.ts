@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,13 +11,13 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/reports',
+    url: '/reports',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
@@ -26,7 +26,7 @@ index.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -35,7 +35,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -45,7 +45,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -55,7 +55,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
@@ -64,7 +64,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\ReportController::index
  * @see app/Http/Controllers/ReportController.php:13
- * @route 'https://enotulen.irvan.cloud/reports'
+ * @route '/reports'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -80,7 +80,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
 export const download = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: download.url(options),
@@ -89,13 +89,13 @@ export const download = (options?: RouteQueryOptions): RouteDefinition<'get'> =>
 
 download.definition = {
     methods: ["get","head"],
-    url: 'https://enotulen.irvan.cloud/reports/download',
+    url: '/reports/download',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
 download.url = (options?: RouteQueryOptions) => {
     return download.definition.url + queryParams(options)
@@ -104,7 +104,7 @@ download.url = (options?: RouteQueryOptions) => {
 /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
 download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: download.url(options),
@@ -113,7 +113,7 @@ download.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
 download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: download.url(options),
@@ -123,7 +123,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
     const downloadForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: download.url(options),
@@ -133,7 +133,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
         downloadForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: download.url(options),
@@ -142,7 +142,7 @@ download.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             /**
 * @see \App\Http\Controllers\ReportController::download
  * @see app/Http/Controllers/ReportController.php:49
- * @route 'https://enotulen.irvan.cloud/reports/download'
+ * @route '/reports/download'
  */
         downloadForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: download.url({

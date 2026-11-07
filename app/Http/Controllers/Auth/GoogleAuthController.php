@@ -25,7 +25,7 @@ class GoogleAuthController extends Controller
         /** @var GoogleProvider $driver */
         $driver = Socialite::driver('google');
 
-        return $driver->stateless()->redirect();
+        return $driver->redirectUrl(url('/auth/google/callback'))->stateless()->redirect();
     }
 
     public function callback(Request $request): RedirectResponse
@@ -33,7 +33,7 @@ class GoogleAuthController extends Controller
         try {
             /** @var GoogleProvider $driver */
             $driver = Socialite::driver('google');
-            $googleUser = $driver->stateless()->user();
+            $googleUser = $driver->redirectUrl(url('/auth/google/callback'))->stateless()->user();
         } catch (Throwable $e) {
             Log::error('Google Auth callback failed: '.$e->getMessage(), ['exception' => $e]);
 
