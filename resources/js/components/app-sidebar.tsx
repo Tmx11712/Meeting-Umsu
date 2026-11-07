@@ -154,7 +154,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             {/* ── Content: Menu + Configuration ── */}
-            <SidebarContent className="px-3 gap-0">
+            <SidebarContent className="px-3 gap-0 overflow-x-hidden">
                 {/* Main Menu */}
                 <SidebarGroup className="py-2">
                     <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
@@ -189,7 +189,7 @@ export function AppSidebar() {
 
                 {isAdmin && (
                     <>
-                        <SidebarSeparator className="mx-4 my-2 opacity-50" />
+                        <SidebarSeparator className="mx-2 my-2 opacity-50" />
                         
                         <SidebarGroup className="py-2">
                             <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
