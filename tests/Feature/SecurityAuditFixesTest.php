@@ -246,10 +246,9 @@ test('approving meeting minute stores pdf in storage and purges raw recordings a
         ])
         ->assertRedirect(route('dashboard'));
 
-    Storage::disk($disk)->assertExists($meeting->getPdfStoragePath());
-    Storage::disk($disk)->assertMissing($audioPath);
-
-    expect($meeting->recordings()->count())->toBe(0)
+    expect(Storage::disk($disk)->exists($meeting->getPdfStoragePath()))->toBeTrue()
+        ->and(Storage::disk($disk)->exists($audioPath))->toBeFalse()
+        ->and($meeting->recordings()->count())->toBe(0)
         ->and($meeting->transcripts()->count())->toBe(0)
         ->and($meeting->fresh()->duration)->toBe(4500);
 

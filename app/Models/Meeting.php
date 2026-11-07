@@ -222,9 +222,9 @@ class Meeting extends Model
             $this->forceFill(['duration' => $recordedDuration])->saveQuietly();
         }
 
-        $this->recordings->each(function (MeetingRecording $recording): void {
-            $recording->delete();
-        });
+        if ($this->recordings->isNotEmpty()) {
+            MeetingRecording::destroy($this->recordings->pluck('id')->all());
+        }
 
         $this->transcripts()->delete();
 

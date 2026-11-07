@@ -9,6 +9,7 @@ use App\Http\Requests\Meeting\UpdateMinuteRequest;
 use App\Jobs\GenerateMeetingMinuteJob;
 use App\Models\Meeting;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -166,14 +167,15 @@ class MeetingMinuteController extends Controller
             return $pdf->stream('DRAFT_Notulen_'.$safeTitle.'.pdf');
         }
 
-        $disk = config('filesystems.default');
+        /** @var FilesystemAdapter $storage */
+        $storage = Storage::disk(config('filesystems.default'));
         $pdfPath = $meeting->getPdfStoragePath();
 
-        if (! Storage::disk($disk)->exists($pdfPath)) {
+        if (! $storage->exists($pdfPath)) {
             $meeting->storeApprovedPdf();
         }
 
-        return Storage::disk($disk)->response($pdfPath, 'Notulen_'.$safeTitle.'.pdf', [
+        return $storage->response($pdfPath, 'Notulen_'.$safeTitle.'.pdf', [
             'Content-Type' => 'application/pdf',
         ]);
     }
