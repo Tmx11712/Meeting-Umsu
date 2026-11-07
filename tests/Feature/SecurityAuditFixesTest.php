@@ -4,9 +4,12 @@ use App\Enums\MeetingMinuteStatus;
 use App\Models\Meeting;
 use App\Models\MeetingMinute;
 use App\Models\MeetingParticipant;
+use App\Models\MeetingRecording;
+use App\Models\MeetingTranscript;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 beforeEach(function () {
@@ -177,4 +180,81 @@ test('appearance cookie is whitelisted against script injection', function () {
 
     $response->assertOk();
     $response->assertDontSee("';alert(1);//", false);
+});
+
+test('approving meeting minute stores pdf in storage and purges raw recordings and transcripts', function () {
+    /** @var TestCase $this */
+    $disk = config('filesystems.default');
+    Storage::fake($disk);
+
+    /** @var User $pimpinan */
+    $pimpinan = User::factory()->create(['status' => 'aktif']);
+    $pimpinan->assignRole('Pimpinan');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat Evaluasi Tahunan',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '10:00:00',
+        'duration' => 3600,
+        'location' => 'Ruang Rapat Utama',
+        'type' => 'Rapat Evaluasi',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $pimpinan->id,
+        'current_stage' => 6,
+    ]);
+
+    $audioPath = "recordings/{$meeting->id}-rapat-evaluasi-tahunan/audio.webm";
+    Storage::disk($disk)->put($audioPath, 'fake-audio-binary');
+
+    $recording = MeetingRecording::create([
+        'meeting_id' => $meeting->id,
+        'file_path' => $audioPath,
+        'label' => 'Rekaman 1',
+        'file_size' => 1024,
+        'duration_seconds' => 4500,
+        'source' => 'microphone',
+        'status' => 'completed',
+        'recorded_by' => $pimpinan->id,
+    ]);
+
+    MeetingTranscript::create([
+        'meeting_id' => $meeting->id,
+        'recording_id' => $recording->id,
+        'timestamp_seconds' => 10,
+        'speaker' => 'Pembicara 1',
+        'text' => 'Transkrip mentah yang akan dihapus setelah disetujui.',
+        'is_live' => false,
+        'sequence_order' => 1,
+    ]);
+
+    MeetingMinute::create([
+        'meeting_id' => $meeting->id,
+        'status' => MeetingMinuteStatus::MENUNGGU_PERSETUJUAN->value,
+        'content' => [
+            'sections' => [
+                ['title' => 'Pembahasan', 'content' => 'Ringkasan resmi rapat evaluasi.'],
+            ],
+        ],
+    ]);
+
+    $this->actingAs($pimpinan)
+        ->post(route('meetings.approval.store', $meeting), [
+            'decision' => 'approved',
+            'notes' => 'Disetujui untuk diarsipkan.',
+        ])
+        ->assertRedirect(route('dashboard'));
+
+    Storage::disk($disk)->assertExists($meeting->getPdfStoragePath());
+    Storage::disk($disk)->assertMissing($audioPath);
+
+    expect($meeting->recordings()->count())->toBe(0)
+        ->and($meeting->transcripts()->count())->toBe(0)
+        ->and($meeting->fresh()->duration)->toBe(4500);
+
+    $this->actingAs($pimpinan)
+        ->get(route('meetings.review.pdf', $meeting))
+        ->assertOk()
+        ->assertHeader('Content-Type', 'application/pdf');
 });

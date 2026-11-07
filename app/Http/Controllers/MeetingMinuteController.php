@@ -11,6 +11,7 @@ use App\Models\Meeting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /**
@@ -105,6 +106,10 @@ class MeetingMinuteController extends Controller
                 'content' => $request->content,
             ])->save();
 
+            if ($minute->status === MeetingMinuteStatus::DISETUJUI->value) {
+                $meeting->storeApprovedPdf();
+            }
+
             return back()->with('success', 'Notulen berhasil diperbarui.');
         }
 
@@ -146,23 +151,30 @@ class MeetingMinuteController extends Controller
         $minute = $meeting->minutes()->latest()->first();
         abort_if(! $minute, 404, 'Notulen belum tersedia.');
 
-        if ($minute->status !== MeetingMinuteStatus::DISETUJUI->value) {
+        $isDraft = $minute->status !== MeetingMinuteStatus::DISETUJUI->value;
+        $safeTitle = str_replace(['/', '\\'], '-', $meeting->title);
+
+        if ($isDraft) {
             abort_unless(
                 request()->user()->can('minute.update'),
                 403,
                 'Notulen ini belum disetujui dan belum dapat diunduh oleh publik.'
             );
+
+            $pdf = Pdf::loadView('pdf.notulen', compact('meeting', 'isDraft'));
+
+            return $pdf->stream('DRAFT_Notulen_'.$safeTitle.'.pdf');
         }
 
-        $isDraft = $minute->status !== MeetingMinuteStatus::DISETUJUI->value;
+        $disk = config('filesystems.default');
+        $pdfPath = $meeting->getPdfStoragePath();
 
-        // Very basic PDF view render, we would need a resources/views/pdf/notulen.blade.php
-        $pdf = Pdf::loadView('pdf.notulen', compact('meeting', 'isDraft'));
+        if (! Storage::disk($disk)->exists($pdfPath)) {
+            $meeting->storeApprovedPdf();
+        }
 
-        $filename = $isDraft
-            ? 'DRAFT_Notulen_'.$meeting->title.'.pdf'
-            : 'Notulen_'.$meeting->title.'.pdf';
-
-        return $pdf->stream($filename);
+        return Storage::disk($disk)->response($pdfPath, 'Notulen_'.$safeTitle.'.pdf', [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 }

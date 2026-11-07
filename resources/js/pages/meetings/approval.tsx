@@ -63,7 +63,7 @@ return '-';
         setEditModalOpen(true);
     };
 
-    const totalSeconds = meeting.recordings?.reduce((sum: number, r: any) => sum + (r.duration_seconds || 0), 0) || 0;
+    const totalSeconds = meeting.recordings?.reduce((sum: number, r: any) => sum + (r.duration_seconds || 0), 0) || meeting.duration || 0;
     const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
     const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
     const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');

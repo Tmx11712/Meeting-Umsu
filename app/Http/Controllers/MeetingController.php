@@ -342,6 +342,7 @@ class MeetingController extends Controller
                 // Hapus format baru (ID-Slug)
                 Storage::deleteDirectory('recordings/'.$folderName);
                 Storage::deleteDirectory('documents/'.$folderName);
+                Storage::deleteDirectory('notulen/'.$folderName);
             } catch (\Throwable $e) {
                 Log::warning('Gagal menghapus direktori: '.$e->getMessage());
             }

@@ -54,6 +54,7 @@ export interface Meeting {
     attendances: MeetingAttendance[];
     minutes: MeetingMinute[];
     documents?: any[];
+    duration?: number;
     duration_formatted?: string;
     source?: string;
     ai_status?: string;

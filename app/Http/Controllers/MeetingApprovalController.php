@@ -76,6 +76,12 @@ class MeetingApprovalController extends Controller
             }
         });
 
+        if ($request->decision === 'approved') {
+            $meeting->refresh();
+            $meeting->storeApprovedPdf();
+            $meeting->purgeRawRecordingsAndTranscripts();
+        }
+
         safe_broadcast(new MeetingUpdated($meeting, 'approval'));
 
         return redirect()->route('dashboard')->with('success', 'Keputusan notulen berhasil disimpan.');
@@ -99,6 +105,11 @@ class MeetingApprovalController extends Controller
         ]);
 
         $actionItemService->updateForMeeting($meeting, $request->action_items ?? []);
+
+        $minute = $meeting->minutes()->latest()->first();
+        if ($minute && $minute->status === MeetingMinuteStatus::DISETUJUI->value) {
+            $meeting->storeApprovedPdf();
+        }
 
         return back()->with('success', 'Tindak lanjut berhasil diperbarui.');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -73,8 +74,10 @@ class Meeting extends Model
 
             // Cleanup residual meeting directories in Storage
             $disk = config('filesystems.default');
+            $slug = Str::slug($model->title) ?: 'rapat';
             Storage::disk($disk)->deleteDirectory("meetings/{$model->id}");
-            Storage::disk($disk)->deleteDirectory("recordings/{$model->id}-".Str::slug($model->title));
+            Storage::disk($disk)->deleteDirectory("recordings/{$model->id}-{$slug}");
+            Storage::disk($disk)->deleteDirectory("notulen/{$model->id}-{$slug}");
         });
 
         static::saved(function ($model) {
@@ -185,5 +188,50 @@ class Meeting extends Model
         $seconds = $seconds % 60;
 
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+
+    public function getPdfStoragePath(): string
+    {
+        $slug = Str::slug($this->title) ?: 'rapat';
+
+        return "notulen/{$this->id}-{$slug}/Notulen_{$slug}.pdf";
+    }
+
+    public function storeApprovedPdf(): string
+    {
+        $this->load('minutes.actionItems', 'participants.user');
+
+        $pdfOutput = Pdf::loadView('pdf.notulen', [
+            'meeting' => $this,
+            'isDraft' => false,
+        ])->output();
+
+        $disk = config('filesystems.default');
+        $path = $this->getPdfStoragePath();
+        Storage::disk($disk)->put($path, $pdfOutput);
+
+        return $path;
+    }
+
+    public function purgeRawRecordingsAndTranscripts(): void
+    {
+        $this->loadMissing('recordings');
+
+        $recordedDuration = (int) $this->recordings->sum('duration_seconds');
+        if ($recordedDuration > 0 && $this->duration !== $recordedDuration) {
+            $this->forceFill(['duration' => $recordedDuration])->saveQuietly();
+        }
+
+        $this->recordings->each(function (MeetingRecording $recording): void {
+            $recording->delete();
+        });
+
+        $this->transcripts()->delete();
+
+        $disk = config('filesystems.default');
+        $slug = Str::slug($this->title) ?: 'rapat';
+        Storage::disk($disk)->deleteDirectory("recordings/{$this->id}");
+        Storage::disk($disk)->deleteDirectory("recordings/{$this->id}-{$slug}");
+        Storage::disk($disk)->deleteDirectory("meetings/{$this->id}/recordings");
     }
 }
