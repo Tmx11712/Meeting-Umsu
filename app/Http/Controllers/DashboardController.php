@@ -94,8 +94,9 @@ class DashboardController extends Controller
             ];
         });
 
-        // Fungsi helper untuk menghitung jumlah peserta manual
-        $adjustParticipants = function ($meetings) {
+        // Fungsi helper untuk menghitung jumlah peserta manual dan mengubah ke array murni
+        // agar tidak menjadi __PHP_Incomplete_Class saat di-unserialize dari Redis (serializable_classes = false)
+        $adjustParticipants = function ($meetings): array {
             return $meetings->map(function ($meeting) {
                 $manualCount = 0;
                 if ($meeting->minutes && $meeting->minutes->count() > 0) {
@@ -110,12 +111,12 @@ class DashboardController extends Controller
                 $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
                 unset($meeting->minutes); // Hapus agar payload Inertia tidak membengkak
 
-                return $meeting;
-            });
+                return $meeting->toArray();
+            })->values()->all();
         };
 
         // Rapat Hari Ini & Rapat Berjalan (Belum Selesai)
-        $todayMeetings = Cache::remember('dashboard_today_meetings', 60, function () use ($now, $adjustParticipants) {
+        $todayMeetings = Cache::remember('dashboard_today_meetings_v2', 60, function () use ($now, $adjustParticipants) {
             $todayMeetingsRaw = Meeting::withCount('participants')
                 ->with(['minutes' => function ($q) {
                     $q->select('id', 'meeting_id', 'content');
@@ -127,7 +128,7 @@ class DashboardController extends Controller
                                 ->whereNotIn('status', ['selesai', 'dibatalkan']);
                         })
                         ->orWhere(function ($activeFuture) {
-                            $activeFuture->where('current_stage', '>=', 3)
+                            $activeFuture->where('current_stage', '>=', 2)
                                 ->whereNotIn('status', ['selesai', 'dibatalkan']);
                         });
                 })
@@ -141,7 +142,7 @@ class DashboardController extends Controller
         });
 
         // Jadwal Mendatang (Besok dan seterusnya)
-        $upcomingMeetings = Cache::remember('dashboard_upcoming_meetings', 60, function () use ($now, $adjustParticipants) {
+        $upcomingMeetings = Cache::remember('dashboard_upcoming_meetings_v2', 60, function () use ($now, $adjustParticipants) {
             $upcomingMeetingsRaw = Meeting::withCount('participants')
                 ->with(['minutes' => function ($q) {
                     $q->select('id', 'meeting_id', 'content');

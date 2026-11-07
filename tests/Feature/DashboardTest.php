@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TeamRole;
+use App\Models\Meeting;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -149,4 +150,39 @@ test('dashboard does not include or delete other users invitations', function ()
     $this->assertDatabaseHas('team_invitations', [
         'id' => $invitation->id,
     ]);
+});
+
+test('dashboard caches todayMeetings and upcomingMeetings as plain arrays so second load does not lose meetings', function () {
+    /** @var TestCase $this */
+    /** @var User $user */
+    $user = User::factory()->create();
+
+    Meeting::create([
+        'title' => 'Rapat Testing Hari Ini',
+        'date' => now()->toDateString(),
+        'start_time' => '12:00:00',
+        'end_time' => '14:00:00',
+        'duration' => 7200,
+        'location' => 'Ruang VIP',
+        'type' => 'Rapat Koordinasi',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $user->id,
+        'current_stage' => 2,
+    ]);
+
+    // First load (populates cache)
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('dashboard')
+            ->has('todayMeetings', 1)
+            ->where('todayMeetings.0.title', 'Rapat Testing Hari Ini'),
+        );
+
+    // Verify cached value contains no PHP objects (safe with serializable_classes = false)
+    $cached = cache()->get('dashboard_today_meetings_v2');
+    expect($cached)->toBeArray()
+        ->and($cached[0])->toBeArray();
 });

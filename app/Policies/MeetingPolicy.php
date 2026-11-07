@@ -45,7 +45,7 @@ class MeetingPolicy
      */
     public function view(User $user, Meeting $meeting): bool
     {
-        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan'])) {
+        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan', 'Viewer'])) {
             return true;
         }
 

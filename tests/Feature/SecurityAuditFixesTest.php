@@ -28,7 +28,7 @@ test('deactivated users cannot authenticate via login screen', function () {
     $this->assertGuest();
 });
 
-test('uninvited viewer cannot access confidential meeting endpoints or update action items', function () {
+test('viewer can view meeting and approved pdf but cannot update action items or download unapproved draft pdf', function () {
     /** @var TestCase $this */
     /** @var User $creator */
     $creator = User::factory()->create(['status' => 'aktif']);
@@ -43,7 +43,7 @@ test('uninvited viewer cannot access confidential meeting endpoints or update ac
     $invitedViewer->assignRole('Viewer');
 
     $meeting = Meeting::create([
-        'title' => 'Rapat Rahasia Pimpinan',
+        'title' => 'Rapat Pimpinan',
         'date' => now()->toDateString(),
         'start_time' => '09:00:00',
         'end_time' => '11:00:00',
@@ -62,17 +62,13 @@ test('uninvited viewer cannot access confidential meeting endpoints or update ac
         'is_invited' => true,
     ]);
 
-    MeetingMinute::create([
+    $minute = MeetingMinute::create([
         'meeting_id' => $meeting->id,
-        'status' => MeetingMinuteStatus::DISETUJUI->value,
+        'status' => MeetingMinuteStatus::REVIEW->value,
         'content' => ['sections' => []],
     ]);
 
-    // Uninvited viewer is blocked from transcription progress, action-items update, and PDF download
-    $this->actingAs($uninvitedViewer)
-        ->getJson(route('meetings.transcription.progress', $meeting))
-        ->assertForbidden();
-
+    // Viewer is blocked from updating action items and from downloading unapproved draft PDF
     $this->actingAs($uninvitedViewer)
         ->put(route('meetings.approval.action-items', $meeting), [
             'action_items' => [
@@ -85,7 +81,13 @@ test('uninvited viewer cannot access confidential meeting endpoints or update ac
         ->get(route('meetings.review.pdf', $meeting))
         ->assertForbidden();
 
-    // Invited viewer can view transcription progress
+    // Once approved, any Viewer (including Google login users) can view the meeting and download the approved PDF
+    $minute->update(['status' => MeetingMinuteStatus::DISETUJUI->value]);
+
+    $this->actingAs($uninvitedViewer)
+        ->get(route('meetings.show', $meeting))
+        ->assertRedirect(route('meetings.approval', $meeting));
+
     $this->actingAs($invitedViewer)
         ->getJson(route('meetings.transcription.progress', $meeting))
         ->assertOk();
@@ -127,7 +129,7 @@ test('public api attendance scan does not escalate uninvited user to invited vie
 
     expect($participant)->not->toBeNull()
         ->and((bool) $participant->is_invited)->toBeFalse()
-        ->and($outsider->can('view', $meeting))->toBeFalse();
+        ->and($outsider->can('update', $meeting))->toBeFalse();
 
     // Once meeting moves to stage 5 (review) or is cancelled, public API scan is rejected
     $meeting->update(['current_stage' => 5]);

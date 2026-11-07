@@ -81,12 +81,16 @@ class Meeting extends Model
             cache()->forget('dashboard_stats');
             cache()->forget('dashboard_today_meetings');
             cache()->forget('dashboard_upcoming_meetings');
+            cache()->forget('dashboard_today_meetings_v2');
+            cache()->forget('dashboard_upcoming_meetings_v2');
         });
 
         static::deleted(function ($model) {
             cache()->forget('dashboard_stats');
             cache()->forget('dashboard_today_meetings');
             cache()->forget('dashboard_upcoming_meetings');
+            cache()->forget('dashboard_today_meetings_v2');
+            cache()->forget('dashboard_upcoming_meetings_v2');
         });
     }
 
