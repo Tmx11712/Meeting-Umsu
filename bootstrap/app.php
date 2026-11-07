@@ -38,12 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
          * Kita hanya mempercayai proxy di jaringan privat (VPC AWS / LAN kampus),
          * sehingga header X-Forwarded-For tidak bisa dipalsukan dari internet.
          */
-        $middleware->trustProxies(at: [
-            '127.0.0.1',
-            '10.0.0.0/8',
-            '172.16.0.0/12',
-            '192.168.0.0/16',
-        ]);
+        $middleware->trustProxies(at: ['*']);
 
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
