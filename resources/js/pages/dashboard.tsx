@@ -152,7 +152,7 @@ export default function Dashboard({ stats, todayMeetings, upcomingMeetings }: Pr
                     </Card>
                     <Card className="rounded-lg border-slate-200 shadow-sm bg-white dark:bg-slate-900 hover:-translate-y-px hover:border-slate-300 transition-all duration-200">
                         <CardContent className="p-4 sm:p-5 flex flex-col items-start justify-center">
-                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Action item terbuka</div>
+                            <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 sm:mb-2">Notulen dalam proses</div>
                             <div className="text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-500 leading-none">{stats?.openActionItems || 0}</div>
                         </CardContent>
                     </Card>

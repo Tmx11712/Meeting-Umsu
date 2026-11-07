@@ -82,6 +82,7 @@ class Meeting extends Model
 
         static::saved(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_stats_v2');
             cache()->forget('dashboard_today_meetings');
             cache()->forget('dashboard_upcoming_meetings');
             cache()->forget('dashboard_today_meetings_v2');
@@ -90,6 +91,7 @@ class Meeting extends Model
 
         static::deleted(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_stats_v2');
             cache()->forget('dashboard_today_meetings');
             cache()->forget('dashboard_upcoming_meetings');
             cache()->forget('dashboard_today_meetings_v2');

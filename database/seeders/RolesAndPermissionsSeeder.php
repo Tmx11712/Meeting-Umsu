@@ -77,16 +77,19 @@ class RolesAndPermissionsSeeder extends Seeder
             'recording.read', 'recording.create', 'recording.update', 'recording.delete',
             'transcript.read',
             'attendance.read',
+            'report.read',
         ]);
 
         $pimpinan = Role::firstOrCreate(['name' => 'Pimpinan', 'guard_name' => 'web']);
         $pimpinan->syncPermissions([
             'minute.read', 'minute.update', // review + approve
+            'report.read',
         ]);
 
         $viewer = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);
         $viewer->syncPermissions([
             'minute.read',
+            'report.read',
         ]);
     }
 }

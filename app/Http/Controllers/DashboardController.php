@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Meeting;
-use App\Models\MeetingActionItem;
 use App\Models\MeetingAttendance;
 use App\Models\MeetingMinute;
 use App\Models\MeetingParticipant;
@@ -41,7 +40,7 @@ class DashboardController extends Controller
          */
         $endOfMonth = $now->copy()->endOfMonth();
 
-        $stats = Cache::remember('dashboard_stats', 300, function () use ($startOfMonth, $endOfMonth, $startOfLastMonth, $endOfLastMonth) {
+        $stats = Cache::remember('dashboard_stats_v2', 300, function () use ($startOfMonth, $endOfMonth, $startOfLastMonth, $endOfLastMonth) {
             // 1. Rapat bulan ini
             $meetingsThisMonth = Meeting::query()->whereBetween('date', [$startOfMonth, $endOfMonth], 'and')->count('*');
             $meetingsLastMonth = Meeting::query()->whereBetween('date', [$startOfLastMonth, $endOfLastMonth], 'and')->count('*');
@@ -62,8 +61,16 @@ class DashboardController extends Controller
                 ? round((($minutesCompletedThisMonth - $minutesCompletedLastMonth) / $minutesCompletedLastMonth) * 100)
                 : ($minutesCompletedThisMonth > 0 ? 100 : 0);
 
-            // 3. Action item terbuka
-            $openActionItems = MeetingActionItem::whereHas('meeting')->where('status', 'open')->count();
+            // 3. Notulen dalam proses (Rapat yang sudah dimulai namun belum selesai / belum di-ACC Pimpinan)
+            $openActionItems = Meeting::query()
+                ->whereNotIn('status', ['selesai', 'dibatalkan'], 'and')
+                ->where(function ($query) {
+                    $query->where('current_stage', '>=', 2)
+                        ->orWhereHas('minutes', function ($mq) {
+                            $mq->where('status', '!=', 'disetujui');
+                        });
+                })
+                ->count('*');
 
             // 4. Rata-rata kehadiran (Dihitung efisien via SQL Agregasi pada rapat yang telah selesai)
             $avgAttendance = 0;
