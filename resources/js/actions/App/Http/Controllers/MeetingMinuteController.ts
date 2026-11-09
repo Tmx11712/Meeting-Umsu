@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::index
- * @see app/Http/Controllers/MeetingMinuteController.php:23
+ * @see app/Http/Controllers/MeetingMinuteController.php:25
  * @route '/minutes'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -127,7 +127,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -146,7 +146,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -156,7 +156,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::show
- * @see app/Http/Controllers/MeetingMinuteController.php:53
+ * @see app/Http/Controllers/MeetingMinuteController.php:55
  * @route '/meetings/{meeting}/review'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -181,7 +181,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
     show.form = showForm
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::generateAiSummary
- * @see app/Http/Controllers/MeetingMinuteController.php:82
+ * @see app/Http/Controllers/MeetingMinuteController.php:84
  * @route '/meetings/{meeting}/review/ai'
  */
 export const generateAiSummary = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -196,7 +196,7 @@ generateAiSummary.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::generateAiSummary
- * @see app/Http/Controllers/MeetingMinuteController.php:82
+ * @see app/Http/Controllers/MeetingMinuteController.php:84
  * @route '/meetings/{meeting}/review/ai'
  */
 generateAiSummary.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -229,7 +229,7 @@ generateAiSummary.url = (args: { meeting: string | number | { id: string | numbe
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::generateAiSummary
- * @see app/Http/Controllers/MeetingMinuteController.php:82
+ * @see app/Http/Controllers/MeetingMinuteController.php:84
  * @route '/meetings/{meeting}/review/ai'
  */
 generateAiSummary.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -239,7 +239,7 @@ generateAiSummary.post = (args: { meeting: string | number | { id: string | numb
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::generateAiSummary
- * @see app/Http/Controllers/MeetingMinuteController.php:82
+ * @see app/Http/Controllers/MeetingMinuteController.php:84
  * @route '/meetings/{meeting}/review/ai'
  */
     const generateAiSummaryForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -249,7 +249,7 @@ generateAiSummary.post = (args: { meeting: string | number | { id: string | numb
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::generateAiSummary
- * @see app/Http/Controllers/MeetingMinuteController.php:82
+ * @see app/Http/Controllers/MeetingMinuteController.php:84
  * @route '/meetings/{meeting}/review/ai'
  */
         generateAiSummaryForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -260,7 +260,7 @@ generateAiSummary.post = (args: { meeting: string | number | { id: string | numb
     generateAiSummary.form = generateAiSummaryForm
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::update
- * @see app/Http/Controllers/MeetingMinuteController.php:100
+ * @see app/Http/Controllers/MeetingMinuteController.php:102
  * @route '/meetings/{meeting}/review'
  */
 export const update = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -275,7 +275,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::update
- * @see app/Http/Controllers/MeetingMinuteController.php:100
+ * @see app/Http/Controllers/MeetingMinuteController.php:102
  * @route '/meetings/{meeting}/review'
  */
 update.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -308,7 +308,7 @@ update.url = (args: { meeting: string | number | { id: string | number } } | [me
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::update
- * @see app/Http/Controllers/MeetingMinuteController.php:100
+ * @see app/Http/Controllers/MeetingMinuteController.php:102
  * @route '/meetings/{meeting}/review'
  */
 update.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -318,7 +318,7 @@ update.put = (args: { meeting: string | number | { id: string | number } } | [me
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::update
- * @see app/Http/Controllers/MeetingMinuteController.php:100
+ * @see app/Http/Controllers/MeetingMinuteController.php:102
  * @route '/meetings/{meeting}/review'
  */
     const updateForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -333,7 +333,7 @@ update.put = (args: { meeting: string | number | { id: string | number } } | [me
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::update
- * @see app/Http/Controllers/MeetingMinuteController.php:100
+ * @see app/Http/Controllers/MeetingMinuteController.php:102
  * @route '/meetings/{meeting}/review'
  */
         updateForm.put = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -349,7 +349,7 @@ update.put = (args: { meeting: string | number | { id: string | number } } | [me
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::sendToPimpinan
- * @see app/Http/Controllers/MeetingMinuteController.php:114
+ * @see app/Http/Controllers/MeetingMinuteController.php:120
  * @route '/meetings/{meeting}/review/send'
  */
 export const sendToPimpinan = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -364,7 +364,7 @@ sendToPimpinan.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::sendToPimpinan
- * @see app/Http/Controllers/MeetingMinuteController.php:114
+ * @see app/Http/Controllers/MeetingMinuteController.php:120
  * @route '/meetings/{meeting}/review/send'
  */
 sendToPimpinan.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -397,7 +397,7 @@ sendToPimpinan.url = (args: { meeting: string | number | { id: string | number }
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::sendToPimpinan
- * @see app/Http/Controllers/MeetingMinuteController.php:114
+ * @see app/Http/Controllers/MeetingMinuteController.php:120
  * @route '/meetings/{meeting}/review/send'
  */
 sendToPimpinan.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -407,7 +407,7 @@ sendToPimpinan.post = (args: { meeting: string | number | { id: string | number 
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::sendToPimpinan
- * @see app/Http/Controllers/MeetingMinuteController.php:114
+ * @see app/Http/Controllers/MeetingMinuteController.php:120
  * @route '/meetings/{meeting}/review/send'
  */
     const sendToPimpinanForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -417,7 +417,7 @@ sendToPimpinan.post = (args: { meeting: string | number | { id: string | number 
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::sendToPimpinan
- * @see app/Http/Controllers/MeetingMinuteController.php:114
+ * @see app/Http/Controllers/MeetingMinuteController.php:120
  * @route '/meetings/{meeting}/review/send'
  */
         sendToPimpinanForm.post = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -428,7 +428,7 @@ sendToPimpinan.post = (args: { meeting: string | number | { id: string | number 
     sendToPimpinan.form = sendToPimpinanForm
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
 export const downloadPdf = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -443,7 +443,7 @@ downloadPdf.definition = {
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
 downloadPdf.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -476,7 +476,7 @@ downloadPdf.url = (args: { meeting: string | number | { id: string | number } } 
 
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
 downloadPdf.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -485,7 +485,7 @@ downloadPdf.get = (args: { meeting: string | number | { id: string | number } } 
 })
 /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
 downloadPdf.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -495,7 +495,7 @@ downloadPdf.head = (args: { meeting: string | number | { id: string | number } }
 
     /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
     const downloadPdfForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -505,7 +505,7 @@ downloadPdf.head = (args: { meeting: string | number | { id: string | number } }
 
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
         downloadPdfForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -514,7 +514,7 @@ downloadPdf.head = (args: { meeting: string | number | { id: string | number } }
         })
             /**
 * @see \App\Http\Controllers\MeetingMinuteController::downloadPdf
- * @see app/Http/Controllers/MeetingMinuteController.php:140
+ * @see app/Http/Controllers/MeetingMinuteController.php:146
  * @route '/meetings/{meeting}/review/pdf'
  */
         downloadPdfForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
