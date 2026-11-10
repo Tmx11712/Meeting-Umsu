@@ -32,44 +32,15 @@ class MeetingController extends Controller
          * kita memerintahkan database (SQL) untuk hanya menghitung angkanya saja (`SELECT COUNT()`).
          * Jauh lebih ringan dan cepat!
          */
-        $query = Meeting::query()
+        $meetings = Meeting::query()
             ->withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');
-            }]);
-
-        if ($request->search) {
-            $query->where('title', 'ilike', '%'.$request->search.'%');
-        }
-        if ($request->status && $request->status !== 'all') {
-            $query->where('status', '=', $request->status);
-        }
-        if ($request->month && $request->month !== 'all') {
-            if (str_contains($request->month, '-')) {
-                [$year, $month] = explode('-', $request->month);
-                $query->whereYear('date', $year)->whereMonth('date', $month);
-            } else {
-                $query->whereMonth('date', $request->month);
-            }
-        }
-
-        $meetings = $query->orderBy('date', 'desc')->paginate(10);
-        $meetings->getCollection()->transform(function ($meeting) {
-            $manualCount = 0;
-            if ($meeting->minutes && $meeting->minutes->count() > 0) {
-                $content = $meeting->minutes->first()->content;
-                if (is_string($content)) {
-                    $content = json_decode($content, true);
-                }
-                if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
-                    $manualCount = count($content['peserta_rapat']);
-                }
-            }
-            $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
-            unset($meeting->minutes);
-
-            return $meeting;
-        });
+            }])
+            ->filter($request->only(['search', 'status', 'month']))
+            ->orderBy('date', 'desc')
+            ->paginate(10)
+            ->through(fn (Meeting $meeting) => $meeting->resolveParticipantsCount());
 
         return Inertia::render('meetings/index', [
             'meetings' => $meetings,
@@ -91,7 +62,7 @@ class MeetingController extends Controller
 
         $now = Carbon::now();
 
-        $upcomingMeetingsRaw = Meeting::withCount('participants')
+        $upcomingMeetings = Meeting::withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');
             }])
@@ -100,24 +71,8 @@ class MeetingController extends Controller
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
             ->take(3)
-            ->get();
-
-        $upcomingMeetings = $upcomingMeetingsRaw->map(function ($meeting) {
-            $manualCount = 0;
-            if ($meeting->minutes && $meeting->minutes->count() > 0) {
-                $content = $meeting->minutes->first()->content;
-                if (is_string($content)) {
-                    $content = json_decode($content, true);
-                }
-                if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
-                    $manualCount = count($content['peserta_rapat']);
-                }
-            }
-            $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
-            unset($meeting->minutes);
-
-            return $meeting;
-        });
+            ->get()
+            ->map(fn (Meeting $meeting) => $meeting->resolveParticipantsCount());
 
         $actionItems = MeetingActionItem::with(['meeting'])
             ->where('status', '=', 'open')
@@ -147,9 +102,7 @@ class MeetingController extends Controller
          */
         $validated = $request->validated();
 
-        $start = Carbon::parse($validated['start_time']);
-        $end = Carbon::parse($validated['end_time']);
-        $validated['duration'] = $end->diffInSeconds($start);
+        $validated['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
 
         $validated['created_by'] = $request->user()->id;
         $validated['status'] = 'terjadwal';
@@ -249,9 +202,7 @@ class MeetingController extends Controller
     {
         $validated = $request->validated();
 
-        $start = Carbon::parse($validated['start_time']);
-        $end = Carbon::parse($validated['end_time']);
-        $validated['duration'] = $end->diffInSeconds($start);
+        $validated['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
 
         $meeting->fill($validated);
         $meeting->save();

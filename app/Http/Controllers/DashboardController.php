@@ -103,24 +103,10 @@ class DashboardController extends Controller
 
         // Fungsi helper untuk menghitung jumlah peserta manual dan mengubah ke array murni
         // agar tidak menjadi __PHP_Incomplete_Class saat di-unserialize dari Redis (serializable_classes = false)
-        $adjustParticipants = function ($meetings): array {
-            return $meetings->map(function ($meeting) {
-                $manualCount = 0;
-                if ($meeting->minutes && $meeting->minutes->count() > 0) {
-                    $content = $meeting->minutes->first()->content;
-                    if (is_string($content)) {
-                        $content = json_decode($content, true);
-                    }
-                    if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
-                        $manualCount = count($content['peserta_rapat']);
-                    }
-                }
-                $meeting->participants_count = max($meeting->participants_count ?? 0, $manualCount);
-                unset($meeting->minutes); // Hapus agar payload Inertia tidak membengkak
-
-                return $meeting->toArray();
-            })->values()->all();
-        };
+        $adjustParticipants = fn ($meetings): array => $meetings
+            ->map(fn (Meeting $meeting) => $meeting->resolveParticipantsCount()->toArray())
+            ->values()
+            ->all();
 
         // Rapat Hari Ini & Rapat Berjalan (Belum Selesai)
         $todayMeetings = Cache::remember('dashboard_today_meetings_v2', 60, function () use ($now, $adjustParticipants) {

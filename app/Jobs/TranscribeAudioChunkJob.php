@@ -70,9 +70,22 @@ class TranscribeAudioChunkJob implements ShouldQueue
             return;
         }
 
-        // 1. Download dari MinIO ke local /tmp
+        // 1. Download dari MinIO ke local /tmp via stream (hemat RAM)
         $localChunkPath = sys_get_temp_dir().'/'.uniqid('chunk_').'_'.basename($chunk->file_path);
-        file_put_contents($localChunkPath, Storage::disk($disk)->get($chunk->file_path));
+        $readStream = Storage::disk($disk)->readStream($chunk->file_path);
+        if (! $readStream) {
+            $msg = "Gagal membuka stream file chunk dari storage: {$chunk->file_path}";
+            $chunk->update(['status' => 'failed', 'error_message' => $msg]);
+            $this->fail(new \Exception($msg));
+
+            return;
+        }
+        $writeStream = fopen($localChunkPath, 'wb');
+        stream_copy_to_stream($readStream, $writeStream);
+        fclose($writeStream);
+        if (is_resource($readStream)) {
+            fclose($readStream);
+        }
 
         try {
             // 2. Transcribe via OpenAI (dengan filter overlap)

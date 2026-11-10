@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\IrvanCloud\SyncMeetingsAction;
 use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreManualAttendanceRequest;
 use App\Models\Meeting;
 use App\Models\MeetingAttendance;
-use App\Services\IrvanCloudSyncService;
 use Carbon\Carbon;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Encoding\Encoding;
@@ -32,25 +32,19 @@ class AttendanceController extends Controller
 {
     public function index(Request $request): Response
     {
+        abort_unless(
+            $request->user()->can('attendance.read'),
+            403,
+            'Akses Terbatas: Anda tidak memiliki izin untuk mengakses daftar absensi.'
+        );
+
         // Stage >= 4 (Sedang atau sudah lewat tahap absensi)
-        $query = Meeting::query()->withCount('participants')->where('current_stage', '>=', 4);
-
-        if ($request->search) {
-            $query->where('title', 'ilike', '%'.$request->search.'%');
-        }
-        if ($request->status && $request->status !== 'all') {
-            $query->where('status', '=', $request->status);
-        }
-        if ($request->month && $request->month !== 'all') {
-            if (str_contains($request->month, '-')) {
-                [$year, $month] = explode('-', $request->month);
-                $query->whereYear('date', $year)->whereMonth('date', $month);
-            } else {
-                $query->whereMonth('date', $request->month);
-            }
-        }
-
-        $meetings = $query->orderBy('date', 'desc')->paginate(10);
+        $meetings = Meeting::query()
+            ->withCount('participants')
+            ->where('current_stage', '>=', 4)
+            ->filter($request->only(['search', 'status', 'month']))
+            ->orderBy('date', 'desc')
+            ->paginate(10);
 
         return Inertia::render('meetings/attendances-index', [
             'meetings' => $meetings,
@@ -188,12 +182,12 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function syncIrvanCloud(Meeting $meeting, IrvanCloudSyncService $syncService): JsonResponse
+    public function syncIrvanCloud(Meeting $meeting, SyncMeetingsAction $syncAction): JsonResponse
     {
         abort_unless(request()->user()->can('attendance.create') || request()->user()->can('attendance.update'), 403);
 
         if ($meeting->source === 'irvan_cloud' && $meeting->external_id) {
-            $syncService->syncEventDetails($meeting->external_id, $meeting);
+            $syncAction->syncEventDetails($meeting->external_id, $meeting);
         }
 
         return response()->json(['success' => true]);

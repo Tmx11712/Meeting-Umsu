@@ -80,8 +80,24 @@ class AttendanceApiController extends Controller
             $user = User::query()->where('id', '=', $request->user_id, 'and')->first();
         }
 
-        if (! $user && $request->email) {
-            $user = User::query()->where('email', '=', $request->email, 'and')->first();
+        if (! $user && $request->email && empty($request->guest_name)) {
+            $candidate = User::query()->where('email', '=', $request->email, 'and')->first();
+            if ($candidate && $candidate->hasRole(['Super Admin', 'Administrator', 'Pimpinan'])) {
+                return response()->json([
+                    'statusCode' => 403,
+                    'success' => false,
+                    'message' => 'Absensi akun pimpinan/administrator wajib menggunakan sesi login atau QR token resmi.',
+                ], 403);
+            }
+            $user = $candidate;
+        }
+
+        if ($user && ($user->status ?? 'aktif') === 'nonaktif') {
+            return response()->json([
+                'statusCode' => 403,
+                'success' => false,
+                'message' => 'Akun peserta sudah tidak aktif.',
+            ], 403);
         }
 
         // 2. Tentukan status kehadiran (hadir atau terlambat)

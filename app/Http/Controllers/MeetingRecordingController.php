@@ -52,8 +52,19 @@ class MeetingRecordingController extends Controller
         ]);
     }
 
+    private function ensureRecordingMutable(Meeting $meeting): void
+    {
+        abort_if(
+            $meeting->status === MeetingStatus::SELESAI->value || $meeting->status === 'dibatalkan' || $meeting->current_stage >= 6,
+            422,
+            'Rapat sudah masuk tahap pengesahan atau telah selesai/dibatalkan.'
+        );
+    }
+
     public function store(StoreRecordingRequest $request, Meeting $meeting)
     {
+        $this->ensureRecordingMutable($meeting);
+
         $file = $request->file('file');
         // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
         $folderName = $meeting->id.'-'.Str::slug($meeting->title);
@@ -102,6 +113,7 @@ class MeetingRecordingController extends Controller
     public function destroy(Meeting $meeting, string $recordingId)
     {
         abort_unless(request()->user()->can('recording.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
+        $this->ensureRecordingMutable($meeting);
 
         $recording = $meeting->recordings()->findOrFail($recordingId);
         $filePath = $recording->file_path;
@@ -134,6 +146,8 @@ class MeetingRecordingController extends Controller
      */
     public function transcribe(TranscribeRecordingRequest $request, Meeting $meeting)
     {
+        $this->ensureRecordingMutable($meeting);
+
         $recording = $meeting->recordings()->findOrFail($request->recording_id);
 
         // Bersihkan transkrip lama jika sedang mengulang transkripsi
@@ -163,6 +177,7 @@ class MeetingRecordingController extends Controller
     public function finishRecording(Request $request, Meeting $meeting)
     {
         abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
+        $this->ensureRecordingMutable($meeting);
 
         // Validasi: Jangan izinkan pindah ke tahap koreksi jika masih ada yang ditranskrip
         $isAnyTranscribing = $meeting->recordings()->whereIn('status', ['transcribing', 'processing'])->exists();
@@ -268,6 +283,7 @@ class MeetingRecordingController extends Controller
     public function startSession(Request $request, Meeting $meeting)
     {
         abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas');
+        $this->ensureRecordingMutable($meeting);
 
         $meeting->recording_started_at = now();
         $meeting->status = 'berlangsung';

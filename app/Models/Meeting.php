@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -173,15 +175,75 @@ class Meeting extends Model
         return min(100, (int) round(($present / $totalTarget) * 100));
     }
 
-    public function getDurationFormattedAttribute()
+    public static function calculateDurationSeconds(string $startTime, string $endTime): int
     {
-        $seconds = $this->duration;
+        $start = Carbon::parse($startTime);
+        $end = Carbon::parse($endTime);
 
-        if (! $seconds && $this->start_time && $this->end_time) {
-            $seconds = max(0, strtotime($this->end_time) - strtotime($this->start_time));
+        if ($end->lessThan($start)) {
+            $end->addDay();
         }
 
-        if (! $seconds) {
+        return (int) $start->diffInSeconds($end);
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     * @param  array{search?: string|null, status?: string|null, month?: string|null}  $filters
+     * @return Builder<self>
+     */
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        if (! empty($filters['search'])) {
+            $escaped = addcslashes((string) $filters['search'], '%_\\');
+            $query->where('title', 'ilike', '%'.$escaped.'%');
+        }
+
+        if (! empty($filters['status']) && $filters['status'] !== 'all') {
+            $query->where('status', '=', $filters['status']);
+        }
+
+        if (! empty($filters['month']) && $filters['month'] !== 'all') {
+            if (str_contains((string) $filters['month'], '-')) {
+                [$year, $month] = explode('-', (string) $filters['month'], 2);
+                $query->whereYear('date', $year)->whereMonth('date', $month);
+            } else {
+                $query->whereMonth('date', $filters['month']);
+            }
+        }
+
+        return $query;
+    }
+
+    public function resolveParticipantsCount(): self
+    {
+        $manualCount = 0;
+
+        if ($this->relationLoaded('minutes') && $this->minutes && $this->minutes->isNotEmpty()) {
+            $content = $this->minutes->first()->content;
+            if (is_string($content)) {
+                $content = json_decode($content, true);
+            }
+            if (is_array($content) && isset($content['peserta_rapat']) && is_array($content['peserta_rapat'])) {
+                $manualCount = count($content['peserta_rapat']);
+            }
+        }
+
+        $this->participants_count = max($this->participants_count ?? 0, $manualCount);
+        $this->unsetRelation('minutes');
+
+        return $this;
+    }
+
+    public function getDurationFormattedAttribute()
+    {
+        $seconds = (int) $this->duration;
+
+        if ($seconds <= 0 && $this->start_time && $this->end_time) {
+            $seconds = self::calculateDurationSeconds($this->start_time, $this->end_time);
+        }
+
+        if ($seconds <= 0) {
             return '00:00:00';
         }
 

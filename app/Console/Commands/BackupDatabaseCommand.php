@@ -111,7 +111,7 @@ class BackupDatabaseCommand extends Command
             '-h', $host,
             '-p', (string) $port,
             '-U', $username,
-            '-F', 'c', // custom format (compressed)
+            '-F', 'p', // plain SQL format so .sql files are consistent with PDO fallback
             '-b',      // include blobs
             '-v',      // verbose
             '-f', $filePath,

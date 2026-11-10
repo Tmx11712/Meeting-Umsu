@@ -9,8 +9,6 @@ use App\Events\MeetingsListUpdated;
 use App\Models\Meeting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 /**
  * [EDUKASI ARSITEKTUR: ORCHESTRATOR PATTERN]
@@ -87,7 +85,9 @@ class SyncMeetingsAction
             }
 
             // Phase 2: Perform all database writes inside a transaction
-            DB::transaction(function () use ($meetingsToProcess, $events, &$syncedCount, &$deletedCount, $startDate, $endDate) {
+            $orphanedIdsToDestroy = [];
+
+            DB::transaction(function () use ($meetingsToProcess, $events, &$syncedCount, &$orphanedIdsToDestroy, $startDate, $endDate) {
                 $activeUuids = [];
 
                 foreach ($meetingsToProcess as $data) {
@@ -106,55 +106,28 @@ class SyncMeetingsAction
                         $syncedCount++;
                     }
 
-                    if ($details && isset($details['data']['participants'])) {
-                        foreach ($details['data']['participants'] as $participantData) {
-                            $user = $this->upsertUser->execute($participantData);
-
-                            if ($user) {
-                                $this->syncAttendance->execute($participantData, $meeting, $user);
-                            }
-                        }
-                    }
+                    $this->syncParticipantsFromDetails($details, $meeting);
                 }
 
-                // Hapus (soft delete) rapat yang sudah dihapus di Irvan Cloud
+                // Kumpulkan rapat yatim yang sudah dihapus di Irvan Cloud
                 // Hanya jalankan jika daftar rapat tidak kosong dan tidak terpotong batas paginasi (100 item)
                 if (! empty($activeUuids) && count($events) < 100) {
-                    $orphanedMeetings = Meeting::query()
+                    $orphanedIdsToDestroy = Meeting::query()
                         ->where('source', '=', 'irvan_cloud')
                         ->where('current_stage', '<', 7)
                         ->where('date', '>=', $startDate)
                         ->where('date', '<=', $endDate)
-                        ->whereNotIn('external_id', $activeUuids)
-                        ->get();
-
-                    /** @var Meeting $orphaned */
-                    foreach ($orphanedMeetings as $orphaned) {
-                        // Bersihkan file rekaman dari storage
-                        foreach ($orphaned->recordings as $recording) {
-                            try {
-                                if (Storage::exists($recording->file_path)) {
-                                    Storage::delete($recording->file_path);
-                                }
-                            } catch (\Throwable $e) {
-                                Log::warning('Gagal menghapus file rekaman orphan: '.$e->getMessage());
-                            }
-                        }
-
-                        try {
-                            $folderName = $orphaned->id.'-'.Str::slug($orphaned->title);
-                            Storage::deleteDirectory('recordings/'.$orphaned->id);
-                            Storage::deleteDirectory('recordings/'.$folderName);
-                            Storage::deleteDirectory('documents/'.$folderName);
-                        } catch (\Throwable $e) {
-                            Log::warning('Gagal menghapus direktori rekaman orphan: '.$e->getMessage());
-                        }
-
-                        Meeting::destroy($orphaned->id);
-                        $deletedCount++;
-                    }
+                        ->whereNotIn('external_id', $activeUuids, 'and')
+                        ->pluck('id')
+                        ->all();
                 }
             });
+
+            // Phase 3: Hapus rapat yatim di luar DB transaction agar operasi S3/MinIO di Meeting::deleting tidak menahan lock
+            foreach ($orphanedIdsToDestroy as $orphanedId) {
+                Meeting::destroy($orphanedId);
+                $deletedCount++;
+            }
 
             if ($syncedCount > 0 || $deletedCount > 0) {
                 $broadcastMsg = 'Sinkronisasi Irvan Cloud selesai: ';
@@ -190,6 +163,33 @@ class SyncMeetingsAction
                 'success' => false,
                 'message' => 'Terjadi kesalahan sistem saat sinkronisasi: '.$e->getMessage(),
             ];
+        }
+    }
+
+    /**
+     * Sinkronisasi detail event spesifik dari Irvan Cloud (termasuk peserta).
+     */
+    public function syncEventDetails(string $externalId, Meeting $meeting): void
+    {
+        $details = $this->fetchEventDetails->execute($externalId);
+        $this->syncParticipantsFromDetails($details, $meeting);
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $details
+     */
+    protected function syncParticipantsFromDetails(?array $details, Meeting $meeting): void
+    {
+        if (! $details || ! isset($details['data']['participants'])) {
+            return;
+        }
+
+        foreach ($details['data']['participants'] as $participantData) {
+            $user = $this->upsertUser->execute($participantData);
+
+            if ($user) {
+                $this->syncAttendance->execute($participantData, $meeting, $user);
+            }
         }
     }
 }

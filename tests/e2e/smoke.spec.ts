@@ -10,3 +10,4 @@ test.describe('UI & UX Smoke Test', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible();
   });
 });
+

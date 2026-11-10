@@ -257,3 +257,100 @@ test('approving meeting minute stores pdf in storage and purges raw recordings a
         ->assertOk()
         ->assertHeader('Content-Type', 'application/pdf');
 });
+
+test('approved or stage 6+ meetings cannot be reopened via recording endpoints', function () {
+    /** @var TestCase $this */
+    /** @var User $humas */
+    $humas = User::factory()->create(['status' => 'aktif']);
+    $humas->assignRole('Bag. Humas');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat Sudah Selesai',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '10:00:00',
+        'duration' => 3600,
+        'location' => 'Ruang Rapat',
+        'type' => 'Rapat Pimpinan',
+        'status' => 'selesai',
+        'source' => 'manual',
+        'created_by' => $humas->id,
+        'current_stage' => 7,
+    ]);
+
+    $this->actingAs($humas)
+        ->post(route('meetings.recording.finish', $meeting))
+        ->assertStatus(422);
+
+    $this->actingAs($humas)
+        ->postJson(route('meetings.recording.startSession', $meeting))
+        ->assertStatus(422);
+
+    expect($meeting->fresh()->status)->toBe('selesai')
+        ->and($meeting->fresh()->current_stage)->toBe(7);
+});
+
+test('meeting duration calculation handles normal daytime and overnight rollover without negative values', function () {
+    expect(Meeting::calculateDurationSeconds('09:00', '11:00'))->toBe(7200)
+        ->and(Meeting::calculateDurationSeconds('09:21', '00:21'))->toBe(54000);
+});
+
+test('operator index pages enforce permission checks and block unauthorized roles', function () {
+    /** @var TestCase $this */
+    /** @var User $viewer */
+    $viewer = User::factory()->create(['status' => 'aktif']);
+    $viewer->assignRole('Viewer');
+
+    /** @var User $humas */
+    $humas = User::factory()->create(['status' => 'aktif']);
+    $humas->assignRole('Bag. Humas');
+
+    $this->actingAs($viewer)
+        ->get(route('transcripts.index'))
+        ->assertForbidden();
+
+    $this->actingAs($viewer)
+        ->get(route('attendances.index'))
+        ->assertForbidden();
+
+    $this->actingAs($humas)
+        ->get(route('minutes.index'))
+        ->assertForbidden();
+});
+
+test('public api attendance scan blocks deactivated users and unauthenticated pimpinan email spoofing', function () {
+    /** @var TestCase $this */
+    /** @var User $creator */
+    $creator = User::factory()->create(['status' => 'aktif']);
+    $creator->assignRole('Bag. Umum');
+
+    /** @var User $deactivated */
+    $deactivated = User::factory()->create(['status' => 'nonaktif']);
+    $deactivated->assignRole('Viewer');
+
+    /** @var User $pimpinan */
+    $pimpinan = User::factory()->create(['status' => 'aktif', 'email' => 'rektor@umsu.ac.id']);
+    $pimpinan->assignRole('Pimpinan');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat Senat',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '11:00:00',
+        'duration' => 7200,
+        'location' => 'Aula',
+        'type' => 'Rapat Pimpinan',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $creator->id,
+        'current_stage' => 4,
+    ]);
+
+    $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'user_id' => $deactivated->id,
+    ])->assertForbidden();
+
+    $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'email' => $pimpinan->email,
+    ])->assertForbidden();
+});
