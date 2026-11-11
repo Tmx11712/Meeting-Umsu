@@ -134,21 +134,28 @@ export default function MeetingShow({ meeting }: any) {
                     >
                         <Link href="/meetings">Kembali ke Jadwal</Link>
                     </Button>
-                    {meeting.minutes && meeting.minutes.length > 0 && (
-                        <Button
-                            variant="outline"
-                            onClick={() =>
-                                window.open(
-                                    `/meetings/${meeting.id}/review/pdf`,
-                                    '_blank',
-                                )
-                            }
-                            className="h-11 rounded-xl border-border bg-card/60 px-4 font-semibold text-slate-700 shadow-sm hover:bg-card dark:text-slate-200"
-                        >
-                            <Download className="mr-2 h-4 w-4" /> Unduh Notulen
-                            PDF
-                        </Button>
-                    )}
+                    {meeting.minutes &&
+                        meeting.minutes.length > 0 &&
+                        (isAdmin ||
+                            isUmum ||
+                            isPimpinan ||
+                            meeting.minutes.some(
+                                (m: any) => m.status === 'disetujui',
+                            )) && (
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    window.open(
+                                        `/meetings/${meeting.id}/review/pdf`,
+                                        '_blank',
+                                    )
+                                }
+                                className="h-11 rounded-xl border-border bg-card/60 px-4 font-semibold text-slate-700 shadow-sm hover:bg-card dark:text-slate-200"
+                            >
+                                <Download className="mr-2 h-4 w-4" /> Unduh
+                                Notulen PDF
+                            </Button>
+                        )}
                     {(isAdmin || isUmum) && (
                         <>
                             {['terjadwal'].includes(meeting.status) && (

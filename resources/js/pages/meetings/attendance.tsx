@@ -56,7 +56,7 @@ export default function MeetingAttendance({
 
     // Realtime polling specifically for IrvanCloud (UMSU Employee) QR Scans
     useEffect(() => {
-        if (!isIrvanCloud) {
+        if (!isIrvanCloud || !canManageAttendance) {
             return;
         }
 
@@ -83,7 +83,7 @@ export default function MeetingAttendance({
         }, 15000); // Diubah dari 5000 ke 15000 untuk mengurangi beban network (lelet)
 
         return () => clearInterval(interval);
-    }, [isIrvanCloud, meeting.id]);
+    }, [isIrvanCloud, canManageAttendance, meeting.id]);
 
     // Removed polling in favor of true real-time WebSockets via useMeetingWebSocket
 
@@ -685,47 +685,49 @@ export default function MeetingAttendance({
                                                     {!isIrvanCloud &&
                                                         canManageAttendance && (
                                                             <td className="px-4 py-3 text-right">
-                                                                <div className="flex justify-end gap-2">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="sm"
-                                                                        className="h-8 rounded-lg border-emerald-200/60 bg-white/50 text-emerald-600 shadow-sm backdrop-blur-sm hover:bg-emerald-50/80"
-                                                                        onClick={() =>
-                                                                            handleManualAttendance(
-                                                                                row.user_id,
-                                                                                'hadir',
-                                                                            )
-                                                                        }
-                                                                        disabled={
-                                                                            row.status ===
-                                                                                'Hadir' ||
-                                                                            !canManageAttendance
-                                                                        }
-                                                                    >
-                                                                        Hadir
-                                                                    </Button>
-                                                                    {/* Fix Bug #3: Disable Alpha if it's already 'Tidak Hadir' or 'Hadir' */}
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="sm"
-                                                                        className="h-8 rounded-lg border-rose-200/60 bg-white/50 text-rose-500 shadow-sm backdrop-blur-sm hover:bg-rose-50/80"
-                                                                        onClick={() =>
-                                                                            handleManualAttendance(
-                                                                                row.user_id,
-                                                                                'tidak_hadir',
-                                                                            )
-                                                                        }
-                                                                        disabled={
-                                                                            row.status ===
-                                                                                'Tidak Hadir' ||
-                                                                            row.status ===
-                                                                                'Hadir' ||
-                                                                            !canManageAttendance
-                                                                        }
-                                                                    >
-                                                                        Alpha
-                                                                    </Button>
-                                                                </div>
+                                                                {row.user_id && (
+                                                                    <div className="flex justify-end gap-2">
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            className="h-8 rounded-lg border-emerald-200/60 bg-white/50 text-emerald-600 shadow-sm backdrop-blur-sm hover:bg-emerald-50/80"
+                                                                            onClick={() =>
+                                                                                handleManualAttendance(
+                                                                                    row.user_id,
+                                                                                    'hadir',
+                                                                                )
+                                                                            }
+                                                                            disabled={
+                                                                                row.status ===
+                                                                                    'Hadir' ||
+                                                                                !canManageAttendance
+                                                                            }
+                                                                        >
+                                                                            Hadir
+                                                                        </Button>
+                                                                        {/* Fix Bug #3: Disable Alpha if it's already 'Tidak Hadir' or 'Hadir' */}
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            className="h-8 rounded-lg border-rose-200/60 bg-white/50 text-rose-500 shadow-sm backdrop-blur-sm hover:bg-rose-50/80"
+                                                                            onClick={() =>
+                                                                                handleManualAttendance(
+                                                                                    row.user_id,
+                                                                                    'tidak_hadir',
+                                                                                )
+                                                                            }
+                                                                            disabled={
+                                                                                row.status ===
+                                                                                    'Tidak Hadir' ||
+                                                                                row.status ===
+                                                                                    'Hadir' ||
+                                                                                !canManageAttendance
+                                                                            }
+                                                                        >
+                                                                            Alpha
+                                                                        </Button>
+                                                                    </div>
+                                                                )}
                                                             </td>
                                                         )}
                                                 </tr>

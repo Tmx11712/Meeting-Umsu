@@ -11,7 +11,7 @@ type Props = {
 
 export default function PasskeyRegistration({ onSuccess }: Props) {
     const [name, setName] = useState(() => {
-        const ua = navigator.userAgent;
+        const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
 
         const browser = [
             { pattern: /Edg|Edge/, name: 'Edge' },

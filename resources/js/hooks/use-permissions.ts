@@ -18,15 +18,39 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
     configuration: ['Super Admin', 'Administrator'],
 };
 
+const RESOURCE_DIRECT_PERMISSIONS: Record<string, string[]> = {
+    meeting: ['meeting.update', 'meeting.create'],
+    recording: ['recording.create', 'recording.update'],
+    transcript: ['transcript.update', 'transcript.create'],
+    attendance: ['attendance.update', 'attendance.create'],
+    review: ['minute.update', 'minute.create'],
+    approval: ['minute.update'],
+    minutes: ['minute.update'],
+    report: ['report.read'],
+};
+
 /** Roles that have full admin capabilities */
 const ADMIN_ROLES = ['Super Admin', 'Administrator'];
+const STANDARD_ROLES = [
+    'Super Admin',
+    'Administrator',
+    'Bag. Umum',
+    'Bag. Humas',
+    'Pimpinan',
+    'Viewer',
+];
 
 type PermissionResource = keyof typeof ROLE_PERMISSIONS;
 
 export function usePermissions() {
     const page = usePage<any>();
     const authRoles = page.props.auth?.roles;
+    const authPermissions = page.props.auth?.permissions;
     const roles: string[] = useMemo(() => authRoles || [], [authRoles]);
+    const permissions: string[] = useMemo(
+        () => authPermissions || [],
+        [authPermissions],
+    );
 
     /** Check if the current user has any of the specified roles */
     const hasRole = useCallback(
@@ -34,6 +58,11 @@ export function usePermissions() {
             return checkRoles.some((role) => roles.includes(role));
         },
         [roles],
+    );
+
+    const hasPermission = useCallback(
+        (permission: string) => permissions.includes(permission),
+        [permissions],
     );
 
     /** Check if the user is a Super Admin or Administrator */
@@ -48,9 +77,25 @@ export function usePermissions() {
                 return isAdmin;
             } // Default: only admins
 
-            return roles.some((role) => allowedRoles.includes(role));
+            if (roles.some((role) => allowedRoles.includes(role))) {
+                return true;
+            }
+
+            // Fallback untuk custom role / direct user permission di luar 6 role bawaan
+            const hasStandardRole = roles.some((role) =>
+                STANDARD_ROLES.includes(role),
+            );
+
+            if (!hasStandardRole) {
+                const requiredPerms =
+                    RESOURCE_DIRECT_PERMISSIONS[resource] || [];
+
+                return requiredPerms.some((perm) => permissions.includes(perm));
+            }
+
+            return false;
         },
-        [roles, isAdmin],
+        [roles, permissions, isAdmin],
     );
 
     /** Check if the user can manage configuration */
@@ -78,7 +123,9 @@ export function usePermissions() {
 
     return {
         roles,
+        permissions,
         hasRole,
+        hasPermission,
         isAdmin,
         canEdit,
         canManageConfiguration,

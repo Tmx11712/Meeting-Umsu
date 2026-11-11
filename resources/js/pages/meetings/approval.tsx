@@ -528,9 +528,13 @@ export default function MeetingApproval({
                                                                 <div
                                                                     className="mt-2 overflow-x-auto rounded bg-slate-50 p-2 text-xs"
                                                                     dangerouslySetInnerHTML={{
-                                                                        __html: DOMPurify.sanitize(
-                                                                            bahas.tabel,
-                                                                        ),
+                                                                        __html:
+                                                                            typeof window !==
+                                                                            'undefined'
+                                                                                ? DOMPurify.sanitize(
+                                                                                      bahas.tabel,
+                                                                                  )
+                                                                                : '',
                                                                     }}
                                                                 />
                                                             )}
@@ -538,9 +542,13 @@ export default function MeetingApproval({
                                                                 <div
                                                                     className="mt-2 list-disc pl-4 text-sm text-slate-700"
                                                                     dangerouslySetInnerHTML={{
-                                                                        __html: DOMPurify.sanitize(
-                                                                            bahas.list,
-                                                                        ),
+                                                                        __html:
+                                                                            typeof window !==
+                                                                            'undefined'
+                                                                                ? DOMPurify.sanitize(
+                                                                                      bahas.list,
+                                                                                  )
+                                                                                : '',
                                                                     }}
                                                                 />
                                                             )}

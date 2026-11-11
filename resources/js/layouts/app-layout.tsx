@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useFlashToast } from '@/hooks/use-flash-toast';
+import { usePermissions } from '@/hooks/use-permissions';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 
@@ -11,8 +12,14 @@ export default function AppLayout({
     children: React.ReactNode;
 }) {
     useFlashToast();
+    const { canEdit } = usePermissions();
+    const canSyncMeetings = canEdit('meeting');
 
     useEffect(() => {
+        if (!canSyncMeetings) {
+            return;
+        }
+
         // Lakukan auto-sync secara background setelah halaman selesai dirender (idle)
         // agar tidak menghambat Largest Contentful Paint (LCP) saat Soft Navigation.
         const lastSync = sessionStorage.getItem('enotulen_last_autosync');
@@ -47,7 +54,7 @@ export default function AppLayout({
         }, 2500);
 
         return () => window.clearTimeout(timer);
-    }, []);
+    }, [canSyncMeetings]);
 
     return (
         <AppLayoutTemplate breadcrumbs={breadcrumbs}>

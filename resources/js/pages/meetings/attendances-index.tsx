@@ -1,6 +1,6 @@
-import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Search, Calendar } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,9 +8,7 @@ import { Input } from '@/components/ui/input';
 import { usePermissions } from '@/hooks/use-permissions';
 
 export default function MeetingIndex({ meetings, filters }: any) {
-    const { auth } = usePage().props as any;
-    const [syncing, setSyncing] = useState(false);
-    const { guardAction, canEdit } = usePermissions();
+    const { canEdit } = usePermissions();
     const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const applyFilter = (key: string, value: string) => {
@@ -45,22 +43,6 @@ export default function MeetingIndex({ meetings, filters }: any) {
 
         return { value, label };
     });
-
-    const handleSync = () => {
-        if (!guardAction('meeting')) {
-            return;
-        }
-
-        setSyncing(true);
-        router.post(
-            '/meetings/sync',
-            {},
-            {
-                onFinish: () => setSyncing(false),
-                preserveScroll: true,
-            },
-        );
-    };
 
     return (
         <div className="flex h-full w-full flex-1 animate-in flex-col gap-4 py-2 duration-700 fade-in slide-in-from-bottom-4">

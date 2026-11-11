@@ -135,7 +135,23 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
                     safeReload();
                 }
             } else if (e.type === 'approval') {
-                router.visit('/dashboard');
+                if (e.meeting?.status === 'selesai') {
+                    router.visit('/dashboard');
+
+                    return;
+                }
+
+                if (e.meeting?.current_stage) {
+                    const redirected = checkAndRedirect(
+                        e.meeting.current_stage,
+                    );
+
+                    if (!redirected) {
+                        safeReload();
+                    }
+                } else {
+                    safeReload();
+                }
             } else {
                 safeReload();
             }

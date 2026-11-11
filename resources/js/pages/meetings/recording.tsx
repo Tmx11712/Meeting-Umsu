@@ -1,6 +1,4 @@
 import { Head, usePage, router, Link } from '@inertiajs/react';
-// @ts-ignore
-import axios from 'axios';
 import ysFixWebmDuration from 'fix-webm-duration';
 import {
     Square,
@@ -39,6 +37,106 @@ import type { Meeting } from '@/types/meeting';
 const QRCodeCanvas = lazy(() =>
     import('qrcode.react').then((m) => ({ default: m.QRCodeCanvas })),
 );
+
+function getCsrfHeaders(): Record<string, string> {
+    if (typeof document === 'undefined') {
+        return {};
+    }
+
+    const xsrfMatch = document.cookie.match(
+        new RegExp('(^| )XSRF-TOKEN=([^;]+)'),
+    );
+    const xsrfToken = xsrfMatch ? decodeURIComponent(xsrfMatch[2]) : '';
+    const metaToken =
+        (
+            document.head.querySelector(
+                'meta[name="csrf-token"]',
+            ) as HTMLMetaElement
+        )?.content || '';
+
+    const headers: Record<string, string> = {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+    };
+
+    if (xsrfToken) {
+        headers['X-XSRF-TOKEN'] = xsrfToken;
+    } else if (metaToken) {
+        headers['X-CSRF-TOKEN'] = metaToken;
+    }
+
+    return headers;
+}
+
+function uploadRecordingForm(
+    url: string,
+    formData: FormData,
+    onProgress: (percent: number) => void,
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.withCredentials = true;
+
+        const headers = getCsrfHeaders();
+
+        for (const [key, value] of Object.entries(headers)) {
+            xhr.setRequestHeader(key, value);
+        }
+
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable && event.total > 0) {
+                onProgress(Math.round((event.loaded * 100) / event.total));
+            }
+        };
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve();
+
+                return;
+            }
+
+            let errorMessage = `Upload gagal (HTTP ${xhr.status}).`;
+
+            try {
+                const parsed = JSON.parse(xhr.responseText);
+
+                if (parsed?.message) {
+                    errorMessage = parsed.message;
+                }
+            } catch {
+                // Pertahankan pesan fallback default bila body bukan JSON
+            }
+
+            reject(new Error(errorMessage));
+        };
+
+        xhr.onerror = () => {
+            reject(
+                new Error('Koneksi jaringan terputus saat mengunggah rekaman.'),
+            );
+        };
+
+        xhr.send(formData);
+    });
+}
+
+async function postSessionSignal(url: string): Promise<void> {
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            ...getCsrfHeaders(),
+            'Content-Type': 'application/json',
+        },
+        body: '{}',
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+}
 
 export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     useMeetingWebSocket(meeting?.id);
@@ -92,6 +190,11 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const streamRef = useRef<MediaStream | null>(null);
     const chunksRef = useRef<Blob[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const recordingDurationRef = useRef(0);
+
+    useEffect(() => {
+        recordingDurationRef.current = recordingDuration;
+    }, [recordingDuration]);
 
     const triggerTranscription = async (recordingId: string) => {
         setIsTranscribing(recordingId);
@@ -241,23 +344,10 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         formData.append('source', 'upload');
 
         try {
-            const response = await axios.post(
+            await uploadRecordingForm(
                 `/meetings/${meeting.id}/recording`,
                 formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    onUploadProgress: (progressEvent) => {
-                        if (progressEvent.total) {
-                            const percentCompleted = Math.round(
-                                (progressEvent.loaded * 100) /
-                                    progressEvent.total,
-                            );
-                            setUploadProgress(percentCompleted);
-                        }
-                    },
-                },
+                setUploadProgress,
             );
 
             await showSuccess('Sukses', 'Audio berhasil diunggah.');
@@ -265,9 +355,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         } catch (error: any) {
             showError(
                 'Gagal',
-                error.response?.data?.message ||
-                    error.message ||
-                    'Terjadi kesalahan saat mengunggah.',
+                error.message || 'Terjadi kesalahan saat mengunggah.',
             );
         } finally {
             setUploading(false);
@@ -367,24 +455,22 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
                     type: mimeType,
                 });
 
-                // Inject duration metadata into the WebM blob so the audio player knows its length
-                setRecordingDuration((currentDuration) => {
-                    ysFixWebmDuration(
-                        fullBlob,
-                        currentDuration * 1000,
-                        (fixedBlob: Blob) => {
-                            setRecordedBlob(fixedBlob);
-                        },
-                    );
-
-                    return currentDuration;
-                });
+                // Inject duration metadata into the WebM blob outside state updater
+                ysFixWebmDuration(
+                    fullBlob,
+                    recordingDurationRef.current * 1000,
+                    (fixedBlob: Blob) => {
+                        setRecordedBlob(fixedBlob);
+                    },
+                );
             };
 
             mediaRecorder.start(1000);
 
             // Tembakkan sinyal ke backend bahwa rekaman dimulai
-            await axios.post(`/meetings/${meeting.id}/recording/start-session`);
+            await postSessionSignal(
+                `/meetings/${meeting.id}/recording/start-session`,
+            );
         } catch (err: any) {
             console.error(err);
 
@@ -431,7 +517,9 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
 
         // Tembakkan sinyal ke backend bahwa rekaman dihentikan
         try {
-            await axios.post(`/meetings/${meeting.id}/recording/stop-session`);
+            await postSessionSignal(
+                `/meetings/${meeting.id}/recording/stop-session`,
+            );
         } catch (err) {
             console.error('Gagal menghentikan rekaman di server', err);
         }
@@ -466,24 +554,16 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         formData.append('duration_seconds', recordingDuration.toString());
 
         try {
-            const response = await axios.post(
+            await uploadRecordingForm(
                 `/meetings/${meeting.id}/recording`,
                 formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                    onUploadProgress: (progressEvent) => {
-                        if (progressEvent.total) {
-                            const percentCompleted = Math.round(
-                                (progressEvent.loaded * 100) /
-                                    progressEvent.total,
-                            );
-                            setUploadProgress(percentCompleted);
-                        }
-                    },
-                },
+                setUploadProgress,
             );
+
+            // Hanya bersihkan blob lokal setelah upload benar-benar berhasil
+            setRecordedBlob(null);
+            setRecordingDuration(0);
+            mediaRecorderRef.current = null;
 
             await showSuccess(
                 'Berhasil',
@@ -493,15 +573,10 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         } catch (error: any) {
             showError(
                 'Gagal',
-                error.response?.data?.message ||
-                    error.message ||
-                    'Terjadi kesalahan saat menyimpan rekaman.',
+                error.message || 'Terjadi kesalahan saat menyimpan rekaman.',
             );
         } finally {
             setUploading(false);
-            setRecordedBlob(null);
-            setRecordingDuration(0);
-            mediaRecorderRef.current = null;
         }
     };
 
@@ -946,8 +1021,8 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
                                 )}
                             </div>
                         </div>
-                        {/* Selesai Rekaman Action - Hanya untuk yang bisa transkrip (Bag. Umum / Admin) */}
-                        {canTranscribe &&
+                        {/* Selesai Rekaman Action - Tersedia bagi Bag. Humas, Bag. Umum, dan Admin */}
+                        {(canRecord || canTranscribe) &&
                             !isRecording &&
                             !isServerRecording &&
                             !recordedBlob && (
