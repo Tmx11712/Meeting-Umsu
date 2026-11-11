@@ -361,7 +361,7 @@ test('public api attendance scan blocks deactivated users and unauthenticated pi
     ])->assertForbidden();
 });
 
-test('uninvited viewer cannot access ongoing meetings, documents, or unreleased reports and report search works on non-pgsql drivers', function () {
+test('viewer can view ongoing meetings and reports read-only while uninvited outsider without role is blocked and report search works on non-pgsql drivers', function () {
     /** @var TestCase $this */
     $disk = config('filesystems.default');
     Storage::fake($disk);
@@ -373,6 +373,9 @@ test('uninvited viewer cannot access ongoing meetings, documents, or unreleased 
     /** @var User $viewer */
     $viewer = User::factory()->create(['status' => 'aktif']);
     $viewer->assignRole('Viewer');
+
+    /** @var User $outsider */
+    $outsider = User::factory()->create(['status' => 'aktif']);
 
     $ongoingMeeting = Meeting::create([
         'title' => 'Rapat Rahasia Internal',
@@ -421,23 +424,28 @@ test('uninvited viewer cannot access ongoing meetings, documents, or unreleased 
         'content' => ['sections' => [['title' => 'Hasil', 'content' => 'Notulen disahkan.']]],
     ]);
 
-    // Uninvited viewer is blocked from ongoing meeting views & documents
-    $this->actingAs($viewer)->get(route('meetings.show', $ongoingMeeting))->assertForbidden();
-    $this->actingAs($viewer)->get(route('meetings.recording', $ongoingMeeting))->assertForbidden();
-    $this->actingAs($viewer)->get(route('meetings.approval', $ongoingMeeting))->assertForbidden();
-    $this->actingAs($viewer)->get(route('meetings.documents.download', [$ongoingMeeting, $document]))->assertForbidden();
+    // Uninvited user without Viewer/operator roles is blocked from ongoing meeting views & documents
+    $this->actingAs($outsider)->get(route('meetings.show', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($outsider)->get(route('meetings.recording', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($outsider)->get(route('meetings.approval', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($outsider)->get(route('meetings.documents.download', [$ongoingMeeting, $document]))->assertForbidden();
 
-    // Index & Reports search work cleanly on SQLite and hide unreleased ongoing meetings from uninvited viewer
+    // Viewer can view ongoing and finished meetings read-only (like Pimpinan without mutating actions)
+    $this->actingAs($viewer)->get(route('meetings.show', $ongoingMeeting))->assertOk();
+    $this->actingAs($viewer)->get(route('meetings.documents.download', [$ongoingMeeting, $document]))->assertOk();
+    $this->actingAs($viewer)->post(route('meetings.approval.store', $ongoingMeeting), ['decision' => 'approved'])->assertForbidden();
+
+    // Index & Reports search work cleanly on SQLite and expose meetings to Viewer read-only
     $this->actingAs($viewer)
         ->get(route('meetings.index', ['search' => 'Rapat']))
         ->assertOk()
-        ->assertDontSee('Rapat Rahasia Internal')
+        ->assertSee('Rapat Rahasia Internal')
         ->assertSee('Rapat Publik Selesai');
 
     $this->actingAs($viewer)
         ->get(route('reports.index', ['search' => 'Rapat']))
         ->assertOk()
-        ->assertDontSee('Rapat Rahasia Internal')
+        ->assertSee('Rapat Rahasia Internal')
         ->assertSee('Rapat Publik Selesai');
 
     $this->actingAs($creator)

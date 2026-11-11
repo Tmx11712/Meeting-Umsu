@@ -71,7 +71,7 @@ test('form requests reject non-uuid IDs cleanly and manual attendance requires u
         ->assertSessionHasErrors(['user_id', 'guest_name']);
 });
 
-test('viewer cannot see unreleased meetings in minutes index and uninvited user cannot tamper with documents', function () {
+test('viewer can see meetings read-only while uninvited outsider without viewer role cannot see or tamper with documents', function () {
     /** @var TestCase $this */
     /** @var User $creator */
     $creator = User::factory()->create(['status' => 'aktif']);
@@ -80,6 +80,10 @@ test('viewer cannot see unreleased meetings in minutes index and uninvited user 
     /** @var User $viewer */
     $viewer = User::factory()->create(['status' => 'aktif']);
     $viewer->assignRole('Viewer');
+
+    /** @var User $outsider */
+    $outsider = User::factory()->create(['status' => 'aktif']);
+    $outsider->givePermissionTo(['minute.read', 'minute.update']);
 
     $draftMeeting = Meeting::create([
         'title' => 'Rapat Internal Draft Rahasia',
@@ -101,14 +105,23 @@ test('viewer cannot see unreleased meetings in minutes index and uninvited user 
         'content' => ['sections' => []],
     ]);
 
+    // Viewer can see draft meeting in minutes index (read-only like Pimpinan) but cannot mutate documents
     $this->actingAs($viewer)
+        ->get(route('minutes.index'))
+        ->assertOk()
+        ->assertSee('Rapat Internal Draft Rahasia');
+
+    $this->actingAs($viewer)
+        ->post(route('meetings.documents.store', $draftMeeting), [])
+        ->assertForbidden();
+
+    // User without Viewer/Pimpinan/operator role cannot see uninvited meetings or tamper with documents
+    $this->actingAs($outsider)
         ->get(route('minutes.index'))
         ->assertOk()
         ->assertDontSee('Rapat Internal Draft Rahasia');
 
-    // Even if direct minute.update permission were granted, MeetingPolicy::view blocks uninvited document upload
-    $viewer->givePermissionTo('minute.update');
-    $this->actingAs($viewer)
+    $this->actingAs($outsider)
         ->post(route('meetings.documents.store', $draftMeeting), [])
         ->assertForbidden();
 });

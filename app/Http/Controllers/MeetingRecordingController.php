@@ -32,7 +32,7 @@ class MeetingRecordingController extends Controller
             ->where('is_invited', '=', true)
             ->exists();
         abort_unless(
-            $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan']) || $isInvitedParticipant,
+            $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan', 'Viewer']) || $isInvitedParticipant,
             403,
             'Akses Terbatas: Ruang rekaman hanya dapat diakses oleh petugas atau peserta terundang.'
         );
@@ -267,7 +267,7 @@ class MeetingRecordingController extends Controller
             ->where('user_id', '=', request()->user()->id)
             ->where('is_invited', '=', true)
             ->exists();
-        $isAuthorized = $isParticipant || request()->user()->can('recording.read') || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan']);
+        $isAuthorized = $isParticipant || request()->user()->can('recording.read') || request()->user()->can('recording.create') || request()->user()->hasRole(['Super Admin', 'Administrator', 'Pimpinan', 'Viewer']);
         abort_unless($isAuthorized, 403, 'Akses Terbatas: Anda tidak berhak memutar rekaman rapat ini.');
 
         abort_unless(Storage::exists($recording->file_path), 404, 'File audio tidak ditemukan.');

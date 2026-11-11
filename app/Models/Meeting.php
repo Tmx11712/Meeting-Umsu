@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\MeetingMinuteStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -195,24 +194,13 @@ class Meeting extends Model
      */
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan'])) {
+        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan', 'Viewer'])) {
             return $query;
         }
 
-        return $query->where(function (Builder $q) use ($user) {
-            $q->whereHas('participants', function (Builder $pq) use ($user) {
-                $pq->where('user_id', '=', $user->id)
-                    ->where('is_invited', '=', true);
-            });
-
-            if ($user->hasRole('Viewer')) {
-                $q->orWhere(function (Builder $vq) {
-                    $vq->where('status', '=', 'selesai')
-                        ->whereHas('minutes', function (Builder $mq) {
-                            $mq->where('status', '=', MeetingMinuteStatus::DISETUJUI->value);
-                        });
-                });
-            }
+        return $query->whereHas('participants', function (Builder $pq) use ($user) {
+            $pq->where('user_id', '=', $user->id)
+                ->where('is_invited', '=', true);
         });
     }
 
