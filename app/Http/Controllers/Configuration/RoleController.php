@@ -21,7 +21,7 @@ class RoleController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = Role::withCount('users');
+        $query = Role::withCount(['users', 'permissions']);
 
         if ($search = $request->input('search')) {
             $query->where('name', 'like', "%{$search}%");
@@ -33,7 +33,7 @@ class RoleController extends Controller
             'description' => $role->description,
             'guard_name' => $role->guard_name,
             'users_count' => $role->users_count,
-            'permissions_count' => $role->permissions()->count(),
+            'permissions_count' => $role->permissions_count,
         ]);
 
         return Inertia::render('configuration/roles/index', [
@@ -118,7 +118,7 @@ class RoleController extends Controller
         ]);
 
         if (
-            in_array($role->name, ['Super Admin', 'Administrator', 'Bag. Umum', 'Bag. Humas', 'Pimpinan', 'Viewer'], true)
+            in_array($role->name, Role::CORE_ROLES, true)
             && $validated['name'] !== $role->name
         ) {
             abort(403, 'Nama role sistem utama tidak dapat diubah.');
@@ -141,7 +141,7 @@ class RoleController extends Controller
         $name = $role->name;
 
         abort_if(
-            in_array($name, ['Super Admin', 'Administrator']),
+            in_array($name, Role::CORE_ROLES, true),
             403,
             'Role ini tidak dapat dihapus.'
         );

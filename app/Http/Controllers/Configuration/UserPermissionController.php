@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Configuration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -45,6 +47,9 @@ class UserPermissionController extends Controller
         ]);
 
         $selectedUserId = $request->input('user_id');
+        if ($selectedUserId && ! Str::isUuid((string) $selectedUserId)) {
+            $selectedUserId = null;
+        }
         $selectedUser = null;
         $userDirectPermissions = [];
         $userRolePermissions = [];
@@ -104,7 +109,22 @@ class UserPermissionController extends Controller
             'permissions.*' => 'string|exists:permissions,name',
         ]);
 
-        $user->syncPermissions($validated['permissions'] ?? []);
+        $requestedPermissions = $validated['permissions'] ?? [];
+
+        if (! $request->user()->hasRole('Super Admin')) {
+            abort_if($user->hasRole('Super Admin'), 403, 'Hanya Super Admin yang dapat mengubah direct permissions akun Super Admin.');
+
+            $currentRestricted = $user->permissions()->pluck('name')->filter(fn (string $name) => Role::isRestrictedRbacPermission($name));
+            $nextRestricted = collect($requestedPermissions)->filter(fn (string $name) => Role::isRestrictedRbacPermission($name));
+
+            abort_if(
+                $currentRestricted->sort()->values()->all() !== $nextRestricted->sort()->values()->all(),
+                403,
+                'Hanya Super Admin yang dapat mengubah direct permission manajemen RBAC.'
+            );
+        }
+
+        $user->syncPermissions($requestedPermissions);
 
         Cache::forget("user_menus_{$user->id}");
         Cache::increment('menu_cache_version');

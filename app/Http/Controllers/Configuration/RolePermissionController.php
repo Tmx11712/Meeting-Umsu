@@ -7,6 +7,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,6 +29,9 @@ class RolePermissionController extends Controller
         $roles = Role::orderBy('name', 'asc')->get(['id', 'name']);
 
         $selectedRoleId = $request->input('role_id');
+        if ($selectedRoleId && ! Str::isUuid((string) $selectedRoleId)) {
+            $selectedRoleId = null;
+        }
         $selectedRole = null;
         $rolePermissions = [];
 
@@ -71,16 +75,27 @@ class RolePermissionController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        // Don't allow changing Super Admin permissions through this UI
-        // if they are meant to have all permissions implicitly,
-        // but we'll allow it based on the current requirements unless specified otherwise.
-
         $validated = $request->validate([
             'permissions' => 'array',
             'permissions.*' => 'string|exists:permissions,name',
         ]);
 
-        $role->syncPermissions($validated['permissions'] ?? []);
+        $requestedPermissions = $validated['permissions'] ?? [];
+
+        if (! $request->user()->hasRole('Super Admin')) {
+            abort_if($role->name === 'Super Admin', 403, 'Hanya Super Admin yang dapat mengubah permissions role Super Admin.');
+
+            $currentRestricted = $role->permissions()->pluck('name')->filter(fn (string $name) => Role::isRestrictedRbacPermission($name));
+            $nextRestricted = collect($requestedPermissions)->filter(fn (string $name) => Role::isRestrictedRbacPermission($name));
+
+            abort_if(
+                $currentRestricted->sort()->values()->all() !== $nextRestricted->sort()->values()->all(),
+                403,
+                'Hanya Super Admin yang dapat mengubah permission manajemen RBAC.'
+            );
+        }
+
+        $role->syncPermissions($requestedPermissions);
 
         $userIds = $role->users()->pluck('users.id');
         foreach ($userIds as $id) {

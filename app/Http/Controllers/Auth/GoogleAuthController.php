@@ -49,7 +49,7 @@ class GoogleAuthController extends Controller
             ]);
         }
 
-        $email = strtolower((string) $googleUser->getEmail());
+        $email = strtolower(trim((string) $googleUser->getEmail()));
 
         if ($email === '') {
             return redirect()->route('login')->withErrors([
@@ -57,13 +57,21 @@ class GoogleAuthController extends Controller
             ]);
         }
 
-        $user = User::query()
-            ->where('google_id', '=', $googleUser->getId())
-            ->orWhere('email', '=', $email)
+        if ($googleUser instanceof \Laravel\Socialite\Two\User && ($googleUser->user['email_verified'] ?? true) === false) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Email akun Google Anda belum terverifikasi.',
+            ]);
+        }
+
+        $user = User::withTrashed()
+            ->where(function ($query) use ($googleUser, $email) {
+                $query->where('google_id', '=', $googleUser->getId())
+                    ->orWhereRaw('LOWER(email) = ?', [$email]);
+            })
             ->first();
 
         if ($user) {
-            if (($user->status ?? 'aktif') === 'nonaktif') {
+            if ($user->trashed() || ($user->status ?? 'aktif') === 'nonaktif') {
                 return redirect()->route('login')->withErrors([
                     'email' => 'Akun Anda sedang dinonaktifkan.',
                 ]);

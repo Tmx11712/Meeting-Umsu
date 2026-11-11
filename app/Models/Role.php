@@ -20,9 +20,47 @@ class Role extends SpatieRole
 {
     use HasUuids;
 
+    /**
+     * Role sistem bawaan yang namanya tidak boleh diubah atau dihapus.
+     *
+     * @var array<int, string>
+     */
+    public const CORE_ROLES = [
+        'Super Admin',
+        'Administrator',
+        'Bag. Umum',
+        'Bag. Humas',
+        'Pimpinan',
+        'Viewer',
+    ];
+
+    /**
+     * Prefix permission sensitif yang hanya boleh diatur oleh Super Admin.
+     *
+     * @var array<int, string>
+     */
+    public const SUPER_ADMIN_ONLY_PERMISSION_PREFIXES = [
+        'role.',
+        'permission.',
+        'menu.',
+        'role_permission.',
+        'user_permission.',
+    ];
+
     protected $primaryKey = 'id';
 
     public $incrementing = false;
 
     protected $keyType = 'string';
+
+    public static function isRestrictedRbacPermission(string $permissionName): bool
+    {
+        foreach (self::SUPER_ADMIN_ONLY_PERMISSION_PREFIXES as $prefix) {
+            if (str_starts_with($permissionName, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

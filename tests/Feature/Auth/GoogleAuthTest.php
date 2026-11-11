@@ -121,3 +121,21 @@ it('rejects new google signup from disallowed domain when allowed_domains is con
     assertGuest();
     expect(User::query()->where('email', '=', 'outsider@gmail.com')->exists())->toBeFalse();
 });
+
+it('rejects google login when email_verified is explicitly false', function () {
+    $twoUser = new Laravel\Socialite\Two\User;
+    $twoUser->map([
+        'id' => 'google-unverified',
+        'name' => 'Unverified User',
+        'email' => 'unverified@gmail.com',
+    ])->setRaw(['email_verified' => false]);
+
+    Socialite::shouldReceive('driver->redirectUrl->stateless->user')->once()->andReturn($twoUser);
+
+    $response = get('/auth/google/callback');
+
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHasErrors('email');
+    assertGuest();
+    expect(User::query()->where('email', '=', 'unverified@gmail.com')->exists())->toBeFalse();
+});

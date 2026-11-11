@@ -25,6 +25,8 @@ use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Laravel\Passkeys\Contracts\PasskeyLoginResponse as PasskeyLoginResponseContract;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\Passkeys;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -67,6 +69,8 @@ class FortifyServiceProvider extends ServiceProvider
 
             return null;
         });
+
+        Passkeys::authorizeLoginUsing(fn (Request $request, PasskeyUser $user): bool => ($user->status ?? 'aktif') !== 'nonaktif');
     }
 
     /**

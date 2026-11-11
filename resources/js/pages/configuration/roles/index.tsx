@@ -154,10 +154,14 @@ export default function RolesIndex({ roles, filters }: Props) {
                                                     >
                                                         <PenLine className="size-4" />
                                                     </Link>
-                                                    {role.name !==
-                                                        'Super Admin' &&
-                                                    role.name !==
-                                                        'Administrator' ? (
+                                                    {![
+                                                        'Super Admin',
+                                                        'Administrator',
+                                                        'Bag. Umum',
+                                                        'Bag. Humas',
+                                                        'Pimpinan',
+                                                        'Viewer',
+                                                    ].includes(role.name) ? (
                                                         <button
                                                             type="button"
                                                             className="text-slate-400 transition hover:text-red-600"

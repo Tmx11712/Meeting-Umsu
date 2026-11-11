@@ -28,13 +28,18 @@ class UpsertUserFromExternalAction
             return null;
         }
 
-        $user = User::query()->where('email', '=', $participantData['email'])->first();
+        $email = strtolower(trim((string) $participantData['email']));
+        $user = User::withTrashed()->whereRaw('LOWER(email) = ?', [$email])->first();
+
+        if ($user?->trashed()) {
+            return null;
+        }
 
         if (! $user) {
-            $fullname = $participantData['fullname'] ?? explode('@', $participantData['email'])[0];
+            $fullname = $participantData['fullname'] ?? explode('@', $email)[0];
             $user = User::create([
                 'name' => $fullname,
-                'email' => $participantData['email'],
+                'email' => $email,
                 'password' => Hash::make(Str::random(32)),
                 'department' => 'Umum',
                 'status' => 'aktif',

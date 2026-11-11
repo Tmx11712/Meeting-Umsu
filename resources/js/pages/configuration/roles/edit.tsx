@@ -28,8 +28,14 @@ export default function RolesEdit({ role }: Props) {
         put(`/configuration/roles/${role.id}`);
     };
 
-    const isSystemRole =
-        role.name === 'Super Admin' || role.name === 'Administrator';
+    const isSystemRole = [
+        'Super Admin',
+        'Administrator',
+        'Bag. Umum',
+        'Bag. Humas',
+        'Pimpinan',
+        'Viewer',
+    ].includes(role.name);
 
     return (
         <AppLayout breadcrumbs={[]}>

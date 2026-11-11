@@ -10,8 +10,11 @@ use App\Models\MeetingTranscript;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Passkeys\Passkey;
+use Laravel\Passkeys\Passkeys;
 use Tests\TestCase;
 
 beforeEach(function () {
@@ -472,4 +475,81 @@ test('trust proxies resolves forwarded client ip behind production reverse proxy
         ->get(route('login'));
     $proxyResponse->assertOk();
     expect(request()->ip())->toBe('198.51.100.9');
+});
+
+test('deactivated users are blocked from passkey login and api access', function () {
+    /** @var TestCase $this */
+    $inactiveUser = User::factory()->create(['status' => 'nonaktif']);
+    $activeUser = User::factory()->create(['status' => 'aktif']);
+
+    $inactivePasskey = new Passkey;
+    $inactivePasskey->setRelation('user', $inactiveUser);
+
+    $activePasskey = new Passkey;
+    $activePasskey->setRelation('user', $activeUser);
+
+    expect(Passkeys::allowsLogin(request(), $inactivePasskey))->toBeFalse()
+        ->and(Passkeys::allowsLogin(request(), $activePasskey))->toBeTrue();
+
+    $this->actingAs($inactiveUser)
+        ->getJson('/api/meetings')
+        ->assertForbidden();
+});
+
+test('administrator cannot escalate rbac permissions or delete core roles and horizon denies pimpinan', function () {
+    /** @var TestCase $this */
+    /** @var User $admin */
+    $admin = User::factory()->create(['status' => 'aktif']);
+    $admin->assignRole('Administrator');
+
+    /** @var User $pimpinan */
+    $pimpinan = User::factory()->create(['status' => 'aktif']);
+    $pimpinan->assignRole('Pimpinan');
+
+    $superAdminRole = Role::query()->where('name', '=', 'Super Admin')->firstOrFail();
+    $viewerRole = Role::query()->where('name', '=', 'Viewer')->firstOrFail();
+
+    /** @var User $superAdmin */
+    $superAdmin = User::factory()->create(['status' => 'aktif']);
+    $superAdmin->assignRole('Super Admin');
+
+    expect(Gate::forUser($pimpinan)->allows('viewHorizon'))->toBeFalse()
+        ->and(Gate::forUser($admin)->allows('viewHorizon'))->toBeTrue()
+        ->and(Gate::forUser($superAdmin)->allows('viewHorizon'))->toBeTrue();
+
+    $this->actingAs($admin)
+        ->put(route('configuration.role-permissions.update', $superAdminRole), [
+            'permissions' => ['meeting.read'],
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->put(route('configuration.role-permissions.update', $viewerRole), [
+            'permissions' => ['meeting.read', 'role_permission.update'],
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->put(route('configuration.user-permissions.update', $admin), [
+            'permissions' => ['user_permission.update'],
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->put(route('configuration.user-permissions.update', $superAdmin), [
+            'permissions' => ['meeting.read'],
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->delete(route('configuration.roles.destroy', $viewerRole))
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->get(route('configuration.role-permissions.index', ['role_id' => 'not-a-uuid']))
+        ->assertOk();
+
+    $this->actingAs($admin)
+        ->get(route('configuration.user-permissions.index', ['user_id' => 'not-a-uuid']))
+        ->assertOk();
 });
