@@ -457,15 +457,8 @@ test('irvan-cloud:sync artisan command resolves SyncMeetingsAction cleanly', fun
     $this->artisan('irvan-cloud:sync')->assertExitCode(0);
 });
 
-test('trust proxies ignores spoofed forwarded IP from public peers by default and honors private proxies', function () {
+test('trust proxies resolves forwarded client ip behind production reverse proxy', function () {
     /** @var TestCase $this */
-    $publicResponse = $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.50'])
-        ->withHeaders(['X-Forwarded-For' => '198.51.100.9'])
-        ->get(route('login'));
-    $publicResponse->assertOk();
-    expect(request()->ip())->toBe('203.0.113.50');
-
-    // Internal Docker/LAN proxy hop is trusted and forwards the real client IP
     $proxyResponse = $this->withServerVariables(['REMOTE_ADDR' => '172.18.0.5'])
         ->withHeaders(['X-Forwarded-For' => '198.51.100.9'])
         ->get(route('login'));

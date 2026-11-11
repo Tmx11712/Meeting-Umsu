@@ -29,22 +29,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         /**
-         * [EDUKASI ARSITEKTUR: TRUSTED PROXIES (AWS ALB / Nginx)]
-         * Di production, request user tidak langsung masuk ke Laravel, tapi melewati
-         * Load Balancer (AWS ALB) dan Nginx. Tanpa konfigurasi ini, Laravel mengira
-         * SEMUA user punya IP yang sama (IP milik ALB/Nginx), sehingga:
-         * - Rate limiter (throttle) akan memblokir semua orang sekaligus.
-         * - Deteksi HTTPS dan log IP menjadi salah.
-         * Kita hanya mempercayai proxy di jaringan privat (VPC AWS / LAN kampus),
-         * sehingga header X-Forwarded-For tidak bisa dipalsukan dari internet.
+         * [EDUKASI ARSITEKTUR: TRUSTED PROXIES (Reverse Proxy / Nginx Kampus)]
+         * Di server produksi kampus, trafik melewati reverse proxy / Nginx sebelum masuk PHP-FPM.
+         * Mengikuti konfigurasi server produksi (`*`) agar IP klien & HTTPS terbaca benar
+         * tanpa meng-hardcode IP proxy server di dalam kode aplikasi.
          */
-        $middleware->trustProxies(at: [
-            '127.0.0.1',
-            '::1',
-            '10.0.0.0/8',
-            '172.16.0.0/12',
-            '192.168.0.0/16',
-        ]);
+        $middleware->trustProxies(at: '*');
 
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 

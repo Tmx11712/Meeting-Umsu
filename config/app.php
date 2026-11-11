@@ -56,18 +56,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Trusted Proxies
-    |--------------------------------------------------------------------------
-    |
-    | Comma-separated proxy IPs/CIDRs (or "*") to trust for X-Forwarded-*
-    | headers. When empty, bootstrap/app.php trusts private VPC/LAN/Docker ranges.
-    |
-    */
-
-    'trusted_proxies' => env('TRUSTED_PROXIES'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
