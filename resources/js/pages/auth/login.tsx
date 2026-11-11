@@ -19,12 +19,14 @@ import type { TeamInvitationContext } from '@/types';
 type Props = {
     status?: string;
     canResetPassword: boolean;
+    canRegister?: boolean;
     teamInvitation?: TeamInvitationContext | null;
 };
 
 export default function Login({
     status,
     canResetPassword,
+    canRegister = true,
     teamInvitation,
 }: Props) {
     useEffect(() => {
@@ -42,7 +44,6 @@ export default function Login({
                     action="Masuk"
                 />
             )}
-
 
             <Form
                 {...store.form()}
@@ -111,7 +112,7 @@ export default function Login({
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white"
+                                className="mt-4 w-full bg-blue-600 text-white hover:bg-blue-700"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -165,12 +166,17 @@ export default function Login({
                 </div>
             )}
 
-            <div className="mt-6 text-center text-sm">
-                Belum punya akun?{' '}
-                <TextLink href={register()} className="text-blue-600 hover:text-blue-700">
-                    Daftar
-                </TextLink>
-            </div>
+            {canRegister && (
+                <div className="mt-6 text-center text-sm">
+                    Belum punya akun?{' '}
+                    <TextLink
+                        href={register()}
+                        className="text-blue-600 hover:text-blue-700"
+                    >
+                        Daftar
+                    </TextLink>
+                </div>
+            )}
         </>
     );
 }

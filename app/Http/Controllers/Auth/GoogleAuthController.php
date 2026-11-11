@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Features;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 use Throwable;
@@ -67,6 +68,22 @@ class GoogleAuthController extends Controller
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ])->save();
         } else {
+            /** @var array<int, string> $allowedDomains */
+            $allowedDomains = config('services.google.allowed_domains', []);
+            $domain = Str::after($email, '@');
+
+            if (! empty($allowedDomains)) {
+                if (! in_array($domain, $allowedDomains, true)) {
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Domain email Anda tidak diizinkan untuk mendaftar melalui Google.',
+                    ]);
+                }
+            } elseif (! Features::enabled(Features::registration())) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Pendaftaran akun baru dinonaktifkan. Hubungi administrator.',
+                ]);
+            }
+
             $user = DB::transaction(function () use ($googleUser, $email): User {
                 $name = trim((string) ($googleUser->getName() ?: explode('@', $email)[0]));
                 $initials = strtoupper(collect(explode(' ', $name))->filter()->map(fn (string $w) => $w[0])->take(2)->join(''));

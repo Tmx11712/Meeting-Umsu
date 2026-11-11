@@ -32,34 +32,15 @@ docker compose -f docker-compose.prod.yml up -d --remove-orphans --force-recreat
 echo "? Menunggu container siap..."
 sleep 5
 
-# 5. Eksekusi Perintah Optimasi & Frontend di Dalam Container
-echo "?? Mengkonfigurasi Laravel & Frontend di dalam container..."
-
-# a. Pastikan dependensi PHP terbaru
-docker compose -f docker-compose.prod.yml exec -T app composer install --optimize-autoloader --no-dev
-
-# b. Sinkronisasi dan Build Aset Frontend & Favicon
-echo "⚡ Mem-build dan menyinkronkan aset frontend (React/Vite & Favicon UMSU)..."
-docker compose -f docker-compose.prod.yml exec -T app sh -c "rm -rf /var/www/html/public/build && cp -rf /var/www/html/public-assets/* /var/www/html/public/ 2>/dev/null || true"
-docker compose -f docker-compose.prod.yml cp public/favicon.svg app:/var/www/html/public/favicon.svg || true
-docker compose -f docker-compose.prod.yml cp public/favicon.ico app:/var/www/html/public/favicon.ico || true
-docker compose -f docker-compose.prod.yml cp public/favicon-32x32.png app:/var/www/html/public/favicon-32x32.png || true
-docker compose -f docker-compose.prod.yml cp public/favicon-16x16.png app:/var/www/html/public/favicon-16x16.png || true
-docker compose -f docker-compose.prod.yml cp public/apple-touch-icon.png app:/var/www/html/public/apple-touch-icon.png || true
-
-# c. Optimasi, Caching, dan Migrasi Laravel
-echo "??? Menjalankan migrasi database dan caching aplikasi..."
-docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
-docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
-docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
-docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
-docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
-docker compose -f docker-compose.prod.yml exec -T app php artisan event:cache
+# 5. Eksekusi Migrasi & Optimasi di Dalam Container
+echo "?? Menjalankan migrasi database dan caching aplikasi..."
+docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force --isolated
+docker compose -f docker-compose.prod.yml exec -T app php artisan optimize
 docker compose -f docker-compose.prod.yml exec -T app php artisan storage:link --force || true
 
-# 6. Restart Queue Worker (Penting untuk pemrosesan AI)
-echo "?? Merestart antrian (Queue Worker)..."
-docker compose -f docker-compose.prod.yml exec -T app php artisan queue:restart || true
+# 6. Restart Horizon Worker (Penting untuk pemrosesan AI)
+echo "?? Merestart antrian (Horizon Worker)..."
+docker compose -f docker-compose.prod.yml exec -T worker php artisan horizon:terminate || true
 
 echo "=========================================================="
 echo "? Deployment Selesai Sukses! Aplikasi e-Notulen mengudara."

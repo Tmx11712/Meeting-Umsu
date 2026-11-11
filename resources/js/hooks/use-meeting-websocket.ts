@@ -11,7 +11,8 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
      */
     const { auth } = usePage<any>().props;
     const roles = auth?.roles || [];
-    const isAdmin = roles.includes('Super Admin') || roles.includes('Administrator');
+    const isAdmin =
+        roles.includes('Super Admin') || roles.includes('Administrator');
     const isUmum = roles.includes('Bag. Umum');
     const isHumas = roles.includes('Bag. Humas');
     const isPimpinan = roles.includes('Pimpinan');
@@ -19,38 +20,45 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
 
     const isAdminOrUmum = isAdmin || isUmum;
 
-    const checkAndRedirect = useCallback((stage: number): boolean => {
-        if (!meetingId) {
-            return false;
-        }
+    const checkAndRedirect = useCallback(
+        (stage: number): boolean => {
+            if (!meetingId) {
+                return false;
+            }
 
-        const currentPath = window.location.pathname;
-        
-        // Stage 3-5: Hanya Admin & Bag. Umum yang diarahkan (workflow operasional internal).
-        // Bag. Humas TETAP di halaman saat ini (biasanya ruang rekaman) dan tidak ditarik ke dapur notulen.
-        if (stage === 3 && !currentPath.includes('/correction')) {
-            if (isAdminOrUmum) {
-                router.visit(`/meetings/${meetingId}/correction`);
-                return true; 
-            }
-        } else if (stage === 4 && !currentPath.includes('/attendance')) {
-            if (isAdminOrUmum) {
-                router.visit(`/meetings/${meetingId}/attendance`);
-                return true; 
-            }
-        } else if (stage === 5 && !currentPath.includes('/review')) {
-            if (isAdminOrUmum) {
-                router.visit(`/meetings/${meetingId}/review`);
+            const currentPath = window.location.pathname;
+
+            // Stage 3-5: Hanya Admin & Bag. Umum yang diarahkan (workflow operasional internal).
+            // Bag. Humas TETAP di halaman saat ini (biasanya ruang rekaman) dan tidak ditarik ke dapur notulen.
+            if (stage === 3 && !currentPath.includes('/correction')) {
+                if (isAdminOrUmum) {
+                    router.visit(`/meetings/${meetingId}/correction`);
+
+                    return true;
+                }
+            } else if (stage === 4 && !currentPath.includes('/attendance')) {
+                if (isAdminOrUmum) {
+                    router.visit(`/meetings/${meetingId}/attendance`);
+
+                    return true;
+                }
+            } else if (stage === 5 && !currentPath.includes('/review')) {
+                if (isAdminOrUmum) {
+                    router.visit(`/meetings/${meetingId}/review`);
+
+                    return true;
+                }
+            } else if (stage >= 6 && !currentPath.includes('/approval')) {
+                // Stage 6+: Semua ditarik ke halaman Approval (Sesuai permintaan)
+                router.visit(`/meetings/${meetingId}/approval`);
+
                 return true;
             }
-        } else if (stage >= 6 && !currentPath.includes('/approval')) {
-            // Stage 6+: Semua ditarik ke halaman Approval (Sesuai permintaan)
-            router.visit(`/meetings/${meetingId}/approval`);
-            return true;
-        }
-        
-        return false;
-    }, [meetingId, isAdminOrUmum, isPimpinan, isAdmin, isHumas, isUmum]);
+
+            return false;
+        },
+        [meetingId, isAdminOrUmum, isPimpinan, isAdmin, isHumas, isUmum],
+    );
 
     const safeReload = useCallback(() => {
         router.reload({
@@ -73,20 +81,23 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
         const pollInterval = isRecordingPage ? 15000 : 30000;
 
         const interval = setInterval(safeReload, pollInterval);
-        
+
         // Saat tab browser kembali aktif/fokus, langsung ambil data terbaru
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
                 safeReload();
             }
         };
-        
+
         window.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('focus', handleVisibilityChange);
-        
+
         return () => {
             clearInterval(interval);
-            window.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            );
             window.removeEventListener('focus', handleVisibilityChange);
         };
     }, [meetingId, safeReload]);
@@ -106,15 +117,18 @@ export function useMeetingWebSocket(meetingId: string | number | undefined) {
 
         const meetingChannel = echo.private(channelName);
         const handleMeetingUpdate = (e: any) => {
-            console.log(`[WS] Meeting ${meetingId} updated:`, e);
-            
             if (e.type === 'deleted') {
                 // Rapat telah dihapus, arahkan langsung ke dashboard tanpa safeReload
                 router.visit('/dashboard', { replace: true });
+
                 return;
             }
 
-            if (e.meeting && e.type === 'stage_changed' && e.meeting.current_stage) {
+            if (
+                e.meeting &&
+                e.type === 'stage_changed' &&
+                e.meeting.current_stage
+            ) {
                 const redirected = checkAndRedirect(e.meeting.current_stage);
 
                 if (!redirected) {

@@ -1,10 +1,18 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { QrCode, Fingerprint, Search, CheckCircle2, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import {
+    QrCode,
+    Fingerprint,
+    Search,
+    CheckCircle2,
+    ChevronLeft,
+    ChevronRight,
+    Loader2,
+} from 'lucide-react';
 import { AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 import { MeetingInfoCard } from '@/components/meetings/MeetingInfoCard';
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,12 +20,24 @@ import { useMeetingWebSocket } from '@/hooks/use-meeting-websocket';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { Meeting } from '@/types/meeting';
 
-export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, signaturePath, hasSigned, total, present }: { meeting: Meeting, [key: string]: any }) {
+export default function MeetingAttendance({
+    meeting,
+    attendanceRecords,
+    qrcode,
+    signaturePath,
+    hasSigned,
+    total,
+    present,
+}: {
+    meeting: Meeting;
+    [key: string]: any;
+}) {
     const { canEdit, hasRole, isAdmin } = usePermissions();
     const { flash } = usePage().props as any;
-    
+
     // Logika Bypass Admin: Jika status rapat sudah selesai atau tahap persetujuan, hanya Admin yang boleh mengubah.
-    const isLocked = meeting.status === 'selesai' || Number(meeting.current_stage || 1) >= 6;
+    const isLocked =
+        meeting.status === 'selesai' || Number(meeting.current_stage || 1) >= 6;
     const canManageAttendance = isAdmin || (canEdit('attendance') && !isLocked);
 
     useMeetingWebSocket(meeting?.id);
@@ -37,8 +57,8 @@ export default function MeetingAttendance({ meeting, attendanceRecords, qrcode, 
     // Realtime polling specifically for IrvanCloud (UMSU Employee) QR Scans
     useEffect(() => {
         if (!isIrvanCloud) {
-return;
-}
+            return;
+        }
 
         const interval = setInterval(async () => {
             try {
@@ -46,14 +66,19 @@ return;
                 await fetch(`/meetings/${meeting.id}/attendance/sync`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': (document.head.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
-                    }
+                        'X-CSRF-TOKEN':
+                            (
+                                document.head.querySelector(
+                                    'meta[name="csrf-token"]',
+                                ) as HTMLMetaElement
+                            )?.content || '',
+                    },
                 });
 
                 // Then reload the page data silently
                 router.reload({ only: ['meeting'] });
             } catch (e) {
-                console.error("Failed to sync attendance from IrvanCloud", e);
+                console.error('Failed to sync attendance from IrvanCloud', e);
             }
         }, 15000); // Diubah dari 5000 ke 15000 untuk mengurangi beban network (lelet)
 
@@ -63,10 +88,14 @@ return;
     // Removed polling in favor of true real-time WebSockets via useMeetingWebSocket
 
     const handleManualAttendance = (userId: string, status: string) => {
-        router.post(`/meetings/${meeting.id}/attendance/manual`, {
-            user_id: userId,
-            status: status
-        }, { preserveScroll: true });
+        router.post(
+            `/meetings/${meeting.id}/attendance/manual`,
+            {
+                user_id: userId,
+                status: status,
+            },
+            { preserveScroll: true },
+        );
     };
 
     const handleFinish = () => {
@@ -93,18 +122,33 @@ return;
     const guestAttendances = attendances.filter((a: any) => !a.user_id);
     const totalParticipants = participants.length + guestAttendances.length;
     const hadir = attendances.filter((a: any) => a.status === 'hadir').length;
-    const terlambat = attendances.filter((a: any) => a.status === 'terlambat').length;
+    const terlambat = attendances.filter(
+        (a: any) => a.status === 'terlambat',
+    ).length;
     const tidakHadir = totalParticipants - hadir - terlambat;
 
-    const getHadirPct = () => totalParticipants > 0 ? ((hadir / totalParticipants) * 100).toFixed(2) : '0.00';
-    const getTerlambatPct = () => totalParticipants > 0 ? ((terlambat / totalParticipants) * 100).toFixed(2) : '0.00';
-    const getTidakHadirPct = () => totalParticipants > 0 ? ((tidakHadir / totalParticipants) * 100).toFixed(2) : '0.00';
+    const getHadirPct = () =>
+        totalParticipants > 0
+            ? ((hadir / totalParticipants) * 100).toFixed(2)
+            : '0.00';
+    const getTerlambatPct = () =>
+        totalParticipants > 0
+            ? ((terlambat / totalParticipants) * 100).toFixed(2)
+            : '0.00';
+    const getTidakHadirPct = () =>
+        totalParticipants > 0
+            ? ((tidakHadir / totalParticipants) * 100).toFixed(2)
+            : '0.00';
 
     // Map table data and fix user_id & status bugs
     const tableData = participants.map((p: any) => {
         const att = attendances.find((a: any) => a.user_id === p.user_id);
         const statusLabel = att
-            ? (att.status === 'hadir' ? 'Hadir' : att.status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir')
+            ? att.status === 'hadir'
+                ? 'Hadir'
+                : att.status === 'terlambat'
+                  ? 'Terlambat'
+                  : 'Tidak Hadir'
             : 'Belum';
 
         return {
@@ -115,9 +159,19 @@ return;
             job: p.user?.roles?.[0]?.name || '-',
             nip: p.user?.nip || '-', // Added NIP
             status: statusLabel, // Fix Bug #2: Handle 'tidak_hadir'
-            time_in: att?.check_in_time ? new Date(att.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
-            time_out: att?.check_out_time ? new Date(att.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
-            method: isIrvanCloud ? 'UMSU Employee App' : 'Manual'
+            time_in: att?.check_in_time
+                ? new Date(att.check_in_time).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                  })
+                : '-',
+            time_out: att?.check_out_time
+                ? new Date(att.check_out_time).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                  })
+                : '-',
+            method: isIrvanCloud ? 'UMSU Employee App' : 'Manual',
         };
     });
 
@@ -130,151 +184,268 @@ return;
             dept: guest.guest_unit_kerja || '-',
             job: guest.guest_institution || 'Tamu / Eksternal',
             nip: '-',
-            status: guest.status === 'hadir' ? 'Hadir' : (guest.status === 'terlambat' ? 'Terlambat' : 'Tidak Hadir'),
-            time_in: guest.check_in_time ? new Date(guest.check_in_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
-            time_out: guest.check_out_time ? new Date(guest.check_out_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-',
-            method: 'QR Code (Web)'
+            status:
+                guest.status === 'hadir'
+                    ? 'Hadir'
+                    : guest.status === 'terlambat'
+                      ? 'Terlambat'
+                      : 'Tidak Hadir',
+            time_in: guest.check_in_time
+                ? new Date(guest.check_in_time).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                  })
+                : '-',
+            time_out: guest.check_out_time
+                ? new Date(guest.check_out_time).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                  })
+                : '-',
+            method: 'QR Code (Web)',
         });
     });
 
     // Extract unique departments for filter
-    const departments = ['Semua Departemen', ...Array.from(new Set<string>(tableData.map((d: any) => d.dept)))].filter(d => d !== '-');
+    const departments = [
+        'Semua Departemen',
+        ...Array.from(new Set<string>(tableData.map((d: any) => d.dept))),
+    ].filter((d) => d !== '-');
 
     // Filter table data
     const filteredData = tableData.filter((row: any) => {
-        const matchSearch = row.name?.toLowerCase().includes(searchQuery.toLowerCase()) || row.dept?.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchStatus = statusFilter === 'Semua Status' || row.status === statusFilter;
-        const matchDept = deptFilter === 'Semua Departemen' || row.dept === deptFilter;
+        const matchSearch =
+            row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            row.dept?.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchStatus =
+            statusFilter === 'Semua Status' || row.status === statusFilter;
+        const matchDept =
+            deptFilter === 'Semua Departemen' || row.dept === deptFilter;
 
         return matchSearch && matchStatus && matchDept;
     });
 
     // Pagination logic
     const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
-    const currentData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    const currentData = filteredData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+    );
     const startIndex = (currentPage - 1) * itemsPerPage + 1;
     const endIndex = Math.min(currentPage * itemsPerPage, filteredData.length);
 
     // Sidebar: Peserta Tidak Hadir/Belum
-    const unrecordedParticipants = tableData.filter((r: any) => r.status === 'Belum' || r.status === 'Tidak Hadir');
+    const unrecordedParticipants = tableData.filter(
+        (r: any) => r.status === 'Belum' || r.status === 'Tidak Hadir',
+    );
 
     return (
-        <div className="flex flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex w-full animate-in flex-col gap-4 py-2 duration-700 fade-in slide-in-from-bottom-4">
             <Head title="Absensi Peserta" />
 
             {/* Header & Breadcrumb */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col justify-between gap-4 rounded-2xl border border-white/60 bg-white/40 p-4 shadow-sm backdrop-blur-md sm:flex-row sm:items-center dark:border-slate-800/60 dark:bg-slate-900/40">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
+                    <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                         Absensi Peserta
                     </h1>
-                    <div className="text-sm text-slate-500 flex items-center gap-2 font-medium">
+                    <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                         <span>Dashboard</span>
                         <span>›</span>
-                        <Link href="/meetings" className="hover:text-blue-600 transition-colors">Jadwal Rapat</Link>
+                        <Link
+                            href="/meetings"
+                            className="transition-colors hover:text-blue-600"
+                        >
+                            Jadwal Rapat
+                        </Link>
                         <span>›</span>
-                        <span className="text-blue-900 dark:text-blue-300 font-bold">Absensi Peserta</span>
+                        <span className="font-bold text-blue-900 dark:text-blue-300">
+                            Absensi Peserta
+                        </span>
                     </div>
                 </div>
-                <Button variant="outline" asChild className="rounded-xl border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 shadow-sm h-11">
-                    <Link href="/meetings">
-                        Kembali ke Jadwal
-                    </Link>
+                <Button
+                    variant="outline"
+                    asChild
+                    className="h-11 rounded-xl border-slate-200 bg-white/60 shadow-sm hover:bg-white dark:border-slate-700 dark:bg-slate-800/60 dark:hover:bg-slate-800"
+                >
+                    <Link href="/meetings">Kembali ke Jadwal</Link>
                 </Button>
             </div>
 
-
-
             {!canManageAttendance && (
-                <Alert className="bg-rose-50/80 dark:bg-rose-900/30 text-rose-900 dark:text-rose-200 border-rose-200 dark:border-rose-800/50 rounded-2xl backdrop-blur-sm">
+                <Alert className="rounded-2xl border-rose-200 bg-rose-50/80 text-rose-900 backdrop-blur-sm dark:border-rose-800/50 dark:bg-rose-900/30 dark:text-rose-200">
                     <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
-                    <AlertTitle className="text-rose-800 dark:text-rose-300 font-bold text-base ml-2">Mode Hanya Baca</AlertTitle>
-                    <AlertDescription className="text-rose-700 dark:text-rose-400/90 ml-2 mt-1 font-medium">
-                        Anda tidak memiliki izin untuk mengelola absensi rapat ini. Anda hanya dapat melihat data.
+                    <AlertTitle className="ml-2 text-base font-bold text-rose-800 dark:text-rose-300">
+                        Mode Hanya Baca
+                    </AlertTitle>
+                    <AlertDescription className="mt-1 ml-2 font-medium text-rose-700 dark:text-rose-400/90">
+                        Anda tidak memiliki izin untuk mengelola absensi rapat
+                        ini. Anda hanya dapat melihat data.
                     </AlertDescription>
                 </Alert>
             )}
 
             {/* Success Banner (Fix Bug #7: Show only when there is flash success) */}
             {flash?.success && (
-                <div className="bg-emerald-50/80 border border-emerald-200/60 rounded-xl p-4 flex items-start gap-3 backdrop-blur-sm shadow-soft">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
+                <div className="shadow-soft flex items-start gap-3 rounded-xl border border-emerald-200/60 bg-emerald-50/80 p-4 backdrop-blur-sm">
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                     <div>
-                        <h4 className="text-sm font-semibold text-emerald-800">Berhasil</h4>
-                        <p className="text-xs text-emerald-700 mt-0.5">{flash.success}</p>
+                        <h4 className="text-sm font-semibold text-emerald-800">
+                            Berhasil
+                        </h4>
+                        <p className="mt-0.5 text-xs text-emerald-700">
+                            {flash.success}
+                        </p>
                     </div>
                 </div>
             )}
 
             {/* Top Cards Row */}
-            <div className={isIrvanCloud || !canManageAttendance ? "grid md:grid-cols-[1.2fr_1.5fr] gap-4" : "grid md:grid-cols-[1.2fr_1.5fr_1fr] gap-4"}>
-
+            <div
+                className={
+                    isIrvanCloud || !canManageAttendance
+                        ? 'grid gap-4 md:grid-cols-[1.2fr_1.5fr]'
+                        : 'grid gap-4 md:grid-cols-[1.2fr_1.5fr_1fr]'
+                }
+            >
                 {/* Informasi Rapat */}
                 <MeetingInfoCard
                     meeting={meeting}
                     totalParticipants={totalParticipants}
                     showDetailButton={true}
-                    className="border-white/50 bg-glass backdrop-blur-xl"
+                    className="bg-glass border-white/50 backdrop-blur-xl"
                 />
 
                 {/* Ringkasan Absensi */}
-                <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl">
+                <Card className="shadow-soft bg-glass rounded-2xl border-white/50 backdrop-blur-xl">
                     <CardHeader className="pb-4">
-                        <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">Ringkasan Absensi</CardTitle>
+                        <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">
+                            Ringkasan Absensi
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-4 gap-2">
-                            <div className="bg-emerald-50/60 rounded-lg py-1.5 px-2 text-center border border-emerald-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-                                <p className="text-[10px] text-emerald-700 font-medium">Hadir</p>
-                                <p className="text-lg font-bold text-emerald-600 leading-none mt-0.5">{hadir}</p>
+                            <div className="flex flex-col justify-center rounded-lg border border-emerald-100/50 bg-emerald-50/60 px-2 py-1.5 text-center shadow-sm backdrop-blur-sm">
+                                <p className="text-[10px] font-medium text-emerald-700">
+                                    Hadir
+                                </p>
+                                <p className="mt-0.5 text-lg leading-none font-bold text-emerald-600">
+                                    {hadir}
+                                </p>
                             </div>
-                            <div className="bg-amber-50/60 rounded-lg py-1.5 px-2 text-center border border-amber-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-                                <p className="text-[10px] text-amber-700 font-medium">Terlambat</p>
-                                <p className="text-lg font-bold text-amber-500 leading-none mt-0.5">{terlambat}</p>
+                            <div className="flex flex-col justify-center rounded-lg border border-amber-100/50 bg-amber-50/60 px-2 py-1.5 text-center shadow-sm backdrop-blur-sm">
+                                <p className="text-[10px] font-medium text-amber-700">
+                                    Terlambat
+                                </p>
+                                <p className="mt-0.5 text-lg leading-none font-bold text-amber-500">
+                                    {terlambat}
+                                </p>
                             </div>
-                            <div className="bg-rose-50/60 rounded-lg py-1.5 px-2 text-center border border-rose-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-                                <p className="text-[10px] text-rose-700 font-medium">Tidak Hadir</p>
-                                <p className="text-lg font-bold text-rose-500 leading-none mt-0.5">{tidakHadir}</p>
+                            <div className="flex flex-col justify-center rounded-lg border border-rose-100/50 bg-rose-50/60 px-2 py-1.5 text-center shadow-sm backdrop-blur-sm">
+                                <p className="text-[10px] font-medium text-rose-700">
+                                    Tidak Hadir
+                                </p>
+                                <p className="mt-0.5 text-lg leading-none font-bold text-rose-500">
+                                    {tidakHadir}
+                                </p>
                             </div>
-                            <div className="bg-blue-50/60 rounded-lg py-1.5 px-2 text-center border border-blue-100/50 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-                                <p className="text-[10px] text-blue-700 font-medium">Total</p>
-                                <p className="text-lg font-bold text-blue-600 leading-none mt-0.5">{totalParticipants}</p>
+                            <div className="flex flex-col justify-center rounded-lg border border-blue-100/50 bg-blue-50/60 px-2 py-1.5 text-center shadow-sm backdrop-blur-sm">
+                                <p className="text-[10px] font-medium text-blue-700">
+                                    Total
+                                </p>
+                                <p className="mt-0.5 text-lg leading-none font-bold text-blue-600">
+                                    {totalParticipants}
+                                </p>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-start gap-6 px-2 mt-2">
+                        <div className="mt-2 flex items-center justify-start gap-6 px-2">
                             {/* Fake Donut Chart */}
-                            <div className="relative w-24 h-24 drop-shadow-sm shrink-0">
-                                <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
-                                    <circle cx="50" cy="50" r="40" stroke="rgba(241, 245, 249, 0.5)" strokeWidth="20" fill="none" />
-                                    <circle cx="50" cy="50" r="40" stroke="#10b981" strokeWidth="20" fill="none" strokeDasharray={`${hadir / totalParticipants * 251 || 0} 251`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f59e0b" strokeWidth="20" fill="none" strokeDasharray={`${terlambat / totalParticipants * 251 || 0} 251`} strokeDashoffset={`-${hadir / totalParticipants * 251 || 0}`} />
-                                    <circle cx="50" cy="50" r="40" stroke="#f43f5e" strokeWidth="20" fill="none" strokeDasharray={`${tidakHadir / totalParticipants * 251 || 0} 251`} strokeDashoffset={`-${(hadir + terlambat) / totalParticipants * 251 || 0}`} />
-                                    <circle cx="50" cy="50" r="25" fill="rgba(255, 255, 255, 0.5)" />
+                            <div className="relative h-24 w-24 shrink-0 drop-shadow-sm">
+                                <svg
+                                    viewBox="0 0 100 100"
+                                    className="h-full w-full -rotate-90 transform"
+                                >
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="40"
+                                        stroke="rgba(241, 245, 249, 0.5)"
+                                        strokeWidth="20"
+                                        fill="none"
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="40"
+                                        stroke="#10b981"
+                                        strokeWidth="20"
+                                        fill="none"
+                                        strokeDasharray={`${(hadir / totalParticipants) * 251 || 0} 251`}
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="40"
+                                        stroke="#f59e0b"
+                                        strokeWidth="20"
+                                        fill="none"
+                                        strokeDasharray={`${(terlambat / totalParticipants) * 251 || 0} 251`}
+                                        strokeDashoffset={`-${(hadir / totalParticipants) * 251 || 0}`}
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="40"
+                                        stroke="#f43f5e"
+                                        strokeWidth="20"
+                                        fill="none"
+                                        strokeDasharray={`${(tidakHadir / totalParticipants) * 251 || 0} 251`}
+                                        strokeDashoffset={`-${((hadir + terlambat) / totalParticipants) * 251 || 0}`}
+                                    />
+                                    <circle
+                                        cx="50"
+                                        cy="50"
+                                        r="25"
+                                        fill="rgba(255, 255, 255, 0.5)"
+                                    />
                                 </svg>
                             </div>
 
                             <div className="space-y-2">
                                 <div className="flex items-center gap-4 text-xs">
-                                    <div className="flex items-center gap-2 w-24">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
-                                        <span className="text-slate-700 dark:text-slate-300">Hadir</span>
+                                    <div className="flex w-24 items-center gap-2">
+                                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-200"></div>
+                                        <span className="text-slate-700 dark:text-slate-300">
+                                            Hadir
+                                        </span>
                                     </div>
-                                    <span className="font-medium text-slate-900 dark:text-white">{hadir} ({getHadirPct()}%)</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">
+                                        {hadir} ({getHadirPct()}%)
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-4 text-xs">
-                                    <div className="flex items-center gap-2 w-24">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-200"></div>
-                                        <span className="text-slate-700 dark:text-slate-300">Terlambat</span>
+                                    <div className="flex w-24 items-center gap-2">
+                                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500 shadow-sm shadow-amber-200"></div>
+                                        <span className="text-slate-700 dark:text-slate-300">
+                                            Terlambat
+                                        </span>
                                     </div>
-                                    <span className="font-medium text-slate-900 dark:text-white">{terlambat} ({getTerlambatPct()}%)</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">
+                                        {terlambat} ({getTerlambatPct()}%)
+                                    </span>
                                 </div>
                                 <div className="flex items-center gap-4 text-xs">
-                                    <div className="flex items-center gap-2 w-24">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-200"></div>
-                                        <span className="text-slate-700 dark:text-slate-300">Tidak Hadir</span>
+                                    <div className="flex w-24 items-center gap-2">
+                                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-200"></div>
+                                        <span className="text-slate-700 dark:text-slate-300">
+                                            Tidak Hadir
+                                        </span>
                                     </div>
-                                    <span className="font-medium text-slate-900 dark:text-white">{tidakHadir} ({getTidakHadirPct()}%)</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">
+                                        {tidakHadir} ({getTidakHadirPct()}%)
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -283,55 +454,93 @@ return;
 
                 {/* Metode Absensi */}
                 {!isIrvanCloud && canManageAttendance && (
-                    <Card className="rounded-2xl border-white/50 shadow-soft bg-glass backdrop-blur-xl">
+                    <Card className="shadow-soft bg-glass rounded-2xl border-white/50 backdrop-blur-xl">
                         <CardHeader className="pb-4">
-                            <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">Metode Absensi</CardTitle>
+                            <CardTitle className="text-base font-semibold text-slate-800 dark:text-slate-200">
+                                Metode Absensi
+                            </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-white/40 shadow-sm relative">
-                                <Badge className="absolute top-4 right-4 bg-emerald-50/80 text-emerald-600 hover:bg-emerald-100/80 border border-emerald-200/50 shadow-none backdrop-blur-sm">Aktif</Badge>
-                                <div className="flex items-start gap-3 mb-3">
-                                    <div className="p-2 bg-slate-100/80 text-slate-600 rounded-lg shadow-sm">
-                                        <QrCode className="w-5 h-5" />
+                            <div className="relative rounded-xl border border-white/40 bg-white/60 p-4 shadow-sm backdrop-blur-sm dark:bg-slate-800/60">
+                                <Badge className="absolute top-4 right-4 border border-emerald-200/50 bg-emerald-50/80 text-emerald-600 shadow-none backdrop-blur-sm hover:bg-emerald-100/80">
+                                    Aktif
+                                </Badge>
+                                <div className="mb-3 flex items-start gap-3">
+                                    <div className="rounded-lg bg-slate-100/80 p-2 text-slate-600 shadow-sm">
+                                        <QrCode className="h-5 w-5" />
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-sm text-slate-900 dark:text-white">QR Code</h4>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Peserta dapat melakukan scan QR code untuk absensi.</p>
+                                        <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
+                                            QR Code
+                                        </h4>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                            Peserta dapat melakukan scan QR code
+                                            untuk absensi.
+                                        </p>
                                     </div>
                                 </div>
                                 {qrCodeHtml ? (
                                     <div className="mt-4 flex flex-col items-center">
-                                        <div className="p-2 bg-white rounded-xl border border-slate-200/60 shadow-sm mb-2">
-                                            <img src={qrCodeHtml} alt="QR Code Absensi" className="w-32 h-32" />
+                                        <div className="mb-2 rounded-xl border border-slate-200/60 bg-white p-2 shadow-sm">
+                                            <img
+                                                src={qrCodeHtml}
+                                                alt="QR Code Absensi"
+                                                className="h-32 w-32"
+                                            />
                                         </div>
-                                        <Button variant="ghost" size="sm" onClick={generateQrCode} disabled={loadingQr || !canManageAttendance} className="text-xs">
-                                            {loadingQr ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null} Perbarui
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={generateQrCode}
+                                            disabled={
+                                                loadingQr ||
+                                                !canManageAttendance
+                                            }
+                                            className="text-xs"
+                                        >
+                                            {loadingQr ? (
+                                                <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                            ) : null}{' '}
+                                            Perbarui
                                         </Button>
                                     </div>
                                 ) : (
                                     <Button
                                         variant="outline"
-                                        className="w-max text-blue-600 border-blue-200/60 hover:bg-blue-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 mt-2 rounded-lg"
+                                        className="mt-2 h-8 w-max rounded-lg border-blue-200/60 bg-white/50 text-xs text-blue-600 backdrop-blur-sm hover:bg-blue-50/50"
                                         onClick={generateQrCode}
-                                        disabled={loadingQr || !canManageAttendance}
+                                        disabled={
+                                            loadingQr || !canManageAttendance
+                                        }
                                     >
-                                        {loadingQr ? <Loader2 className="w-3 h-3 mr-2 animate-spin" /> : null}
+                                        {loadingQr ? (
+                                            <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                                        ) : null}
                                         Tampilkan QR Code
                                     </Button>
                                 )}
                             </div>
 
-                            <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl p-4 border border-white/40 shadow-sm">
-                                <div className="flex items-start gap-3 mb-3">
-                                    <div className="p-2 bg-slate-100/80 text-slate-600 rounded-lg shadow-sm">
-                                        <Fingerprint className="w-5 h-5" />
+                            <div className="rounded-xl border border-white/40 bg-white/60 p-4 shadow-sm backdrop-blur-sm dark:bg-slate-800/60">
+                                <div className="mb-3 flex items-start gap-3">
+                                    <div className="rounded-lg bg-slate-100/80 p-2 text-slate-600 shadow-sm">
+                                        <Fingerprint className="h-5 w-5" />
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-sm text-slate-900 dark:text-white">Manual</h4>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Absensi dilakukan secara manual oleh operator.</p>
+                                        <h4 className="text-sm font-semibold text-slate-900 dark:text-white">
+                                            Manual
+                                        </h4>
+                                        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                                            Absensi dilakukan secara manual oleh
+                                            operator.
+                                        </p>
                                     </div>
                                 </div>
-                                <Button variant="outline" className="w-max text-blue-600 border-blue-200/60 hover:bg-blue-50/50 bg-white/50 backdrop-blur-sm text-xs h-8 rounded-lg" disabled={!canManageAttendance}>
+                                <Button
+                                    variant="outline"
+                                    className="h-8 w-max rounded-lg border-blue-200/60 bg-white/50 text-xs text-blue-600 backdrop-blur-sm hover:bg-blue-50/50"
+                                    disabled={!canManageAttendance}
+                                >
                                     Input Manual
                                 </Button>
                             </div>
@@ -341,18 +550,17 @@ return;
             </div>
 
             {/* Bottom Section */}
-            <div className="grid md:grid-cols-[1fr_300px] gap-4">
-
+            <div className="grid gap-4 md:grid-cols-[1fr_300px]">
                 {/* Table Area */}
                 <div className="flex flex-col gap-4">
                     {/* Filters (Fix Bug #6: Make filters work) */}
-                    <div className="flex flex-wrap md:flex-nowrap gap-4">
-                        <div className="relative flex-1 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-xl border border-white/50 shadow-soft">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <div className="flex flex-wrap gap-4 md:flex-nowrap">
+                        <div className="shadow-soft relative flex-1 rounded-xl border border-white/50 bg-white/60 backdrop-blur-md dark:bg-slate-800/60">
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
                                 placeholder="Cari nama atau departemen..."
-                                className="w-full h-10 pl-9 pr-4 text-sm bg-transparent border-0 focus:ring-0 outline-none rounded-xl"
+                                className="h-10 w-full rounded-xl border-0 bg-transparent pr-4 pl-9 text-sm outline-none focus:ring-0"
                                 value={searchQuery}
                                 onChange={(e) => {
                                     setSearchQuery(e.target.value);
@@ -361,7 +569,7 @@ return;
                             />
                         </div>
                         <select
-                            className="h-10 px-3 py-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 shadow-soft rounded-xl text-sm text-slate-700 outline-none w-40"
+                            className="shadow-soft h-10 w-40 rounded-xl border border-white/50 bg-white/60 px-3 py-2 text-sm text-slate-700 backdrop-blur-md outline-none dark:bg-slate-800/60"
                             value={statusFilter}
                             onChange={(e) => {
                                 setStatusFilter(e.target.value);
@@ -375,83 +583,162 @@ return;
                             <option>Tidak Hadir</option>
                         </select>
                         <select
-                            className="h-10 px-3 py-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-white/50 shadow-soft rounded-xl text-sm text-slate-700 outline-none w-48"
+                            className="shadow-soft h-10 w-48 rounded-xl border border-white/50 bg-white/60 px-3 py-2 text-sm text-slate-700 backdrop-blur-md outline-none dark:bg-slate-800/60"
                             value={deptFilter}
                             onChange={(e) => {
                                 setDeptFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
                         >
-                            {departments.map((d, i) => <option key={i}>{d}</option>)}
+                            {departments.map((d, i) => (
+                                <option key={i}>{d}</option>
+                            ))}
                         </select>
                     </div>
 
                     {/* Table */}
-                    <div className="bg-glass rounded-2xl border border-white/50 shadow-soft backdrop-blur-xl overflow-hidden flex-1 flex flex-col">
+                    <div className="bg-glass shadow-soft flex flex-1 flex-col overflow-hidden rounded-2xl border border-white/50 backdrop-blur-xl">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left">
-                                <thead className="bg-white/40 dark:bg-slate-800/40 border-b border-white/20 text-slate-500 font-medium backdrop-blur-md">
+                            <table className="w-full text-left text-sm">
+                                <thead className="border-b border-white/20 bg-white/40 font-medium text-slate-500 backdrop-blur-md dark:bg-slate-800/40">
                                     <tr>
-                                        <th className="py-4 px-4 font-medium">No</th>
-                                        <th className="py-4 px-4 font-medium">Nama Peserta</th>
-                                        <th className="py-4 px-4 font-medium">Departemen</th>
-                                        <th className="py-4 px-4 font-medium">NIP</th>
-                                        <th className="py-4 px-4 font-medium">Masuk</th>
-                                        <th className="py-4 px-4 font-medium">Keluar</th>
-                                        <th className="py-4 px-4 font-medium">Status</th>
-                                        <th className="py-4 px-4 font-medium">Metode</th>
-                                        {!isIrvanCloud && canManageAttendance && <th className="py-4 px-4 font-medium text-right">Aksi</th>}
+                                        <th className="px-4 py-4 font-medium">
+                                            No
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Nama Peserta
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Departemen
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            NIP
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Masuk
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Keluar
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Status
+                                        </th>
+                                        <th className="px-4 py-4 font-medium">
+                                            Metode
+                                        </th>
+                                        {!isIrvanCloud &&
+                                            canManageAttendance && (
+                                                <th className="px-4 py-4 text-right font-medium">
+                                                    Aksi
+                                                </th>
+                                            )}
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/20">
-                                    {currentData.length > 0 ? currentData.map((row: any, i: number) => (
-                                        <tr key={row.id} className="hover:bg-white/30 dark:hover:bg-slate-800/30 transition-colors">
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{startIndex + i}</td>
-                                            <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">{row.name}</td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.dept}</td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono text-xs">{row.nip}</td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time_in}</td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.time_out}</td>
-                                            <td className="py-3 px-4">
-                                                <Badge variant="outline" className={`font-medium border shadow-sm backdrop-blur-sm ${row.status === 'Hadir' ? 'bg-emerald-50/80 text-emerald-600 border-emerald-200/60' :
-                                                        row.status === 'Terlambat' ? 'bg-amber-50/80 text-amber-600 border-amber-200/60' :
-                                                            row.status === 'Tidak Hadir' ? 'bg-rose-50/80 text-rose-600 border-rose-200/60' :
-                                                                'bg-slate-100/80 text-slate-600 border-slate-200/60'
-                                                    }`}>
-                                                    {row.status}
-                                                </Badge>
-                                            </td>
-                                            <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.method}</td>
-                                            {!isIrvanCloud && canManageAttendance && (
-                                                <td className="py-3 px-4 text-right">
-                                                    <div className="flex justify-end gap-2">
-                                                        <Button
+                                    {currentData.length > 0 ? (
+                                        currentData.map(
+                                            (row: any, i: number) => (
+                                                <tr
+                                                    key={row.id}
+                                                    className="transition-colors hover:bg-white/30 dark:hover:bg-slate-800/30"
+                                                >
+                                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                                                        {startIndex + i}
+                                                    </td>
+                                                    <td className="px-4 py-3 font-semibold text-slate-900 dark:text-white">
+                                                        {row.name}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                                                        {row.dept}
+                                                    </td>
+                                                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400">
+                                                        {row.nip}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                                                        {row.time_in}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                                                        {row.time_out}
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <Badge
                                                             variant="outline"
-                                                            size="sm"
-                                                            className="h-8 text-emerald-600 border-emerald-200/60 hover:bg-emerald-50/80 bg-white/50 backdrop-blur-sm shadow-sm rounded-lg"
-                                                            onClick={() => handleManualAttendance(row.user_id, 'hadir')}
-                                                            disabled={row.status === 'Hadir' || !canManageAttendance}
+                                                            className={`border font-medium shadow-sm backdrop-blur-sm ${
+                                                                row.status ===
+                                                                'Hadir'
+                                                                    ? 'border-emerald-200/60 bg-emerald-50/80 text-emerald-600'
+                                                                    : row.status ===
+                                                                        'Terlambat'
+                                                                      ? 'border-amber-200/60 bg-amber-50/80 text-amber-600'
+                                                                      : row.status ===
+                                                                          'Tidak Hadir'
+                                                                        ? 'border-rose-200/60 bg-rose-50/80 text-rose-600'
+                                                                        : 'border-slate-200/60 bg-slate-100/80 text-slate-600'
+                                                            }`}
                                                         >
-                                                            Hadir
-                                                        </Button>
-                                                        {/* Fix Bug #3: Disable Alpha if it's already 'Tidak Hadir' or 'Hadir' */}
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="h-8 text-rose-500 border-rose-200/60 hover:bg-rose-50/80 bg-white/50 backdrop-blur-sm shadow-sm rounded-lg"
-                                                            onClick={() => handleManualAttendance(row.user_id, 'tidak_hadir')}
-                                                            disabled={row.status === 'Tidak Hadir' || row.status === 'Hadir' || !canManageAttendance}
-                                                        >
-                                                            Alpha
-                                                        </Button>
-                                                    </div>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    )) : (
+                                                            {row.status}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400">
+                                                        {row.method}
+                                                    </td>
+                                                    {!isIrvanCloud &&
+                                                        canManageAttendance && (
+                                                            <td className="px-4 py-3 text-right">
+                                                                <div className="flex justify-end gap-2">
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        className="h-8 rounded-lg border-emerald-200/60 bg-white/50 text-emerald-600 shadow-sm backdrop-blur-sm hover:bg-emerald-50/80"
+                                                                        onClick={() =>
+                                                                            handleManualAttendance(
+                                                                                row.user_id,
+                                                                                'hadir',
+                                                                            )
+                                                                        }
+                                                                        disabled={
+                                                                            row.status ===
+                                                                                'Hadir' ||
+                                                                            !canManageAttendance
+                                                                        }
+                                                                    >
+                                                                        Hadir
+                                                                    </Button>
+                                                                    {/* Fix Bug #3: Disable Alpha if it's already 'Tidak Hadir' or 'Hadir' */}
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        className="h-8 rounded-lg border-rose-200/60 bg-white/50 text-rose-500 shadow-sm backdrop-blur-sm hover:bg-rose-50/80"
+                                                                        onClick={() =>
+                                                                            handleManualAttendance(
+                                                                                row.user_id,
+                                                                                'tidak_hadir',
+                                                                            )
+                                                                        }
+                                                                        disabled={
+                                                                            row.status ===
+                                                                                'Tidak Hadir' ||
+                                                                            row.status ===
+                                                                                'Hadir' ||
+                                                                            !canManageAttendance
+                                                                        }
+                                                                    >
+                                                                        Alpha
+                                                                    </Button>
+                                                                </div>
+                                                            </td>
+                                                        )}
+                                                </tr>
+                                            ),
+                                        )
+                                    ) : (
                                         <tr>
-                                            <td colSpan={8} className="py-8 text-center text-slate-500 dark:text-slate-400">
-                                                Tidak ada data yang sesuai filter.
+                                            <td
+                                                colSpan={8}
+                                                className="py-8 text-center text-slate-500 dark:text-slate-400"
+                                            >
+                                                Tidak ada data yang sesuai
+                                                filter.
                                             </td>
                                         </tr>
                                     )}
@@ -461,38 +748,57 @@ return;
 
                         {/* Pagination (Fix Bug #5: Dynamic calculations) */}
                         {filteredData.length > 0 && (
-                            <div className="p-4 border-t border-white/20 flex items-center justify-between mt-auto bg-white/20 dark:bg-slate-800/20 backdrop-blur-md">
+                            <div className="mt-auto flex items-center justify-between border-t border-white/20 bg-white/20 p-4 backdrop-blur-md dark:bg-slate-800/20">
                                 <span className="text-sm text-slate-500 dark:text-slate-400">
-                                    Menampilkan {startIndex} - {endIndex} dari {filteredData.length} peserta
+                                    Menampilkan {startIndex} - {endIndex} dari{' '}
+                                    {filteredData.length} peserta
                                 </span>
                                 <div className="flex gap-1">
                                     <Button
-                                        variant="outline" size="icon"
-                                        className="w-8 h-8 rounded-lg bg-white/60 border-slate-200/50 text-slate-600"
-                                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                        variant="outline"
+                                        size="icon"
+                                        className="h-8 w-8 rounded-lg border-slate-200/50 bg-white/60 text-slate-600"
+                                        onClick={() =>
+                                            setCurrentPage(
+                                                Math.max(1, currentPage - 1),
+                                            )
+                                        }
                                         disabled={currentPage === 1}
                                     >
-                                        <ChevronLeft className="w-4 h-4" />
+                                        <ChevronLeft className="h-4 w-4" />
                                     </Button>
 
-                                    {Array.from({ length: totalPages }).map((_, i) => (
-                                        <Button
-                                            key={i}
-                                            variant="outline" size="icon"
-                                            className={`w-8 h-8 rounded-lg ${currentPage === i + 1 ? 'bg-blue-600 text-white border-blue-600' : 'bg-white/60 border-slate-200/50 text-slate-600 hover:bg-slate-50/80'}`}
-                                            onClick={() => setCurrentPage(i + 1)}
-                                        >
-                                            {i + 1}
-                                        </Button>
-                                    ))}
+                                    {Array.from({ length: totalPages }).map(
+                                        (_, i) => (
+                                            <Button
+                                                key={i}
+                                                variant="outline"
+                                                size="icon"
+                                                className={`h-8 w-8 rounded-lg ${currentPage === i + 1 ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200/50 bg-white/60 text-slate-600 hover:bg-slate-50/80'}`}
+                                                onClick={() =>
+                                                    setCurrentPage(i + 1)
+                                                }
+                                            >
+                                                {i + 1}
+                                            </Button>
+                                        ),
+                                    )}
 
                                     <Button
-                                        variant="outline" size="icon"
-                                        className="w-8 h-8 rounded-lg bg-white/60 border-slate-200/50 text-slate-600"
-                                        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                                        variant="outline"
+                                        size="icon"
+                                        className="h-8 w-8 rounded-lg border-slate-200/50 bg-white/60 text-slate-600"
+                                        onClick={() =>
+                                            setCurrentPage(
+                                                Math.min(
+                                                    totalPages,
+                                                    currentPage + 1,
+                                                ),
+                                            )
+                                        }
                                         disabled={currentPage === totalPages}
                                     >
-                                        <ChevronRight className="w-4 h-4" />
+                                        <ChevronRight className="h-4 w-4" />
                                     </Button>
                                 </div>
                             </div>
@@ -502,15 +808,21 @@ return;
 
                 {/* Sidebar */}
                 <div className="flex flex-col gap-4">
-
                     {/* Action Buttons */}
                     {canManageAttendance && meeting.current_stage === 4 && (
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2 shadow-blue-200 dark:shadow-blue-900/20" onClick={handleFinish}>
-                            <CheckCircle2 className="w-5 h-5 mr-2" /> Simpan Absensi & Lanjut
+                        <Button
+                            className="mt-2 h-12 w-full rounded-xl bg-blue-600 text-base font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-blue-700 dark:shadow-blue-900/20"
+                            onClick={handleFinish}
+                        >
+                            <CheckCircle2 className="mr-2 h-5 w-5" /> Simpan
+                            Absensi & Lanjut
                         </Button>
                     )}
                     {canManageAttendance && meeting.current_stage > 4 && (
-                        <Button asChild className="w-full bg-slate-800 hover:bg-slate-900 text-white shadow-lg rounded-xl transition-all h-12 font-bold text-base mt-2">
+                        <Button
+                            asChild
+                            className="mt-2 h-12 w-full rounded-xl bg-slate-800 text-base font-bold text-white shadow-lg transition-all hover:bg-slate-900"
+                        >
                             <Link href={`/meetings/${meeting.id}/review`}>
                                 Lanjut ke Review Notulen
                             </Link>

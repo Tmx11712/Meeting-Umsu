@@ -93,11 +93,7 @@ class MeetingDocumentController extends Controller
 
     public function download(Meeting $meeting, MeetingDocument $document)
     {
-        abort_unless(
-            request()->user()->can('view', $meeting) || request()->user()->can('minute.read') || request()->user()->can('review.read') || request()->user()->hasRole(['Pimpinan', 'Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
-            403,
-            'Akses Terbatas.'
-        );
+        $this->authorize('view', $meeting);
 
         abort_if($document->meeting_id !== $meeting->id, 404);
         abort_unless(Storage::exists($document->file_path), 404, 'File dokumen tidak ditemukan.');

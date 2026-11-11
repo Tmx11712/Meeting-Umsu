@@ -25,18 +25,13 @@ class MeetingApiController extends Controller
     {
         $this->authorize('viewAny', Meeting::class);
 
-        $query = Meeting::query()->with(['createdBy', 'participants.user']);
-
-        if ($request->search) {
-            $query->where('title', 'ilike', '%'.$request->search.'%');
-        }
+        $query = Meeting::query()
+            ->visibleTo($request->user())
+            ->with(['createdBy', 'participants.user'])
+            ->filter($request->only(['search', 'status']));
 
         if ($request->date || $request->event_date) {
             $query->whereDate('date', $request->date ?? $request->event_date);
-        }
-
-        if ($request->status && $request->status !== 'all') {
-            $query->where('status', '=', $request->status);
         }
 
         $perPage = max(1, min(100, $request->integer('per_page', 15)));

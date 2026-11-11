@@ -6,7 +6,7 @@ const MySwal = withReactContent(Swal);
 export const confirmDelete = async (
     title: string,
     text: string = 'Data yang dihapus tidak dapat dikembalikan!',
-    confirmButtonText: string = 'Ya, Hapus!'
+    confirmButtonText: string = 'Ya, Hapus!',
 ) => {
     return MySwal.fire({
         title,
@@ -14,7 +14,7 @@ export const confirmDelete = async (
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444', // Tailwind red-500
-        cancelButtonColor: '#64748b',  // Tailwind slate-500
+        cancelButtonColor: '#64748b', // Tailwind slate-500
         confirmButtonText,
         cancelButtonText: 'Batal',
         customClass: {

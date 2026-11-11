@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 
 /**
- * @property int|null $current_team_id
+ * @property string|null $current_team_id
  */
 trait HasTeams
 {
@@ -29,7 +29,7 @@ trait HasTeams
      *
      * Get all of the teams the user belongs to.
      *
-     * @return BelongsToMany<Team, $this>
+     * @return BelongsToMany<Team, $this, Membership, 'pivot'>
      */
     public function teams(): BelongsToMany
     {

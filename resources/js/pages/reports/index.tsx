@@ -1,14 +1,23 @@
 import { Head, Link } from '@inertiajs/react';
 import { Download, Search, FileText } from 'lucide-react';
+import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MeetingStatusBadge } from '@/components/meetings/MeetingStatusBadge';
 
 const formatDate = (dateStr: string) => {
-    if (!dateStr) return '';
+    if (!dateStr) {
+        return '';
+    }
+
     try {
         const d = new Date(dateStr);
-        return d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+
+        return d.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+        });
     } catch {
         return dateStr;
     }
@@ -18,11 +27,15 @@ export default function ReportIndex({ meetings, filters }: any) {
     return (
         <div className="flex h-full flex-1 flex-col gap-6 rounded-xl p-6">
             <Head title="Laporan Notulen" />
-            
-            <div className="flex justify-between items-center">
+
+            <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Laporan Notulen</h1>
-                    <p className="text-muted-foreground">Unduh laporan dan rekap rapat.</p>
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        Laporan Notulen
+                    </h1>
+                    <p className="text-muted-foreground">
+                        Unduh laporan dan rekap rapat.
+                    </p>
                 </div>
             </div>
 
@@ -31,32 +44,42 @@ export default function ReportIndex({ meetings, filters }: any) {
                     <CardTitle>Filter & Download</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form className="flex flex-wrap gap-4 items-end" action="/reports" method="GET">
-                        <div className="space-y-2 flex-1 min-w-50">
-                            <label className="text-sm font-medium">Tanggal Mulai</label>
-                            <input 
-                                type="date" 
+                    <form
+                        className="flex flex-wrap items-end gap-4"
+                        action="/reports"
+                        method="GET"
+                    >
+                        <div className="min-w-50 flex-1 space-y-2">
+                            <label className="text-sm font-medium">
+                                Tanggal Mulai
+                            </label>
+                            <input
+                                type="date"
                                 name="start_date"
-                                className="w-full bg-background rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                 defaultValue={filters.start_date || ''}
                             />
                         </div>
-                        <div className="space-y-2 flex-1 min-w-50">
-                            <label className="text-sm font-medium">Tanggal Selesai</label>
-                            <input 
-                                type="date" 
+                        <div className="min-w-50 flex-1 space-y-2">
+                            <label className="text-sm font-medium">
+                                Tanggal Selesai
+                            </label>
+                            <input
+                                type="date"
                                 name="end_date"
-                                className="w-full bg-background rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                 defaultValue={filters.end_date || ''}
                             />
                         </div>
-                        <div className="space-y-2 flex-1 min-w-50">
-                            <label className="text-sm font-medium">Cari Isi Notulen</label>
-                            <input 
-                                type="text" 
+                        <div className="min-w-50 flex-1 space-y-2">
+                            <label className="text-sm font-medium">
+                                Cari Isi Notulen
+                            </label>
+                            <input
+                                type="text"
                                 name="search"
                                 placeholder="Kata kunci..."
-                                className="w-full bg-background rounded-md border border-input px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                 defaultValue={filters.search || ''}
                             />
                         </div>
@@ -65,8 +88,13 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 <Search className="mr-2 h-4 w-4" /> Tampilkan
                             </Button>
                             <Button asChild>
-                                <a href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}&search=${filters.search || ''}`} target="_blank" rel="noopener noreferrer">
-                                    <Download className="mr-2 h-4 w-4" /> Download PDF Rekap
+                                <a
+                                    href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}&search=${filters.search || ''}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <Download className="mr-2 h-4 w-4" />{' '}
+                                    Download PDF Rekap
                                 </a>
                             </Button>
                         </div>
@@ -82,33 +110,77 @@ export default function ReportIndex({ meetings, filters }: any) {
                                 <th className="p-4 font-medium">Judul Rapat</th>
                                 <th className="p-4 font-medium">Tanggal</th>
                                 <th className="p-4 font-medium">Ruangan</th>
-                                <th className="p-4 font-medium text-center">Kehadiran</th>
-                                <th className="p-4 font-medium text-right">Aksi</th>
+                                <th className="p-4 text-center font-medium">
+                                    Kehadiran
+                                </th>
+                                <th className="p-4 text-right font-medium">
+                                    Aksi
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {(meetings.data || []).map((meeting: any) => {
-                                const minute = meeting.minutes?.length > 0 ? meeting.minutes[0] : null;
+                                const minute =
+                                    meeting.minutes?.length > 0
+                                        ? meeting.minutes[0]
+                                        : null;
 
                                 return (
-                                    <tr key={meeting.id} className="border-b last:border-0 hover:bg-muted/20">
-                                        <td className="p-4 font-medium">{meeting.title}</td>
-                                        <td className="p-4 text-muted-foreground">{formatDate(meeting.date)}</td>
-                                        <td className="p-4 text-muted-foreground">{meeting.location || '-'}</td>
+                                    <tr
+                                        key={meeting.id}
+                                        className="border-b last:border-0 hover:bg-muted/20"
+                                    >
+                                        <td className="p-4 font-medium">
+                                            {meeting.title}
+                                        </td>
+                                        <td className="p-4 text-muted-foreground">
+                                            {formatDate(meeting.date)}
+                                        </td>
+                                        <td className="p-4 text-muted-foreground">
+                                            {meeting.location || '-'}
+                                        </td>
                                         <td className="p-4 text-center">
-                                            {meeting.participants?.length > 0 
-                                                ? Math.round((meeting.attendances?.filter((a: any) => ['hadir', 'terlambat'].includes(a.status)).length || 0) / meeting.participants.length * 100) 
-                                                : 0}%
+                                            {meeting.participants?.length > 0
+                                                ? Math.round(
+                                                      ((meeting.attendances?.filter(
+                                                          (a: any) =>
+                                                              [
+                                                                  'hadir',
+                                                                  'terlambat',
+                                                              ].includes(
+                                                                  a.status,
+                                                              ),
+                                                      ).length || 0) /
+                                                          meeting.participants
+                                                              .length) *
+                                                          100,
+                                                  )
+                                                : 0}
+                                            %
                                         </td>
                                         <td className="p-4 text-right">
                                             {minute ? (
-                                                <Button variant="outline" size="sm" asChild>
-                                                    <a href={`/meetings/${meeting.id}/review/pdf`} target="_blank" rel="noopener noreferrer">
-                                                        <FileText className="mr-2 h-4 w-4" /> PDF Notulen
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    asChild
+                                                >
+                                                    <a
+                                                        href={`/meetings/${meeting.id}/review/pdf`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <FileText className="mr-2 h-4 w-4" />{' '}
+                                                        PDF Notulen
                                                     </a>
                                                 </Button>
                                             ) : (
-                                                <MeetingStatusBadge status={meeting.status} currentStage={meeting.current_stage} />
+                                                <MeetingStatusBadge
+                                                    status={meeting.status}
+                                                    currentStage={
+                                                        meeting.current_stage
+                                                    }
+                                                />
                                             )}
                                         </td>
                                     </tr>
@@ -116,7 +188,13 @@ export default function ReportIndex({ meetings, filters }: any) {
                             })}
                             {(!meetings.data || meetings.data.length === 0) && (
                                 <tr>
-                                    <td colSpan={6} className="p-8 text-center text-muted-foreground">Tidak ada data rapat pada rentang tanggal ini.</td>
+                                    <td
+                                        colSpan={6}
+                                        className="p-8 text-center text-muted-foreground"
+                                    >
+                                        Tidak ada data rapat pada rentang
+                                        tanggal ini.
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
@@ -131,12 +209,12 @@ export default function ReportIndex({ meetings, filters }: any) {
                         <Link
                             key={i}
                             href={link.url || '#'}
-                            className={`px-3 py-1.5 rounded text-sm border transition-colors ${
+                            className={`rounded border px-3 py-1.5 text-sm transition-colors ${
                                 link.active
-                                    ? 'bg-primary text-primary-foreground border-primary'
+                                    ? 'border-primary bg-primary text-primary-foreground'
                                     : link.url
-                                        ? 'bg-background hover:bg-muted border-input'
-                                        : 'bg-muted text-muted-foreground border-input cursor-not-allowed'
+                                      ? 'border-input bg-background hover:bg-muted'
+                                      : 'cursor-not-allowed border-input bg-muted text-muted-foreground'
                             }`}
                             preserveScroll
                             dangerouslySetInnerHTML={{ __html: link.label }}

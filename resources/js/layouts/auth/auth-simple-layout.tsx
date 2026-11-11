@@ -16,7 +16,7 @@ export default function AuthSimpleLayout({
     const mounted = useSyncExternalStore(
         () => () => {},
         () => true,
-        () => false
+        () => false,
     );
 
     const toggleTheme = () => {
@@ -24,12 +24,12 @@ export default function AuthSimpleLayout({
     };
 
     return (
-        <div className="flex min-h-svh flex-col bg-slate-50 dark:bg-background transition-colors duration-200">
+        <div className="flex min-h-svh flex-col bg-slate-50 transition-colors duration-200 dark:bg-background">
             {/* Top Navigation Bar */}
-            <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:bg-sidebar dark:border-border transition-colors duration-200">
+            <header className="flex h-16 items-center justify-between border-b bg-white px-6 transition-colors duration-200 dark:border-border dark:bg-sidebar">
                 <Link
                     href={home()}
-                    className="flex items-center gap-3 font-semibold text-lg text-foreground"
+                    className="flex items-center gap-3 text-lg font-semibold text-foreground"
                 >
                     <img
                         src="/images/logo-umsu.webp"
@@ -62,7 +62,7 @@ export default function AuthSimpleLayout({
 
             {/* Main Content (Centered Card) */}
             <main className="flex flex-1 flex-col items-center justify-center p-6 md:p-10">
-                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 dark:bg-card dark:ring-border/80 dark:shadow-2xl transition-colors duration-200">
+                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200 transition-colors duration-200 dark:bg-card dark:shadow-2xl dark:ring-border/80">
                     <div className="flex flex-col gap-8">
                         <div className="flex flex-col items-center gap-6">
                             {/* UMSU Logo */}
@@ -82,11 +82,15 @@ export default function AuthSimpleLayout({
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 shadow-md">
                                         <AppLogoIcon className="size-5 text-white" />
                                     </div>
-                                    <h1 className="text-2xl font-bold tracking-tight">eNotulen UMSU</h1>
+                                    <h1 className="text-2xl font-bold tracking-tight">
+                                        eNotulen UMSU
+                                    </h1>
                                 </div>
-                                <div className="space-y-1 mt-1">
+                                <div className="mt-1 space-y-1">
                                     {title !== 'eNotulen' && (
-                                        <h2 className="text-lg font-semibold">{title}</h2>
+                                        <h2 className="text-lg font-semibold">
+                                            {title}
+                                        </h2>
                                     )}
                                     <p className="text-sm text-slate-500 dark:text-slate-400">
                                         {description}

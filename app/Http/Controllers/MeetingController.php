@@ -25,6 +25,8 @@ class MeetingController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Meeting::class);
+
         /**
          * [EDUKASI ARSITEKTUR: MENCEGAH N+1 QUERY]
          * Kita menggunakan `withCount('participants')` alih-alih `with('participants')`.
@@ -33,6 +35,7 @@ class MeetingController extends Controller
          * Jauh lebih ringan dan cepat!
          */
         $meetings = Meeting::query()
+            ->visibleTo($request->user())
             ->withCount('participants')
             ->with(['minutes' => function ($q) {
                 $q->select('id', 'meeting_id', 'content');

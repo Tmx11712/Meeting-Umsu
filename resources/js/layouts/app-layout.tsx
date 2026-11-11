@@ -11,7 +11,7 @@ export default function AppLayout({
     children: React.ReactNode;
 }) {
     useFlashToast();
-    
+
     useEffect(() => {
         // Lakukan auto-sync secara background setelah halaman selesai dirender (idle)
         // agar tidak menghambat Largest Contentful Paint (LCP) saat Soft Navigation.
@@ -23,10 +23,15 @@ export default function AppLayout({
         }
 
         const timer = window.setTimeout(() => {
-            sessionStorage.setItem('enotulen_last_autosync', String(Date.now()));
+            sessionStorage.setItem(
+                'enotulen_last_autosync',
+                String(Date.now()),
+            );
 
             const getXsrfToken = () => {
-                const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+                const match = document.cookie.match(
+                    new RegExp('(^| )XSRF-TOKEN=([^;]+)'),
+                );
 
                 return match ? decodeURIComponent(match[2]) : '';
             };
@@ -43,7 +48,7 @@ export default function AppLayout({
 
         return () => window.clearTimeout(timer);
     }, []);
-    
+
     return (
         <AppLayoutTemplate breadcrumbs={breadcrumbs}>
             {children}

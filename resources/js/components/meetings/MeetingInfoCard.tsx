@@ -20,71 +20,108 @@ interface MeetingInfoCardProps {
     className?: string;
 }
 
-export function MeetingInfoCard({ meeting, totalParticipants, showDetailButton = false, className = '' }: MeetingInfoCardProps) {
+export function MeetingInfoCard({
+    meeting,
+    totalParticipants,
+    showDetailButton = false,
+    className = '',
+}: MeetingInfoCardProps) {
     /**
      * [EDUKASI ARSITEKTUR: REUSABLE UI COMPONENT]
      * Komponen ini merender kotak informasi rapat (Judul, Waktu, Tempat).
-     * Dengan menjadikannya komponen terpisah (`MeetingInfoCard`), kita bisa menggunakannya kembali di halaman 
+     * Dengan menjadikannya komponen terpisah (`MeetingInfoCard`), kita bisa menggunakannya kembali di halaman
      * Recording, Correction, Review, maupun Approval tanpa menulis ulang kode HTML yang sama.
      */
-    
+
     // Hitung peserta dari DB (internal + eksternal)
-    const dbParticipantCount = (meeting.participants?.length || 0) + (meeting.attendances?.filter((a: any) => !a.user_id).length || 0);
-    
+    const dbParticipantCount =
+        (meeting.participants?.length || 0) +
+        (meeting.attendances?.filter((a: any) => !a.user_id).length || 0);
+
     // Hitung peserta dari input manual di notulen (jika ada)
-    const manualParticipantCount = meeting.minutes?.[0]?.content?.peserta_rapat?.length || 0;
-    
+    const manualParticipantCount =
+        meeting.minutes?.[0]?.content?.peserta_rapat?.length || 0;
+
     // Gunakan nilai terbesar antara DB dan manual (karena rapat manual mungkin DB pesertanya kosong)
-    const defaultParticipantCount = Math.max(dbParticipantCount, manualParticipantCount);
-    
-    const participantCount = totalParticipants !== undefined ? totalParticipants : defaultParticipantCount;
+    const defaultParticipantCount = Math.max(
+        dbParticipantCount,
+        manualParticipantCount,
+    );
+
+    const participantCount =
+        totalParticipants !== undefined
+            ? totalParticipants
+            : defaultParticipantCount;
 
     return (
-        <Card className={`rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm flex flex-col overflow-hidden ${className}`}>
-            <CardHeader className="pb-3 bg-blue-50/50 dark:bg-blue-900/20 border-b border-blue-100/50 dark:border-blue-800/30">
-                <CardTitle className="text-sm font-bold flex items-center text-blue-900 dark:text-blue-100">
-                    <div className="p-1.5 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-lg mr-2.5 shadow-sm">
-                        <Calendar className="w-3.5 h-3.5" />
+        <Card
+            className={`shadow-soft flex flex-col overflow-hidden rounded-2xl border-0 bg-white/80 backdrop-blur-sm dark:bg-slate-900/80 ${className}`}
+        >
+            <CardHeader className="border-b border-blue-100/50 bg-blue-50/50 pb-3 dark:border-blue-800/30 dark:bg-blue-900/20">
+                <CardTitle className="flex items-center text-sm font-bold text-blue-900 dark:text-blue-100">
+                    <div className="mr-2.5 rounded-lg bg-blue-100 p-1.5 text-blue-600 shadow-sm dark:bg-blue-800 dark:text-blue-300">
+                        <Calendar className="h-3.5 w-3.5" />
                     </div>
                     Informasi Rapat
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-4">
                 <div>
-                    <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Judul Rapat</p>
-                    <p className="font-bold text-slate-900 dark:text-white text-base leading-tight">{meeting.title}</p>
+                    <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                        Judul Rapat
+                    </p>
+                    <p className="text-base leading-tight font-bold text-slate-900 dark:text-white">
+                        {meeting.title}
+                    </p>
                 </div>
-                <div className="grid grid-cols-2 gap-3 flex-1">
+                <div className="grid flex-1 grid-cols-2 gap-3">
                     <div>
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Tanggal</p>
-                        <p className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <Calendar className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
+                        <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                            Tanggal
+                        </p>
+                        <p className="flex items-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <Calendar className="mr-1.5 h-3.5 w-3.5 text-blue-400" />
                             {meeting.date || '-'}
                         </p>
                     </div>
                     <div className="min-w-0">
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Ruangan</p>
-                        <div className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <MapPin className="w-3.5 h-3.5 mr-1.5 text-blue-400 shrink-0" />
-                            <span className="truncate" title={meeting.location || '-'}>{meeting.location || '-'}</span>
+                        <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                            Ruangan
+                        </p>
+                        <div className="flex items-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <MapPin className="mr-1.5 h-3.5 w-3.5 shrink-0 text-blue-400" />
+                            <span
+                                className="truncate"
+                                title={meeting.location || '-'}
+                            >
+                                {meeting.location || '-'}
+                            </span>
                         </div>
                     </div>
                     <div>
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Peserta</p>
-                        <div className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <Users className="w-3.5 h-3.5 mr-1.5 text-blue-400 shrink-0" />
-                            <span className="truncate">{participantCount} Orang</span>
+                        <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                            Peserta
+                        </p>
+                        <div className="flex items-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <Users className="mr-1.5 h-3.5 w-3.5 shrink-0 text-blue-400" />
+                            <span className="truncate">
+                                {participantCount} Orang
+                            </span>
                         </div>
                     </div>
                     <div>
-                        <p className="text-[11px] font-semibold text-slate-500 mb-0.5 uppercase tracking-wider">Waktu</p>
-                        <p className="text-xs font-medium flex items-center text-slate-700 dark:text-slate-300">
-                            <Clock className="w-3.5 h-3.5 mr-1.5 text-blue-400" />
-                            {meeting.start_time ? `${meeting.start_time.substring(0,5)} - ${meeting.end_time?.substring(0,5)}` : '-'} WIB
+                        <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase">
+                            Waktu
+                        </p>
+                        <p className="flex items-center text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <Clock className="mr-1.5 h-3.5 w-3.5 text-blue-400" />
+                            {meeting.start_time
+                                ? `${meeting.start_time.substring(0, 5)} - ${meeting.end_time?.substring(0, 5)}`
+                                : '-'}{' '}
+                            WIB
                         </p>
                     </div>
                 </div>
-
             </CardContent>
         </Card>
     );

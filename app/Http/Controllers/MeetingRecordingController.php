@@ -25,8 +25,18 @@ class MeetingRecordingController extends Controller
     {
         $this->authorize('view', $meeting);
 
+        $user = request()->user();
+        $isInvitedParticipant = $meeting->participants()
+            ->where('user_id', '=', $user->id)
+            ->where('is_invited', '=', true)
+            ->exists();
+        abort_unless(
+            $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan']) || $isInvitedParticipant,
+            403,
+            'Akses Terbatas: Ruang rekaman hanya dapat diakses oleh petugas atau peserta terundang.'
+        );
+
         if ($meeting->status === MeetingStatus::TERJADWAL->value) {
-            $user = request()->user();
             // Hanya Bag. Humas (atau Admin) yang bisa memicu rapat menjadi BERLANGSUNG
             $canStartMeeting = $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas']);
 

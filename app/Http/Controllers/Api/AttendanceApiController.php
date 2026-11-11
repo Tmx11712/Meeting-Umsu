@@ -76,12 +76,15 @@ class AttendanceApiController extends Controller
         // 1. Identifikasi peserta
         $user = $request->user();
 
-        if (! $user && $request->user_id) {
-            $user = User::query()->where('id', '=', $request->user_id, 'and')->first();
-        }
+        if (! $user) {
+            $candidate = null;
 
-        if (! $user && $request->email && empty($request->guest_name)) {
-            $candidate = User::query()->where('email', '=', $request->email, 'and')->first();
+            if ($request->user_id) {
+                $candidate = User::query()->where('id', '=', $request->user_id, 'and')->first();
+            } elseif ($request->email && empty($request->guest_name)) {
+                $candidate = User::query()->where('email', '=', $request->email, 'and')->first();
+            }
+
             if ($candidate && $candidate->hasRole(['Super Admin', 'Administrator', 'Pimpinan'])) {
                 return response()->json([
                     'statusCode' => 403,
@@ -89,6 +92,7 @@ class AttendanceApiController extends Controller
                     'message' => 'Absensi akun pimpinan/administrator wajib menggunakan sesi login atau QR token resmi.',
                 ], 403);
             }
+
             $user = $candidate;
         }
 

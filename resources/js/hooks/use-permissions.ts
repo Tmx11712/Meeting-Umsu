@@ -45,8 +45,8 @@ export function usePermissions() {
             const allowedRoles = ROLE_PERMISSIONS[resource];
 
             if (!allowedRoles) {
-return isAdmin;
-} // Default: only admins
+                return isAdmin;
+            } // Default: only admins
 
             return roles.some((role) => allowedRoles.includes(role));
         },
@@ -63,11 +63,12 @@ return isAdmin;
     const guardAction = useCallback(
         (resource: PermissionResource, customMessage?: string) => {
             if (canEdit(resource)) {
-return true;
-}
+                return true;
+            }
 
             toast.error(
-                customMessage || 'Anda tidak memiliki akses untuk melakukan aksi ini.',
+                customMessage ||
+                    'Anda tidak memiliki akses untuk melakukan aksi ini.',
             );
 
             return false;

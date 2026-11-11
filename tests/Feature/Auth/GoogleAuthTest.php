@@ -13,7 +13,7 @@ use function Pest\Laravel\get;
 
 it('redirects to google oauth', function () {
     $redirectMock = Mockery::mock(RedirectResponse::class);
-    Socialite::shouldReceive('driver->stateless->redirect')->once()->andReturn($redirectMock);
+    Socialite::shouldReceive('driver->redirectUrl->stateless->redirect')->once()->andReturn($redirectMock);
 
     get('/auth/google');
 });
@@ -26,7 +26,7 @@ it('creates a new user with Viewer role and personal team on first google login'
     $abstractUser->shouldReceive('getName')->andReturn('User Baru');
     $abstractUser->shouldReceive('getEmail')->andReturn('userbaru@gmail.com');
 
-    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->redirectUrl->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
@@ -54,7 +54,7 @@ it('links google_id to existing user and preserves their role', function () {
     $abstractUser->shouldReceive('getName')->andReturn('Pegawai');
     $abstractUser->shouldReceive('getEmail')->andReturn('pegawai@gmail.com');
 
-    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->redirectUrl->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
@@ -78,11 +78,29 @@ it('rejects google login for nonaktif user', function () {
     $abstractUser->shouldReceive('getName')->andReturn('Suspended User');
     $abstractUser->shouldReceive('getEmail')->andReturn('suspended@gmail.com');
 
-    Socialite::shouldReceive('driver->stateless->user')->once()->andReturn($abstractUser);
+    Socialite::shouldReceive('driver->redirectUrl->stateless->user')->once()->andReturn($abstractUser);
 
     $response = get('/auth/google/callback');
 
     $response->assertRedirect(route('login'));
     $response->assertSessionHasErrors('email');
     assertGuest();
+});
+
+it('rejects new google signup from disallowed domain when allowed_domains is configured', function () {
+    config(['services.google.allowed_domains' => ['umsu.ac.id']]);
+
+    $abstractUser = Mockery::mock(SocialiteUserContract::class);
+    $abstractUser->shouldReceive('getId')->andReturn('google-outsider');
+    $abstractUser->shouldReceive('getName')->andReturn('Outsider');
+    $abstractUser->shouldReceive('getEmail')->andReturn('outsider@gmail.com');
+
+    Socialite::shouldReceive('driver->redirectUrl->stateless->user')->once()->andReturn($abstractUser);
+
+    $response = get('/auth/google/callback');
+
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHasErrors('email');
+    assertGuest();
+    expect(User::query()->where('email', '=', 'outsider@gmail.com')->exists())->toBeFalse();
 });

@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
-import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
 import type { User } from '@/types';
 
@@ -48,7 +47,7 @@ export function UserMenuContent({ user }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
                 <Link
-                    className="flex items-center w-full cursor-pointer text-destructive focus:text-destructive"
+                    className="flex w-full cursor-pointer items-center text-destructive focus:text-destructive"
                     href="/logout"
                     method="post"
                     as="button"

@@ -1,12 +1,12 @@
 /* Self-Hosted Fonts - 100% Offline Support */
-@import "@fontsource/plus-jakarta-sans/400.css";
-@import "@fontsource/plus-jakarta-sans/500.css";
-@import "@fontsource/plus-jakarta-sans/600.css";
-@import "@fontsource/plus-jakarta-sans/700.css";
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/500.css";
-@import "@fontsource/jetbrains-mono/600.css";
-@import "@fontsource/jetbrains-mono/700.css";
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+@import '@fontsource/jetbrains-mono/700.css';
 
 @import 'tailwindcss';
 
@@ -24,13 +24,13 @@
         'Noto Color Emoji';
 
     --font-mono:
-        'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
-        Consolas, 'Liberation Mono', 'Courier New', monospace;
+        'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
-    
+
     --radius-xl: calc(var(--radius) + 4px);
     --radius-2xl: calc(var(--radius) + 8px);
 
@@ -81,22 +81,30 @@
     --color-success: #10b981;
     --color-success-foreground: #ffffff;
     --color-success-light: #ecfdf5;
-    
+
     --color-warning: #f59e0b;
     --color-warning-foreground: #ffffff;
     --color-warning-light: #fffbeb;
-    
+
     --color-info: #3b82f6;
     --color-info-foreground: #ffffff;
     --color-info-light: #eff6ff;
-    
+
     --color-ai-violet: #09090b;
     --color-ai-violet-light: #f4f4f5;
     --color-ai-violet-border: #e4e4e7;
-    
+
     /* Gradients (Kept for compatibility, but flattened) */
-    --color-gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
-    --color-gradient-card: linear-gradient(180deg, var(--card) 0%, var(--card) 100%);
+    --color-gradient-primary: linear-gradient(
+        135deg,
+        var(--primary) 0%,
+        var(--primary) 100%
+    );
+    --color-gradient-card: linear-gradient(
+        180deg,
+        var(--card) 0%,
+        var(--card) 100%
+    );
 }
 
 /* Minimalist Zinc - Light Theme */
@@ -120,15 +128,15 @@
     --border: #e6e6e6; /* rgba(0,0,0,0.08) approx */
     --input: #dbdbdb; /* rgba(0,0,0,0.14) approx */
     --ring: #1a56db;
-    
+
     --chart-1: #1a1917;
     --chart-2: #6b6a65;
     --chart-3: #9e9c96;
     --chart-4: #1a56db;
     --chart-5: #057a55;
-    
+
     --radius: 0.625rem; /* 10px to match prototype */
-    
+
     /* Sidebar Minimalist */
     --sidebar: #ffffff;
     --sidebar-foreground: #1a1917;
@@ -163,13 +171,13 @@
     --border: #1e293b;
     --input: #1e293b;
     --ring: #3b82f6;
-    
+
     --chart-1: #3b82f6;
     --chart-2: #60a5fa;
     --chart-3: #93c5fd;
     --chart-4: #94a3b8;
     --chart-5: #64748b;
-    
+
     /* Sidebar Dark Slate Navy */
     --sidebar: #0e1524;
     --sidebar-foreground: #f1f5f9;
@@ -188,7 +196,9 @@
 
     body {
         @apply bg-background text-foreground;
-        font-feature-settings: 'rlig' 1, 'calt' 1;
+        font-feature-settings:
+            'rlig' 1,
+            'calt' 1;
         /* No background gradient for minimalist look */
     }
 
@@ -216,7 +226,7 @@
 
     /* Fix browser autofill blinding white flash in dark mode */
     .dark input:-webkit-autofill,
-    .dark input:-webkit-autofill:hover, 
+    .dark input:-webkit-autofill:hover,
     .dark input:-webkit-autofill:focus,
     .dark input:-webkit-autofill:active {
         -webkit-box-shadow: 0 0 0 1000px #131c2e inset !important;
@@ -230,16 +240,20 @@
 @layer utilities {
     /* Replace glassmorphism with a clean solid surface */
     .bg-glass {
-        @apply bg-card border border-border shadow-sm;
+        @apply border border-border bg-card shadow-sm;
     }
-    
+
     /* Modern Soft Shadow - Muted */
     .shadow-soft {
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+        box-shadow:
+            0 1px 3px 0 rgba(0, 0, 0, 0.05),
+            0 1px 2px -1px rgba(0, 0, 0, 0.05);
     }
-    
+
     .shadow-soft-hover {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.05),
+            0 2px 4px -2px rgba(0, 0, 0, 0.05);
     }
 
     .scrollbar-none {

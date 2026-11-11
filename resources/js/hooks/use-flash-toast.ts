@@ -4,7 +4,9 @@ import { toast } from 'sonner';
 import type { FlashToast } from '@/types/ui';
 
 export function useFlashToast(): void {
-    const { flash } = usePage().props as unknown as { flash?: { toast?: FlashToast } };
+    const { flash } = usePage().props as unknown as {
+        flash?: { toast?: FlashToast };
+    };
 
     useEffect(() => {
         if (flash?.toast) {

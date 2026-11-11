@@ -15,9 +15,9 @@ import {
     LogOut,
     BookType,
     Building,
-    Activity
+    Activity,
 } from 'lucide-react';
-import type {LucideIcon} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -57,19 +57,35 @@ const CONFIG_MENU_ITEMS: MenuItem[] = [
     { title: 'AI & Ringkasan', href: '/configuration', icon: Activity },
     { title: 'Users', href: '/configuration/users', icon: Users },
     { title: 'Roles', href: '/configuration/roles', icon: ShieldCheck },
-    { title: 'Permissions', href: '/configuration/permissions', icon: KeyRound },
+    {
+        title: 'Permissions',
+        href: '/configuration/permissions',
+        icon: KeyRound,
+    },
     { title: 'Menus', href: '/configuration/menus', icon: LayoutList },
-    { title: 'Tipe Rapat', href: '/configuration/meeting-types', icon: BookType },
+    {
+        title: 'Tipe Rapat',
+        href: '/configuration/meeting-types',
+        icon: BookType,
+    },
     { title: 'Ruangan', href: '/configuration/meeting-rooms', icon: Building },
-    { title: 'Role Permissions', href: '/configuration/role-permissions', icon: UserCog },
-    { title: 'User Permissions', href: '/configuration/user-permissions', icon: FileKey },
+    {
+        title: 'Role Permissions',
+        href: '/configuration/role-permissions',
+        icon: UserCog,
+    },
+    {
+        title: 'User Permissions',
+        href: '/configuration/user-permissions',
+        icon: FileKey,
+    },
 ];
 
 /** Get role abbreviation for avatar badge (e.g., "Bag. Umum" → "BU") */
 function getRoleAbbreviation(role: string): string {
     if (!role) {
-return '??';
-}
+        return '??';
+    }
 
     const parts = role.replace(/\./g, '').split(/\s+/);
 
@@ -116,21 +132,24 @@ export function AppSidebar() {
         // Sembunyikan menu teknis untuk Pimpinan dan Viewer
         if (hasRole('Pimpinan') || hasRole('Viewer')) {
             const allowedMenus = ['Dashboard', 'Jadwal Rapat', 'Laporan'];
+
             if (!allowedMenus.includes(item.title)) {
                 return false;
             }
         }
+
         return true;
     }).map((item) => {
         const dbMatch = dbMenus.find(
             (m: any) =>
                 m.name?.toLowerCase() === item.title.toLowerCase() ||
-                m.route?.includes(item.href.replace('/', ''))
+                m.route?.includes(item.href.replace('/', '')),
         );
 
         return {
             ...item,
-            href: (dbMatch?.url && dbMatch?.url !== '#') ? dbMatch.url : item.href,
+            href:
+                dbMatch?.url && dbMatch?.url !== '#' ? dbMatch.url : item.href,
         };
     });
 
@@ -139,12 +158,20 @@ export function AppSidebar() {
         : '/dashboard';
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-r border-border bg-sidebar z-50">
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
+            className="z-50 border-r border-border bg-sidebar"
+        >
             {/* ── Header: Logo ── */}
-            <SidebarHeader className="pt-6 pb-2 px-4">
+            <SidebarHeader className="px-4 pt-6 pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="hover:bg-accent transition-all duration-200 rounded-md">
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="rounded-md transition-all duration-200 hover:bg-accent"
+                        >
                             <Link href={dashboardUrl} prefetch>
                                 <AppLogo />
                             </Link>
@@ -154,10 +181,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             {/* ── Content: Menu + Configuration ── */}
-            <SidebarContent className="px-3 gap-0 overflow-x-hidden">
+            <SidebarContent className="gap-0 overflow-x-hidden px-3">
                 {/* Main Menu */}
                 <SidebarGroup className="py-2">
-                    <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
+                    <SidebarGroupLabel className="mb-2 px-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
                         Menu Utama
                     </SidebarGroupLabel>
                     <SidebarMenu className="gap-1.5">
@@ -170,14 +197,20 @@ export function AppSidebar() {
                                         asChild
                                         isActive={active}
                                         tooltip={{ children: item.title }}
-                                        className={`rounded-md transition-all duration-200 group ${
-                                            active 
-                                            ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
-                                            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                                        className={`group rounded-md transition-all duration-200 ${
+                                            active
+                                                ? 'bg-primary font-medium text-primary-foreground shadow-sm'
+                                                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                                         }`}
                                     >
-                                        <Link href={item.href} prefetch className="flex items-center gap-3">
-                                            <item.icon className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`} />
+                                        <Link
+                                            href={item.href}
+                                            prefetch
+                                            className="flex items-center gap-3"
+                                        >
+                                            <item.icon
+                                                className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`}
+                                            />
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -190,35 +223,41 @@ export function AppSidebar() {
                 {isAdmin && (
                     <>
                         <SidebarSeparator className="mx-2 my-2 opacity-50" />
-                        
+
                         <SidebarGroup className="py-2">
-                            <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 px-2">
+                            <SidebarGroupLabel className="mb-2 px-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase dark:text-slate-500">
                                 Konfigurasi
                             </SidebarGroupLabel>
                             <SidebarMenu className="gap-1.5">
                                 {CONFIG_MENU_ITEMS.map((item) => {
-                                    const active = item.href === '/configuration' 
-                                        ? (page.url === '/configuration' || page.url === '/configuration/')
-                                        : page.url.startsWith(item.href);
+                                    const active =
+                                        item.href === '/configuration'
+                                            ? page.url === '/configuration' ||
+                                              page.url === '/configuration/'
+                                            : page.url.startsWith(item.href);
 
                                     return (
                                         <SidebarMenuItem key={item.title}>
                                             <SidebarMenuButton
                                                 asChild
                                                 isActive={active}
-                                                tooltip={{ children: item.title }}
-                                                className={`rounded-md transition-all duration-200 group ${
-                                                    active 
-                                                    ? 'bg-primary text-primary-foreground font-medium shadow-sm' 
-                                                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                                                tooltip={{
+                                                    children: item.title,
+                                                }}
+                                                className={`group rounded-md transition-all duration-200 ${
+                                                    active
+                                                        ? 'bg-primary font-medium text-primary-foreground shadow-sm'
+                                                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                                                 }`}
                                             >
-                                                <Link 
-                                                    href={item.href} 
+                                                <Link
+                                                    href={item.href}
                                                     prefetch
                                                     className="flex items-center gap-3"
                                                 >
-                                                    <item.icon className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`} />
+                                                    <item.icon
+                                                        className={`size-5 transition-transform duration-200 ${active ? 'scale-110' : 'group-hover:scale-110 group-hover:text-foreground'}`}
+                                                    />
                                                     <span>{item.title}</span>
                                                 </Link>
                                             </SidebarMenuButton>
@@ -235,7 +274,7 @@ export function AppSidebar() {
             <SidebarFooter className="p-4 pb-6">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <div className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 hover:bg-accent group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:bg-transparent">
+                        <div className="flex items-center gap-3 rounded-md px-3 py-2 transition-all duration-200 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0 hover:bg-accent">
                             <Avatar className="h-10 w-10 shrink-0 rounded-md border border-border">
                                 <AvatarFallback
                                     className={`rounded-md text-sm font-medium ${getRoleBadgeColor(primaryRole)}`}
@@ -257,11 +296,18 @@ export function AppSidebar() {
                         <SidebarMenuButton
                             asChild
                             tooltip={{ children: 'Keluar' }}
-                            className="text-destructive hover:text-destructive-foreground hover:bg-destructive rounded-md transition-all duration-200 flex justify-center"
+                            className="flex justify-center rounded-md text-destructive transition-all duration-200 hover:bg-destructive hover:text-destructive-foreground"
                         >
-                            <Link href="/logout" method="post" as="button" className="w-full justify-center group">
-                                <LogOut className="size-4 group-hover:scale-110 transition-transform" />
-                                <span className="font-medium">Keluar Aplikasi</span>
+                            <Link
+                                href="/logout"
+                                method="post"
+                                as="button"
+                                className="group w-full justify-center"
+                            >
+                                <LogOut className="size-4 transition-transform group-hover:scale-110" />
+                                <span className="font-medium">
+                                    Keluar Aplikasi
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -270,4 +316,3 @@ export function AppSidebar() {
         </Sidebar>
     );
 }
-

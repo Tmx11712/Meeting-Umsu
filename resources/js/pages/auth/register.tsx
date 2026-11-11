@@ -77,7 +77,9 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="username">Username (opsional)</Label>
+                                <Label htmlFor="username">
+                                    Username (opsional)
+                                </Label>
                                 <Input
                                     id="username"
                                     type="text"
@@ -125,7 +127,7 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white"
+                                className="mt-2 w-full bg-blue-600 text-white hover:bg-blue-700"
                                 tabIndex={6}
                                 data-test="register-user-button"
                             >
@@ -179,8 +181,7 @@ export default function Register({ passwordRules, teamInvitation }: Props) {
                         teamInvitation
                             ? login.url({
                                   query: {
-                                      invitation:
-                                          teamInvitation.code,
+                                      invitation: teamInvitation.code,
                                   },
                               })
                             : login()

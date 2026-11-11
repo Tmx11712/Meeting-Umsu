@@ -25,6 +25,7 @@ export default function MeetingIndex({ meetings, filters }: any) {
         if (searchTimeout.current) {
             clearTimeout(searchTimeout.current);
         }
+
         searchTimeout.current = setTimeout(() => {
             applyFilter('search', value);
         }, 300);
@@ -35,78 +36,140 @@ export default function MeetingIndex({ meetings, filters }: any) {
         d.setDate(1);
         d.setMonth(d.getMonth() - i);
         const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-        const label = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+        const label = d.toLocaleDateString('id-ID', {
+            month: 'long',
+            year: 'numeric',
+        });
 
         return { value, label };
     });
 
     return (
-        <div className="flex h-full flex-1 flex-col gap-4 py-2 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex h-full w-full flex-1 animate-in flex-col gap-4 py-2 duration-700 fade-in slide-in-from-bottom-4">
             <Head title="Koreksi Transkrip" />
-            
+
             {/* Header Section */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-slate-900/40 p-4 rounded-2xl border border-white/60 dark:border-slate-800/60 shadow-sm backdrop-blur-md">
+            <div className="flex flex-col justify-between gap-4 rounded-2xl border border-white/60 bg-white/40 p-4 shadow-sm backdrop-blur-md sm:flex-row sm:items-center dark:border-slate-800/60 dark:bg-slate-900/40">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-1">
+                    <h1 className="mb-1 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                         Koreksi Transkrip
                     </h1>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Daftar rapat yang menunggu koreksi transkrip</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        Daftar rapat yang menunggu koreksi transkrip
+                    </p>
                 </div>
             </div>
 
-            <Card className="rounded-2xl border-0 shadow-soft bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+            <Card className="shadow-soft overflow-hidden rounded-2xl border-0 bg-white/80 backdrop-blur-sm dark:bg-slate-900/80">
                 <CardContent className="p-0">
                     {/* Top Filters Bar */}
-                    <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50">
+                    <div className="flex flex-col justify-between gap-4 border-b border-slate-100 p-5 md:flex-row md:items-center dark:border-slate-800/50">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                            <Input 
-                                type="search" 
-                                placeholder="Cari judul rapat..." 
-                                className="pl-9 w-75 bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-sm dark:text-slate-100 placeholder:dark:text-slate-400 focus-visible:ring-1 focus-visible:ring-blue-500 rounded-lg h-10"
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <Input
+                                type="search"
+                                placeholder="Cari judul rapat..."
+                                className="h-10 w-75 rounded-lg border-slate-200 bg-white pl-9 text-sm focus-visible:ring-1 focus-visible:ring-blue-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 placeholder:dark:text-slate-400"
                                 defaultValue={filters?.search || ''}
-                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onChange={(e) =>
+                                    handleSearchChange(e.target.value)
+                                }
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         if (searchTimeout.current) {
                                             clearTimeout(searchTimeout.current);
                                         }
-                                        applyFilter('search', (e.target as HTMLInputElement).value);
+
+                                        applyFilter(
+                                            'search',
+                                            (e.target as HTMLInputElement)
+                                                .value,
+                                        );
                                     }
                                 }}
                             />
                         </div>
-                        
+
                         <div className="flex flex-wrap items-center gap-3">
                             <div className="relative">
-                                <select 
-                                    className="h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 w-40 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                <select
+                                    className="h-10 w-40 cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white pr-10 pl-4 text-sm text-slate-700 transition-colors outline-none hover:bg-slate-50 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
                                     value={filters?.status || 'all'}
-                                    onChange={(e) => applyFilter('status', e.target.value)}
+                                    onChange={(e) =>
+                                        applyFilter('status', e.target.value)
+                                    }
                                 >
-                                    <option value="all" className="dark:bg-slate-900">Semua Status</option>
-                                    <option value="terjadwal" className="dark:bg-slate-900">Terjadwal</option>
-                                    <option value="berlangsung" className="dark:bg-slate-900">Berlangsung</option>
-                                    <option value="review" className="dark:bg-slate-900">Review</option>
-                                    <option value="selesai" className="dark:bg-slate-900">Selesai</option>
+                                    <option
+                                        value="all"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Semua Status
+                                    </option>
+                                    <option
+                                        value="terjadwal"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Terjadwal
+                                    </option>
+                                    <option
+                                        value="berlangsung"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Berlangsung
+                                    </option>
+                                    <option
+                                        value="review"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Review
+                                    </option>
+                                    <option
+                                        value="selesai"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Selesai
+                                    </option>
                                 </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
+                                    <svg
+                                        className="h-4 w-4 text-slate-400"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M19 9l-7 7-7-7"
+                                        ></path>
+                                    </svg>
                                 </div>
                             </div>
-                            
+
                             <div className="relative">
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
                                     <Calendar className="h-4 w-4 text-slate-400" />
                                 </div>
-                                <select 
-                                    className="h-10 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 pl-4 pr-10 text-sm outline-none focus:ring-1 focus:ring-blue-500 appearance-none text-slate-700 dark:text-slate-200 w-44 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                <select
+                                    className="h-10 w-44 cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white pr-10 pl-4 text-sm text-slate-700 transition-colors outline-none hover:bg-slate-50 focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
                                     value={filters?.month || 'all'}
-                                    onChange={(e) => applyFilter('month', e.target.value)}
+                                    onChange={(e) =>
+                                        applyFilter('month', e.target.value)
+                                    }
                                 >
-                                    <option value="all" className="dark:bg-slate-900">Semua Bulan</option>
+                                    <option
+                                        value="all"
+                                        className="dark:bg-slate-900"
+                                    >
+                                        Semua Bulan
+                                    </option>
                                     {monthOptions.map((opt) => (
-                                        <option key={opt.value} value={opt.value} className="dark:bg-slate-900">
+                                        <option
+                                            key={opt.value}
+                                            value={opt.value}
+                                            className="dark:bg-slate-900"
+                                        >
                                             {opt.label}
                                         </option>
                                     ))}
@@ -117,60 +180,125 @@ export default function MeetingIndex({ meetings, filters }: any) {
 
                     {/* Table */}
                     <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800/60">
+                        <table className="w-full text-left text-sm">
+                            <thead className="border-b border-slate-100 bg-slate-50/50 text-xs text-slate-500 dark:border-slate-800/60 dark:bg-slate-800/40 dark:text-slate-400">
                                 <tr>
-                                    <th className="px-4 py-4 font-medium">No</th>
-                                    <th className="px-4 py-4 font-medium">Judul Rapat</th>
-                                    <th className="px-4 py-4 font-medium">Tanggal</th>
-                                    <th className="px-4 py-4 font-medium">Waktu</th>
-                                    <th className="px-4 py-4 font-medium">Ruangan</th>
-                                    <th className="px-4 py-4 font-medium text-center">Peserta</th>
-                                    <th className="px-4 py-4 font-medium text-center">Status</th>
-                                    <th className="px-4 py-4 font-medium text-center">Aksi</th>
+                                    <th className="px-4 py-4 font-medium">
+                                        No
+                                    </th>
+                                    <th className="px-4 py-4 font-medium">
+                                        Judul Rapat
+                                    </th>
+                                    <th className="px-4 py-4 font-medium">
+                                        Tanggal
+                                    </th>
+                                    <th className="px-4 py-4 font-medium">
+                                        Waktu
+                                    </th>
+                                    <th className="px-4 py-4 font-medium">
+                                        Ruangan
+                                    </th>
+                                    <th className="px-4 py-4 text-center font-medium">
+                                        Peserta
+                                    </th>
+                                    <th className="px-4 py-4 text-center font-medium">
+                                        Status
+                                    </th>
+                                    <th className="px-4 py-4 text-center font-medium">
+                                        Aksi
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                                 {meetings?.data && meetings.data.length > 0 ? (
-                                    meetings.data.map((meeting: any, index: number) => (
-                                        <tr key={meeting.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors group">
-                                            <td className="px-4 py-4 text-slate-500 dark:text-slate-400">
-                                                {(meetings.from ?? 1) + index}
-                                            </td>
-                                            <td className="px-4 py-4">
-                                                <Link href={`/meetings/${meeting.id}/correction`} className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                                    {meeting.title}
-                                                </Link>
-                                            </td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">{meeting.date || '-'}</td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
-                                                {meeting.start_time ? `${meeting.start_time.substring(0, 5)}${meeting.end_time ? ` - ${meeting.end_time.substring(0, 5)}` : ''}` : '-'}
-                                            </td>
-                                            <td className="px-4 py-4 text-slate-600 dark:text-slate-300 max-w-50"><span className="block truncate" title={meeting.location || '-'}>{meeting.location || '-'}</span></td>
-                                            <td className="px-4 py-4 text-center text-slate-600 dark:text-slate-300">{meeting.participants_count ?? 0}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-center">
-                                                <MeetingStatusBadge status={meeting.status} category={meeting.category} />
-                                            </td>
-                                            <td className="px-4 py-4 text-center">
-                                                {canEdit('transcript') ? (
-                                                    <Button asChild variant="outline" size="sm" className="h-8">
-                                                        <Link href={`/meetings/${meeting.id}/correction`}>
-                                                            Mulai Koreksi
-                                                        </Link>
-                                                    </Button>
-                                                ) : (
-                                                    <Button asChild variant="secondary" size="sm" className="h-8">
-                                                        <Link href={`/meetings/${meeting.id}/correction`}>
-                                                            Lihat Transkrip
-                                                        </Link>
-                                                    </Button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
+                                    meetings.data.map(
+                                        (meeting: any, index: number) => (
+                                            <tr
+                                                key={meeting.id}
+                                                className="group transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
+                                            >
+                                                <td className="px-4 py-4 text-slate-500 dark:text-slate-400">
+                                                    {(meetings.from ?? 1) +
+                                                        index}
+                                                </td>
+                                                <td className="px-4 py-4">
+                                                    <Link
+                                                        href={`/meetings/${meeting.id}/correction`}
+                                                        className="font-semibold text-slate-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400"
+                                                    >
+                                                        {meeting.title}
+                                                    </Link>
+                                                </td>
+                                                <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
+                                                    {meeting.date || '-'}
+                                                </td>
+                                                <td className="px-4 py-4 text-slate-600 dark:text-slate-300">
+                                                    {meeting.start_time
+                                                        ? `${meeting.start_time.substring(0, 5)}${meeting.end_time ? ` - ${meeting.end_time.substring(0, 5)}` : ''}`
+                                                        : '-'}
+                                                </td>
+                                                <td className="max-w-50 px-4 py-4 text-slate-600 dark:text-slate-300">
+                                                    <span
+                                                        className="block truncate"
+                                                        title={
+                                                            meeting.location ||
+                                                            '-'
+                                                        }
+                                                    >
+                                                        {meeting.location ||
+                                                            '-'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-4 py-4 text-center text-slate-600 dark:text-slate-300">
+                                                    {meeting.participants_count ??
+                                                        0}
+                                                </td>
+                                                <td className="px-6 py-4 text-center whitespace-nowrap">
+                                                    <MeetingStatusBadge
+                                                        status={meeting.status}
+                                                        category={
+                                                            meeting.category
+                                                        }
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-4 text-center">
+                                                    {canEdit('transcript') ? (
+                                                        <Button
+                                                            asChild
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="h-8"
+                                                        >
+                                                            <Link
+                                                                href={`/meetings/${meeting.id}/correction`}
+                                                            >
+                                                                Mulai Koreksi
+                                                            </Link>
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            asChild
+                                                            variant="secondary"
+                                                            size="sm"
+                                                            className="h-8"
+                                                        >
+                                                            <Link
+                                                                href={`/meetings/${meeting.id}/correction`}
+                                                            >
+                                                                Lihat Transkrip
+                                                            </Link>
+                                                        </Button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ),
+                                    )
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-4 py-12 text-center text-slate-500 dark:text-slate-400">
+                                        <td
+                                            colSpan={8}
+                                            className="px-4 py-12 text-center text-slate-500 dark:text-slate-400"
+                                        >
                                             Belum ada data rapat.
                                         </td>
                                     </tr>
@@ -180,9 +308,10 @@ export default function MeetingIndex({ meetings, filters }: any) {
                     </div>
 
                     {/* Pagination Footer */}
-                    <div className="p-5 border-t border-slate-100 dark:border-slate-800/60 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+                    <div className="flex flex-col items-center justify-between gap-4 border-t border-slate-100 p-5 text-sm text-slate-500 md:flex-row dark:border-slate-800/60 dark:text-slate-400">
                         <div>
-                            Menampilkan {meetings?.from ?? 0} – {meetings?.to ?? 0} dari {meetings?.total ?? 0} data
+                            Menampilkan {meetings?.from ?? 0} –{' '}
+                            {meetings?.to ?? 0} dari {meetings?.total ?? 0} data
                         </div>
                         <div className="flex items-center gap-2">
                             {meetings?.links?.map((link: any, i: number) => {
@@ -193,19 +322,24 @@ export default function MeetingIndex({ meetings, filters }: any) {
                                 return (
                                     <Button
                                         key={i}
-                                        variant={link.active ? 'default' : 'outline'}
+                                        variant={
+                                            link.active ? 'default' : 'outline'
+                                        }
                                         size="icon"
-                                        className={`w-8 h-8 rounded-md text-xs font-semibold transition-all ${
+                                        className={`h-8 w-8 rounded-md text-xs font-semibold transition-all ${
                                             link.active
-                                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
-                                                : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-                                        } ${!link.url ? 'opacity-40 cursor-not-allowed' : ''}`}
+                                                ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700'
+                                                : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
+                                        } ${!link.url ? 'cursor-not-allowed opacity-40' : ''}`}
                                         disabled={!link.url}
-                                        onClick={() => link.url && router.get(link.url, filters, {
-                                            preserveState: true,
-                                            preserveScroll: true,
-                                            only: ['meetings', 'filters'],
-                                        })}
+                                        onClick={() =>
+                                            link.url &&
+                                            router.get(link.url, filters, {
+                                                preserveState: true,
+                                                preserveScroll: true,
+                                                only: ['meetings', 'filters'],
+                                            })
+                                        }
                                     >
                                         {label}
                                     </Button>

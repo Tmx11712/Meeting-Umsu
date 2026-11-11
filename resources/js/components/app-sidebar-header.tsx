@@ -47,21 +47,21 @@ export function AppSidebarHeader({
     /** Get role abbreviation */
     function getRoleAbbr(role: string): string {
         if (!role) {
-return '??';
-}
+            return '??';
+        }
 
         const parts = role.replace(/\./g, '').split(/\s+/);
 
         if (parts.length >= 2) {
-return (parts[0][0] + parts[1][0]).toUpperCase();
-}
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
 
         return role.substring(0, 2).toUpperCase();
     }
 
     return (
         <header className="flex h-14 items-center justify-between gap-4">
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex min-w-0 items-center gap-2">
                 <SidebarTrigger className="-ml-1" />
                 {breadcrumbs.length > 0 && (
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -69,7 +69,7 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
             </div>
 
             {/* Right side: Theme toggle + User */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex shrink-0 items-center gap-2">
                 {/* Theme toggle */}
                 <Button
                     variant="ghost"
@@ -86,7 +86,7 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
                 </Button>
 
                 {/* Role name + Avatar */}
-                <div className="hidden sm:flex items-center gap-2">
+                <div className="hidden items-center gap-2 sm:flex">
                     <span className="text-sm font-medium text-muted-foreground">
                         {auth.user.name}
                     </span>
@@ -101,7 +101,7 @@ return (parts[0][0] + parts[1][0]).toUpperCase();
                                         src={auth.user.avatar}
                                         alt={auth.user.name}
                                     />
-                                    <AvatarFallback className="rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                                    <AvatarFallback className="rounded-full bg-primary text-xs font-bold text-primary-foreground">
                                         {getInitials(auth.user.name)}
                                     </AvatarFallback>
                                 </Avatar>

@@ -13,7 +13,7 @@ export default function PasswordInput({
 
     return (
         <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10">
+            <div className="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-muted-foreground">
                 <Lock className="size-5" />
             </div>
             <Input

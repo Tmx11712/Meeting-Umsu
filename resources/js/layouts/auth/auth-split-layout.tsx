@@ -30,7 +30,9 @@ export default function AuthSplitLayout({
                         <AppLogoIcon className="h-10 text-foreground sm:h-12" />
                     </Link>
                     <div className="flex flex-col items-start gap-2 text-left sm:items-center sm:text-center">
-                        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight">
+                            {title}
+                        </h1>
                         <p className="text-sm text-muted-foreground">
                             {description}
                         </p>

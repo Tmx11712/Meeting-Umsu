@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MeetingMinuteStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -189,6 +191,33 @@ class Meeting extends Model
 
     /**
      * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan'])) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($user) {
+            $q->whereHas('participants', function (Builder $pq) use ($user) {
+                $pq->where('user_id', '=', $user->id)
+                    ->where('is_invited', '=', true);
+            });
+
+            if ($user->hasRole('Viewer')) {
+                $q->orWhere(function (Builder $vq) {
+                    $vq->where('status', '=', 'selesai')
+                        ->whereHas('minutes', function (Builder $mq) {
+                            $mq->where('status', '=', MeetingMinuteStatus::DISETUJUI->value);
+                        });
+                });
+            }
+        });
+    }
+
+    /**
+     * @param  Builder<self>  $query
      * @param  array{search?: string|null, status?: string|null, month?: string|null}  $filters
      * @return Builder<self>
      */
@@ -196,7 +225,8 @@ class Meeting extends Model
     {
         if (! empty($filters['search'])) {
             $escaped = addcslashes((string) $filters['search'], '%_\\');
-            $query->where('title', 'ilike', '%'.$escaped.'%');
+            $likeOperator = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+            $query->where('title', $likeOperator, '%'.$escaped.'%');
         }
 
         if (! empty($filters['status']) && $filters['status'] !== 'all') {

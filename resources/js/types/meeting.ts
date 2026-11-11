@@ -49,7 +49,12 @@ export interface Meeting {
     location: string;
     status: string;
     current_stage: number;
-    participants: { id: number; meeting_id: number; user_id: number; user?: User }[];
+    participants: {
+        id: number;
+        meeting_id: number;
+        user_id: number;
+        user?: User;
+    }[];
     recordings: MeetingRecording[];
     attendances: MeetingAttendance[];
     minutes: MeetingMinute[];

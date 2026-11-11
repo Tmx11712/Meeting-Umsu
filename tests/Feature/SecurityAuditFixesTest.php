@@ -2,6 +2,7 @@
 
 use App\Enums\MeetingMinuteStatus;
 use App\Models\Meeting;
+use App\Models\MeetingDocument;
 use App\Models\MeetingMinute;
 use App\Models\MeetingParticipant;
 use App\Models\MeetingRecording;
@@ -9,6 +10,7 @@ use App\Models\MeetingTranscript;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -353,4 +355,120 @@ test('public api attendance scan blocks deactivated users and unauthenticated pi
     $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
         'email' => $pimpinan->email,
     ])->assertForbidden();
+
+    $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'user_id' => $pimpinan->id,
+    ])->assertForbidden();
+});
+
+test('uninvited viewer cannot access ongoing meetings, documents, or unreleased reports and report search works on non-pgsql drivers', function () {
+    /** @var TestCase $this */
+    $disk = config('filesystems.default');
+    Storage::fake($disk);
+
+    /** @var User $creator */
+    $creator = User::factory()->create(['status' => 'aktif']);
+    $creator->assignRole('Bag. Umum');
+
+    /** @var User $viewer */
+    $viewer = User::factory()->create(['status' => 'aktif']);
+    $viewer->assignRole('Viewer');
+
+    $ongoingMeeting = Meeting::create([
+        'title' => 'Rapat Rahasia Internal',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '11:00:00',
+        'duration' => 7200,
+        'location' => 'Ruang Rapat',
+        'type' => 'Rapat Pimpinan',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $creator->id,
+        'current_stage' => 2,
+    ]);
+
+    $docPath = "documents/{$ongoingMeeting->id}/rahasia.pdf";
+    Storage::disk($disk)->put($docPath, 'secret');
+
+    $document = MeetingDocument::create([
+        'meeting_id' => $ongoingMeeting->id,
+        'file_path' => $docPath,
+        'file_name' => 'rahasia.pdf',
+        'file_size' => 6,
+        'mime_type' => 'application/pdf',
+        'category' => 'Lainnya',
+        'uploaded_by' => $creator->id,
+    ]);
+
+    $approvedMeeting = Meeting::create([
+        'title' => 'Rapat Publik Selesai',
+        'date' => now()->toDateString(),
+        'start_time' => '13:00:00',
+        'end_time' => '14:00:00',
+        'duration' => 3600,
+        'location' => 'Aula',
+        'type' => 'Rapat Koordinasi',
+        'status' => 'selesai',
+        'source' => 'manual',
+        'created_by' => $creator->id,
+        'current_stage' => 7,
+    ]);
+
+    MeetingMinute::create([
+        'meeting_id' => $approvedMeeting->id,
+        'status' => MeetingMinuteStatus::DISETUJUI->value,
+        'content' => ['sections' => [['title' => 'Hasil', 'content' => 'Notulen disahkan.']]],
+    ]);
+
+    // Uninvited viewer is blocked from ongoing meeting views & documents
+    $this->actingAs($viewer)->get(route('meetings.show', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($viewer)->get(route('meetings.recording', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($viewer)->get(route('meetings.approval', $ongoingMeeting))->assertForbidden();
+    $this->actingAs($viewer)->get(route('meetings.documents.download', [$ongoingMeeting, $document]))->assertForbidden();
+
+    // Index & Reports search work cleanly on SQLite and hide unreleased ongoing meetings from uninvited viewer
+    $this->actingAs($viewer)
+        ->get(route('meetings.index', ['search' => 'Rapat']))
+        ->assertOk()
+        ->assertDontSee('Rapat Rahasia Internal')
+        ->assertSee('Rapat Publik Selesai');
+
+    $this->actingAs($viewer)
+        ->get(route('reports.index', ['search' => 'Rapat']))
+        ->assertOk()
+        ->assertDontSee('Rapat Rahasia Internal')
+        ->assertSee('Rapat Publik Selesai');
+
+    $this->actingAs($creator)
+        ->get(route('reports.index', ['search' => 'Rahasia']))
+        ->assertOk()
+        ->assertSee('Rapat Rahasia Internal');
+});
+
+test('irvan-cloud:sync artisan command resolves SyncMeetingsAction cleanly', function () {
+    /** @var TestCase $this */
+    config(['services.absensi.url' => 'https://absensi.example.test']);
+
+    Http::fake([
+        'absensi.example.test/api/event*' => Http::response(['data' => ['page_data' => []]], 200),
+    ]);
+
+    $this->artisan('irvan-cloud:sync')->assertExitCode(0);
+});
+
+test('trust proxies ignores spoofed forwarded IP from public peers by default and honors private proxies', function () {
+    /** @var TestCase $this */
+    $publicResponse = $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.50'])
+        ->withHeaders(['X-Forwarded-For' => '198.51.100.9'])
+        ->get(route('login'));
+    $publicResponse->assertOk();
+    expect(request()->ip())->toBe('203.0.113.50');
+
+    // Internal Docker/LAN proxy hop is trusted and forwards the real client IP
+    $proxyResponse = $this->withServerVariables(['REMOTE_ADDR' => '172.18.0.5'])
+        ->withHeaders(['X-Forwarded-For' => '198.51.100.9'])
+        ->get(route('login'));
+    $proxyResponse->assertOk();
+    expect(request()->ip())->toBe('198.51.100.9');
 });

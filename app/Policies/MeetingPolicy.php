@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\MeetingMinuteStatus;
 use App\Models\Meeting;
 use App\Models\User;
 
@@ -37,7 +38,9 @@ class MeetingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('meeting.read') || $user->can('meeting.view');
+        return $user->can('meeting.read')
+            || $user->can('meeting.view')
+            || $user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan', 'Viewer']);
     }
 
     /**
@@ -45,15 +48,24 @@ class MeetingPolicy
      */
     public function view(User $user, Meeting $meeting): bool
     {
-        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan', 'Viewer'])) {
+        if ($user->hasRole(['Super Admin', 'Administrator', 'Bag. Humas', 'Bag. Umum', 'Pimpinan'])) {
             return true;
         }
 
-        // Jika tidak memiliki role global, harus merupakan participant terundang dari meeting ini
-        return $meeting->participants()
+        // Participant yang diundang resmi selalu berhak melihat rapat ini
+        if ($meeting->participants()
             ->where('user_id', '=', $user->id)
             ->where('is_invited', '=', true)
-            ->exists();
+            ->exists()) {
+            return true;
+        }
+
+        // Viewer eksternal/non-undangan hanya dapat melihat rapat yang sudah selesai & notulen disahkan
+        return $user->hasRole('Viewer')
+            && $meeting->status === 'selesai'
+            && $meeting->minutes()
+                ->where('status', '=', MeetingMinuteStatus::DISETUJUI->value)
+                ->exists();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -45,6 +46,16 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        $trustedProxies = config('app.trusted_proxies');
+        if (is_string($trustedProxies) && trim($trustedProxies) !== '') {
+            $trimmed = trim($trustedProxies);
+            TrustProxies::at(
+                $trimmed === '*'
+                    ? '*'
+                    : array_values(array_filter(array_map('trim', explode(',', $trimmed)))),
+            );
+        }
 
         if (app()->environment('production') && str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');

@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
 export const show = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
 show.url = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
@@ -127,7 +127,7 @@ show.url = (args: { meeting: string | number | { id: string | number } } | [meet
 
 /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
 show.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ show.get = (args: { meeting: string | number | { id: string | number } } | [meet
 })
 /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
 show.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -146,7 +146,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
     /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
     const showForm = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -156,7 +156,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
 
             /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
         showForm.get = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ show.head = (args: { meeting: string | number | { id: string | number } } | [mee
         })
             /**
 * @see \App\Http\Controllers\Api\MeetingApiController::show
- * @see app/Http/Controllers/Api/MeetingApiController.php:64
+ * @see app/Http/Controllers/Api/MeetingApiController.php:59
  * @route '/api/meetings/{meeting}'
  */
         showForm.head = (args: { meeting: string | number | { id: string | number } } | [meeting: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

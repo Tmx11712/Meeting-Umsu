@@ -46,12 +46,12 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
                             <div className="my-6 flex items-center justify-start">
                                 <Button
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                                    className="w-full bg-blue-600 text-white hover:bg-blue-700"
                                     disabled={processing}
                                     data-test="email-password-reset-link-button"
                                 >
                                     {processing && (
-                                        <LoaderCircle className="h-4 w-4 animate-spin mr-2" />
+                                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                                     )}
                                     Kirim Link Reset
                                 </Button>
@@ -85,5 +85,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
 ForgotPassword.layout = {
     title: 'Reset Password',
-    description: 'Masukkan email Anda dan kami akan mengirimkan\nlink untuk mereset password.',
+    description:
+        'Masukkan email Anda dan kami akan mengirimkan\nlink untuk mereset password.',
 };
