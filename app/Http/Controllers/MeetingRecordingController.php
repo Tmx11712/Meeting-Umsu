@@ -12,6 +12,7 @@ use App\Jobs\PrepareAudioForTranscriptionJob;
 use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
 use App\Models\MeetingRecording;
+use App\Models\MeetingTranscriptionChunk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -160,16 +161,7 @@ class MeetingRecordingController extends Controller
 
         $recording = $meeting->recordings()->findOrFail($request->recording_id);
 
-        // Bersihkan transkrip lama jika sedang mengulang transkripsi
-        $recording->transcripts()->delete();
-
-        $recording->fill([
-            'status' => 'transcribing',
-            'openai_model_used' => config('services.openai.transcribe_model'),
-        ])->save();
-
-        // Dispatch job for transcription
-        $this->dispatchTranscriptionJob($recording);
+        $this->startTranscriptionForRecording($recording);
 
         $meeting->current_stage = max($meeting->current_stage, 3);
         $meeting->save();
@@ -208,13 +200,7 @@ class MeetingRecordingController extends Controller
         $transcriptionStarted = false;
 
         foreach ($untranscribedRecordings as $recording) {
-            $recording->transcripts()->delete();
-            $recording->fill([
-                'status' => 'transcribing',
-                'openai_model_used' => config('services.openai.transcribe_model'),
-            ])->save();
-
-            $this->dispatchTranscriptionJob($recording);
+            $this->startTranscriptionForRecording($recording);
             $transcriptionStarted = true;
         }
 
@@ -240,6 +226,20 @@ class MeetingRecordingController extends Controller
 
         return redirect()->route('meetings.show', $meeting->id)
             ->with('success', 'Tahap rekaman telah diselesaikan dan diteruskan ke bagian terkait untuk transkripsi.');
+    }
+
+    private function startTranscriptionForRecording(MeetingRecording $recording): void
+    {
+        $recording->transcripts()->delete();
+        MeetingTranscriptionChunk::query()->where('recording_id', '=', $recording->id)->delete();
+        Storage::deleteDirectory("meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks");
+
+        $recording->fill([
+            'status' => 'transcribing',
+            'openai_model_used' => config('services.openai.transcribe_model'),
+        ])->save();
+
+        $this->dispatchTranscriptionJob($recording);
     }
 
     /**

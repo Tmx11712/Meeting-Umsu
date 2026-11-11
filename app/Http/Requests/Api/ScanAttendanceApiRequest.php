@@ -24,9 +24,10 @@ class ScanAttendanceApiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'nullable|exists:users,id',
+            'user_id' => 'nullable|uuid|exists:users,id',
             'email' => 'nullable|email',
             'guest_name' => 'nullable|string|max:255',
+            'guest_unit_kerja' => 'nullable|string|max:255',
             'guest_institution' => 'nullable|string|max:255',
             'notes' => 'nullable|string|max:255',
         ];

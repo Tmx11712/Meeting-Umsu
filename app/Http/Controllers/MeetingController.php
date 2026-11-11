@@ -249,56 +249,22 @@ class MeetingController extends Controller
     {
         $this->authorize('delete', $meeting);
 
-        // Simpan data yang diperlukan untuk cleanup file SEBELUM soft delete
-        $meeting->load('recordings', 'documents');
         $meetingId = $meeting->id;
-        $recordings = $meeting->recordings->toArray();
-        $documents = $meeting->documents->toArray();
+        $meetingTitleSlug = Str::slug($meeting->title) ?: 'rapat';
 
-        // 1. Soft delete DULU agar meeting hilang dari query database seketika
-        // Menggunakan destroy() untuk menghilangkan garis merah (false positive) di IDE Anda
+        // Meeting::deleting sudah menghapus relasi, rekaman, dokumen, dan folder utama di storage
         Meeting::destroy($meeting->id);
 
-        $meetingTitleSlug = Str::slug($meeting->title);
-
-        // 2. Broadcast sinyal ke semua client SEGERA setelah delete
-        //    Humas di ruang rekaman akan langsung di-redirect ke dashboard
         safe_broadcast(new MeetingUpdated($meeting, 'deleted'), false);
         safe_broadcast(new MeetingsListUpdated('Rapat telah dihapus'), false);
 
-        // 3. Eksekusi pembersihan file SETELAH response terkirim ke user (Instan!)
-        app()->terminating(function () use ($recordings, $documents, $meetingId, $meetingTitleSlug) {
-            foreach ($recordings as $recording) {
-                try {
-                    if (Storage::exists($recording['file_path'])) {
-                        Storage::delete($recording['file_path']);
-                    }
-                } catch (\Throwable $e) {
-                    Log::warning('Gagal menghapus file rekaman: '.$e->getMessage());
-                }
-            }
-
-            foreach ($documents as $document) {
-                try {
-                    if (Storage::exists($document['file_path'])) {
-                        Storage::delete($document['file_path']);
-                    }
-                } catch (\Throwable $e) {
-                    Log::warning('Gagal menghapus file dokumen: '.$e->getMessage());
-                }
-            }
-
+        app()->terminating(function () use ($meetingId, $meetingTitleSlug) {
             try {
                 $folderName = $meetingId.'-'.$meetingTitleSlug;
-
-                // Hapus format lama
                 Storage::deleteDirectory('recordings/'.$meetingId);
-                // Hapus format baru (ID-Slug)
-                Storage::deleteDirectory('recordings/'.$folderName);
                 Storage::deleteDirectory('documents/'.$folderName);
-                Storage::deleteDirectory('notulen/'.$folderName);
             } catch (\Throwable $e) {
-                Log::warning('Gagal menghapus direktori: '.$e->getMessage());
+                Log::warning('Gagal menghapus direktori sisa rapat: '.$e->getMessage());
             }
         });
 

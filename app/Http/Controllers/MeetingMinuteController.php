@@ -32,6 +32,7 @@ class MeetingMinuteController extends Controller
 
         // Stage 4, 5, 6, 7 = Rekam, Review / Notulen, Persetujuan, Selesai
         $meetings = Meeting::query()
+            ->visibleTo($request->user())
             ->withCount('participants')
             ->whereIn('current_stage', [4, 5, 6, 7], 'and', false)
             ->filter($request->only(['search', 'status', 'month']))
@@ -81,9 +82,9 @@ class MeetingMinuteController extends Controller
             // Update status AI menjadi processing di DB
             $meeting->ai_status = 'processing';
             $meeting->save();
-            MeetingUpdated::dispatch($meeting, 'stage_changed');
 
             GenerateMeetingMinuteJob::dispatch($meeting);
+            safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
 
             return back()->with('info', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Harap tunggu sekitar 1-2 menit...');
         } catch (\Exception $e) {

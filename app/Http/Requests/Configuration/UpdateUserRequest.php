@@ -22,7 +22,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => "required|email|unique:users,email,{$userId}",
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => 'required|uuid|exists:roles,id',
             'status' => 'required|in:aktif,nonaktif',
             'password' => 'nullable|string|min:8',
         ];

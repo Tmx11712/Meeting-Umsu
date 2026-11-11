@@ -54,7 +54,7 @@ class MenuController extends Controller
             'icon' => 'nullable|string|max:100',
             'order' => 'required|integer|min:0',
             'status' => 'boolean',
-            'parent_id' => 'nullable|exists:menus,id',
+            'parent_id' => 'nullable|uuid|exists:menus,id',
         ]);
 
         $menu = DB::transaction(function () use ($validated) {
@@ -98,7 +98,7 @@ class MenuController extends Controller
             'icon' => 'nullable|string|max:100',
             'order' => 'required|integer|min:0',
             'status' => 'boolean',
-            'parent_id' => 'nullable|exists:menus,id',
+            'parent_id' => 'nullable|uuid|exists:menus,id',
         ]);
 
         $menu->fill($validated)->save();

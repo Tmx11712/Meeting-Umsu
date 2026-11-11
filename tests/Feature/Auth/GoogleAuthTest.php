@@ -12,10 +12,27 @@ use function Pest\Laravel\assertGuest;
 use function Pest\Laravel\get;
 
 it('redirects to google oauth', function () {
+    config([
+        'services.google.client_id' => 'test-client-id',
+        'services.google.client_secret' => 'test-client-secret',
+    ]);
+
     $redirectMock = Mockery::mock(RedirectResponse::class);
     Socialite::shouldReceive('driver->redirectUrl->stateless->redirect')->once()->andReturn($redirectMock);
 
     get('/auth/google');
+});
+
+it('redirects back to login with error when google oauth is not configured', function () {
+    config([
+        'services.google.client_id' => null,
+        'services.google.client_secret' => null,
+    ]);
+
+    $response = get('/auth/google');
+
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHasErrors('email');
 });
 
 it('creates a new user with Viewer role and personal team on first google login', function () {

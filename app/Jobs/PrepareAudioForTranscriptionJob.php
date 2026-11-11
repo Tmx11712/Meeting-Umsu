@@ -165,10 +165,11 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
                             $meetingObj->save();
                         }
 
-                        event(new MeetingUpdated($meetingObj, 'transcript_ready'));
+                        safe_broadcast(new MeetingUpdated($meetingObj, 'transcript_ready'));
                     }
                 }
             })->catch(function (Batch $batch, Throwable $e) use ($recordingId) {
+                $batch->cancel();
                 Log::error("[Batch] Kegagalan pada batch Transkripsi untuk Recording ID: {$recordingId} - ".$e->getMessage());
                 /** @var MeetingRecording|null $recording */
                 $recording = MeetingRecording::query()->find($recordingId);
@@ -198,6 +199,23 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
                     }
                 }
                 @rmdir($tempDir);
+            }
+        }
+    }
+
+    public function failed(?Throwable $exception = null): void
+    {
+        Log::error("[PrepareAudio] Job gagal permanen untuk Recording ID {$this->recordingId}: ".($exception?->getMessage() ?? 'Unknown error'));
+
+        /** @var MeetingRecording|null $recording */
+        $recording = MeetingRecording::query()->find($this->recordingId);
+        if ($recording && $recording->status !== 'completed') {
+            $recording->fill(['status' => 'failed'])->save();
+
+            /** @var Meeting|null $meetingObj */
+            $meetingObj = Meeting::query()->find($recording->meeting_id);
+            if ($meetingObj) {
+                safe_broadcast(new MeetingUpdated($meetingObj, 'transcript_failed'));
             }
         }
     }

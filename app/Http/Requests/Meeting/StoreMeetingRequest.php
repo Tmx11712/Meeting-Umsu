@@ -64,7 +64,7 @@ class StoreMeetingRequest extends FormRequest
             // Tanda bintang (*) artinya "Setiap anggota di dalam array peserta".
             // Validasi ini memastikan bahwa ID peserta yang diundang benar-benar terdaftar
             // di tabel 'users'. (Mencegah pengiriman ID siluman).
-            'participants.*' => 'exists:users,id',
+            'participants.*' => 'uuid|exists:users,id',
 
             // Opsi untuk memulai rekaman otomatis. Harus bernilai true/false (1 atau 0).
             'auto_record' => 'nullable|boolean',

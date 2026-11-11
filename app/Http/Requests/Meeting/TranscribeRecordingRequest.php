@@ -45,7 +45,7 @@ class TranscribeRecordingRequest extends FormRequest
             // Memastikan bahwa input 'recording_id' wajib ada (required)
             // dan ID tersebut benar-benar ada di tabel 'meeting_recordings' (exists).
             // Ini mencegah serangan IDOR (Bypass manipulasi ID).
-            'recording_id' => 'required|exists:meeting_recordings,id',
+            'recording_id' => 'required|uuid|exists:meeting_recordings,id',
         ];
     }
 

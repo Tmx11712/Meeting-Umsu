@@ -82,6 +82,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'canRegister' => Features::enabled(Features::registration()),
+            'canGoogleLogin' => filled(config('services.google.client_id')) && filled(config('services.google.client_secret')),
             'status' => $request->session()->get('status'),
             'teamInvitation' => $this->teamInvitation($request),
         ]));

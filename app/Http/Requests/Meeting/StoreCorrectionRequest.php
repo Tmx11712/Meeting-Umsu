@@ -18,7 +18,7 @@ class StoreCorrectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'transcript_id' => 'required|exists:meeting_transcripts,id',
+            'transcript_id' => 'required|uuid|exists:meeting_transcripts,id',
             'original_text' => 'required|string',
             'corrected_text' => 'required|string',
         ];

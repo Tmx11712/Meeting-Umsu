@@ -26,7 +26,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
-            'role_id' => 'required|exists:roles,id',
+            'role_id' => 'required|uuid|exists:roles,id',
             'status' => 'required|in:aktif,nonaktif',
         ];
     }

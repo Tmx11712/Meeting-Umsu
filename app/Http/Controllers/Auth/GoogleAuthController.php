@@ -23,6 +23,12 @@ class GoogleAuthController extends Controller
 
     public function redirect(): RedirectResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
+        if (blank(config('services.google.client_id')) || blank(config('services.google.client_secret'))) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Login dengan Google belum dikonfigurasi.',
+            ]);
+        }
+
         /** @var GoogleProvider $driver */
         $driver = Socialite::driver('google');
 

@@ -33,10 +33,12 @@ class MeetingMinute extends Model
     {
         static::saved(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_stats_v2');
         });
 
         static::deleted(function ($model) {
             cache()->forget('dashboard_stats');
+            cache()->forget('dashboard_stats_v2');
         });
     }
 

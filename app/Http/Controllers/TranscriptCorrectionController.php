@@ -32,6 +32,7 @@ class TranscriptCorrectionController extends Controller
 
         // Stage >= 3 (Sedang atau sudah lewat tahap koreksi)
         $meetings = Meeting::query()
+            ->visibleTo($request->user())
             ->withCount('participants')
             ->where('current_stage', '>=', 3)
             ->filter($request->only(['search', 'status', 'month']))

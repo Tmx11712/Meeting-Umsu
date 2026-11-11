@@ -40,6 +40,7 @@ class AttendanceController extends Controller
 
         // Stage >= 4 (Sedang atau sudah lewat tahap absensi)
         $meetings = Meeting::query()
+            ->visibleTo($request->user())
             ->withCount('participants')
             ->where('current_stage', '>=', 4)
             ->filter($request->only(['search', 'status', 'month']))

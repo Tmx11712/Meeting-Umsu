@@ -34,7 +34,7 @@ class UpdateMeetingRequest extends FormRequest
             'type' => 'required|string',
             'notes' => 'nullable|string',
             'participants' => 'nullable|array',
-            'participants.*' => 'exists:users,id',
+            'participants.*' => 'uuid|exists:users,id',
         ];
     }
 

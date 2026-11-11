@@ -66,7 +66,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const [errorMsg, setErrorMsg] = useState('');
     const [isQrOpen, setIsQrOpen] = useState(false);
     const isClient = useIsClient();
-    const [isTranscribing, setIsTranscribing] = useState<number | null>(null);
+    const [isTranscribing, setIsTranscribing] = useState<string | null>(null);
 
     const handleDownloadQR = () => {
         const canvas = document.getElementById(
@@ -93,7 +93,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
     const chunksRef = useRef<Blob[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const triggerTranscription = async (recordingId: number) => {
+    const triggerTranscription = async (recordingId: string) => {
         setIsTranscribing(recordingId);
         const { showSuccess, showError } = await import('@/lib/sweetalert');
         router.post(
@@ -119,7 +119,7 @@ export default function MeetingRecording({ meeting }: { meeting: Meeting }) {
         router.post(`/meetings/${meeting.id}/finish-recording`);
     };
 
-    const deleteRecording = async (recordingId: number) => {
+    const deleteRecording = async (recordingId: string) => {
         const { showSuccess, showError, confirmDelete } =
             await import('@/lib/sweetalert');
         const isConfirmed = await confirmDelete(

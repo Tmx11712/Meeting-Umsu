@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Events\MeetingUpdated;
+use App\Models\Meeting;
 use App\Models\MeetingRecording;
 use App\Models\MeetingTranscript;
 use App\Models\MeetingTranscriptionChunk;
@@ -25,6 +27,9 @@ class TranscribeAudioChunkJob implements ShouldQueue
     public int $timeout = 600; // 10 menit per chunk OpenAI
 
     public int $tries = 3;
+
+    /** @var array<int, int> */
+    public array $backoff = [10, 30, 60];
 
     protected int $chunkId;
 
@@ -155,14 +160,7 @@ class TranscribeAudioChunkJob implements ShouldQueue
             ]);
             Log::error("[TranscribeChunk_{$chunk->chunk_index}] Gagal API: ".$e->getMessage());
 
-            /** @var MeetingRecording|null $recording */
-            $recording = MeetingRecording::query()->find($chunk->recording_id);
-            if ($recording && $recording->status !== 'completed') {
-                $recording->fill(['status' => 'failed'])->save();
-            }
-
-            $this->fail($e);
-
+            throw $e;
         } catch (\Throwable $e) {
             @unlink($localChunkPath);
             $chunk->update([
@@ -171,14 +169,37 @@ class TranscribeAudioChunkJob implements ShouldQueue
             ]);
             Log::error("[TranscribeChunk_{$chunk->chunk_index}] Gagal: ".$e->getMessage());
 
-            // Jika ada status failed, set recording juga ke failed
-            /** @var MeetingRecording|null $recording */
-            $recording = MeetingRecording::query()->find($chunk->recording_id);
-            if ($recording && $recording->status !== 'completed') {
-                $recording->fill(['status' => 'failed'])->save();
-            }
+            throw $e;
+        }
+    }
 
-            $this->fail($e);
+    public function failed(?\Throwable $exception = null): void
+    {
+        $this->batch()?->cancel();
+
+        /** @var MeetingTranscriptionChunk|null $chunk */
+        $chunk = MeetingTranscriptionChunk::query()->find($this->chunkId);
+        if (! $chunk) {
+            return;
+        }
+
+        if ($chunk->status !== 'completed') {
+            $chunk->update([
+                'status' => 'failed',
+                'error_message' => $exception?->getMessage() ?? $chunk->error_message ?? 'Chunk transkripsi gagal diproses.',
+            ]);
+        }
+
+        /** @var MeetingRecording|null $recording */
+        $recording = MeetingRecording::query()->find($chunk->recording_id);
+        if ($recording && $recording->status !== 'completed') {
+            $recording->fill(['status' => 'failed'])->save();
+
+            /** @var Meeting|null $meeting */
+            $meeting = Meeting::query()->find($recording->meeting_id);
+            if ($meeting) {
+                safe_broadcast(new MeetingUpdated($meeting, 'transcript_failed'));
+            }
         }
     }
 

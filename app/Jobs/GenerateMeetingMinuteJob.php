@@ -39,16 +39,30 @@ class GenerateMeetingMinuteJob implements ShouldQueue
 
             $this->meeting->ai_status = 'completed';
             $this->meeting->save();
-            MeetingUpdated::dispatch($this->meeting, 'stage_changed');
+            safe_broadcast(new MeetingUpdated($this->meeting, 'stage_changed'));
 
             Log::info("Successfully generated AI summary for meeting ID: {$this->meeting->id}");
         } catch (\Throwable $e) {
             $this->meeting->ai_status = 'failed';
             $this->meeting->save();
-            MeetingUpdated::dispatch($this->meeting, 'stage_changed');
+            safe_broadcast(new MeetingUpdated($this->meeting, 'stage_changed'));
 
             Log::error("Failed to generate AI summary for meeting ID: {$this->meeting->id}. Error: ".$e->getMessage());
             throw $e;
         }
+    }
+
+    public function failed(?\Throwable $exception = null): void
+    {
+        $meeting = $this->meeting->fresh();
+        if ($meeting && $meeting->ai_status !== 'completed') {
+            $meeting->ai_status = 'failed';
+            $meeting->save();
+            safe_broadcast(new MeetingUpdated($meeting, 'stage_changed'));
+        }
+
+        Log::error("GenerateMeetingMinuteJob permanently failed for meeting ID: {$this->meeting->id}", [
+            'error' => $exception?->getMessage(),
+        ]);
     }
 }
