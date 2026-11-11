@@ -5,14 +5,20 @@ use App\Enums\MeetingMinuteStatus;
 use App\Jobs\GenerateMeetingMinuteJob;
 use App\Jobs\PrepareAudioForTranscriptionJob;
 use App\Jobs\TranscribeAudioChunkJob;
+use App\Jobs\TranscribeAudioJob;
 use App\Models\Meeting;
+use App\Models\MeetingActionItem;
 use App\Models\MeetingMinute;
 use App\Models\MeetingRecording;
+use App\Models\MeetingTranscript;
+use App\Models\MeetingTranscriptCorrection;
 use App\Models\MeetingTranscriptionChunk;
 use App\Models\User;
 use App\Services\OpenAiTranscriptionService;
 use Database\Seeders\RolesAndPermissionsSeeder;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Broadcasting\BroadcastManager;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
@@ -279,4 +285,159 @@ test('login page reflects google oauth availability accurately', function () {
             ->component('auth/login')
             ->where('canGoogleLogin', true)
         );
+});
+
+test('generate minute action prevents duplicate corrected transcript concatenation, separates prompt context, clears old action items, and handles helpers cleanly', function () {
+    /** @var TestCase $this */
+    $disk = config('filesystems.default');
+    Storage::fake($disk);
+
+    /** @var User $creator */
+    $creator = User::factory()->create(['status' => 'aktif']);
+    $creator->assignRole('Bag. Umum');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat AI Koreksi',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '11:00:00',
+        'duration' => 7200,
+        'location' => 'Ruang AI',
+        'type' => 'Rapat Koordinasi',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $creator->id,
+        'current_stage' => 5,
+    ]);
+
+    $recording = MeetingRecording::create([
+        'meeting_id' => $meeting->id,
+        'file_path' => "recordings/{$meeting->id}/rec.mp3",
+        'file_size' => 100,
+        'duration_seconds' => 60,
+        'source' => 'upload',
+        'status' => 'completed',
+        'recorded_by' => $creator->id,
+    ]);
+
+    $t1 = MeetingTranscript::create([
+        'meeting_id' => $meeting->id,
+        'recording_id' => $recording->id,
+        'timestamp_seconds' => 0,
+        'text' => 'Segmen satu mentah',
+        'sequence_order' => 1,
+    ]);
+
+    MeetingTranscript::create([
+        'meeting_id' => $meeting->id,
+        'recording_id' => $recording->id,
+        'timestamp_seconds' => 10,
+        'text' => 'Segmen dua mentah',
+        'sequence_order' => 2,
+    ]);
+
+    MeetingTranscriptCorrection::create([
+        'transcript_id' => $t1->id,
+        'original_text' => "Segmen satu mentah\n\nSegmen dua mentah",
+        'corrected_text' => 'Teks koreksi final tanpa duplikasi',
+        'corrected_by' => $creator->id,
+    ]);
+
+    $existingMinute = MeetingMinute::create([
+        'meeting_id' => $meeting->id,
+        'status' => MeetingMinuteStatus::REVIEW->value,
+        'content' => ['sections' => []],
+    ]);
+
+    MeetingActionItem::create([
+        'meeting_id' => $meeting->id,
+        'minute_id' => $existingMinute->id,
+        'description' => 'Item usang harus terhapus',
+        'pic' => 'Lama',
+    ]);
+
+    config(['services.openai.key' => 'test-key']);
+
+    $capturedPayload = null;
+    Http::fake([
+        'api.openai.com/v1/chat/completions' => function (Request $request) use (&$capturedPayload) {
+            $capturedPayload = $request->data();
+
+            return Http::response([
+                'choices' => [[
+                    'message' => [
+                        'content' => json_encode([
+                            'peserta_rapat' => [],
+                            'latar_belakang' => 'Ringkas',
+                            'pembukaan' => 'Buka',
+                            'pembahasan' => [['topik' => 'Topik 1', 'narasi' => 'Isi']],
+                            'keputusan' => ['Sah'],
+                            'tindak_lanjut' => [],
+                        ]),
+                    ],
+                ]],
+            ], 200);
+        },
+    ]);
+
+    app(GenerateMeetingMinuteAction::class)->execute($meeting->fresh());
+
+    $systemMessage = $capturedPayload['messages'][0]['content'] ?? '';
+    $userMessage = $capturedPayload['messages'][1]['content'] ?? '';
+
+    expect($userMessage)->toContain('Teks koreksi final tanpa duplikasi')
+        ->and($userMessage)->not->toContain('Segmen dua mentah')
+        ->and($userMessage)->toContain('=== DAFTAR HADIR ASLI ===')
+        ->and($systemMessage)->not->toContain('=== DAFTAR HADIR ASLI ===')
+        ->and($existingMinute->actionItems()->count())->toBe(0);
+
+    expect(int_to_roman(25))->toBe('XXV')
+        ->and(sanitize_pdf_html('<p style="color:red" onclick="alert(1)">Halo</p><script>bad()</script><table><td colspan="2" style="bg:red">Sel</td></table>'))
+        ->toBe('<p>Halo</p><table><td colspan="2">Sel</td></table>');
+});
+
+test('transcribe audio job rethrows http request exceptions for queue retry instead of silencing failures', function () {
+    /** @var TestCase $this */
+    $disk = config('filesystems.default');
+    Storage::fake($disk);
+
+    /** @var User $operator */
+    $operator = User::factory()->create(['status' => 'aktif']);
+    $operator->assignRole('Bag. Humas');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat Retry Whisper',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '10:00:00',
+        'duration' => 3600,
+        'location' => 'Aula',
+        'type' => 'Rapat Koordinasi',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $operator->id,
+        'current_stage' => 2,
+    ]);
+
+    $audioPath = "recordings/{$meeting->id}/audio.mp3";
+    Storage::disk($disk)->put($audioPath, 'fake-mp3');
+
+    $recording = MeetingRecording::create([
+        'meeting_id' => $meeting->id,
+        'file_path' => $audioPath,
+        'file_size' => 1024,
+        'duration_seconds' => 30,
+        'source' => 'upload',
+        'status' => 'uploaded',
+        'recorded_by' => $operator->id,
+    ]);
+
+    $serviceMock = Mockery::mock(OpenAiTranscriptionService::class);
+    $serviceMock->shouldReceive('transcribeChunk')
+        ->once()
+        ->andThrow(new RequestException(new Illuminate\Http\Client\Response(new Response(503, [], 'Service Unavailable'))));
+
+    $job = new TranscribeAudioJob($recording->id);
+
+    expect(fn () => $job->handle($serviceMock))->toThrow(RequestException::class);
 });

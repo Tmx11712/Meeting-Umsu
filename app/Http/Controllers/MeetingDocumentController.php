@@ -31,14 +31,15 @@ class MeetingDocumentController extends Controller
         ]);
 
         $file = $request->file('document');
-        $fileName = $file->getClientOriginalName();
+        $rawName = basename(str_replace(['/', '\\', "\0"], '-', $file->getClientOriginalName()));
+        $fileName = $rawName !== '' ? $rawName : 'dokumen';
         $fileSize = $file->getSize();
         $mimeType = $file->getMimeType();
 
-        // Generate unique name
-        $uuidName = Str::uuid()->toString().'.'.$file->getClientOriginalExtension();
-        $folderName = $meeting->id.'-'.Str::slug($meeting->title);
-        $path = $file->storeAs('documents/'.$folderName, $uuidName);
+        // Generate unique name berbasis MIME tervalidasi dan direktori berbasis UUID rapat
+        $extension = $file->extension() ?: 'bin';
+        $uuidName = Str::uuid()->toString().'.'.$extension;
+        $path = $file->storeAs("documents/{$meeting->id}", $uuidName);
 
         try {
             $document = MeetingDocument::create([
@@ -104,7 +105,9 @@ class MeetingDocumentController extends Controller
         abort_if($document->meeting_id !== $meeting->id, 404);
         abort_unless(Storage::exists($document->file_path), 404, 'File dokumen tidak ditemukan.');
 
-        return Storage::download($document->file_path, $document->file_name, [
+        $downloadName = basename(str_replace(['/', '\\', "\0"], '-', (string) $document->file_name)) ?: 'dokumen';
+
+        return Storage::download($document->file_path, $downloadName, [
             'Content-Type' => $document->mime_type,
         ]);
     }

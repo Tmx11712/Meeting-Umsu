@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -90,7 +91,9 @@ class MeetingMinuteController extends Controller
 
             return back()->with('info', 'Permintaan pembuatan ringkasan AI sedang diproses di latar belakang. Harap tunggu sekitar 1-2 menit...');
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
+            Log::error('Gagal dispatch pembuatan ringkasan AI: '.$e->getMessage());
+
+            return back()->with('error', 'Gagal memulai pembuatan ringkasan AI. Silakan coba lagi nanti.');
         }
     }
 

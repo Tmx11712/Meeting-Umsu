@@ -77,16 +77,14 @@
     </table>
 
     @php
-        $minute = $meeting->minutes->first();
+        $minute = $meeting->minutes->sortByDesc('created_at')->first();
         $content = $minute ? $minute->content : null;
-        $romans = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX'];
-        $sIdx = 1; // Mulai dari index 1 ("II") karena I. INFORMASI RAPAT sudah diluar
-        $allowedPdfTags = '<ul><ol><li><table><thead><tbody><tr><th><td><strong><em><b><i><u><br><p><span>';
+        $sIdx = 2; // Mulai dari II karena I. INFORMASI RAPAT sudah diluar
     @endphp
 
     @if($content)
         @if(!empty($content['peserta_rapat']) && is_array($content['peserta_rapat']))
-            <div class="section-title">{{ $romans[$sIdx++] }}. PESERTA RAPAT</div>
+            <div class="section-title">{{ int_to_roman($sIdx++) }}. PESERTA RAPAT</div>
             <div class="content-block">
                 <ul>
                 @foreach($content['peserta_rapat'] as $peserta)
@@ -98,7 +96,7 @@
 
         @if(isset($content['sections']) && is_array($content['sections']))
             @foreach($content['sections'] as $section)
-                <div class="section-title">{{ $romans[$sIdx++] }}. {{ strtoupper($section['title'] ?? 'BAGIAN') }}</div>
+                <div class="section-title">{{ int_to_roman($sIdx++) }}. {{ strtoupper($section['title'] ?? 'BAGIAN') }}</div>
                 <div class="content-block">
                     @if(!empty($section['content']))
                         <p>{{ $section['content'] }}</p>
@@ -111,31 +109,31 @@
                                 @endforeach
                             </ul>
                         @else
-                            <div class="markdown-content">{!! strip_tags((string) $section['list'], $allowedPdfTags) !!}</div>
+                            <div class="markdown-content">{!! sanitize_pdf_html((string) $section['list']) !!}</div>
                         @endif
                     @endif
                     @if(!empty($section['table']))
-                        <div class="markdown-content">{!! strip_tags((string) $section['table'], $allowedPdfTags) !!}</div>
+                        <div class="markdown-content">{!! sanitize_pdf_html((string) $section['table']) !!}</div>
                     @endif
                 </div>
             @endforeach
         @else
             {{-- Backward Compatibility --}}
             @if(!empty($content['latar_belakang']))
-                <div class="section-title">{{ $romans[$sIdx++] }}. LATAR BELAKANG</div>
+                <div class="section-title">{{ int_to_roman($sIdx++) }}. LATAR BELAKANG</div>
                 <div class="content-block">
                     <p>{{ $content['latar_belakang'] }}</p>
                 </div>
             @endif
             @if(!empty($content['pembukaan']))
-                <div class="section-title">{{ $romans[$sIdx++] }}. PEMBUKAAN</div>
+                <div class="section-title">{{ int_to_roman($sIdx++) }}. PEMBUKAAN</div>
                 <div class="content-block">
                     <p>{{ $content['pembukaan'] }}</p>
                 </div>
             @endif
 
             @if(!empty($content['pembahasan']) && is_array($content['pembahasan']))
-                <div class="section-title">{{ $romans[$sIdx++] }}. PEMBAHASAN</div>
+                <div class="section-title">{{ int_to_roman($sIdx++) }}. PEMBAHASAN</div>
                 <div class="content-block">
                     <ol>
                     @foreach($content['pembahasan'] as $bahas)
@@ -143,7 +141,7 @@
                             <strong>{{ $bahas['topik'] ?? 'Topik' }}</strong><br>
                             <p>{{ $bahas['narasi'] ?? '' }}</p>
                             @if(!empty($bahas['tabel']))
-                                <div class="markdown-content">{!! strip_tags((string) $bahas['tabel'], $allowedPdfTags) !!}</div>
+                                <div class="markdown-content">{!! sanitize_pdf_html((string) $bahas['tabel']) !!}</div>
                             @endif
                             @if(!empty($bahas['list']))
                                 @if(is_array($bahas['list']))
@@ -153,7 +151,7 @@
                                         @endforeach
                                     </ul>
                                 @else
-                                    <div class="markdown-content">{!! strip_tags((string) $bahas['list'], $allowedPdfTags) !!}</div>
+                                    <div class="markdown-content">{!! sanitize_pdf_html((string) $bahas['list']) !!}</div>
                                 @endif
                             @endif
                             <br>
@@ -164,7 +162,7 @@
             @endif
 
             @if(!empty($content['keputusan']) && is_array($content['keputusan']))
-                <div class="section-title">{{ $romans[$sIdx++] }}. KEPUTUSAN</div>
+                <div class="section-title">{{ int_to_roman($sIdx++) }}. KEPUTUSAN</div>
                 <div class="content-block">
                     <ul>
                     @foreach($content['keputusan'] as $kep)
@@ -175,13 +173,13 @@
             @endif
         @endif
     @else
-        <div class="section-title">{{ $romans[$sIdx++] }}. HASIL RAPAT</div>
+        <div class="section-title">{{ int_to_roman($sIdx++) }}. HASIL RAPAT</div>
         <div class="content-block">
             <p><i>Konten notulen belum tersedia atau format tidak didukung.</i></p>
         </div>
     @endif
 
-    <div class="section-title">{{ $romans[$sIdx] ?? 'VI' }}. TINDAK LANJUT</div>
+    <div class="section-title">{{ int_to_roman($sIdx) }}. TINDAK LANJUT</div>
     @if($minute && $minute->actionItems->count() > 0)
         <table class="action-table">
             <thead>

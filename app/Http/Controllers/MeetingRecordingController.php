@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class MeetingRecordingController extends Controller
@@ -69,9 +68,8 @@ class MeetingRecordingController extends Controller
         $meeting->ensureMutableForEdits();
 
         $file = $request->file('file');
-        // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
-        $folderName = $meeting->id.'-'.Str::slug($meeting->title);
-        $path = $file->store('recordings/'.$folderName);
+        // Simpan ke disk default (S3/MinIO) berbasis UUID rapat agar rename judul tidak memutus path
+        $path = $file->store("recordings/{$meeting->id}");
 
         try {
             /**
@@ -276,7 +274,7 @@ class MeetingRecordingController extends Controller
             'ogg' => 'audio/ogg',
         ];
 
-        $extension = pathinfo($recording->file_path, PATHINFO_EXTENSION);
+        $extension = strtolower((string) pathinfo($recording->file_path, PATHINFO_EXTENSION));
         $mimeType = $mimeTypes[$extension] ?? 'application/octet-stream';
 
         // Menggunakan stream proxy dari Laravel Storage

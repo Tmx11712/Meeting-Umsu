@@ -12,6 +12,7 @@ use App\Services\OpenAiTranscriptionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -115,9 +116,9 @@ class TranscribeAudioJob implements ShouldQueue
                 safe_broadcast(new MeetingUpdated($meeting, 'transcript_ready'));
                 safe_broadcast(new MeetingsListUpdated('Transkripsi AI rekaman audio telah selesai'));
             }
-        } catch (RequestException $e) {
-            Log::error('Transcribe API Network Error: '.$e->getMessage());
-            $this->markRecordingAsFailed($recording, 'Terjadi kesalahan jaringan saat menghubungi API.');
+        } catch (RequestException|ConnectionException $e) {
+            Log::warning('Transcribe API Network Error (will retry): '.$e->getMessage());
+            throw $e;
         } catch (\RuntimeException $e) {
             Log::error('Transcribe Runtime Error: '.$e->getMessage());
             $this->markRecordingAsFailed($recording, $e->getMessage());

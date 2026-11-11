@@ -55,8 +55,8 @@ class StoreRecordingRequest extends FormRequest
             // Keterangan/label file, tidak wajib diisi (nullable), maksimal 255 karakter.
             'label' => 'nullable|string|max:255',
 
-            // Durasi rekaman (opsional), jika ada harus berupa angka bulat (integer).
-            'duration_seconds' => 'nullable|integer',
+            // Durasi rekaman (opsional), jika ada harus berupa angka bulat non-negatif (integer).
+            'duration_seconds' => 'nullable|integer|min:0',
         ];
     }
 

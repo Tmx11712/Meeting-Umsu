@@ -49,6 +49,76 @@ if (! function_exists('parse_valid_date')) {
     }
 }
 
+if (! function_exists('int_to_roman')) {
+    /**
+     * Konversi bilangan bulat positif ke angka Romawi untuk penomoran bab notulen PDF.
+     */
+    function int_to_roman(int $number): string
+    {
+        if ($number <= 0) {
+            return '';
+        }
+
+        $map = [
+            1000 => 'M',
+            900 => 'CM',
+            500 => 'D',
+            400 => 'CD',
+            100 => 'C',
+            90 => 'XC',
+            50 => 'L',
+            40 => 'XL',
+            10 => 'X',
+            9 => 'IX',
+            5 => 'V',
+            4 => 'IV',
+            1 => 'I',
+        ];
+        $result = '';
+        foreach ($map as $value => $symbol) {
+            while ($number >= $value) {
+                $result .= $symbol;
+                $number -= $value;
+            }
+        }
+
+        return $result;
+    }
+}
+
+if (! function_exists('sanitize_pdf_html')) {
+    /**
+     * Batasi HTML untuk DomPDF agar bebas atribut berbahaya seperti style/event handler.
+     */
+    function sanitize_pdf_html(?string $html): string
+    {
+        if ($html === null || $html === '') {
+            return '';
+        }
+
+        $cleaned = (string) preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html);
+        $allowedTags = '<ul><ol><li><table><thead><tbody><tr><th><td><strong><em><b><i><u><br><p><span>';
+        $stripped = strip_tags($cleaned, $allowedTags);
+
+        return (string) preg_replace_callback('/<(\w+)\b([^>]*)>/', function (array $matches): string {
+            $tag = strtolower($matches[1]);
+            $attrs = $matches[2];
+            $keptAttrs = [];
+
+            if (in_array($tag, ['th', 'td'], true)) {
+                if (preg_match('/\bcolspan\s*=\s*["\']?(\d+)["\']?/i', $attrs, $m)) {
+                    $keptAttrs[] = 'colspan="'.$m[1].'"';
+                }
+                if (preg_match('/\browspan\s*=\s*["\']?(\d+)["\']?/i', $attrs, $m)) {
+                    $keptAttrs[] = 'rowspan="'.$m[1].'"';
+                }
+            }
+
+            return empty($keptAttrs) ? "<{$tag}>" : "<{$tag} ".implode(' ', $keptAttrs).'>';
+        }, $stripped);
+    }
+}
+
 if (! function_exists('safe_broadcast')) {
     /**
      * Broadcast an event safely, catching any exceptions (e.g., Reverb offline).

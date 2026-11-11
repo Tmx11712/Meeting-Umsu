@@ -16,6 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Throwable;
 
 class PrepareAudioForTranscriptionJob implements ShouldQueue
@@ -103,10 +104,13 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
 
             // 4. Upload chunk ke MinIO dan insert ke Database
             $jobs = [];
+            $chunkIds = [];
             $tempDir = $splitResult['temp_dir'];
+            $runId = Str::uuid()->toString();
+            $chunksPrefix = "meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks/{$runId}";
 
             foreach ($splitResult['chunks'] as $chunkMeta) {
-                $chunkMinioPath = "meetings/{$recording->meeting_id}/recordings/{$recording->id}/chunks/{$chunkMeta['file_name']}";
+                $chunkMinioPath = "{$chunksPrefix}/{$chunkMeta['file_name']}";
 
                 // Upload ke MinIO/S3 via stream (hemat memori)
                 $chunkStream = fopen($chunkMeta['local_path'], 'rb');
@@ -130,6 +134,7 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
                     'file_path' => $chunkMinioPath,
                     'status' => 'pending',
                 ]);
+                $chunkIds[] = $chunkRecord->id;
 
                 $isLastChunk = ($chunkMeta['index'] === count($splitResult['chunks']) - 1);
 
@@ -142,19 +147,28 @@ class PrepareAudioForTranscriptionJob implements ShouldQueue
             }
 
             // 4. Dispatch Batch
-            $batchId = Bus::batch($jobs)->then(function (Batch $batch) use ($recordingId, $disk) {
-                // Semua chunk sukses
+            $batchId = Bus::batch($jobs)->then(function (Batch $batch) use ($recordingId, $disk, $chunkIds, $chunksPrefix) {
+                // Pastikan seluruh chunk milik batch ini masih ada dan selesai (cegah race condition saat re-transcribe)
+                $completedCount = MeetingTranscriptionChunk::query()
+                    ->whereIn('id', $chunkIds)
+                    ->where('status', '=', 'completed')
+                    ->count('*');
+
+                if ($completedCount !== count($chunkIds)) {
+                    Log::info("[Batch] Batch lama diabaikan untuk Recording ID: {$recordingId} karena sudah digantikan proses baru.");
+
+                    return;
+                }
+
                 Log::info("[Batch] Semua chunk sukses untuk Recording ID: {$recordingId}");
 
                 /** @var MeetingRecording|null $recording */
                 $recording = MeetingRecording::query()->find($recordingId);
-                if ($recording) {
-                    // Di sini kita bisa panggil logic re-order jika perlu,
-                    // tapi ordering sudah ditangani via start_seconds di frontend/query
+                if ($recording && $recording->status === 'transcribing') {
                     $recording->fill(['status' => 'completed'])->save();
 
-                    // Hapus folder chunks di MinIO
-                    Storage::disk($disk)->deleteDirectory("meetings/{$recording->meeting_id}/recordings/{$recordingId}/chunks");
+                    // Hapus folder chunks khusus batch ini di MinIO
+                    Storage::disk($disk)->deleteDirectory($chunksPrefix);
 
                     // Trigger event transcript_ready (ambil data meeting dan broadcast)
                     /** @var Meeting|null $meetingObj */

@@ -275,6 +275,7 @@ class MeetingController extends Controller
             try {
                 $folderName = $meetingId.'-'.$meetingTitleSlug;
                 Storage::deleteDirectory('recordings/'.$meetingId);
+                Storage::deleteDirectory('documents/'.$meetingId);
                 Storage::deleteDirectory('documents/'.$folderName);
             } catch (\Throwable $e) {
                 Log::warning('Gagal menghapus direktori sisa rapat: '.$e->getMessage());

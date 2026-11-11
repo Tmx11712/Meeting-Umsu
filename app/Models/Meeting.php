@@ -81,6 +81,9 @@ class Meeting extends Model
             $disk = config('filesystems.default');
             $slug = Str::slug($model->title) ?: 'rapat';
             Storage::disk($disk)->deleteDirectory("meetings/{$model->id}");
+            Storage::disk($disk)->deleteDirectory("documents/{$model->id}");
+            Storage::disk($disk)->deleteDirectory("documents/{$model->id}-{$slug}");
+            Storage::disk($disk)->deleteDirectory("recordings/{$model->id}");
             Storage::disk($disk)->deleteDirectory("recordings/{$model->id}-{$slug}");
             Storage::disk($disk)->deleteDirectory("notulen/{$model->id}-{$slug}");
         });

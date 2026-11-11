@@ -62,14 +62,33 @@ class GenerateMeetingMinuteAction
             $q->orderBy('timestamp_seconds', 'asc')->orderBy('sequence_order', 'asc');
         }, 'transcripts.corrections'])->orderBy('created_at', 'asc')->get();
 
+        $allTranscripts = $recordings->flatMap(fn ($recording) => $recording->transcripts);
+        if ($allTranscripts->isEmpty()) {
+            return '';
+        }
+
+        // UI koreksi menggabungkan seluruh segmen ke editor tunggal dan menyimpannya pada transkrip pertama.
+        // Jika segmen lain belum dikoreksi terpisah dan original_text koreksi berbeda dari segmen pertama saja,
+        // pakai koreksi gabungan tersebut agar segmen mentah berikutnya tidak ikut tergandakan.
+        $firstTranscript = $allTranscripts->first();
+        $firstCorrection = $firstTranscript?->corrections->last();
+        $otherSegmentsHaveCorrections = $allTranscripts->slice(1)->contains(fn ($t) => $t->corrections->isNotEmpty());
+
+        if (
+            $allTranscripts->count() > 1
+            && ! $otherSegmentsHaveCorrections
+            && $firstCorrection
+            && $firstCorrection->original_text !== $firstTranscript->text
+        ) {
+            return $firstCorrection->corrected_text;
+        }
+
         $parts = [];
 
-        foreach ($recordings as $recording) {
-            foreach ($recording->transcripts as $t) {
-                $parts[] = $t->corrections->count() > 0
-                    ? $t->corrections->last()->corrected_text
-                    : $t->text;
-            }
+        foreach ($allTranscripts as $t) {
+            $parts[] = $t->corrections->count() > 0
+                ? $t->corrections->last()->corrected_text
+                : $t->text;
         }
 
         return implode(' ', $parts);
@@ -104,6 +123,7 @@ class GenerateMeetingMinuteAction
      */
     protected function extractDocumentText(Meeting $meeting): string
     {
+        $meeting->loadMissing('documents');
         $documents = $meeting->documents;
 
         if (! $documents || $documents->isEmpty()) {
@@ -200,12 +220,12 @@ class GenerateMeetingMinuteAction
      */
     protected function persistActionItems(Meeting $meeting, MeetingMinute $minute, array $summaryJson): void
     {
+        $minute->actionItems()->delete();
+
         $tindakLanjut = $summaryJson['tindak_lanjut'] ?? [];
         if (! is_array($tindakLanjut) || empty($tindakLanjut)) {
             return;
         }
-
-        $minute->actionItems()->delete();
 
         foreach ($tindakLanjut as $actionItem) {
             if (! is_array($actionItem)) {

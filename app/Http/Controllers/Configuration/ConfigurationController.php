@@ -44,6 +44,11 @@ class ConfigurationController extends Controller
 
     public function checkOpenAiStatus()
     {
+        $cached = Cache::get('openai_status_check');
+        if (is_array($cached)) {
+            return response()->json($cached);
+        }
+
         try {
             // Hit v1/chat/completions instead of v1/models to properly check if quota/credits are exhausted
             $response = Http::withToken(config('services.openai.key'))
@@ -55,15 +60,24 @@ class ConfigurationController extends Controller
                 ]);
 
             if ($response->successful()) {
-                return response()->json(['status' => 'active', 'message' => 'Token & Saldo Aktif']);
+                $payload = ['status' => 'active', 'message' => 'Token & Saldo Aktif'];
+                Cache::put('openai_status_check', $payload, 60);
+
+                return response()->json($payload);
             }
 
             if ($response->status() === 429) {
-                return response()->json(['status' => 'exhausted', 'message' => 'Saldo Habis (429)']);
+                $payload = ['status' => 'exhausted', 'message' => 'Saldo Habis (429)'];
+                Cache::put('openai_status_check', $payload, 60);
+
+                return response()->json($payload);
             }
 
             if ($response->status() === 401) {
-                return response()->json(['status' => 'invalid', 'message' => 'API Key Tidak Valid']);
+                $payload = ['status' => 'invalid', 'message' => 'API Key Tidak Valid'];
+                Cache::put('openai_status_check', $payload, 60);
+
+                return response()->json($payload);
             }
 
             return response()->json(['status' => 'error', 'message' => 'Error: '.$response->status()]);

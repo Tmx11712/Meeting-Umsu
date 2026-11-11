@@ -161,7 +161,7 @@ class SyncMeetingsAction
 
             return [
                 'success' => false,
-                'message' => 'Terjadi kesalahan sistem saat sinkronisasi: '.$e->getMessage(),
+                'message' => 'Terjadi kesalahan sistem saat menyinkronkan data Irvan Cloud.',
             ];
         }
     }
