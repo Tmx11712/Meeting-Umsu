@@ -139,7 +139,7 @@ class BackupDatabaseCommand extends Command
 
     private function backupPostgresViaPdo(string $filePath): bool
     {
-        $this->info('Menggunakan fallback engine PDO untuk mengekspor database...');
+        $this->warn('Menggunakan fallback engine PDO (menghasilkan data INSERT saja; jalankan pada DB yang sudah termigrasi).');
 
         try {
             $tables = DB::select("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public' ORDER BY tablename");
@@ -154,8 +154,9 @@ class BackupDatabaseCommand extends Command
                 return false;
             }
 
-            fwrite($handle, "-- eNotulen Database Backup (PDO Fallback Engine)\n");
+            fwrite($handle, "-- eNotulen Database Backup (PDO Fallback Engine - Data Only)\n");
             fwrite($handle, '-- Generated: '.Carbon::now()->toIso8601String()."\n\n");
+            fwrite($handle, "BEGIN;\n");
             fwrite($handle, "SET statement_timeout = 0;\n");
             fwrite($handle, "SET client_encoding = 'UTF8';\n\n");
 
@@ -199,6 +200,7 @@ class BackupDatabaseCommand extends Command
                 }
             }
 
+            fwrite($handle, "\nCOMMIT;\n");
             fclose($handle);
 
             return true;
@@ -217,15 +219,16 @@ class BackupDatabaseCommand extends Command
         $username = $config['username'] ?? 'root';
         $password = $config['password'] ?? '';
 
+        $env = $password !== '' ? ['MYSQL_PWD' => $password] : [];
+
         $process = new Process([
             'mysqldump',
             "-h{$host}",
             "-P{$port}",
             "-u{$username}",
-            "-p{$password}",
             $database,
             "--result-file={$filePath}",
-        ]);
+        ], null, $env);
 
         $process->setTimeout(300);
 

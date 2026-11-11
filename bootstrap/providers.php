@@ -10,5 +10,4 @@ return [
     FortifyServiceProvider::class,
     HorizonServiceProvider::class,
     SocialiteServiceProvider::class,
-    SocialiteServiceProvider::class,
 ];

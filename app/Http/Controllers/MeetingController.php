@@ -137,19 +137,6 @@ class MeetingController extends Controller
         return redirect()->route('dashboard')->with('success', 'Rapat berhasil dibuat dan dijadwalkan.');
     }
 
-    public function syncFromIrvanCloud(Request $request, SyncMeetingsAction $syncAction)
-    {
-        $date = $request->query('date');
-        // By default, it will sync current month's events
-        $result = $syncAction->execute();
-
-        if ($result['success']) {
-            return redirect()->route('meetings.index')->with('success', $result['message']);
-        } else {
-            return redirect()->route('meetings.index')->with('error', $result['message']);
-        }
-    }
-
     public function autoSync(SyncMeetingsAction $syncAction)
     {
         $this->authorize('create', Meeting::class);

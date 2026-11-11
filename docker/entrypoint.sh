@@ -49,8 +49,8 @@ if [ "${SKIP_LARAVEL_CACHE:-false}" != "true" ]; then
     php artisan optimize || echo "[entrypoint] PERINGATAN: php artisan optimize gagal, lanjut tanpa cache."
 fi
 
-# 3. Pastikan PHP-FPM (user www-data) bisa menulis cache & log yang baru dibuat oleh root
-chown -R www-data:www-data storage/framework storage/logs bootstrap/cache 2>/dev/null || true
+# 3. Pastikan PHP-FPM (user www-data) bisa menulis cache, log, & file temp audio yang baru dibuat oleh root
+chown -R www-data:www-data storage/framework storage/logs storage/app/private/temp bootstrap/cache 2>/dev/null || true
 
 # 4. Jalankan perintah utama container (php-fpm / horizon / schedule:work / reverb:start)
 exec "$@"
