@@ -77,12 +77,25 @@ class AttendanceApiController extends Controller
         $user = $request->user();
 
         if (! $user) {
+            $configuredScannerKey = (string) config('services.scanner.api_key', '');
+            if ($configuredScannerKey !== '') {
+                $providedKey = (string) $request->header('X-Scanner-Key', '');
+                if (! hash_equals($configuredScannerKey, $providedKey)) {
+                    return response()->json([
+                        'statusCode' => 401,
+                        'success' => false,
+                        'message' => 'Kredensial mesin scanner tidak valid.',
+                    ], 401);
+                }
+            }
+
             $candidate = null;
 
             if ($request->user_id) {
                 $candidate = User::query()->where('id', '=', $request->user_id, 'and')->first();
-            } elseif ($request->email && empty($request->guest_name)) {
-                $candidate = User::query()->where('email', '=', $request->email, 'and')->first();
+            } elseif ($request->email) {
+                $normalizedEmail = strtolower(trim((string) $request->email));
+                $candidate = User::query()->whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
             }
 
             if ($candidate && $candidate->hasRole(['Super Admin', 'Administrator', 'Pimpinan'])) {
@@ -147,7 +160,7 @@ class AttendanceApiController extends Controller
                     'guest_institution' => $request->guest_institution,
                 ],
                 [
-                    'guest_email' => $request->email,
+                    'guest_email' => $request->email ? strtolower(trim((string) $request->email)) : null,
                     'status' => $status,
                     'check_in_time' => $now,
                     'method' => 'qr_code',
@@ -162,11 +175,23 @@ class AttendanceApiController extends Controller
         // 4. Trigger WebSocket Broadcast ke layar proyektor / dashboard host
         safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
+        $responseData = $request->user()
+            ? new AttendanceResource($attendance->load('user'))
+            : [
+                'id' => $attendance->id,
+                'meeting_id' => $attendance->meeting_id,
+                'name' => $displayName,
+                'status' => $attendance->status,
+                'check_in_time' => $attendance->check_in_time?->toDateTimeString(),
+                'method' => $attendance->method,
+                'is_guest' => empty($attendance->user_id),
+            ];
+
         return response()->json([
             'statusCode' => 200,
             'success' => true,
             'message' => 'Absensi berhasil dicatat. Selamat datang, '.$displayName.'!',
-            'data' => new AttendanceResource($attendance->load('user')),
+            'data' => $responseData,
         ]);
     }
 }

@@ -63,18 +63,10 @@ class MeetingRecordingController extends Controller
         ]);
     }
 
-    private function ensureRecordingMutable(Meeting $meeting): void
-    {
-        abort_if(
-            $meeting->status === MeetingStatus::SELESAI->value || $meeting->status === 'dibatalkan' || $meeting->current_stage >= 6,
-            422,
-            'Rapat sudah masuk tahap pengesahan atau telah selesai/dibatalkan.'
-        );
-    }
-
     public function store(StoreRecordingRequest $request, Meeting $meeting)
     {
-        $this->ensureRecordingMutable($meeting);
+        $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
 
         $file = $request->file('file');
         // Simpan ke disk default (S3/MinIO) tanpa memaksa 'local'
@@ -123,8 +115,9 @@ class MeetingRecordingController extends Controller
 
     public function destroy(Meeting $meeting, string $recordingId)
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('recording.delete'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menghapus rekaman.');
-        $this->ensureRecordingMutable($meeting);
+        $meeting->ensureMutableForEdits();
 
         $recording = $meeting->recordings()->findOrFail($recordingId);
         $filePath = $recording->file_path;
@@ -157,7 +150,8 @@ class MeetingRecordingController extends Controller
      */
     public function transcribe(TranscribeRecordingRequest $request, Meeting $meeting)
     {
-        $this->ensureRecordingMutable($meeting);
+        $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
 
         $recording = $meeting->recordings()->findOrFail($request->recording_id);
 
@@ -178,8 +172,9 @@ class MeetingRecordingController extends Controller
 
     public function finishRecording(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('recording.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan rekaman.');
-        $this->ensureRecordingMutable($meeting);
+        $meeting->ensureMutableForEdits();
 
         // Validasi: Jangan izinkan pindah ke tahap koreksi jika masih ada yang ditranskrip
         $isAnyTranscribing = $meeting->recordings()->whereIn('status', ['transcribing', 'processing'])->exists();
@@ -261,6 +256,7 @@ class MeetingRecordingController extends Controller
      */
     public function stream(Meeting $meeting, MeetingRecording $recording)
     {
+        $this->authorize('view', $meeting);
         abort_unless($recording->meeting_id === $meeting->id, 404, 'Rekaman tidak ditemukan untuk rapat ini.');
 
         $isParticipant = $meeting->participants()
@@ -292,8 +288,9 @@ class MeetingRecordingController extends Controller
 
     public function startSession(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas');
-        $this->ensureRecordingMutable($meeting);
+        $meeting->ensureMutableForEdits();
 
         $meeting->recording_started_at = now();
         $meeting->status = 'berlangsung';
@@ -311,7 +308,9 @@ class MeetingRecordingController extends Controller
 
     public function stopSession(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('recording.create'), 403, 'Akses Terbatas');
+        $meeting->ensureMutableForEdits();
 
         $meeting->recording_started_at = null;
         $meeting->save();

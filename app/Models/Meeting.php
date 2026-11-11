@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MeetingStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -198,9 +199,12 @@ class Meeting extends Model
             return $query;
         }
 
-        return $query->whereHas('participants', function (Builder $pq) use ($user) {
-            $pq->where('user_id', '=', $user->id)
-                ->where('is_invited', '=', true);
+        return $query->where(function (Builder $q) use ($user) {
+            $q->where('created_by', '=', $user->id)
+                ->orWhereHas('participants', function (Builder $pq) use ($user) {
+                    $pq->where('user_id', '=', $user->id)
+                        ->where('is_invited', '=', true);
+                });
         });
     }
 
@@ -272,6 +276,22 @@ class Meeting extends Model
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 
+    public function isMutableForEdits(): bool
+    {
+        return ! ($this->status === MeetingStatus::SELESAI->value
+            || $this->status === 'dibatalkan'
+            || $this->current_stage >= 6);
+    }
+
+    public function ensureMutableForEdits(): void
+    {
+        abort_unless(
+            $this->isMutableForEdits(),
+            422,
+            'Rapat sudah masuk tahap pengesahan atau telah selesai/dibatalkan.'
+        );
+    }
+
     public function getPdfStoragePath(): string
     {
         $slug = Str::slug($this->title) ?: 'rapat';
@@ -290,7 +310,9 @@ class Meeting extends Model
 
         $disk = config('filesystems.default');
         $path = $this->getPdfStoragePath();
-        Storage::disk($disk)->put($path, $pdfOutput);
+        if (! Storage::disk($disk)->put($path, $pdfOutput)) {
+            throw new \RuntimeException('Gagal menyimpan arsip PDF notulen ke storage.');
+        }
 
         return $path;
     }

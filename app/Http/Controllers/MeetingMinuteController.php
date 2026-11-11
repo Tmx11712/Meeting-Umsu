@@ -76,7 +76,9 @@ class MeetingMinuteController extends Controller
      */
     public function generateAiSummary(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
         abort_unless($request->user()->can('minute.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengenerate ringkasan.');
+        $meeting->ensureMutableForEdits();
 
         try {
             // Update status AI menjadi processing di DB
@@ -94,15 +96,14 @@ class MeetingMinuteController extends Controller
 
     public function update(UpdateMinuteRequest $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
+
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {
             $minute->fill([
                 'content' => $request->content,
             ])->save();
-
-            if ($minute->status === MeetingMinuteStatus::DISETUJUI->value) {
-                $meeting->storeApprovedPdf();
-            }
 
             return back()->with('success', 'Notulen berhasil diperbarui.');
         }
@@ -112,7 +113,9 @@ class MeetingMinuteController extends Controller
 
     public function sendToPimpinan(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('minute.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengirim ke pimpinan.');
+        $meeting->ensureMutableForEdits();
 
         $minute = $meeting->minutes()->latest()->first();
         if ($minute) {

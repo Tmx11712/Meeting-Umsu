@@ -13,6 +13,7 @@ use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Laravel\Passkeys\Passkey;
 use Laravel\Passkeys\Passkeys;
 use Tests\TestCase;
@@ -552,4 +553,145 @@ test('administrator cannot escalate rbac permissions or delete core roles and ho
     $this->actingAs($admin)
         ->get(route('configuration.user-permissions.index', ['user_id' => 'not-a-uuid']))
         ->assertOk();
+});
+
+test('attendance scan blocks guest_name bypass, omits pii when unauthenticated, enforces optional scanner key, and signed web qr works', function () {
+    /** @var TestCase $this */
+    /** @var User $creator */
+    $creator = User::factory()->create(['status' => 'aktif']);
+    $creator->assignRole('Bag. Umum');
+
+    /** @var User $pimpinan */
+    $pimpinan = User::factory()->create(['status' => 'aktif', 'email' => 'pimpinan.qr@umsu.ac.id']);
+    $pimpinan->assignRole('Pimpinan');
+
+    /** @var User $staff */
+    $staff = User::factory()->create(['status' => 'aktif', 'email' => 'staf.qr@umsu.ac.id', 'department' => 'BAAK']);
+    $staff->assignRole('Viewer');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat QR Keamanan',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '11:00:00',
+        'duration' => 7200,
+        'location' => 'Aula',
+        'type' => 'Rapat Koordinasi',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $creator->id,
+        'current_stage' => 4,
+    ]);
+
+    // Email + non-empty guest_name cannot bypass Pimpinan protection
+    $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'email' => $pimpinan->email,
+        'guest_name' => 'Samaran',
+    ])->assertForbidden();
+
+    // Unauthenticated API scan omits PII fields (email, user_id, department)
+    $scanResponse = $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'email' => strtoupper($staff->email),
+    ])->assertOk();
+
+    expect($scanResponse->json('data'))->not->toHaveKeys(['email', 'user_id', 'department']);
+
+    // Optional SCANNER_API_KEY requires matching header when set
+    config(['services.scanner.api_key' => 'secret-scanner-123']);
+
+    $this->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+        'user_id' => $staff->id,
+    ])->assertUnauthorized();
+
+    $this->withHeaders(['X-Scanner-Key' => 'secret-scanner-123'])
+        ->postJson("/api/meetings/{$meeting->id}/attendance/scan", [
+            'user_id' => $staff->id,
+        ])->assertOk();
+
+    config(['services.scanner.api_key' => null]);
+
+    // Unsigned web GET scan is rejected; signed URL succeeds without leaking participants
+    $this->actingAs($staff)
+        ->get(route('meetings.attendance.scan', $meeting))
+        ->assertForbidden();
+
+    $signedUrl = URL::signedRoute('meetings.attendance.scan', ['meeting' => $meeting->id]);
+    $this->actingAs($staff)
+        ->get($signedUrl)
+        ->assertOk();
+});
+
+test('uninvited custom role cannot mutate meetings via idor, creator can view own meeting, and approved minutes cannot be reopened or mutated', function () {
+    /** @var TestCase $this */
+    /** @var User $customCreator */
+    $customCreator = User::factory()->create(['status' => 'aktif']);
+    $customCreator->givePermissionTo(['meeting.create', 'meeting.read', 'minute.update']);
+
+    /** @var User $otherCustom */
+    $otherCustom = User::factory()->create(['status' => 'aktif']);
+    $otherCustom->givePermissionTo(['minute.update', 'attendance.update', 'transcript.update', 'recording.create']);
+
+    /** @var User $pimpinan */
+    $pimpinan = User::factory()->create(['status' => 'aktif']);
+    $pimpinan->assignRole('Pimpinan');
+
+    $meeting = Meeting::create([
+        'title' => 'Rapat Custom Role',
+        'date' => now()->toDateString(),
+        'start_time' => '09:00:00',
+        'end_time' => '11:00:00',
+        'duration' => 7200,
+        'location' => 'Ruang Custom',
+        'type' => 'Rapat Internal',
+        'status' => 'berlangsung',
+        'source' => 'manual',
+        'created_by' => $customCreator->id,
+        'current_stage' => 5,
+    ]);
+
+    MeetingMinute::create([
+        'meeting_id' => $meeting->id,
+        'status' => MeetingMinuteStatus::REVIEW->value,
+        'content' => ['sections' => [['title' => 'Isi', 'content' => 'Awal']]],
+    ]);
+
+    // Creator can view their own meeting without being in seeded roles or participants
+    $this->actingAs($customCreator)
+        ->get(route('meetings.show', $meeting))
+        ->assertOk();
+
+    // Uninvited other custom role gets 403 IDOR block on stage mutation routes
+    $this->actingAs($otherCustom)->put(route('meetings.review.update', $meeting), ['content' => ['sections' => []]])->assertForbidden();
+    $this->actingAs($otherCustom)->post(route('meetings.review.send', $meeting))->assertForbidden();
+    $this->actingAs($otherCustom)->post(route('meetings.correction.finish', $meeting))->assertForbidden();
+    $this->actingAs($otherCustom)->post(route('meetings.attendance.finish', $meeting))->assertForbidden();
+    $this->actingAs($otherCustom)->postJson(route('meetings.recording.stopSession', $meeting))->assertForbidden();
+
+    // Viewer cannot invoke auto-sync
+    /** @var User $viewer */
+    $viewer = User::factory()->create(['status' => 'aktif']);
+    $viewer->assignRole('Viewer');
+    $this->actingAs($viewer)->postJson(route('meetings.auto-sync'))->assertForbidden();
+
+    // Move to approval -> approve -> cannot reject or mutate afterwards
+    $this->actingAs($customCreator)->post(route('meetings.review.send', $meeting))->assertRedirect();
+
+    Storage::fake(config('filesystems.default'));
+    $this->actingAs($pimpinan)
+        ->post(route('meetings.approval.store', $meeting), [
+            'decision' => 'approved',
+            'notes' => 'Sah',
+        ])
+        ->assertRedirect(route('dashboard'));
+
+    $this->actingAs($pimpinan)
+        ->post(route('meetings.approval.store', $meeting), [
+            'decision' => 'rejected',
+            'notes' => 'Reopen',
+        ])
+        ->assertForbidden();
+
+    $this->actingAs($customCreator)
+        ->put(route('meetings.review.update', $meeting), ['content' => ['sections' => []]])
+        ->assertStatus(422);
 });

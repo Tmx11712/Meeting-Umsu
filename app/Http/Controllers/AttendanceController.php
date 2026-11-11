@@ -14,6 +14,7 @@ use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,9 +67,10 @@ class AttendanceController extends Controller
 
     public function generateQrCode(Meeting $meeting): JsonResponse
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('attendance.create'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk mengelola absensi.');
 
-        $url = route('meetings.attendance.scan', ['meeting' => $meeting->id]);
+        $url = URL::signedRoute('meetings.attendance.scan', ['meeting' => $meeting->id]);
 
         $builder = new Builder(
             writer: new SvgWriter,
@@ -86,6 +88,9 @@ class AttendanceController extends Controller
 
     public function storeManual(StoreManualAttendanceRequest $request, Meeting $meeting): RedirectResponse
     {
+        $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
+
         /**
          * [EDUKASI ARSITEKTUR: ELOQUENT UPDATE OR CREATE]
          * Daripada melakukan query `if (exists) update else create`,
@@ -134,7 +139,9 @@ class AttendanceController extends Controller
 
     public function finish(Request $request, Meeting $meeting): RedirectResponse
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('attendance.update'), 403, 'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan tahapan absensi.');
+        $meeting->ensureMutableForEdits();
 
         $meeting->fill(['current_stage' => 5])->save(); // Move to Review
 
@@ -145,6 +152,8 @@ class AttendanceController extends Controller
 
     public function scan(Request $request, Meeting $meeting): Response
     {
+        abort_unless($request->hasValidSignature(), 403, 'QR Code absensi tidak valid atau kedaluwarsa.');
+
         $user = $request->user();
 
         if (! $user) {
@@ -178,14 +187,16 @@ class AttendanceController extends Controller
         safe_broadcast(new MeetingUpdated($meeting, 'attendance'), false);
 
         return Inertia::render('meetings/attendance-scan', [
-            'meeting' => $meeting->load('participants.user'),
+            'meeting' => $meeting->only(['id', 'title', 'date', 'start_time', 'end_time', 'location', 'status', 'current_stage']),
             'message' => 'Absensi berhasil dicatat. Selamat datang, '.$user->name.'!',
         ]);
     }
 
     public function syncIrvanCloud(Meeting $meeting, SyncMeetingsAction $syncAction): JsonResponse
     {
+        $this->authorize('view', $meeting);
         abort_unless(request()->user()->can('attendance.create') || request()->user()->can('attendance.update'), 403);
+        $meeting->ensureMutableForEdits();
 
         if ($meeting->source === 'irvan_cloud' && $meeting->external_id) {
             $syncAction->syncEventDetails($meeting->external_id, $meeting);

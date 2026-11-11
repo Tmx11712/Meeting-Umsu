@@ -41,6 +41,10 @@ return [
         'secret' => env('ABSENSI_SECRET_KEY'),
     ],
 
+    'scanner' => [
+        'api_key' => env('SCANNER_API_KEY'),
+    ],
+
     'openai' => [
         'key' => env('OPENAI_API_KEY'),
         'transcribe_model' => env('OPENAI_TRANSCRIBE_MODEL', 'whisper-1'),

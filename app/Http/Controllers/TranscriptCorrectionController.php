@@ -73,6 +73,9 @@ class TranscriptCorrectionController extends Controller
 
     public function store(StoreCorrectionRequest $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
+
         $transcript = $meeting->transcripts()->whereKey($request->transcript_id)->firstOrFail();
 
         MeetingTranscriptCorrection::query()->updateOrCreate(
@@ -89,12 +92,15 @@ class TranscriptCorrectionController extends Controller
 
     public function finish(Request $request, Meeting $meeting)
     {
+        $this->authorize('view', $meeting);
+
         $user = $request->user();
         abort_unless(
-            $user->can('transcript.update') || $user->can('recording.update') || $user->hasRole('Pimpinan'),
+            $user->can('transcript.update'),
             403,
             'Akses Terbatas: Anda tidak memiliki izin untuk menyelesaikan koreksi.'
         );
+        $meeting->ensureMutableForEdits();
         $meeting->current_stage = 5; // Move to Review (skip Absensi)
         $meeting->save();
 

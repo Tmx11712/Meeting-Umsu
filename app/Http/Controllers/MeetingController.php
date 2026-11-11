@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\IrvanCloud\SyncMeetingsAction;
+use App\Enums\MeetingStatus;
 use App\Events\MeetingsListUpdated;
 use App\Events\MeetingUpdated;
 use App\Http\Requests\Meeting\StoreMeetingRequest;
@@ -149,16 +150,22 @@ class MeetingController extends Controller
 
     public function autoSync(SyncMeetingsAction $syncAction)
     {
+        $this->authorize('create', Meeting::class);
+
         // Gunakan cache lock singkat (20 detik) agar auto-sync responsif namun tetap mencegah spam paralel
         $lock = Cache::lock('irvan_cloud_auto_sync', 20);
 
         if ($lock->get()) {
-            $result = $syncAction->execute();
+            try {
+                $result = $syncAction->execute();
 
-            return response()->json([
-                'status' => 'synced',
-                'message' => $result['message'] ?? 'OK',
-            ]);
+                return response()->json([
+                    'status' => 'synced',
+                    'message' => $result['message'] ?? 'OK',
+                ]);
+            } finally {
+                $lock->release();
+            }
         }
 
         return response()->json(['status' => 'skipped_throttled']);
@@ -203,6 +210,8 @@ class MeetingController extends Controller
 
     public function update(UpdateMeetingRequest $request, Meeting $meeting)
     {
+        $meeting->ensureMutableForEdits();
+
         $validated = $request->validated();
 
         $validated['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
@@ -235,6 +244,7 @@ class MeetingController extends Controller
     public function cancel(Meeting $meeting)
     {
         $this->authorize('update', $meeting);
+        abort_if($meeting->status === MeetingStatus::SELESAI->value, 422, 'Rapat yang sudah selesai tidak dapat dibatalkan.');
 
         $meeting->status = 'dibatalkan';
         $meeting->save();

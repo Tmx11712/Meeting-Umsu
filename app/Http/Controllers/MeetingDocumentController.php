@@ -15,6 +15,7 @@ class MeetingDocumentController extends Controller
     public function store(Request $request, Meeting $meeting): RedirectResponse
     {
         $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
 
         abort_unless(
             $request->user()->can('minute.update') || $request->user()->can('review.update') || $request->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
@@ -66,6 +67,7 @@ class MeetingDocumentController extends Controller
     public function destroy(Meeting $meeting, MeetingDocument $document): RedirectResponse
     {
         $this->authorize('view', $meeting);
+        $meeting->ensureMutableForEdits();
 
         abort_unless(
             request()->user()->can('minute.update') || request()->user()->can('review.update') || request()->user()->hasRole(['Bag. Humas', 'Bag. Umum', 'Super Admin', 'Administrator']),
