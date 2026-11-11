@@ -99,9 +99,11 @@ class MeetingApprovalController extends Controller
 
         $request->validate([
             'action_items' => 'array',
+            'action_items.*.id' => 'nullable|uuid',
             'action_items.*.description' => 'required|string',
             'action_items.*.pic' => 'nullable|string',
             'action_items.*.deadline' => 'nullable|date',
+            'action_items.*.status' => 'nullable|in:open,in_progress,done',
         ]);
 
         $actionItemService->updateForMeeting($meeting, $request->action_items ?? []);

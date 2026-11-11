@@ -23,8 +23,8 @@
 
     <div class="header">
         <h1>LAPORAN REKAP NOTULEN</h1>
-        @if($request->start_date && $request->end_date)
-            <p>Periode: {{ \Carbon\Carbon::parse($request->start_date)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($request->end_date)->translatedFormat('d M Y') }}</p>
+        @if(!empty($startDate) && !empty($endDate))
+            <p>Periode: {{ \Carbon\Carbon::parse($startDate)->translatedFormat('d M Y') }} - {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d M Y') }}</p>
         @else
             <p>Semua Waktu</p>
         @endif
@@ -47,11 +47,13 @@
             @forelse($meetings as $index => $meeting)
                 @php
                     $percentage = 0;
-                    if ($meeting->participants && $meeting->participants->count() > 0) {
+                    $expectedCount = ($meeting->participants ? $meeting->participants->count() : 0)
+                        + ($meeting->attendances ? $meeting->attendances->whereNull('user_id')->count() : 0);
+                    if ($expectedCount > 0) {
                         $hadir = $meeting->attendances ? $meeting->attendances->filter(function($a) {
                             return in_array($a->status, ['hadir', 'terlambat']);
                         })->count() : 0;
-                        $percentage = round(($hadir / $meeting->participants->count()) * 100);
+                        $percentage = min(100, round(($hadir / $expectedCount) * 100));
                     }
                 @endphp
                 <tr>

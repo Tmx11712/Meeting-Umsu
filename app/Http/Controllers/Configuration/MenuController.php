@@ -8,6 +8,8 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -61,7 +63,7 @@ class MenuController extends Controller
             $menu = Menu::create($validated);
 
             // Auto-generate basic permissions for the new menu
-            $baseName = strtolower(str_replace(' ', '_', $menu->name));
+            $baseName = Str::slug($menu->name, '_') ?: 'menu';
             $actions = [
                 'create' => 'Dapat membuat',
                 'read' => 'Dapat melihat daftar',
@@ -98,7 +100,7 @@ class MenuController extends Controller
             'icon' => 'nullable|string|max:100',
             'order' => 'required|integer|min:0',
             'status' => 'boolean',
-            'parent_id' => 'nullable|uuid|exists:menus,id',
+            'parent_id' => ['nullable', 'uuid', 'exists:menus,id', Rule::notIn([$menu->id])],
         ]);
 
         $menu->fill($validated)->save();

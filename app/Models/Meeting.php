@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -57,6 +56,8 @@ class Meeting extends Model
     {
         static::deleting(function ($model) {
             // Hard delete related records so they don't persist or reappear when restored by sync
+            $model->loadMissing('documents', 'recordings');
+
             $model->actionItems()->delete();
             $model->approval()->delete();
             $model->attendances()->delete();
@@ -216,9 +217,8 @@ class Meeting extends Model
     public function scopeFilter(Builder $query, array $filters): Builder
     {
         if (! empty($filters['search'])) {
-            $escaped = addcslashes((string) $filters['search'], '%_\\');
-            $likeOperator = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
-            $query->where('title', $likeOperator, '%'.$escaped.'%');
+            $escaped = sql_escape_like((string) $filters['search']);
+            $query->where('title', sql_like_operator(), '%'.$escaped.'%');
         }
 
         if (! empty($filters['status']) && $filters['status'] !== 'all') {
@@ -226,11 +226,11 @@ class Meeting extends Model
         }
 
         if (! empty($filters['month']) && $filters['month'] !== 'all') {
-            if (str_contains((string) $filters['month'], '-')) {
-                [$year, $month] = explode('-', (string) $filters['month'], 2);
-                $query->whereYear('date', $year)->whereMonth('date', $month);
-            } else {
-                $query->whereMonth('date', $filters['month']);
+            $rawMonth = trim((string) $filters['month']);
+            if (preg_match('/^(\d{4})-(0?[1-9]|1[0-2])$/', $rawMonth, $matches)) {
+                $query->whereYear('date', (int) $matches[1])->whereMonth('date', (int) $matches[2]);
+            } elseif (preg_match('/^(0?[1-9]|1[0-2])$/', $rawMonth)) {
+                $query->whereMonth('date', (int) $rawMonth);
             }
         }
 

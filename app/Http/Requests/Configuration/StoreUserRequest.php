@@ -4,12 +4,22 @@ namespace App\Http\Requests\Configuration;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true; // Protected by EnsureConfigAccess middleware
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $this->merge([
+                'email' => strtolower(trim((string) $this->input('email'))),
+            ]);
+        }
     }
 
     /**
@@ -25,7 +35,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => ['required', 'string', Password::defaults()],
             'role_id' => 'required|uuid|exists:roles,id',
             'status' => 'required|in:aktif,nonaktif',
         ];

@@ -2,6 +2,7 @@
 
 use App\Enums\TeamRole;
 use App\Models\Meeting;
+use App\Models\Role;
 use App\Models\Team;
 use App\Models\TeamInvitation;
 use App\Models\User;
@@ -154,8 +155,10 @@ test('dashboard does not include or delete other users invitations', function ()
 
 test('dashboard caches todayMeetings and upcomingMeetings as plain arrays so second load does not lose meetings', function () {
     /** @var TestCase $this */
+    $viewerRole = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => 'web']);
     /** @var User $user */
     $user = User::factory()->create();
+    $user->assignRole($viewerRole);
 
     Meeting::create([
         'title' => 'Rapat Testing Hari Ini',

@@ -31,7 +31,10 @@ class MeetingApiController extends Controller
             ->filter($request->only(['search', 'status']));
 
         if ($request->date || $request->event_date) {
-            $query->whereDate('date', $request->date ?? $request->event_date);
+            $filterDate = parse_valid_date((string) ($request->date ?? $request->event_date));
+            if ($filterDate) {
+                $query->whereDate('date', $filterDate);
+            }
         }
 
         $perPage = max(1, min(100, $request->integer('per_page', 15)));

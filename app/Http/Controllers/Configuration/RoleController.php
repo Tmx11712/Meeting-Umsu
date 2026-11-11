@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,7 +25,8 @@ class RoleController extends Controller
         $query = Role::withCount(['users', 'permissions']);
 
         if ($search = $request->input('search')) {
-            $query->where('name', 'like', "%{$search}%");
+            $escaped = sql_escape_like((string) $search);
+            $query->where('name', sql_like_operator(), "%{$escaped}%");
         }
 
         $roles = $query->orderBy('name', 'asc')->paginate(10)->through(fn (Role $role) => [
@@ -71,9 +73,11 @@ class RoleController extends Controller
         $query = $role->users();
 
         if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $escaped = sql_escape_like((string) $search);
+            $likeOp = sql_like_operator();
+            $query->where(function ($q) use ($escaped, $likeOp) {
+                $q->where('name', $likeOp, "%{$escaped}%")
+                    ->orWhere('email', $likeOp, "%{$escaped}%");
             });
         }
 
@@ -113,7 +117,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role)
     {
         $validated = $request->validate([
-            'name' => "required|string|max:255|unique:roles,name,{$role->id}",
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->ignore($role->id)],
             'description' => 'nullable|string|max:500',
         ]);
 

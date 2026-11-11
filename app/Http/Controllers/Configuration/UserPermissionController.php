@@ -32,9 +32,11 @@ class UserPermissionController extends Controller
         $usersQuery = User::with('roles')->orderBy('name', 'asc');
 
         if ($search = $request->input('search')) {
-            $usersQuery->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $escaped = sql_escape_like((string) $search);
+            $likeOp = sql_like_operator();
+            $usersQuery->where(function ($q) use ($escaped, $likeOp) {
+                $q->where('name', $likeOp, "%{$escaped}%")
+                    ->orWhere('email', $likeOp, "%{$escaped}%");
             });
         }
 

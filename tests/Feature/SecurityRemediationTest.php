@@ -6,6 +6,7 @@ use App\Models\Meeting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class SecurityRemediationTest extends TestCase
@@ -15,7 +16,7 @@ class SecurityRemediationTest extends TestCase
     public function test_unauthenticated_api_access_is_denied()
     {
         $meeting = new Meeting;
-        $meeting->id = 9999;
+        $meeting->id = (string) Str::uuid();
 
         $response = $this->getJson('/api/meetings');
         $response->assertStatus(401);
@@ -59,7 +60,7 @@ class SecurityRemediationTest extends TestCase
 
     public function test_public_attendance_is_rate_limited()
     {
-        $meetingId = 9999;
+        $meetingId = (string) Str::uuid();
         $response = null;
 
         // Simulate multiple hits

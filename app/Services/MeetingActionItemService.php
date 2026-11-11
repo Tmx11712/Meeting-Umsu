@@ -29,22 +29,52 @@ class MeetingActionItemService
         $minute = $meeting->minutes()->latest()->firstOrFail();
 
         DB::transaction(function () use ($meeting, $minute, $actionItems) {
-            // Delete existing action items
-            $minute->actionItems()->delete();
+            $existingItems = $minute->actionItems()->get()->keyBy('id');
+            $keptIds = [];
 
-            // Insert the new action items
             foreach ($actionItems as $item) {
-                if (empty(trim($item['description']))) {
-                    continue; // Skip empty descriptions
+                $description = trim((string) ($item['description'] ?? ''));
+                if ($description === '') {
+                    continue;
                 }
 
-                $minute->actionItems()->create([
-                    'meeting_id' => $meeting->id,
-                    'description' => trim($item['description']),
-                    'pic' => trim($item['pic'] ?? '-'),
-                    'deadline' => ! empty($item['deadline']) ? Carbon::parse($item['deadline'])->format('Y-m-d') : null,
-                    'status' => MeetingActionItemStatus::OPEN->value,
-                ]);
+                $deadline = ! empty($item['deadline'])
+                    ? Carbon::parse($item['deadline'])->setTimezone(config('app.timezone'))->format('Y-m-d')
+                    : null;
+
+                $pic = trim((string) ($item['pic'] ?? '-'));
+                $itemId = $item['id'] ?? null;
+                $existing = $itemId ? $existingItems->get($itemId) : null;
+
+                $status = $item['status'] ?? ($existing?->status ?? MeetingActionItemStatus::OPEN->value);
+                if (! MeetingActionItemStatus::tryFrom((string) $status)) {
+                    $status = $existing?->status ?? MeetingActionItemStatus::OPEN->value;
+                }
+
+                if ($existing) {
+                    $existing->fill([
+                        'description' => $description,
+                        'pic' => $pic,
+                        'deadline' => $deadline,
+                        'status' => $status,
+                    ])->save();
+                    $keptIds[] = $existing->id;
+                } else {
+                    $created = $minute->actionItems()->create([
+                        'meeting_id' => $meeting->id,
+                        'description' => $description,
+                        'pic' => $pic,
+                        'deadline' => $deadline,
+                        'status' => $status,
+                    ]);
+                    $keptIds[] = $created->id;
+                }
+            }
+
+            if (empty($keptIds)) {
+                $minute->actionItems()->delete();
+            } else {
+                $minute->actionItems()->whereNotIn('id', $keptIds)->delete();
             }
         });
     }

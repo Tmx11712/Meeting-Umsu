@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MeetingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 /**
@@ -41,7 +42,7 @@ class MeetingTypeController extends Controller
     public function update(Request $request, MeetingType $meetingType)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:meeting_types,name,'.$meetingType->id,
+            'name' => ['required', 'string', 'max:255', Rule::unique('meeting_types', 'name')->ignore($meetingType->id)],
             'is_active' => 'boolean',
         ]);
 

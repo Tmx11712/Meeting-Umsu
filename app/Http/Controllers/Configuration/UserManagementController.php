@@ -31,9 +31,11 @@ class UserManagementController extends Controller
         $query = User::with('roles');
 
         if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+            $escaped = sql_escape_like((string) $search);
+            $likeOp = sql_like_operator();
+            $query->where(function ($q) use ($escaped, $likeOp) {
+                $q->where('name', $likeOp, "%{$escaped}%")
+                    ->orWhere('email', $likeOp, "%{$escaped}%");
             });
         }
 

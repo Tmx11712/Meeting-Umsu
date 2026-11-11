@@ -89,7 +89,7 @@ export default function ReportIndex({ meetings, filters }: any) {
                             </Button>
                             <Button asChild>
                                 <a
-                                    href={`/reports/download?start_date=${filters.start_date || ''}&end_date=${filters.end_date || ''}&search=${filters.search || ''}`}
+                                    href={`/reports/download?start_date=${encodeURIComponent(filters.start_date || '')}&end_date=${encodeURIComponent(filters.end_date || '')}&search=${encodeURIComponent(filters.search || '')}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >

@@ -106,14 +106,16 @@ class MeetingController extends Controller
          */
         $validated = $request->validated();
 
-        $validated['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
+        $meetingAttributes = $request->safe()->except(['participants', 'auto_record']);
+        $meetingAttributes['type'] = $meetingAttributes['type'] ?: 'Rapat internal';
+        $meetingAttributes['location'] = $meetingAttributes['location'] ?: 'Belum ditentukan';
+        $meetingAttributes['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
+        $meetingAttributes['created_by'] = $request->user()->id;
+        $meetingAttributes['status'] = 'terjadwal';
+        $meetingAttributes['current_stage'] = 1;
+        $meetingAttributes['source'] = 'manual';
 
-        $validated['created_by'] = $request->user()->id;
-        $validated['status'] = 'terjadwal';
-        $validated['current_stage'] = 1;
-        $validated['source'] = 'manual';
-
-        $meeting = Meeting::create($validated);
+        $meeting = Meeting::create($meetingAttributes);
 
         if (! empty($validated['participants'])) {
             $participants = [];
@@ -214,9 +216,10 @@ class MeetingController extends Controller
 
         $validated = $request->validated();
 
-        $validated['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
+        $meetingAttributes = $request->safe()->except(['participants']);
+        $meetingAttributes['duration'] = Meeting::calculateDurationSeconds($validated['start_time'], $validated['end_time']);
 
-        $meeting->fill($validated);
+        $meeting->fill($meetingAttributes);
         $meeting->save();
 
         $existingIds = $meeting->participants()->pluck('user_id')->toArray();

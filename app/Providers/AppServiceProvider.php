@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -45,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        foreach (['meeting', 'recording', 'document', 'role', 'permission', 'menu', 'meeting_type', 'meeting_room', 'user'] as $uuidParam) {
+            Route::pattern($uuidParam, '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}');
+        }
 
         if (app()->environment('production') && str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');

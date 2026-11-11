@@ -14,20 +14,23 @@ class ReportController extends Controller
     /**
      * @return Builder<Meeting>
      */
-    private function buildReportQuery(Request $request): Builder
+    private function buildReportQuery(Request $request, ?string &$startDate = null, ?string &$endDate = null): Builder
     {
         $query = Meeting::query()
             ->visibleTo($request->user())
             ->with('minutes', 'participants', 'attendances');
 
-        if ($request->start_date && $request->end_date) {
-            $query->whereBetween('date', [$request->start_date, $request->end_date]);
+        $startDate = parse_valid_date($request->input('start_date'));
+        $endDate = parse_valid_date($request->input('end_date'));
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
         }
 
         if ($request->search) {
-            $escaped = addcslashes((string) $request->search, '%_\\');
+            $escaped = sql_escape_like((string) $request->search);
             $driver = DB::connection()->getDriverName();
-            $likeOperator = $driver === 'pgsql' ? 'ilike' : 'like';
+            $likeOperator = sql_like_operator();
             $contentClause = $driver === 'pgsql' ? 'content::text ilike ?' : 'content like ?';
 
             $query->where(function (Builder $q) use ($escaped, $likeOperator, $contentClause) {
@@ -66,9 +69,11 @@ class ReportController extends Controller
             'Akses Terbatas: Anda tidak memiliki izin untuk mengunduh laporan.'
         );
 
-        $meetings = $this->buildReportQuery($request)->get();
+        $startDate = null;
+        $endDate = null;
+        $meetings = $this->buildReportQuery($request, $startDate, $endDate)->limit(500)->get();
 
-        $pdf = Pdf::loadView('pdf.report', compact('meetings', 'request'));
+        $pdf = Pdf::loadView('pdf.report', compact('meetings', 'request', 'startDate', 'endDate'));
 
         return $pdf->stream('Laporan_Notulen.pdf');
     }
