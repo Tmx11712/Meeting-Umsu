@@ -36,7 +36,7 @@ class ReportController extends Controller
             $query->where(function (Builder $q) use ($escaped, $likeOperator, $contentClause) {
                 $q->where('title', $likeOperator, '%'.$escaped.'%')
                     ->orWhereHas('minutes', function (Builder $mq) use ($escaped, $contentClause) {
-                        $mq->whereRaw($contentClause, ['%'.$escaped.'%']);
+                        $mq->whereRaw($contentClause, ['%'.$escaped.'%'], 'and');
                     });
             });
         }

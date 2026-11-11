@@ -29,7 +29,7 @@ class UpsertUserFromExternalAction
         }
 
         $email = strtolower(trim((string) $participantData['email']));
-        $user = User::withTrashed()->whereRaw('LOWER(email) = ?', [$email])->first();
+        $user = User::withTrashed()->whereRaw('LOWER(email) = ?', [$email], 'and')->first();
 
         if ($user?->trashed()) {
             return null;

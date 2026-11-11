@@ -480,7 +480,9 @@ test('trust proxies resolves forwarded client ip behind production reverse proxy
 
 test('deactivated users are blocked from passkey login and api access', function () {
     /** @var TestCase $this */
+    /** @var User $inactiveUser */
     $inactiveUser = User::factory()->create(['status' => 'nonaktif']);
+    /** @var User $activeUser */
     $activeUser = User::factory()->create(['status' => 'aktif']);
 
     $inactivePasskey = new Passkey;

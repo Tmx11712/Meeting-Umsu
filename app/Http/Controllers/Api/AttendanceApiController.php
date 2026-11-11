@@ -95,7 +95,7 @@ class AttendanceApiController extends Controller
                 $candidate = User::query()->where('id', '=', $request->user_id, 'and')->first();
             } elseif ($request->email) {
                 $normalizedEmail = strtolower(trim((string) $request->email));
-                $candidate = User::query()->whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
+                $candidate = User::query()->whereRaw('LOWER(email) = ?', [$normalizedEmail], 'and')->first();
             }
 
             if ($candidate && $candidate->hasRole(['Super Admin', 'Administrator', 'Pimpinan'])) {
